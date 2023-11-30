@@ -21,7 +21,7 @@ export interface AuthSignInParams {
 
 const NNS_IC_ORG_ALTERNATIVE_ORIGIN = "https://waterwaylabs.xyz";
 const NNS_IC_APP_DERIVATION_ORIGIN =
-  "https://bgpwv-eqaaa-aaaal-qb6eq-cai.icp0.io";
+  "https://qm6x5-qqaaa-aaaal-qcnea-cai.icp0.io.icp0.io";
 
 export interface AuthStore extends Readable<AuthStoreData> {
   sync: () => Promise<void>;
