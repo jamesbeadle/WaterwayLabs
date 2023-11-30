@@ -9,7 +9,7 @@ function createUserStore() {
     try {
       const identityActor = await ActorFactory.createIdentityActor(
         authStore,
-        process.env.OPENFPL_BACKEND_CANISTER_ID ?? ""
+        process.env.BACKEND_CANISTER_ID ?? ""
       );
       const result = await identityActor.updateDisplayName(username);
       return result;
@@ -23,7 +23,7 @@ function createUserStore() {
     try {
       const identityActor = await ActorFactory.createIdentityActor(
         authStore,
-        process.env.OPENFPL_BACKEND_CANISTER_ID ?? ""
+        process.env.BACKEND_CANISTER_ID ?? ""
       );
       const result = await identityActor.updateFavouriteTeam(favouriteTeamId);
       return result;
@@ -37,7 +37,7 @@ function createUserStore() {
     try {
       const identityActor = await ActorFactory.createIdentityActor(
         authStore,
-        process.env.OPENFPL_BACKEND_CANISTER_ID ?? ""
+        process.env.BACKEND_CANISTER_ID ?? ""
       );
       const result = await identityActor.getProfileDTO();
       set(result);
@@ -63,7 +63,7 @@ function createUserStore() {
         try {
           const identityActor = await ActorFactory.createIdentityActor(
             authStore,
-            process.env.OPENFPL_BACKEND_CANISTER_ID ?? ""
+            process.env.BACKEND_CANISTER_ID ?? ""
           );
           const result = await identityActor.updateProfilePicture(uint8Array);
           return result;

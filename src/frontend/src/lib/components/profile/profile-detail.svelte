@@ -1,43 +1,31 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
+  import { writable, type Writable } from "svelte/store";
   import { userStore } from "$lib/stores/user-store";
-  import { teamStore } from "$lib/stores/team-store";
   import { systemStore } from "$lib/stores/system-store";
   import { toastStore } from "$lib/stores/toast-store";
+  import { loadingText } from "$lib/stores/global-stores";
+  import CopyIcon from "$lib/icons/CopyIcon.svelte";
+  import LoadingIcon from "$lib/icons/LoadingIcon.svelte";
+  import UpdateUsernameModal from "$lib/components/profile/update-username-modal.svelte";
   import type {
     ProfileDTO,
     SystemState,
-    Team,
-  } from "../../../../../declarations/OpenFPL_backend/OpenFPL_backend.did";
-  import CopyIcon from "$lib/icons/CopyIcon.svelte";
-  import UpdateUsernameModal from "$lib/components/profile/update-username-modal.svelte";
-  import UpdateFavouriteTeamModal from "./update-favourite-team-modal.svelte";
-  import LoadingIcon from "$lib/icons/LoadingIcon.svelte";
-  import { writable, type Writable } from "svelte/store";
-  import { loadingText } from "$lib/stores/global-stores";
+  } from "../../../../../declarations/backend/backend.did";
 
-  let teams: Team[];
   let systemState: SystemState | null;
   let profile: Writable<ProfileDTO | null> = writable(null);
   let profileSrc: Writable<string> = writable("profile_placeholder.png");
   let showUsernameModal: boolean = false;
-  let showFavouriteTeamModal: boolean = false;
   let fileInput: HTMLInputElement;
-  let gameweek: number = 1;
   let isLoading = writable(false);
 
-  let unsubscribeTeams: () => void;
   let unsubscribeSystemState: () => void;
 
   onMount(async () => {
     isLoading.set(true);
     try {
-      await teamStore.sync();
       await systemStore.sync();
-
-      unsubscribeTeams = teamStore.subscribe((value) => {
-        teams = value;
-      });
 
       unsubscribeSystemState = systemStore.subscribe((value) => {
         systemState = value;
@@ -50,7 +38,6 @@
         const blob = new Blob([new Uint8Array(profileData.profilePicture)]);
         profileSrc.set(URL.createObjectURL(blob));
       }
-      gameweek = systemState?.activeGameweek ?? 1;
     } catch (error) {
       toastStore.show("Error fetching profile detail.", "error");
       console.error("Error fetching profile detail:", error);
@@ -60,7 +47,6 @@
   });
 
   onDestroy(() => {
-    unsubscribeTeams?.();
     unsubscribeSystemState?.();
   });
 
@@ -76,20 +62,6 @@
 
   function cancelUsernameModal() {
     showUsernameModal = false;
-  }
-
-  function displayFavouriteTeamModal(): void {
-    showFavouriteTeamModal = true;
-  }
-
-  async function closeFavouriteTeamModal() {
-    const profileData = await userStore.getProfile();
-    profile.set(profileData);
-    showFavouriteTeamModal = false;
-  }
-
-  function cancelFavouriteTeamModal() {
-    showFavouriteTeamModal = false;
   }
 
   function copyToClipboard(text: string) {
@@ -147,13 +119,6 @@
     cancelModal={cancelUsernameModal}
     {isLoading}
   />
-  <UpdateFavouriteTeamModal
-    newFavouriteTeam={$profile ? $profile.favouriteTeamId : 0}
-    showModal={showFavouriteTeamModal}
-    closeModal={closeFavouriteTeamModal}
-    cancelModal={cancelFavouriteTeamModal}
-    {isLoading}
-  />
   <div class="container mx-auto p-4">
     {#if $profile}
       <div class="flex flex-wrap">
@@ -166,9 +131,8 @@
             />
 
             <div class="file-upload-wrapper mt-4">
-              <button
-                class="btn-file-upload fpl-button"
-                on:click={clickFileInput}>Upload Photo</button
+              <button class="btn-file-upload" on:click={clickFileInput}
+                >Upload Photo</button
               >
               <input
                 type="file"
@@ -186,34 +150,19 @@
           <div class="ml-4 p-4 rounded-lg">
             <p class="text-xs mb-2">Display Name:</p>
             <h2 class="text-2xl font-bold mb-2">{$profile?.displayName}</h2>
-            <button
-              class="p-2 px-4 rounded fpl-button"
-              on:click={displayUsernameModal}
+            <button class="p-2 px-4 rounded" on:click={displayUsernameModal}
+              >Update</button
             >
-              Update
-            </button>
-            <p class="text-xs mb-2 mt-4">Favourite Team:</p>
-            <h2 class="text-2xl font-bold mb-2">
-              {teams.find((x) => x.id === $profile?.favouriteTeamId)
-                ?.friendlyName}
-            </h2>
-            <button
-              class="p-2 px-4 rounded fpl-button"
-              on:click={displayFavouriteTeamModal}
-              disabled={gameweek > 1 && ($profile?.favouriteTeamId ?? 0) > 0}
-            >
-              Update
-            </button>
 
             <p class="text-xs mb-2 mt-4">Joined:</p>
             <h2 class="text-2xl font-bold mb-2">August 2023</h2>
 
             <p class="text-xs mb-2 mt-4">Principal:</p>
             <div class="flex items-center">
-              <h2 class="text-xs font-bold">{$profile?.principalName}</h2>
+              <h2 class="text-xs font-bold">{$profile?.principalId}</h2>
               <CopyIcon
                 onClick={copyToClipboard}
-                principalId={$profile?.principalName}
+                principalId={$profile?.principalId}
                 className="ml-2 w-4 h-4"
               />
             </div>
@@ -232,15 +181,6 @@
               <div class="ml-4">
                 <p class="font-bold">ICP</p>
                 <p>0.00 ICP</p>
-              </div>
-            </div>
-            <div
-              class="flex items-center p-4 rounded-lg shadow-md border border-gray-700"
-            >
-              <img src="FPLCoin.png" alt="FPL" class="h-12 w-12" />
-              <div class="ml-4">
-                <p class="font-bold">FPL</p>
-                <p>0.00 FPL</p>
               </div>
             </div>
             <div

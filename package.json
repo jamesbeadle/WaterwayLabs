@@ -1,13 +1,10 @@
 {
-  "name": "open_fpl_frontend",
+  "name": "waterway_labs",
   "version": "0.1.0",
   "private": true,
-  "description": "Open FPL Game",
+  "description": "Waterway Labs",
   "keywords": [
-    "Open FPL",
-    "FPL",
-    "IC",
-    "ICP"
+    "Waterway Labs"
   ],
   "scripts": {
     "dev": "vite dev",

@@ -5,34 +5,21 @@
 <Layout>
   <div class="m-4">
     <div class="bg-panel rounded-lg m-4 p-4">
-      <h1 class="p-4 mx-1 text-2xl">OpenFPL DAO Terms & Conditions</h1>
+      <h1 class="p-4 mx-1 text-2xl">Waterway Labs Terms & Conditions</h1>
       <div class="bg-panel rounded-lg m-4">
         <div>
-          <p class="my-2 text-xs">Last Updated: 13th October 2023</p>
+          <p class="my-2 text-xs">Last Updated: 30th November 2023</p>
 
           <p class="my-4">
-            By accessing the OpenFPL website ("Site") and participating in the
-            OpenFPL Fantasy Football DAO ("Service"), you agree to comply with
-            and be bound by the following Terms and Conditions.
+            By accessing the Waterway Labs website ("Site"), you agree to comply
+            with and be bound by the following Terms and Conditions.
           </p>
 
           <h2 class="text-xl font-bold">Acceptance of Terms</h2>
           <p class="my-4">
             You acknowledge that you have read, understood, and agree to be
-            bound by these Terms. These Terms are subject to change by a DAO
-            proposal and vote.
+            bound by these Terms.
           </p>
-
-          <h2 class="text-xl font-bold">Decentralised Structure</h2>
-          <p class="my-4">
-            OpenFPL operates as a decentralised autonomous organisation (DAO).
-            As such, traditional legal and liability structures may not apply.
-            Members and users are responsible for their own actions within the
-            DAO framework.
-          </p>
-
-          <h2 class="text-xl font-bold">Eligibility</h2>
-          <p class="my-4">The Service is open to users of all ages.</p>
 
           <h2 class="text-xl font-bold">User Conduct</h2>
           <p class="my-4">
@@ -47,10 +34,7 @@
           </p>
 
           <h2 class="text-xl font-bold">Changes to Terms</h2>
-          <p class="my-4">
-            These Terms and Conditions are subject to change. Amendments will be
-            effective upon DAO members' approval via proposal and vote.
-          </p>
+          <p class="my-4">These Terms and Conditions are subject to change.</p>
         </div>
       </div>
     </div>

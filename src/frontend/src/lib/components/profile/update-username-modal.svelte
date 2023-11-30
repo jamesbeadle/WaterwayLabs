@@ -68,15 +68,14 @@
           </div>
           <div class="items-center py-3 flex space-x-4">
             <button
-              class="px-4 py-2 fpl-cancel-btn text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+              class="px-4 py-2 text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
               on:click={cancelModal}
             >
               Cancel
             </button>
             <button
-              class={`px-4 py-2 ${
-                isSubmitDisabled ? "bg-gray-500" : "fpl-purple-btn"
-              } text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300`}
+              class={`px-4 py-2 ${isSubmitDisabled ? "bg-gray-500" : ""} 
+              text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300`}
               type="submit"
               disabled={isSubmitDisabled}
             >

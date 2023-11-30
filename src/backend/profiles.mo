@@ -26,8 +26,8 @@ module {
       return Iter.toArray(userProfiles.entries());
     };
 
-    public func getProfile(principalName : Text) : ?T.Profile {
-      return userProfiles.get(principalName);
+    public func getProfile(principalId : Text) : ?T.Profile {
+      return userProfiles.get(principalId);
     };
 
     public func isWalletValid(walletAddress : Text) : Bool {
@@ -46,23 +46,17 @@ module {
       return false;
     };
 
-    public func createProfile(principalName : Text, displayName : Text, icpDepositAddress : Account.AccountIdentifier, fplDepositAddress : Account.AccountIdentifier) : () {
-      if (userProfiles.get(principalName) == null) {
+    public func createProfile(principalId : Text, displayName : Text) : () {
+      if (userProfiles.get(principalId) == null) {
         let newProfile : T.Profile = {
-          principalName = principalName;
+          principalId = principalId;
           displayName = displayName;
-          icpDepositAddress = icpDepositAddress;
-          fplDepositAddress = fplDepositAddress;
           profilePicture = Blob.fromArray([]);
           termsAccepted = false;
-          favouriteTeamId = 0;
-          membershipType = 0;
-          subscriptionDate = 0;
           createDate = now();
-          reputation = 0;
         };
 
-        userProfiles.put(principalName, newProfile);
+        userProfiles.put(principalId, newProfile);
       };
     };
 
@@ -95,8 +89,8 @@ module {
       return true;
     };
 
-    public func updateDisplayName(principalName : Text, displayName : Text) : Result.Result<(), T.Error> {
-      let existingProfile = userProfiles.get(principalName);
+    public func updateDisplayName(principalId : Text, displayName : Text) : Result.Result<(), T.Error> {
+      let existingProfile = userProfiles.get(principalId);
       switch (existingProfile) {
         case (null) {
           return #err(#NotFound);
@@ -111,75 +105,36 @@ module {
           };
 
           let updatedProfile : T.Profile = {
-            principalName = existingProfile.principalName;
+            principalId = existingProfile.principalId;
             displayName = displayName;
-            icpDepositAddress = existingProfile.icpDepositAddress;
-            fplDepositAddress = existingProfile.fplDepositAddress;
             profilePicture = existingProfile.profilePicture;
             termsAccepted = existingProfile.termsAccepted;
-            favouriteTeamId = existingProfile.favouriteTeamId;
-            membershipType = existingProfile.membershipType;
-            subscriptionDate = existingProfile.subscriptionDate;
             createDate = existingProfile.createDate;
-            reputation = existingProfile.reputation;
           };
 
-          userProfiles.put(principalName, updatedProfile);
+          userProfiles.put(principalId, updatedProfile);
 
           return #ok(());
         };
       };
     };
 
-    public func updateFavouriteTeam(principalName : Text, favouriteTeamId : Nat16) : Result.Result<(), T.Error> {
-      let existingProfile = userProfiles.get(principalName);
+    public func updateProfilePicture(principalId : Text, profilePicture : Blob) : Result.Result<(), T.Error> {
+      let existingProfile = userProfiles.get(principalId);
       switch (existingProfile) {
         case (null) {
           return #err(#NotFound);
         };
         case (?existingProfile) {
           let updatedProfile : T.Profile = {
-            principalName = existingProfile.principalName;
+            principalId = existingProfile.principalId;
             displayName = existingProfile.displayName;
-            icpDepositAddress = existingProfile.icpDepositAddress;
-            fplDepositAddress = existingProfile.fplDepositAddress;
-            profilePicture = existingProfile.profilePicture;
-            termsAccepted = existingProfile.termsAccepted;
-            favouriteTeamId = favouriteTeamId;
-            membershipType = existingProfile.membershipType;
-            subscriptionDate = existingProfile.subscriptionDate;
-            createDate = existingProfile.createDate;
-            reputation = existingProfile.reputation;
-          };
-
-          userProfiles.put(principalName, updatedProfile);
-          return #ok(());
-        };
-      };
-    };
-
-    public func updateProfilePicture(principalName : Text, profilePicture : Blob) : Result.Result<(), T.Error> {
-      let existingProfile = userProfiles.get(principalName);
-      switch (existingProfile) {
-        case (null) {
-          return #err(#NotFound);
-        };
-        case (?existingProfile) {
-          let updatedProfile : T.Profile = {
-            principalName = existingProfile.principalName;
-            displayName = existingProfile.displayName;
-            icpDepositAddress = existingProfile.icpDepositAddress;
-            fplDepositAddress = existingProfile.fplDepositAddress;
             termsAccepted = existingProfile.termsAccepted;
             profilePicture = profilePicture;
-            favouriteTeamId = existingProfile.favouriteTeamId;
             createDate = existingProfile.createDate;
-            subscriptionDate = existingProfile.subscriptionDate;
-            membershipType = existingProfile.membershipType;
-            reputation = existingProfile.reputation;
           };
 
-          userProfiles.put(principalName, updatedProfile);
+          userProfiles.put(principalId, updatedProfile);
           return #ok(());
         };
       };

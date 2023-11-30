@@ -41,24 +41,6 @@ module {
     Nat32.fromNat(key % (2 ** 32 -1));
   };
 
-  public func eqPlayerEventData(event1 : T.PlayerEventData, event2 : T.PlayerEventData) : Bool {
-    event1.fixtureId == event2.fixtureId and event1.playerId == event2.playerId and event1.eventType == event2.eventType and event1.eventStartMinute == event2.eventStartMinute and event1.eventEndMinute == event2.eventEndMinute
-  };
-
-  public func eqPlayerEventDataArray(array1 : [T.PlayerEventData], array2 : [T.PlayerEventData]) : Bool {
-    if (Array.size(array1) != Array.size(array2)) {
-      return false;
-    };
-
-    for (i in Iter.range(0, Array.size(array1) -1)) {
-      if (not eqPlayerEventData(array1[i], array2[i])) {
-        return false;
-      };
-    };
-
-    return true;
-  };
-
   public func unixTimeToMonth(unixTime : Int) : Nat8 {
     let secondsInADay = 86400;
     let seconds = unixTime / 1000000000;

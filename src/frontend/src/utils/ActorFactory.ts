@@ -3,8 +3,7 @@ import type { AuthStore } from "$lib/stores/auth";
 import type { OptionIdentity } from "$lib/types/Identity";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import type { Unsubscriber } from "svelte/store";
-import { idlFactory as main_canister } from "../../../declarations/OpenFPL_backend";
-import { idlFactory as player_canister } from "../../../declarations/player_canister";
+import { idlFactory } from "../../../declarations/backend";
 
 export class ActorFactory {
   static createActor(
@@ -59,13 +58,7 @@ export class ActorFactory {
       });
     }).then((identity) => {
       unsubscribe();
-      return ActorFactory.createActor(
-        canisterId === process.env.OPENFPL_BACKEND_CANISTER_ID
-          ? main_canister
-          : player_canister,
-        canisterId,
-        identity
-      );
+      return ActorFactory.createActor(idlFactory, canisterId, identity);
     });
   }
 }
