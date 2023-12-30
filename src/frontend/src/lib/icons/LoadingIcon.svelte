@@ -4,8 +4,10 @@
 </script>
 
 <div class="flex justify-center items-center h-screen">
-  <div class={`${className} flex flex-col justify-center items-center h-screen pulse-text-color`}>
-    <img src='logo.png' alt='logo' />
+  <div
+    class={`${className} flex flex-col justify-center items-center h-screen pulse-text-color`}
+  >
+    <img src="logo.png" alt="logo" />
     {$loadingText}
   </div>
 </div>

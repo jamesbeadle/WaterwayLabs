@@ -1,5 +1,3 @@
-<script>
-</script>
 
 <footer class="bg-gray-900 text-white py-3">
   <div
@@ -50,7 +48,7 @@
     <div class="flex-1">
       <div class="flex justify-end">
         <div class="text-right px-4 sm:px-0 mt-1 sm:mt-0 md:mr-4">
-          Waterway Labs Ltd (Reg: 15281491)
+          Waterway Labs Ltd (UK Reg: 15281491)
         </div>
       </div>
     </div>

@@ -24,19 +24,40 @@ body {
   margin: 0;
 }
 
-.active-tab {
-  border-bottom: 4px #2ce3a6 solid;
+
+.modal-backdrop {
+  z-index: 1000;
 }
 
-.toast-panel-success {
-  background-color: #2ce3a6;
+.modal {
+  position: fixed !important;
+  z-index: 9999 !important;
+  background-color: rgba(36, 37, 41, 0.7) !important;
 }
 
-.toast-panel-error {
-  background-color: #f27557;
+[data-tid='busy'] {
+  background-color: rgba(36, 37, 41, 0.7) !important;
+  z-index: 99999 !important;
 }
 
-.inactive-btn {
-  background-color: black;
-  color: white;
+.modal .content {
+  left: 0 !important;
+  right: 0 !important;
+  background-color: #161819 !important;
+  border-radius: 8px;
+  border: 1px solid #2e323a !important;
+}
+
+.modal .container {
+  border-radius: 0px !important;
+}
+
+/* global.css */
+:root {
+  --dialog-width: 90% !important;
+  --dialog-max-width: 600px !important;
+  --dialog-min-height: 100px !important;
+  --dialog-height: auto !important;
+  --dialog-max-height: 80vh !important;
+  --dialog-border-radius: 1px !important;
 }
