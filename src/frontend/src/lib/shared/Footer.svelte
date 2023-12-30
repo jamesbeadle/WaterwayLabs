@@ -33,11 +33,6 @@
           </a>
         </div>
       </div>
-      <div class="flex justify-start">
-        <div class="flex flex-col sm:flex-row sm:space-x-2 pl-4">
-          <a href="/terms" class="hover:text-gray-300">Terms & Conditions</a>
-        </div>
-      </div>
     </div>
     <div class="flex-0">
       <a href="/">
