@@ -1,5 +1,5 @@
 
-<footer class="bg-gray-900 text-white py-3">
+<footer class="bg-gray-600 text-white py-3">
   <div
     class="container mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs"
   >

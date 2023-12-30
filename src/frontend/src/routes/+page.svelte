@@ -14,10 +14,12 @@
 </script>
 
 <Layout>
-  <div class="flex-col space-y-4 m-4">
-    <h1 class="text-2xl">Welcome to Waterway Labs</h1>
-    <p>We believe the future of the internet lies in decentralised tokenised services. 
-      Our mission is to decentralise key services in preparation for this future. </p>
-    <h2 class="text-xl">Our Projects:</h2>
+  <div class="flex items-center justify-center h-full flex-col">
+    <img src="logo.png" alt="logo" class="w-24" />
+    <div class="text-center">
+      <h1 class="text-4xl font-bold">Welcome to Waterway Labs</h1>
+      <p class="mt-4">Our mission is to decentralise key services using the Internet Computer blockchain.</p>
+      <a href="/projects"><button class="btn mt-4">Projects</button></a>
+    </div>
   </div>
 </Layout>
