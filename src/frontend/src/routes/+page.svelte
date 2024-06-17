@@ -5,6 +5,7 @@
 
   onMount(async () => {
     try {
+      // Fetch data or perform other mount-related tasks
     } catch (error) {
       console.error("Error fetching homepage data:", error);
     } finally {
@@ -14,12 +15,12 @@
 </script>
 
 <Layout>
-  <div class="flex items-center justify-center h-full flex-col">
+  <div class="flex items-center justify-center min-h-screen flex-col">
     <img src="logo.png" alt="logo" class="w-24" />
-    <div class="text-center">
-      <h1 class="text-4xl font-bold">Welcome to Waterway Labs</h1>
-      <p class="mt-4">Our mission is to decentralise key services using the Internet Computer blockchain.</p>
-      <a href="/projects"><button class="btn mt-4">Projects</button></a>
+    <div class="text-center flex flex-col space-y-3">
+      <h1 class="text-xl sm:text-2xl md:text-3xl font-bold">Welcome to Waterway Labs</h1>
+      <p>Web3 Technology Company</p>
+      <a href="/projects"><button class="btn">Projects</button></a>
     </div>
   </div>
 </Layout>

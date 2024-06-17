@@ -17,7 +17,7 @@ function createToastStore() {
     update(() => ({ visible: true, message, type }));
     setTimeout(
       () => set({ visible: false, message: "", type: "success" }),
-      3000
+      3000,
     );
   }
 

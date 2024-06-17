@@ -15,27 +15,25 @@ const { version } = JSON.parse(json);
 // npm run build = local
 // dfx deploy = local
 // dfx deploy --network ic = ic
-// dfx deploy --network staging = staging
 const network = process.env.DFX_NETWORK ?? "local";
-
 const readCanisterIds = ({
   prefix,
 }: {
   prefix?: string;
 }): Record<string, string> => {
-  const canisterIdsJsonFile = ["ic", "staging"].includes(network)
-    ? join(process.cwd(), "canister_ids.json")
-    : join(process.cwd(), ".dfx", "local", "canister_ids.json");
+  const canisterIdsJsonFile =
+    network === "ic"
+      ? join(process.cwd(), "canister_ids.json")
+      : join(process.cwd(), ".dfx", "local", "canister_ids.json");
 
   try {
     type Details = {
       ic?: string;
-      staging?: string;
       local?: string;
     };
 
     const config: Record<string, Details> = JSON.parse(
-      readFileSync(canisterIdsJsonFile, "utf-8")
+      readFileSync(canisterIdsJsonFile, "utf-8"),
     );
 
     return Object.entries(config).reduce((acc, current: [string, Details]) => {
@@ -48,8 +46,7 @@ const readCanisterIds = ({
       };
     }, {});
   } catch (e) {
-    console.warn(`Could not get canister ID from ${canisterIdsJsonFile}: ${e}`);
-    return {};
+    throw Error(`Could not get canister ID from ${canisterIdsJsonFile}: ${e}`);
   }
 };
 
@@ -77,11 +74,11 @@ const config: UserConfig = {
         manualChunks: (id) => {
           const folder = dirname(id);
 
-          const lazy = ["@dfinity/nns", "@dfinity/nns-proto"];
+          const lazy = ["@dfinity/nns"];
 
           if (
             ["@sveltejs", "svelte", "@dfinity/gix-components", ...lazy].find(
-              (lib) => folder.includes(lib)
+              (lib) => folder.includes(lib),
             ) === undefined &&
             folder.includes("node_modules")
           ) {
@@ -109,14 +106,19 @@ const config: UserConfig = {
   // proxy /api to port 4943 during development
   server: {
     proxy: {
-      "/api": "http://localhost:4943",
+      "/api": "http://localhost:8080",
+    },
+    watch: {
+      ignored: ["**/.dfx/**", "**/.github/**"],
     },
   },
   optimizeDeps: {
     esbuildOptions: {
+      // Node.js global to browser globalThis
       define: {
         global: "globalThis",
       },
+      // Enable esbuild polyfill plugins
       plugins: [
         NodeModulesPolyfillPlugin(),
         {
@@ -124,7 +126,7 @@ const config: UserConfig = {
           setup(build) {
             build.onResolve(
               { filter: /_virtual-process-polyfill_\.js/ },
-              ({ path }) => ({ path })
+              ({ path }) => ({ path }),
             );
           },
         },
@@ -144,9 +146,9 @@ export default defineConfig((): UserConfig => {
       network === "ic"
         ? "production"
         : network === "staging"
-        ? "staging"
-        : "development",
-      process.cwd()
+          ? "staging"
+          : "development",
+      process.cwd(),
     ),
     ...readCanisterIds({ prefix: "VITE_" }),
   };

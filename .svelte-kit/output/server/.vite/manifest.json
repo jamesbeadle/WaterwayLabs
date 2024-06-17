@@ -1,58 +1,70 @@
 {
   ".svelte-kit/generated/server/internal.js": {
     "file": "internal.js",
+    "name": "internal",
+    "src": ".svelte-kit/generated/server/internal.js",
+    "isEntry": true,
     "imports": [
       "_index.js"
-    ],
-    "isEntry": true,
-    "src": ".svelte-kit/generated/server/internal.js"
+    ]
   },
   "_index.js": {
-    "css": [
-      "_app/immutable/assets/index.ad758f8f.css"
-    ],
     "file": "chunks/index.js",
+    "name": "index",
     "imports": [
       "_vendor.js"
+    ],
+    "css": [
+      "_app/immutable/assets/index.C9Efgpaf.css"
     ]
   },
   "_vendor.js": {
-    "file": "chunks/vendor.js"
-  },
-  "index.css": {
-    "file": "_app/immutable/assets/index.ad758f8f.css",
-    "src": "index.css"
+    "file": "chunks/vendor.js",
+    "name": "vendor"
   },
   "node_modules/@sveltejs/kit/src/runtime/components/error.svelte": {
     "file": "entries/fallbacks/error.svelte.js",
+    "name": "entries/fallbacks/error.svelte",
+    "src": "node_modules/@sveltejs/kit/src/runtime/components/error.svelte",
+    "isEntry": true,
     "imports": [
       "_index.js"
-    ],
-    "isEntry": true,
-    "src": "node_modules/@sveltejs/kit/src/runtime/components/error.svelte"
+    ]
   },
   "node_modules/@sveltejs/kit/src/runtime/components/layout.svelte": {
     "file": "entries/fallbacks/layout.svelte.js",
+    "name": "entries/fallbacks/layout.svelte",
+    "src": "node_modules/@sveltejs/kit/src/runtime/components/layout.svelte",
+    "isEntry": true,
     "imports": [
       "_index.js"
-    ],
-    "isEntry": true,
-    "src": "node_modules/@sveltejs/kit/src/runtime/components/layout.svelte"
+    ]
   },
   "node_modules/@sveltejs/kit/src/runtime/server/index.js": {
     "file": "index.js",
+    "name": "index",
+    "src": "node_modules/@sveltejs/kit/src/runtime/server/index.js",
+    "isEntry": true,
     "imports": [
       "_index.js"
-    ],
-    "isEntry": true,
-    "src": "node_modules/@sveltejs/kit/src/runtime/server/index.js"
+    ]
   },
   "src/frontend/src/routes/+page.svelte": {
     "file": "entries/pages/_page.svelte.js",
+    "name": "entries/pages/_page.svelte",
+    "src": "src/frontend/src/routes/+page.svelte",
+    "isEntry": true,
     "imports": [
       "_index.js"
-    ],
+    ]
+  },
+  "src/frontend/src/routes/projects/+page.svelte": {
+    "file": "entries/pages/projects/_page.svelte.js",
+    "name": "entries/pages/projects/_page.svelte",
+    "src": "src/frontend/src/routes/projects/+page.svelte",
     "isEntry": true,
-    "src": "src/frontend/src/routes/+page.svelte"
+    "imports": [
+      "_index.js"
+    ]
   }
 }

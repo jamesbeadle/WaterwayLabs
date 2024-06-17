@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -7,12 +7,12 @@
     <title>Waterway Labs</title>
     <link href="https://waterwaylabs.xyz" rel="canonical" />
     <meta
-      content="Waterway Labs develops DAO's on the Internet Computer blockchain."
+      content="Waterway Labs is a UK based technology company."
       name="description"
     />
     <meta content="Waterway Labs" property="og:title" />
     <meta
-      content="Waterway Labs develops DAO's on the Internet Computer blockchain."
+      content="Waterway Labs is a UK based technology company."
       property="og:description"
     />
     <meta content="website" property="og:type" />
@@ -24,14 +24,13 @@
     <meta content="summary_large_image" name="twitter:card" />
     <meta content="Waterway Labs" name="twitter:title" />
     <meta
-      content="Waterway Labs develops DAO's on the Internet Computer blockchain."
+      content="Waterway Labs is a UK based technology company."
       name="twitter:description"
     />
     <meta
       content="https://waterwaylabs.xyz/meta-share.jpg"
       name="twitter:image"
     />
-    <meta content="@beadle1989" name="twitter:creator" />
 
     <link crossorigin="anonymous" href="/manifest.webmanifest" rel="manifest" />
 
@@ -52,26 +51,21 @@
 
     <!-- iOS meta tags & icons -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="#000000" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#2CE3A6" />
     <meta name="apple-mobile-web-app-title" content="Waterway Labs" />
     <link
       rel="apple-touch-icon"
       href="%sveltekit.assets%/favicons/apple-touch-icon.png"
     />
-    <link
-      rel="mask-icon"
-      href="%sveltekit.assets%/favicons/safari-pinned-tab.svg"
-      color="#005ea5"
-    />
 
     <!-- MS -->
-    <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="msapplication-TileColor" content="#101111" />
     <meta
       name="msapplication-config"
       content="%sveltekit.assets%/favicons/browserconfig.xml"
     />
 
-    <meta content="#005ea5" name="theme-color" />
+    <meta content="#2CE3A6" name="theme-color" />
     %sveltekit.head%
 
     <style>
@@ -83,18 +77,21 @@
 
       @font-face {
         font-display: swap;
-        font-family: 'Raleway';
+        font-family: "Rubik";
         font-style: normal;
         font-weight: 400;
-        src: url('%sveltekit.assets%/Raleway-Regular.woff2')
-          format('woff2');
+        src: url("%sveltekit.assets%/Rubik-Regular.woff2") format("woff2");
       }
       body {
-        font-family: 'Raleway', sans-serif !important;
+        font-family: "Rubik", sans-serif !important;
         color: white !important;
-        background-color: #000000;
         height: 100vh;
         margin: 0;
+        background-image: url("/background.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
       }
 
       #app-spinner {

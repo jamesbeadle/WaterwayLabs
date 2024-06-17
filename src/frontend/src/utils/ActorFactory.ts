@@ -10,7 +10,7 @@ export class ActorFactory {
     idlFactory: any,
     canisterId: string = "",
     identity: OptionIdentity = null,
-    options: any = null
+    options: any = null,
   ) {
     const hostOptions = {
       host:
@@ -35,7 +35,7 @@ export class ActorFactory {
     if (process.env.NODE_ENV !== "production") {
       agent.fetchRootKey().catch((err) => {
         console.warn(
-          "Unable to fetch root key. Ensure your local replica is running"
+          "Unable to fetch root key. Ensure your local replica is running",
         );
         console.error(err);
       });

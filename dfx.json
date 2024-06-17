@@ -1,9 +1,9 @@
 {
   "canisters": {
     "backend": {
-      "dependencies": ["nns-ledger"],
+      "type": "motoko",
       "main": "src/backend/main.mo",
-      "type": "motoko"
+      "optimize": "cycles"
     },
     "frontend": {
       "dependencies": ["backend"],
@@ -12,30 +12,6 @@
       },
       "source": ["build/"],
       "type": "assets"
-    },
-    "internet_identity": {
-      "build": "",
-      "candid": "candid/internet_identity.did",
-      "remote": {
-        "id": {
-          "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai",
-          "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
-        }
-      },
-      "type": "custom",
-      "wasm": ""
-    },
-    "nns-ledger": {
-      "build": "",
-      "candid": "candid/nns-ledger.did",
-      "remote": {
-        "id": {
-          "ic": "ryjl3-tyaaa-aaaaa-aaaba-cai",
-          "local": "ryjl3-tyaaa-aaaaa-aaaba-cai"
-        }
-      },
-      "type": "custom",
-      "wasm": ""
     }
   },
   "defaults": {

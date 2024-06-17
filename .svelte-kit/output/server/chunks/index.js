@@ -1,12 +1,17 @@
 import { D as DEV } from "./vendor.js";
 import * as devalue from "devalue";
+import { Buffer } from "buffer";
 import { parse, serialize } from "cookie";
 import * as set_cookie_parser from "set-cookie-parser";
-import "@dfinity/auth-client";
-import "@dfinity/utils";
+import { nonNullish, isNullish } from "@dfinity/utils";
+import "dompurify";
 let base = "";
 let assets = base;
 const initial = { base, assets };
+function override(paths) {
+  base = paths.base;
+  assets = paths.assets;
+}
 function reset() {
   base = initial.base;
   assets = initial.assets;
@@ -15,20 +20,12 @@ function set_assets(path) {
   assets = initial.assets = path;
 }
 const SVELTE_KIT_ASSETS = "/_svelte_kit_assets";
-const ENDPOINT_METHODS = /* @__PURE__ */ new Set([
-  "GET",
-  "POST",
-  "PUT",
-  "PATCH",
-  "DELETE",
-  "OPTIONS",
-  "HEAD"
-]);
-const PAGE_METHODS = /* @__PURE__ */ new Set(["GET", "POST", "HEAD"]);
+const ENDPOINT_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"];
+const PAGE_METHODS = ["GET", "POST", "HEAD"];
 function negotiate(accept, types) {
   const parts = [];
   accept.split(",").forEach((str, i) => {
-    const match = /([^/]+)\/([^;]+)(?:;q=([0-9.]+))?/.exec(str);
+    const match = /([^/ \t]+)\/([^; \t]+)[ \t]*(?:;[ \t]*q=([0-9.]+))?/.exec(str);
     if (match) {
       const [, type, subtype, q = "1"] = match;
       parts.push({ type, subtype, q: +q, i });
@@ -77,12 +74,12 @@ class HttpError {
    * @param {number} status
    * @param {{message: string} extends App.Error ? (App.Error | string | undefined) : App.Error} body
    */
-  constructor(status, body) {
+  constructor(status, body2) {
     this.status = status;
-    if (typeof body === "string") {
-      this.body = { message: body };
-    } else if (body) {
-      this.body = body;
+    if (typeof body2 === "string") {
+      this.body = { message: body2 };
+    } else if (body2) {
+      this.body = body2;
     } else {
       this.body = { message: `Error: ${status}` };
     }
@@ -101,89 +98,56 @@ class Redirect {
     this.location = location;
   }
 }
+class SvelteKitError extends Error {
+  /**
+   * @param {number} status
+   * @param {string} text
+   * @param {string} message
+   */
+  constructor(status, text2, message) {
+    super(message);
+    this.status = status;
+    this.text = text2;
+  }
+}
 class ActionFailure {
   /**
    * @param {number} status
-   * @param {T} [data]
+   * @param {T} data
    */
   constructor(status, data) {
     this.status = status;
     this.data = data;
   }
 }
-function exec(match, params, matchers) {
-  const result = {};
-  const values = match.slice(1);
-  const values_needing_match = values.filter((value) => value !== void 0);
-  let buffered = 0;
-  for (let i = 0; i < params.length; i += 1) {
-    const param = params[i];
-    let value = values[i - buffered];
-    if (param.chained && param.rest && buffered) {
-      value = values.slice(i - buffered, i + 1).filter((s2) => s2).join("/");
-      buffered = 0;
-    }
-    if (value === void 0) {
-      if (param.rest)
-        result[param.name] = "";
-      continue;
-    }
-    if (!param.matcher || matchers[param.matcher](value)) {
-      result[param.name] = value;
-      const next_param = params[i + 1];
-      const next_value = values[i + 1];
-      if (next_param && !next_param.rest && next_param.optional && next_value && param.chained) {
-        buffered = 0;
-      }
-      if (!next_param && !next_value && Object.keys(result).length === values_needing_match.length) {
-        buffered = 0;
-      }
-      continue;
-    }
-    if (param.optional && param.chained) {
-      buffered++;
-      continue;
-    }
-    return;
-  }
-  if (buffered)
-    return;
-  return result;
-}
-function error(status, body) {
-  if (isNaN(status) || status < 400 || status > 599) {
-    throw new Error(`HTTP error status codes must be between 400 and 599 — ${status} is invalid`);
-  }
-  return new HttpError(status, body);
-}
 function json(data, init2) {
-  const body = JSON.stringify(data);
-  const headers = new Headers(init2?.headers);
-  if (!headers.has("content-length")) {
-    headers.set("content-length", encoder$3.encode(body).byteLength.toString());
+  const body2 = JSON.stringify(data);
+  const headers2 = new Headers(init2?.headers);
+  if (!headers2.has("content-length")) {
+    headers2.set("content-length", encoder$3.encode(body2).byteLength.toString());
   }
-  if (!headers.has("content-type")) {
-    headers.set("content-type", "application/json");
+  if (!headers2.has("content-type")) {
+    headers2.set("content-type", "application/json");
   }
-  return new Response(body, {
+  return new Response(body2, {
     ...init2,
-    headers
+    headers: headers2
   });
 }
 const encoder$3 = new TextEncoder();
-function text(body, init2) {
-  const headers = new Headers(init2?.headers);
-  if (!headers.has("content-length")) {
-    const encoded = encoder$3.encode(body);
-    headers.set("content-length", encoded.byteLength.toString());
+function text(body2, init2) {
+  const headers2 = new Headers(init2?.headers);
+  if (!headers2.has("content-length")) {
+    const encoded = encoder$3.encode(body2);
+    headers2.set("content-length", encoded.byteLength.toString());
     return new Response(encoded, {
       ...init2,
-      headers
+      headers: headers2
     });
   }
-  return new Response(body, {
+  return new Response(body2, {
     ...init2,
-    headers
+    headers: headers2
   });
 }
 function coalesce_to_error(err) {
@@ -194,17 +158,27 @@ function coalesce_to_error(err) {
     err
   ) : new Error(JSON.stringify(err));
 }
-function normalize_error(error2) {
+function normalize_error(error) {
   return (
-    /** @type {import('../runtime/control.js').Redirect | import('../runtime/control.js').HttpError | Error} */
-    error2
+    /** @type {import('../runtime/control.js').Redirect | HttpError | SvelteKitError | Error} */
+    error
   );
 }
+function get_status(error) {
+  return error instanceof HttpError || error instanceof SvelteKitError ? error.status : 500;
+}
+function get_message(error) {
+  return error instanceof SvelteKitError ? error.text : "Internal Error";
+}
 let public_env = {};
+let safe_public_env = {};
 function set_private_env(environment) {
 }
 function set_public_env(environment) {
   public_env = environment;
+}
+function set_safe_public_env(environment) {
+  safe_public_env = environment;
 }
 function method_not_allowed(mod, method) {
   return text(`${method} method not allowed`, {
@@ -217,9 +191,8 @@ function method_not_allowed(mod, method) {
   });
 }
 function allowed_methods(mod) {
-  const allowed = Array.from(ENDPOINT_METHODS).filter((method) => method in mod);
-  if ("GET" in mod || "HEAD" in mod)
-    allowed.push("HEAD");
+  const allowed = ENDPOINT_METHODS.filter((method) => method in mod);
+  if ("GET" in mod || "HEAD" in mod) allowed.push("HEAD");
   return allowed;
 }
 function static_error_page(options2, status, message) {
@@ -229,29 +202,28 @@ function static_error_page(options2, status, message) {
     status
   });
 }
-async function handle_fatal_error(event, options2, error2) {
-  error2 = error2 instanceof HttpError ? error2 : coalesce_to_error(error2);
-  const status = error2 instanceof HttpError ? error2.status : 500;
-  const body = await handle_error_and_jsonify(event, options2, error2);
+async function handle_fatal_error(event, options2, error) {
+  error = error instanceof HttpError ? error : coalesce_to_error(error);
+  const status = get_status(error);
+  const body2 = await handle_error_and_jsonify(event, options2, error);
   const type = negotiate(event.request.headers.get("accept") || "text/html", [
     "application/json",
     "text/html"
   ]);
   if (event.isDataRequest || type === "application/json") {
-    return json(body, {
+    return json(body2, {
       status
     });
   }
-  return static_error_page(options2, status, body.message);
+  return static_error_page(options2, status, body2.message);
 }
-async function handle_error_and_jsonify(event, options2, error2) {
-  if (error2 instanceof HttpError) {
-    return error2.body;
-  } else {
-    return await options2.hooks.handleError({ error: error2, event }) ?? {
-      message: event.route.id != null ? "Internal Error" : "Not Found"
-    };
+async function handle_error_and_jsonify(event, options2, error) {
+  if (error instanceof HttpError) {
+    return error.body;
   }
+  const status = get_status(error);
+  const message = get_message(error);
+  return await options2.hooks.handleError({ error, event, status, message }) ?? { message };
 }
 function redirect_response(status, location) {
   const response = new Response(void 0, {
@@ -260,29 +232,29 @@ function redirect_response(status, location) {
   });
   return response;
 }
-function clarify_devalue_error(event, error2) {
-  if (error2.path) {
-    return `Data returned from \`load\` while rendering ${event.route.id} is not serializable: ${error2.message} (data${error2.path})`;
+function clarify_devalue_error(event, error) {
+  if (error.path) {
+    return `Data returned from \`load\` while rendering ${event.route.id} is not serializable: ${error.message} (data${error.path})`;
   }
-  if (error2.path === "") {
+  if (error.path === "") {
     return `Data returned from \`load\` while rendering ${event.route.id} is not a plain object`;
   }
-  return error2.message;
+  return error.message;
 }
 function stringify_uses(node) {
   const uses = [];
   if (node.uses && node.uses.dependencies.size > 0) {
     uses.push(`"dependencies":${JSON.stringify(Array.from(node.uses.dependencies))}`);
   }
+  if (node.uses && node.uses.search_params.size > 0) {
+    uses.push(`"search_params":${JSON.stringify(Array.from(node.uses.search_params))}`);
+  }
   if (node.uses && node.uses.params.size > 0) {
     uses.push(`"params":${JSON.stringify(Array.from(node.uses.params))}`);
   }
-  if (node.uses?.parent)
-    uses.push('"parent":1');
-  if (node.uses?.route)
-    uses.push('"route":1');
-  if (node.uses?.url)
-    uses.push('"url":1');
+  if (node.uses?.parent) uses.push('"parent":1');
+  if (node.uses?.route) uses.push('"route":1');
+  if (node.uses?.url) uses.push('"url":1');
   return `"uses":{${uses.join(",")}}`;
 }
 async function render_endpoint(event, mod, state) {
@@ -338,12 +310,11 @@ async function render_endpoint(event, mod, state) {
   }
 }
 function is_endpoint_request(event) {
-  const { method, headers } = event.request;
-  if (ENDPOINT_METHODS.has(method) && !PAGE_METHODS.has(method)) {
+  const { method, headers: headers2 } = event.request;
+  if (ENDPOINT_METHODS.includes(method) && !PAGE_METHODS.includes(method)) {
     return true;
   }
-  if (method === "POST" && headers.get("x-sveltekit-action") === "true")
-    return false;
+  if (method === "POST" && headers2.get("x-sveltekit-action") === "true") return false;
   const accept = event.request.headers.get("accept") ?? "*/*";
   return negotiate(accept, ["*", "text/html"]) !== "text/html";
 }
@@ -353,9 +324,15 @@ function compact(arr) {
     (val) => val != null
   );
 }
+const internal = new URL("sveltekit-internal://");
+function resolve(base2, path) {
+  if (path[0] === "/" && path[1] === "/") return path;
+  let url = new URL(base2, internal);
+  url = new URL(path, url);
+  return url.protocol === internal.protocol ? url.pathname + url.search + url.hash : url.href;
+}
 function normalize_path(path, trailing_slash) {
-  if (path === "/" || trailing_slash === "ignore")
-    return path;
+  if (path === "/" || trailing_slash === "ignore") return path;
   if (trailing_slash === "never") {
     return path.endsWith("/") ? path.slice(0, -1) : path;
   } else if (trailing_slash === "always" && !path.endsWith("/")) {
@@ -378,13 +355,29 @@ const tracked_url_properties = (
     "href",
     "pathname",
     "search",
-    "searchParams",
     "toString",
     "toJSON"
   ]
 );
-function make_trackable(url, callback) {
+function make_trackable(url, callback, search_params_callback) {
   const tracked = new URL(url);
+  Object.defineProperty(tracked, "searchParams", {
+    value: new Proxy(tracked.searchParams, {
+      get(obj, key2) {
+        if (key2 === "get" || key2 === "getAll" || key2 === "has") {
+          return (param) => {
+            search_params_callback(param);
+            return obj[key2](param);
+          };
+        }
+        callback();
+        const value = Reflect.get(obj, key2);
+        return typeof value === "function" ? value.bind(obj) : value;
+      }
+    }),
+    enumerable: true,
+    configurable: true
+  });
   for (const property of tracked_url_properties) {
     Object.defineProperty(tracked, property, {
       get() {
@@ -400,7 +393,9 @@ function make_trackable(url, callback) {
       return inspect(url, opts);
     };
   }
-  disable_hash(tracked);
+  {
+    disable_hash(tracked);
+  }
   return tracked;
 }
 function disable_hash(url) {
@@ -431,13 +426,18 @@ function allow_nodejs_console_log(url) {
   }
 }
 const DATA_SUFFIX = "/__data.json";
+const HTML_DATA_SUFFIX = ".html__data.json";
 function has_data_suffix(pathname) {
-  return pathname.endsWith(DATA_SUFFIX);
+  return pathname.endsWith(DATA_SUFFIX) || pathname.endsWith(HTML_DATA_SUFFIX);
 }
 function add_data_suffix(pathname) {
+  if (pathname.endsWith(".html")) return pathname.replace(/\.html$/, HTML_DATA_SUFFIX);
   return pathname.replace(/\/$/, "") + DATA_SUFFIX;
 }
 function strip_data_suffix(pathname) {
+  if (pathname.endsWith(HTML_DATA_SUFFIX)) {
+    return pathname.slice(0, -HTML_DATA_SUFFIX.length) + ".html";
+  }
   return pathname.slice(0, -DATA_SUFFIX.length);
 }
 function is_action_json_request(event) {
@@ -450,7 +450,11 @@ function is_action_json_request(event) {
 async function handle_action_json_request(event, options2, server) {
   const actions = server?.actions;
   if (!actions) {
-    const no_actions_error = error(405, "POST method not allowed. No actions exist for this page");
+    const no_actions_error = new SvelteKitError(
+      405,
+      "Method Not Allowed",
+      "POST method not allowed. No actions exist for this page"
+    );
     return action_json(
       {
         type: "error",
@@ -469,8 +473,7 @@ async function handle_action_json_request(event, options2, server) {
   check_named_default_separate(actions);
   try {
     const data = await call_action(event, actions);
-    if (false)
-      ;
+    if (false) ;
     if (data instanceof ActionFailure) {
       return action_json({
         type: "failure",
@@ -507,13 +510,13 @@ async function handle_action_json_request(event, options2, server) {
         error: await handle_error_and_jsonify(event, options2, check_incorrect_fail_use(err))
       },
       {
-        status: err instanceof HttpError ? err.status : 500
+        status: get_status(err)
       }
     );
   }
 }
-function check_incorrect_fail_use(error2) {
-  return error2 instanceof ActionFailure ? new Error('Cannot "throw fail()". Use "return fail()"') : error2;
+function check_incorrect_fail_use(error) {
+  return error instanceof ActionFailure ? new Error('Cannot "throw fail()". Use "return fail()"') : error;
 }
 function action_json_redirect(redirect) {
   return action_json({
@@ -538,14 +541,17 @@ async function handle_action_request(event, server) {
     });
     return {
       type: "error",
-      error: error(405, "POST method not allowed. No actions exist for this page")
+      error: new SvelteKitError(
+        405,
+        "Method Not Allowed",
+        "POST method not allowed. No actions exist for this page"
+      )
     };
   }
   check_named_default_separate(actions);
   try {
     const data = await call_action(event, actions);
-    if (false)
-      ;
+    if (false) ;
     if (data instanceof ActionFailure) {
       return {
         type: "failure",
@@ -596,23 +602,25 @@ async function call_action(event, actions) {
   }
   const action = actions[name];
   if (!action) {
-    throw new Error(`No action with name '${name}' found`);
+    throw new SvelteKitError(404, "Not Found", `No action with name '${name}' found`);
   }
   if (!is_form_content_type(event.request)) {
-    throw new Error(
-      `Actions expect form-encoded data (received ${event.request.headers.get("content-type")})`
+    throw new SvelteKitError(
+      415,
+      "Unsupported Media Type",
+      `Form actions expect form-encoded data — received ${event.request.headers.get(
+        "content-type"
+      )}`
     );
   }
   return action(event);
 }
 function validate_action_return(data) {
   if (data instanceof Redirect) {
-    throw new Error("Cannot `return redirect(...)` — use `throw redirect(...)` instead");
+    throw new Error("Cannot `return redirect(...)` — use `redirect(...)` instead");
   }
   if (data instanceof HttpError) {
-    throw new Error(
-      "Cannot `return error(...)` — use `throw error(...)` or `return fail(...)` instead"
-    );
+    throw new Error("Cannot `return error(...)` — use `error(...)` or `return fail(...)` instead");
   }
 }
 function uneval_action_response(data, route_id) {
@@ -625,61 +633,62 @@ function try_deserialize(data, fn, route_id) {
   try {
     return fn(data);
   } catch (e) {
-    const error2 = (
+    const error = (
       /** @type {any} */
       e
     );
-    if ("path" in error2) {
-      let message = `Data returned from action inside ${route_id} is not serializable: ${error2.message}`;
-      if (error2.path !== "")
-        message += ` (data.${error2.path})`;
+    if ("path" in error) {
+      let message = `Data returned from action inside ${route_id} is not serializable: ${error.message}`;
+      if (error.path !== "") message += ` (data.${error.path})`;
       throw new Error(message);
     }
-    throw error2;
+    throw error;
   }
-}
-async function unwrap_promises(object) {
-  for (const key2 in object) {
-    if (typeof object[key2]?.then === "function") {
-      return Object.fromEntries(
-        await Promise.all(Object.entries(object).map(async ([key3, value]) => [key3, await value]))
-      );
-    }
-  }
-  return object;
 }
 const INVALIDATED_PARAM = "x-sveltekit-invalidated";
 const TRAILING_SLASH_PARAM = "x-sveltekit-trailing-slash";
-async function load_server_data({
-  event,
-  state,
-  node,
-  parent,
-  // TODO 2.0: Remove this
-  track_server_fetches
-}) {
-  if (!node?.server)
-    return null;
+function b64_encode(buffer) {
+  if (globalThis.Buffer) {
+    return Buffer.from(buffer).toString("base64");
+  }
+  const little_endian = new Uint8Array(new Uint16Array([1]).buffer)[0] > 0;
+  return btoa(
+    new TextDecoder(little_endian ? "utf-16le" : "utf-16be").decode(
+      new Uint16Array(new Uint8Array(buffer))
+    )
+  );
+}
+async function load_server_data({ event, state, node, parent }) {
+  if (!node?.server) return null;
+  let is_tracking = true;
   const uses = {
     dependencies: /* @__PURE__ */ new Set(),
     params: /* @__PURE__ */ new Set(),
     parent: false,
     route: false,
-    url: false
+    url: false,
+    search_params: /* @__PURE__ */ new Set()
   };
-  const url = make_trackable(event.url, () => {
-    uses.url = true;
-  });
+  const url = make_trackable(
+    event.url,
+    () => {
+      if (is_tracking) {
+        uses.url = true;
+      }
+    },
+    (param) => {
+      if (is_tracking) {
+        uses.search_params.add(param);
+      }
+    }
+  );
   if (state.prerendering) {
     disable_search(url);
   }
   const result = await node.server.load?.call(null, {
     ...event,
     fetch: (info, init2) => {
-      const url2 = new URL(info instanceof Request ? info.url : info, event.url);
-      if (track_server_fetches) {
-        uses.dependencies.add(url2.href);
-      }
+      new URL(info instanceof Request ? info.url : info, event.url);
       return event.fetch(info, init2);
     },
     /** @param {string[]} deps */
@@ -691,7 +700,9 @@ async function load_server_data({
     },
     params: new Proxy(event.params, {
       get: (target, key2) => {
-        uses.params.add(key2);
+        if (is_tracking) {
+          uses.params.add(key2);
+        }
         return target[
           /** @type {string} */
           key2
@@ -699,24 +710,35 @@ async function load_server_data({
       }
     }),
     parent: async () => {
-      uses.parent = true;
+      if (is_tracking) {
+        uses.parent = true;
+      }
       return parent();
     },
     route: new Proxy(event.route, {
       get: (target, key2) => {
-        uses.route = true;
+        if (is_tracking) {
+          uses.route = true;
+        }
         return target[
           /** @type {'id'} */
           key2
         ];
       }
     }),
-    url
+    url,
+    untrack(fn) {
+      is_tracking = false;
+      try {
+        return fn();
+      } finally {
+        is_tracking = true;
+      }
+    }
   });
-  const data = result ? await unwrap_promises(result) : null;
   return {
     type: "data",
-    data,
+    data: result ?? null,
     uses,
     slash: node.server.trailingSlash
   };
@@ -744,13 +766,13 @@ async function load_data({
     setHeaders: event.setHeaders,
     depends: () => {
     },
-    parent
+    parent,
+    untrack: (fn) => fn()
   });
-  const data = result ? await unwrap_promises(result) : null;
-  return data;
+  return result ?? null;
 }
 function create_universal_fetch(event, state, fetched, csr, resolve_opts) {
-  return async (input, init2) => {
+  const universal_fetch = async (input, init2) => {
     const cloned_body = input instanceof Request && input.body ? input.clone().body : null;
     const cloned_headers = input instanceof Request && [...input.headers].length ? new Headers(input.headers) : init2?.headers;
     let response = await event.fetch(input, init2);
@@ -781,31 +803,25 @@ function create_universal_fetch(event, state, fetched, csr, resolve_opts) {
     }
     const proxy = new Proxy(response, {
       get(response2, key2, _receiver) {
-        async function text2() {
-          const body = await response2.text();
-          if (!body || typeof body === "string") {
-            const status_number = Number(response2.status);
-            if (isNaN(status_number)) {
-              throw new Error(
-                `response.status is not a number. value: "${response2.status}" type: ${typeof response2.status}`
-              );
-            }
-            fetched.push({
-              url: same_origin ? url.href.slice(event.url.origin.length) : url.href,
-              method: event.request.method,
-              request_body: (
-                /** @type {string | ArrayBufferView | undefined} */
-                input instanceof Request && cloned_body ? await stream_to_string(cloned_body) : init2?.body
-              ),
-              request_headers: cloned_headers,
-              response_body: body,
-              response: response2
-            });
+        async function push_fetched(body2, is_b64) {
+          const status_number = Number(response2.status);
+          if (isNaN(status_number)) {
+            throw new Error(
+              `response.status is not a number. value: "${response2.status}" type: ${typeof response2.status}`
+            );
           }
-          if (dependency) {
-            dependency.body = body;
-          }
-          return body;
+          fetched.push({
+            url: same_origin ? url.href.slice(event.url.origin.length) : url.href,
+            method: event.request.method,
+            request_body: (
+              /** @type {string | ArrayBufferView | undefined} */
+              input instanceof Request && cloned_body ? await stream_to_string(cloned_body) : init2?.body
+            ),
+            request_headers: cloned_headers,
+            response_body: body2,
+            response: response2,
+            is_b64
+          });
         }
         if (key2 === "arrayBuffer") {
           return async () => {
@@ -813,8 +829,21 @@ function create_universal_fetch(event, state, fetched, csr, resolve_opts) {
             if (dependency) {
               dependency.body = new Uint8Array(buffer);
             }
+            if (buffer instanceof ArrayBuffer) {
+              await push_fetched(b64_encode(buffer), true);
+            }
             return buffer;
           };
+        }
+        async function text2() {
+          const body2 = await response2.text();
+          if (!body2 || typeof body2 === "string") {
+            await push_fetched(body2, false);
+          }
+          if (dependency) {
+            dependency.body = body2;
+          }
+          return body2;
         }
         if (key2 === "text") {
           return text2;
@@ -828,10 +857,10 @@ function create_universal_fetch(event, state, fetched, csr, resolve_opts) {
       }
     });
     if (csr) {
-      const get = response.headers.get;
+      const get2 = response.headers.get;
       response.headers.get = (key2) => {
         const lower = key2.toLowerCase();
-        const value = get.call(response.headers, lower);
+        const value = get2.call(response.headers, lower);
         if (value && !lower.startsWith("x-sveltekit-")) {
           const included = resolve_opts.filterSerializedResponseHeaders(lower, value);
           if (!included) {
@@ -844,6 +873,12 @@ function create_universal_fetch(event, state, fetched, csr, resolve_opts) {
       };
     }
     return proxy;
+  };
+  return (input, init2) => {
+    const response = universal_fetch(input, init2);
+    response.catch(() => {
+    });
+    return response;
   };
 }
 async function stream_to_string(stream) {
@@ -861,6 +896,10 @@ async function stream_to_string(stream) {
 }
 function noop() {
 }
+function is_promise(value) {
+  return !!value && (typeof value === "object" || typeof value === "function") && typeof /** @type {any} */
+  value.then === "function";
+}
 function run(fn) {
   return fn();
 }
@@ -869,6 +908,9 @@ function blank_object() {
 }
 function run_all(fns) {
   fns.forEach(run);
+}
+function is_function(thing) {
+  return typeof thing === "function";
 }
 function safe_not_equal(a, b) {
   return a != a ? b == b : a !== b || a && typeof a === "object" || typeof a === "function";
@@ -891,8 +933,7 @@ function set_current_component(component) {
   current_component = component;
 }
 function get_current_component() {
-  if (!current_component)
-    throw new Error("Function called outside component initialization");
+  if (!current_component) throw new Error("Function called outside component initialization");
   return current_component;
 }
 function onDestroy(fn) {
@@ -904,6 +945,9 @@ function setContext(key2, context) {
 }
 function getContext(key2) {
   return get_current_component().$$.context.get(key2);
+}
+function ensure_array_like(array_like_or_iterator) {
+  return array_like_or_iterator?.length !== void 0 ? array_like_or_iterator : Array.from(array_like_or_iterator);
 }
 const ATTR_REGEX = /[&"]/g;
 const CONTENT_REGEX = /[&<]/g;
@@ -921,13 +965,20 @@ function escape(value, is_attr = false) {
   }
   return escaped + str.substring(last);
 }
+function each(items, fn) {
+  items = ensure_array_like(items);
+  let str = "";
+  for (let i = 0; i < items.length; i += 1) {
+    str += fn(items[i], i);
+  }
+  return str;
+}
 const missing_component = {
   $$render: () => ""
 };
 function validate_component(component, name) {
   if (!component || !component.$$render) {
-    if (name === "svelte:component")
-      name += " this={...}";
+    if (name === "svelte:component") name += " this={...}";
     throw new Error(
       `<${name}> is not a valid SSR component. You may need to review your build config to ensure that dependencies are compiled, rather than imported as pre-compiled modules. Otherwise you may need to fix a <${name}>.`
     );
@@ -972,9 +1023,8 @@ function create_ssr_component(fn) {
   };
 }
 function add_attribute(name, value, boolean) {
-  if (value == null || boolean && !value)
-    return "";
-  const assignment = boolean && value === true ? "" : `="${escape(value, true)}"`;
+  if (value == null || boolean) return "";
+  const assignment = `="${escape(value, true)}"`;
   return ` ${name}${assignment}`;
 }
 const subscriber_queue = [];
@@ -1024,18 +1074,64 @@ function writable(value, start = noop) {
   }
   return { set, update, subscribe: subscribe2 };
 }
+function derived(stores, fn, initial_value) {
+  const single = !Array.isArray(stores);
+  const stores_array = single ? [stores] : stores;
+  if (!stores_array.every(Boolean)) {
+    throw new Error("derived() expects stores as input, got a falsy value");
+  }
+  const auto = fn.length < 2;
+  return readable(initial_value, (set, update) => {
+    let started = false;
+    const values = [];
+    let pending = 0;
+    let cleanup = noop;
+    const sync = () => {
+      if (pending) {
+        return;
+      }
+      cleanup();
+      const result = fn(single ? values[0] : values, set, update);
+      if (auto) {
+        set(result);
+      } else {
+        cleanup = is_function(result) ? result : noop;
+      }
+    };
+    const unsubscribers = stores_array.map(
+      (store, i) => subscribe(
+        store,
+        (value) => {
+          values[i] = value;
+          pending &= ~(1 << i);
+          if (started) {
+            sync();
+          }
+        },
+        () => {
+          pending |= 1 << i;
+        }
+      )
+    );
+    started = true;
+    sync();
+    return function stop() {
+      run_all(unsubscribers);
+      cleanup();
+      started = false;
+    };
+  });
+}
 function hash(...values) {
   let hash2 = 5381;
   for (const value of values) {
     if (typeof value === "string") {
       let i = value.length;
-      while (i)
-        hash2 = hash2 * 33 ^ value.charCodeAt(--i);
+      while (i) hash2 = hash2 * 33 ^ value.charCodeAt(--i);
     } else if (ArrayBuffer.isView(value)) {
       const buffer = new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
       let i = buffer.length;
-      while (i)
-        hash2 = hash2 * 33 ^ buffer[--i];
+      while (i) hash2 = hash2 * 33 ^ buffer[--i];
     } else {
       throw new TypeError("value must be a string or TypedArray");
     }
@@ -1066,26 +1162,23 @@ const replacements = {
   "\u2029": "\\u2029"
 };
 const pattern = new RegExp(`[${Object.keys(replacements).join("")}]`, "g");
-function serialize_data(fetched, filter, prerendering = false) {
-  const headers = {};
+function serialize_data(fetched, filter, prerendering2 = false) {
+  const headers2 = {};
   let cache_control = null;
   let age = null;
   let varyAny = false;
   for (const [key2, value] of fetched.response.headers) {
     if (filter(key2, value)) {
-      headers[key2] = value;
+      headers2[key2] = value;
     }
-    if (key2 === "cache-control")
-      cache_control = value;
-    else if (key2 === "age")
-      age = value;
-    else if (key2 === "vary" && value.trim() === "*")
-      varyAny = true;
+    if (key2 === "cache-control") cache_control = value;
+    else if (key2 === "age") age = value;
+    else if (key2 === "vary" && value.trim() === "*") varyAny = true;
   }
   const payload = {
     status: fetched.response.status,
     statusText: fetched.response.statusText,
-    headers,
+    headers: headers2,
     body: fetched.response_body
   };
   const safe_payload = JSON.stringify(payload).replace(pattern, (match) => replacements[match]);
@@ -1094,6 +1187,9 @@ function serialize_data(fetched, filter, prerendering = false) {
     "data-sveltekit-fetched",
     `data-url=${escape_html_attr(fetched.url)}`
   ];
+  if (fetched.is_b64) {
+    attrs.push("data-b64");
+  }
   if (fetched.request_headers || fetched.request_body) {
     const values = [];
     if (fetched.request_headers) {
@@ -1104,7 +1200,7 @@ function serialize_data(fetched, filter, prerendering = false) {
     }
     attrs.push(`data-hash="${hash(...values)}"`);
   }
-  if (!prerendering && fetched.method === "GET" && cache_control && !varyAny) {
+  if (!prerendering2 && fetched.method === "GET" && cache_control && !varyAny) {
     const match = /s-maxage=(\d+)/g.exec(cache_control) ?? /max-age=(\d+)/g.exec(cache_control);
     if (match) {
       const ttl = +match[1] - +(age ?? "0");
@@ -1116,8 +1212,7 @@ function serialize_data(fetched, filter, prerendering = false) {
 const s = JSON.stringify;
 const encoder$2 = new TextEncoder();
 function sha256(data) {
-  if (!key[0])
-    precompute();
+  if (!key[0]) precompute();
   const out = init.slice(0);
   const array2 = encode(data);
   for (let i = 0; i < array2.length; i += 16) {
@@ -1266,7 +1361,13 @@ class BaseProvider {
   /** @type {import('types').Csp.Source[]} */
   #script_src;
   /** @type {import('types').Csp.Source[]} */
+  #script_src_elem;
+  /** @type {import('types').Csp.Source[]} */
   #style_src;
+  /** @type {import('types').Csp.Source[]} */
+  #style_src_attr;
+  /** @type {import('types').Csp.Source[]} */
+  #style_src_elem;
   /** @type {string} */
   #nonce;
   /**
@@ -1279,11 +1380,17 @@ class BaseProvider {
     this.#directives = directives;
     const d = this.#directives;
     this.#script_src = [];
+    this.#script_src_elem = [];
     this.#style_src = [];
+    this.#style_src_attr = [];
+    this.#style_src_elem = [];
     const effective_script_src = d["script-src"] || d["default-src"];
+    const script_src_elem = d["script-src-elem"];
     const effective_style_src = d["style-src"] || d["default-src"];
-    this.#script_needs_csp = !!effective_script_src && effective_script_src.filter((value) => value !== "unsafe-inline").length > 0;
-    this.#style_needs_csp = !!effective_style_src && effective_style_src.filter((value) => value !== "unsafe-inline").length > 0;
+    const style_src_attr = d["style-src-attr"];
+    const style_src_elem = d["style-src-elem"];
+    this.#script_needs_csp = !!effective_script_src && effective_script_src.filter((value) => value !== "unsafe-inline").length > 0 || !!script_src_elem && script_src_elem.filter((value) => value !== "unsafe-inline").length > 0;
+    this.#style_needs_csp = !!effective_style_src && effective_style_src.filter((value) => value !== "unsafe-inline").length > 0 || !!style_src_attr && style_src_attr.filter((value) => value !== "unsafe-inline").length > 0 || !!style_src_elem && style_src_elem.filter((value) => value !== "unsafe-inline").length > 0;
     this.script_needs_nonce = this.#script_needs_csp && !this.#use_hashes;
     this.style_needs_nonce = this.#style_needs_csp && !this.#use_hashes;
     this.#nonce = nonce;
@@ -1291,20 +1398,53 @@ class BaseProvider {
   /** @param {string} content */
   add_script(content) {
     if (this.#script_needs_csp) {
+      const d = this.#directives;
       if (this.#use_hashes) {
-        this.#script_src.push(`sha256-${sha256(content)}`);
-      } else if (this.#script_src.length === 0) {
-        this.#script_src.push(`nonce-${this.#nonce}`);
+        const hash2 = sha256(content);
+        this.#script_src.push(`sha256-${hash2}`);
+        if (d["script-src-elem"]?.length) {
+          this.#script_src_elem.push(`sha256-${hash2}`);
+        }
+      } else {
+        if (this.#script_src.length === 0) {
+          this.#script_src.push(`nonce-${this.#nonce}`);
+        }
+        if (d["script-src-elem"]?.length) {
+          this.#script_src_elem.push(`nonce-${this.#nonce}`);
+        }
       }
     }
   }
   /** @param {string} content */
   add_style(content) {
     if (this.#style_needs_csp) {
+      const empty_comment_hash = "9OlNO0DNEeaVzHL4RZwCLsBHA8WBQ8toBp/4F5XV2nc=";
+      const d = this.#directives;
       if (this.#use_hashes) {
-        this.#style_src.push(`sha256-${sha256(content)}`);
-      } else if (this.#style_src.length === 0) {
-        this.#style_src.push(`nonce-${this.#nonce}`);
+        const hash2 = sha256(content);
+        this.#style_src.push(`sha256-${hash2}`);
+        if (d["style-src-attr"]?.length) {
+          this.#style_src_attr.push(`sha256-${hash2}`);
+        }
+        if (d["style-src-elem"]?.length) {
+          if (hash2 !== empty_comment_hash && !d["style-src-elem"].includes(`sha256-${empty_comment_hash}`)) {
+            this.#style_src_elem.push(`sha256-${empty_comment_hash}`);
+          }
+          this.#style_src_elem.push(`sha256-${hash2}`);
+        }
+      } else {
+        if (this.#style_src.length === 0 && !d["style-src"]?.includes("unsafe-inline")) {
+          this.#style_src.push(`nonce-${this.#nonce}`);
+        }
+        if (d["style-src-attr"]?.length) {
+          this.#style_src_attr.push(`nonce-${this.#nonce}`);
+        }
+        if (d["style-src-elem"]?.length) {
+          if (!d["style-src-elem"].includes(`sha256-${empty_comment_hash}`)) {
+            this.#style_src_elem.push(`sha256-${empty_comment_hash}`);
+          }
+          this.#style_src_elem.push(`nonce-${this.#nonce}`);
+        }
       }
     }
   }
@@ -1320,10 +1460,28 @@ class BaseProvider {
         ...this.#style_src
       ];
     }
+    if (this.#style_src_attr.length > 0) {
+      directives["style-src-attr"] = [
+        ...directives["style-src-attr"] || [],
+        ...this.#style_src_attr
+      ];
+    }
+    if (this.#style_src_elem.length > 0) {
+      directives["style-src-elem"] = [
+        ...directives["style-src-elem"] || [],
+        ...this.#style_src_elem
+      ];
+    }
     if (this.#script_src.length > 0) {
       directives["script-src"] = [
         ...directives["script-src"] || directives["default-src"] || [],
         ...this.#script_src
+      ];
+    }
+    if (this.#script_src_elem.length > 0) {
+      directives["script-src-elem"] = [
+        ...directives["script-src-elem"] || [],
+        ...this.#script_src_elem
       ];
     }
     for (const key2 in directives) {
@@ -1334,8 +1492,7 @@ class BaseProvider {
         /** @type {string[] | true} */
         directives[key2]
       );
-      if (!value)
-        continue;
+      if (!value) continue;
       const directive = [key2];
       if (Array.isArray(value)) {
         value.forEach((value2) => {
@@ -1429,8 +1586,7 @@ function create_async_iterator() {
         return {
           next: async () => {
             const next = await deferred[0].promise;
-            if (!next.done)
-              deferred.shift();
+            if (!next.done) deferred.shift();
             return next;
           }
         };
@@ -1461,7 +1617,7 @@ async function render_response({
   state,
   page_config,
   status,
-  error: error2 = null,
+  error = null,
   event,
   resolve_opts,
   action_result
@@ -1509,7 +1665,7 @@ async function render_response({
       props[`data_${i}`] = data2;
     }
     props.page = {
-      error: error2,
+      error,
       params: (
         /** @type {Record<string, any>} */
         event.params
@@ -1518,8 +1674,10 @@ async function render_response({
       status,
       url: event.url,
       data: data2,
-      form: form_value
+      form: form_value,
+      state: {}
     };
+    override({ base: base$1, assets: assets$1 });
     {
       try {
         rendered = options2.root.render(props);
@@ -1528,12 +1686,9 @@ async function render_response({
       }
     }
     for (const { node } of branch) {
-      for (const url of node.imports)
-        modulepreloads.add(url);
-      for (const url of node.stylesheets)
-        stylesheets.add(url);
-      for (const url of node.fonts)
-        fonts.add(url);
+      for (const url of node.imports) modulepreloads.add(url);
+      for (const url of node.stylesheets) stylesheets.add(url);
+      for (const url of node.fonts) fonts.add(url);
       if (node.inline_styles) {
         Object.entries(await node.inline_styles()).forEach(([k, v]) => inline_styles.set(k, v));
       }
@@ -1542,7 +1697,7 @@ async function render_response({
     rendered = { head: "", html: "", css: { code: "", map: null } };
   }
   let head = "";
-  let body = rendered.html;
+  let body2 = rendered.html;
   const csp = new Csp(options2.csp, {
     prerender: !!state.prerendering
   });
@@ -1555,8 +1710,7 @@ async function render_response({
   if (inline_styles.size > 0) {
     const content = Array.from(inline_styles.values()).join("\n");
     const attributes = [];
-    if (csp.style_needs_nonce)
-      attributes.push(` nonce="${csp.nonce}"`);
+    if (csp.style_needs_nonce) attributes.push(` nonce="${csp.nonce}"`);
     csp.add_style(content);
     head += `
 	<style${attributes.join("")}>${content}</style>`;
@@ -1598,12 +1752,15 @@ async function render_response({
     global
   );
   if (page_config.ssr && page_config.csr) {
-    body += `
+    body2 += `
 			${fetched.map(
       (item) => serialize_data(item, resolve_opts.filterSerializedResponseHeaders, !!state.prerendering)
     ).join("\n			")}`;
   }
   if (page_config.csr) {
+    if (client.uses_env_dynamic_public && state.prerendering) {
+      modulepreloads.add(`${options2.app_dir}/env.js`);
+    }
     const included_modulepreloads = Array.from(modulepreloads, (dep) => prefixed(dep)).filter(
       (path) => resolve_opts.preload({ type: "js", path })
     );
@@ -1618,11 +1775,14 @@ async function render_response({
       }
     }
     const blocks = [];
-    const properties = [
-      assets && `assets: ${s(assets)}`,
-      `base: ${base_expression}`,
-      `env: ${s(public_env)}`
-    ].filter(Boolean);
+    const load_env_eagerly = client.uses_env_dynamic_public && state.prerendering;
+    const properties = [`base: ${base_expression}`];
+    if (assets) {
+      properties.push(`assets: ${s(assets)}`);
+    }
+    if (client.uses_env_dynamic_public) {
+      properties.push(`env: ${load_env_eagerly ? "null" : s(public_env)}`);
+    }
     if (chunks) {
       blocks.push("const deferred = new Map();");
       properties.push(`defer: (id) => new Promise((fulfil, reject) => {
@@ -1651,8 +1811,8 @@ async function render_response({
           event.route.id
         );
       }
-      if (error2) {
-        serialized.error = devalue.uneval(error2);
+      if (error) {
+        serialized.error = devalue.uneval(error);
       }
       const hydrate = [
         `node_ids: [${branch.map(({ node }) => node.index).join(", ")}]`,
@@ -1666,16 +1826,31 @@ async function render_response({
       if (options2.embedded) {
         hydrate.push(`params: ${devalue.uneval(event.params)}`, `route: ${s(event.route)}`);
       }
+      const indent = "	".repeat(load_env_eagerly ? 7 : 6);
       args.push(`{
-							${hydrate.join(",\n							")}
-						}`);
+${indent}	${hydrate.join(`,
+${indent}	`)}
+${indent}}`);
     }
-    blocks.push(`Promise.all([
+    if (load_env_eagerly) {
+      blocks.push(`import(${s(`${base$1}/${options2.app_dir}/env.js`)}).then(({ env }) => {
+						${global}.env = env;
+
+						Promise.all([
+							import(${s(prefixed(client.start))}),
+							import(${s(prefixed(client.app))})
+						]).then(([kit, app]) => {
+							kit.start(${args.join(", ")});
+						});
+					});`);
+    } else {
+      blocks.push(`Promise.all([
 						import(${s(prefixed(client.start))}),
 						import(${s(prefixed(client.app))})
 					]).then(([kit, app]) => {
 						kit.start(${args.join(", ")});
 					});`);
+    }
     if (options2.service_worker) {
       const opts = "";
       blocks.push(`if ('serviceWorker' in navigator) {
@@ -1690,11 +1865,11 @@ async function render_response({
 				}
 			`;
     csp.add_script(init_app);
-    body += `
+    body2 += `
 			<script${csp.script_needs_nonce ? ` nonce="${csp.nonce}"` : ""}>${init_app}<\/script>
 		`;
   }
-  const headers = new Headers({
+  const headers2 = new Headers({
     "x-sveltekit-page": "true",
     "content-type": "text/html"
   });
@@ -1713,37 +1888,37 @@ async function render_response({
   } else {
     const csp_header = csp.csp_provider.get_header();
     if (csp_header) {
-      headers.set("content-security-policy", csp_header);
+      headers2.set("content-security-policy", csp_header);
     }
     const report_only_header = csp.report_only_provider.get_header();
     if (report_only_header) {
-      headers.set("content-security-policy-report-only", report_only_header);
+      headers2.set("content-security-policy-report-only", report_only_header);
     }
     if (link_header_preloads.size) {
-      headers.set("link", Array.from(link_header_preloads).join(", "));
+      headers2.set("link", Array.from(link_header_preloads).join(", "));
     }
   }
   head += rendered.head;
   const html = options2.templates.app({
     head,
-    body,
+    body: body2,
     assets: assets$1,
     nonce: (
       /** @type {string} */
       csp.nonce
     ),
-    env: public_env
+    env: safe_public_env
   });
   const transformed = await resolve_opts.transformPageChunk({
     html,
     done: true
   }) || "";
   if (!chunks) {
-    headers.set("etag", `"${hash(transformed)}"`);
+    headers2.set("etag", `"${hash(transformed)}"`);
   }
   return !chunks ? text(transformed, {
     status,
-    headers
+    headers: headers2
   }) : new Response(
     new ReadableStream({
       async start(controller) {
@@ -1775,31 +1950,30 @@ function get_data(event, options2, nodes, global) {
         (data) => ({ data })
       ).catch(
         /** @param {any} error */
-        async (error2) => ({
-          error: await handle_error_and_jsonify(event, options2, error2)
+        async (error) => ({
+          error: await handle_error_and_jsonify(event, options2, error)
         })
       ).then(
         /**
          * @param {{data: any; error: any}} result
          */
-        async ({ data, error: error2 }) => {
+        async ({ data, error }) => {
           count -= 1;
           let str;
           try {
-            str = devalue.uneval({ id, data, error: error2 }, replacer);
-          } catch (e) {
-            error2 = await handle_error_and_jsonify(
+            str = devalue.uneval({ id, data, error }, replacer);
+          } catch {
+            error = await handle_error_and_jsonify(
               event,
               options2,
               new Error(`Failed to serialize promise while rendering ${event.route.id}`)
             );
             data = void 0;
-            str = devalue.uneval({ id, data, error: error2 }, replacer);
+            str = devalue.uneval({ id, data, error }, replacer);
           }
           push(`<script>${global}.resolve(${str})<\/script>
 `);
-          if (count === 0)
-            done();
+          if (count === 0) done();
         }
       );
       return `${global}.defer(${id})`;
@@ -1807,8 +1981,7 @@ function get_data(event, options2, nodes, global) {
   }
   try {
     const strings = nodes.map((node) => {
-      if (!node)
-        return "null";
+      if (!node) return "null";
       return `{"type":"data","data":${devalue.uneval(node.data, replacer)},${stringify_uses(node)}${node.slash ? `,"slash":${JSON.stringify(node.slash)}` : ""}}`;
     });
     return {
@@ -1841,7 +2014,7 @@ async function respond_with_error({
   manifest,
   state,
   status,
-  error: error2,
+  error,
   resolve_opts
 }) {
   if (event.request.headers.get("x-sveltekit-error")) {
@@ -1849,7 +2022,7 @@ async function respond_with_error({
       options2,
       status,
       /** @type {Error} */
-      error2.message
+      error.message
     );
   }
   const fetched = [];
@@ -1864,14 +2037,15 @@ async function respond_with_error({
         event,
         state,
         node: default_layout,
-        parent: async () => ({}),
-        track_server_fetches: options2.track_server_fetches
+        // eslint-disable-next-line @typescript-eslint/require-await
+        parent: async () => ({})
       });
       const server_data = await server_data_promise;
       const data = await load_data({
         event,
         fetched,
         node: default_layout,
+        // eslint-disable-next-line @typescript-eslint/require-await
         parent: async () => ({}),
         resolve_opts,
         server_data_promise,
@@ -1898,10 +2072,10 @@ async function respond_with_error({
       state,
       page_config: {
         ssr,
-        csr: get_option([default_layout], "csr") ?? true
+        csr
       },
       status,
-      error: await handle_error_and_jsonify(event, options2, error2),
+      error: await handle_error_and_jsonify(event, options2, error),
       branch,
       fetched,
       event,
@@ -1913,7 +2087,7 @@ async function respond_with_error({
     }
     return static_error_page(
       options2,
-      e instanceof HttpError ? e.status : 500,
+      get_status(e),
       (await handle_error_and_jsonify(event, options2, e)).message
     );
   }
@@ -1922,8 +2096,7 @@ function once(fn) {
   let done = false;
   let result;
   return () => {
-    if (done)
-      return result;
+    if (done) return result;
     done = true;
     return result = fn();
   };
@@ -1970,8 +2143,7 @@ async function render_data(event, route, options2, manifest, state, invalidated_
                 }
               }
               return data2;
-            },
-            track_server_fetches: options2.track_server_fetches
+            }
           });
         } catch (e) {
           aborted = true;
@@ -1993,17 +2165,17 @@ async function render_data(event, route, options2, manifest, state, invalidated_
     let length = promises.length;
     const nodes = await Promise.all(
       promises.map(
-        (p, i) => p.catch(async (error2) => {
-          if (error2 instanceof Redirect) {
-            throw error2;
+        (p, i) => p.catch(async (error) => {
+          if (error instanceof Redirect) {
+            throw error;
           }
           length = Math.min(length, i + 1);
           return (
             /** @type {import('types').ServerErrorNode} */
             {
               type: "error",
-              error: await handle_error_and_jsonify(event, options2, error2),
-              status: error2 instanceof HttpError ? error2.status : void 0
+              error: await handle_error_and_jsonify(event, options2, error),
+              status: error instanceof HttpError || error instanceof SvelteKitError ? error.status : void 0
             }
           );
         })
@@ -2034,11 +2206,11 @@ async function render_data(event, route, options2, manifest, state, invalidated_
       }
     );
   } catch (e) {
-    const error2 = normalize_error(e);
-    if (error2 instanceof Redirect) {
-      return redirect_json_response(error2);
+    const error = normalize_error(e);
+    if (error instanceof Redirect) {
+      return redirect_json_response(error);
     } else {
-      return json_response(await handle_error_and_jsonify(event, options2, error2), 500);
+      return json_response(await handle_error_and_jsonify(event, options2, error), 500);
     }
   }
 }
@@ -2085,20 +2257,19 @@ function get_data_json(event, options2, nodes) {
             let str;
             try {
               str = devalue.stringify(value, reducers);
-            } catch (e) {
-              const error2 = await handle_error_and_jsonify(
+            } catch {
+              const error = await handle_error_and_jsonify(
                 event,
                 options2,
                 new Error(`Failed to serialize promise while rendering ${event.route.id}`)
               );
               key2 = "error";
-              str = devalue.stringify(error2, reducers);
+              str = devalue.stringify(error, reducers);
             }
             count -= 1;
             push(`{"type":"chunk","id":${id},"${key2}":${str}}
 `);
-            if (count === 0)
-              done();
+            if (count === 0) done();
           }
         );
         return id;
@@ -2107,8 +2278,7 @@ function get_data_json(event, options2, nodes) {
   };
   try {
     const strings = nodes.map((node) => {
-      if (!node)
-        return "null";
+      if (!node) return "null";
       if (node.type === "error" || node.type === "skip") {
         return JSON.stringify(node);
       }
@@ -2129,6 +2299,13 @@ function get_data_json(event, options2, nodes) {
     ));
   }
 }
+function load_page_nodes(page2, manifest) {
+  return Promise.all([
+    // we use == here rather than === because [undefined] serializes as "[null]"
+    ...page2.layouts.map((n) => n == void 0 ? n : manifest._.nodes[n]()),
+    manifest._.nodes[page2.leaf]()
+  ]);
+}
 const MAX_DEPTH = 10;
 async function render_page(event, page2, options2, manifest, state, resolve_opts) {
   if (state.depth > MAX_DEPTH) {
@@ -2142,11 +2319,7 @@ async function render_page(event, page2, options2, manifest, state, resolve_opts
     return handle_action_json_request(event, options2, node?.server);
   }
   try {
-    const nodes = await Promise.all([
-      // we use == here rather than === because [undefined] serializes as "[null]"
-      ...page2.layouts.map((n) => n == void 0 ? n : manifest._.nodes[n]()),
-      manifest._.nodes[page2.leaf]()
-    ]);
+    const nodes = await load_page_nodes(page2, manifest);
     const leaf_node = (
       /** @type {import('types').SSRNode} */
       nodes.at(-1)
@@ -2159,14 +2332,13 @@ async function render_page(event, page2, options2, manifest, state, resolve_opts
         return redirect_response(action_result.status, action_result.location);
       }
       if (action_result?.type === "error") {
-        const error2 = action_result.error;
-        status = error2 instanceof HttpError ? error2.status : 500;
+        status = get_status(action_result.error);
       }
       if (action_result?.type === "failure") {
         status = action_result.status;
       }
     }
-    const should_prerender_data = nodes.some((node) => node?.server);
+    const should_prerender_data = nodes.some((node) => node?.server?.load);
     const data_pathname = add_data_suffix(event.url.pathname);
     const should_prerender = get_option(nodes, "prerender") ?? false;
     if (should_prerender) {
@@ -2181,7 +2353,7 @@ async function render_page(event, page2, options2, manifest, state, resolve_opts
     }
     state.prerender_default = should_prerender;
     const fetched = [];
-    if (get_option(nodes, "ssr") === false && !state.prerendering) {
+    if (get_option(nodes, "ssr") === false && !(state.prerendering && should_prerender_data)) {
       return await render_response({
         branch: [],
         fetched,
@@ -2217,12 +2389,10 @@ async function render_page(event, page2, options2, manifest, state, resolve_opts
               const data = {};
               for (let j = 0; j < i; j += 1) {
                 const parent = await server_promises[j];
-                if (parent)
-                  Object.assign(data, await parent.data);
+                if (parent) Object.assign(data, parent.data);
               }
               return data;
-            },
-            track_server_fetches: options2.track_server_fetches
+            }
           });
         } catch (e) {
           load_error = /** @type {Error} */
@@ -2233,8 +2403,7 @@ async function render_page(event, page2, options2, manifest, state, resolve_opts
     });
     const csr = get_option(nodes, "csr") ?? true;
     const load_promises = nodes.map((node, i) => {
-      if (load_error)
-        throw load_error;
+      if (load_error) throw load_error;
       return Promise.resolve().then(async () => {
         try {
           return await load_data({
@@ -2260,12 +2429,10 @@ async function render_page(event, page2, options2, manifest, state, resolve_opts
         }
       });
     });
-    for (const p of server_promises)
-      p.catch(() => {
-      });
-    for (const p of load_promises)
-      p.catch(() => {
-      });
+    for (const p of server_promises) p.catch(() => {
+    });
+    for (const p of load_promises) p.catch(() => {
+    });
     for (let i = 0; i < nodes.length; i += 1) {
       const node = nodes[i];
       if (node) {
@@ -2277,19 +2444,19 @@ async function render_page(event, page2, options2, manifest, state, resolve_opts
           const err = normalize_error(e);
           if (err instanceof Redirect) {
             if (state.prerendering && should_prerender_data) {
-              const body = JSON.stringify({
+              const body2 = JSON.stringify({
                 type: "redirect",
                 location: err.location
               });
               state.prerendering.dependencies.set(data_pathname, {
-                response: text(body),
-                body
+                response: text(body2),
+                body: body2
               });
             }
             return redirect_response(err.status, err.location);
           }
-          const status2 = err instanceof HttpError ? err.status : 500;
-          const error2 = await handle_error_and_jsonify(event, options2, err);
+          const status2 = get_status(err);
+          const error = await handle_error_and_jsonify(event, options2, err);
           while (i--) {
             if (page2.errors[i]) {
               const index = (
@@ -2298,8 +2465,7 @@ async function render_page(event, page2, options2, manifest, state, resolve_opts
               );
               const node2 = await manifest._.nodes[index]();
               let j = i;
-              while (!branch[j])
-                j -= 1;
+              while (!branch[j]) j -= 1;
               return await render_response({
                 event,
                 options: options2,
@@ -2308,7 +2474,7 @@ async function render_page(event, page2, options2, manifest, state, resolve_opts
                 resolve_opts,
                 page_config: { ssr: true, csr: true },
                 status: status2,
-                error: error2,
+                error,
                 branch: compact(branch.slice(0, j + 1)).concat({
                   node: node2,
                   data: null,
@@ -2318,7 +2484,7 @@ async function render_page(event, page2, options2, manifest, state, resolve_opts
               });
             }
           }
-          return static_error_page(options2, status2, error2.message);
+          return static_error_page(options2, status2, error.message);
         }
       } else {
         branch.push(null);
@@ -2340,6 +2506,7 @@ async function render_page(event, page2, options2, manifest, state, resolve_opts
         body: data
       });
     }
+    const ssr = get_option(nodes, "ssr") ?? true;
     return await render_response({
       event,
       options: options2,
@@ -2348,11 +2515,11 @@ async function render_page(event, page2, options2, manifest, state, resolve_opts
       resolve_opts,
       page_config: {
         csr: get_option(nodes, "csr") ?? true,
-        ssr: get_option(nodes, "ssr") ?? true
+        ssr
       },
       status,
       error: null,
-      branch: compact(branch),
+      branch: ssr === false ? [] : compact(branch),
       action_result,
       fetched
     });
@@ -2368,11 +2535,52 @@ async function render_page(event, page2, options2, manifest, state, resolve_opts
     });
   }
 }
+function exec(match, params, matchers) {
+  const result = {};
+  const values = match.slice(1);
+  const values_needing_match = values.filter((value) => value !== void 0);
+  let buffered = 0;
+  for (let i = 0; i < params.length; i += 1) {
+    const param = params[i];
+    let value = values[i - buffered];
+    if (param.chained && param.rest && buffered) {
+      value = values.slice(i - buffered, i + 1).filter((s2) => s2).join("/");
+      buffered = 0;
+    }
+    if (value === void 0) {
+      if (param.rest) result[param.name] = "";
+      continue;
+    }
+    if (!param.matcher || matchers[param.matcher](value)) {
+      result[param.name] = value;
+      const next_param = params[i + 1];
+      const next_value = values[i + 1];
+      if (next_param && !next_param.rest && next_param.optional && next_value && param.chained) {
+        buffered = 0;
+      }
+      if (!next_param && !next_value && Object.keys(result).length === values_needing_match.length) {
+        buffered = 0;
+      }
+      continue;
+    }
+    if (param.optional && param.chained) {
+      buffered++;
+      continue;
+    }
+    return;
+  }
+  if (buffered) return;
+  return result;
+}
+function validate_options(options2) {
+  if (options2?.path === void 0) {
+    throw new Error("You must specify a `path` when setting, deleting or serializing cookies");
+  }
+}
 function get_cookies(request, url, trailing_slash) {
   const header = request.headers.get("cookie") ?? "";
   const initial_cookies = parse(header, { decode: (value) => value });
   const normalized_url = normalize_path(url.pathname, trailing_slash);
-  const default_path = normalized_url.split("/").slice(0, -1).join("/") || "/";
   const new_cookies = {};
   const defaults = {
     httpOnly: true,
@@ -2414,31 +2622,32 @@ function get_cookies(request, url, trailing_slash) {
     /**
      * @param {string} name
      * @param {string} value
-     * @param {import('cookie').CookieSerializeOptions} opts
+     * @param {import('./page/types.js').Cookie['options']} options
      */
-    set(name, value, opts = {}) {
-      set_internal(name, value, { ...defaults, ...opts });
+    set(name, value, options2) {
+      validate_options(options2);
+      set_internal(name, value, { ...defaults, ...options2 });
     },
     /**
      * @param {string} name
-     * @param {import('cookie').CookieSerializeOptions} opts
+     *  @param {import('./page/types.js').Cookie['options']} options
      */
-    delete(name, opts = {}) {
-      cookies.set(name, "", {
-        ...opts,
-        maxAge: 0
-      });
+    delete(name, options2) {
+      validate_options(options2);
+      cookies.set(name, "", { ...options2, maxAge: 0 });
     },
     /**
      * @param {string} name
      * @param {string} value
-     * @param {import('cookie').CookieSerializeOptions} opts
+     *  @param {import('./page/types.js').Cookie['options']} options
      */
-    serialize(name, value, opts) {
-      return serialize(name, value, {
-        ...defaults,
-        ...opts
-      });
+    serialize(name, value, options2) {
+      validate_options(options2);
+      let path = options2.path;
+      if (!options2.domain || options2.domain === url.hostname) {
+        path = resolve(normalized_url, path);
+      }
+      return serialize(name, value, { ...defaults, ...options2, path });
     }
   };
   function get_cookie_header(destination, header2) {
@@ -2448,10 +2657,8 @@ function get_cookies(request, url, trailing_slash) {
     };
     for (const key2 in new_cookies) {
       const cookie = new_cookies[key2];
-      if (!domain_matches(destination.hostname, cookie.options.domain))
-        continue;
-      if (!path_matches(destination.pathname, cookie.options.path))
-        continue;
+      if (!domain_matches(destination.hostname, cookie.options.domain)) continue;
+      if (!path_matches(destination.pathname, cookie.options.path)) continue;
       const encoder2 = cookie.options.encode || encodeURIComponent;
       combined_cookies[cookie.name] = encoder2(cookie.value);
     }
@@ -2463,47 +2670,43 @@ function get_cookies(request, url, trailing_slash) {
     }
     return Object.entries(combined_cookies).map(([name, value]) => `${name}=${value}`).join("; ");
   }
-  function set_internal(name, value, opts) {
-    const path = opts.path ?? default_path;
-    new_cookies[name] = {
-      name,
-      value,
-      options: {
-        ...opts,
-        path
-      }
-    };
+  function set_internal(name, value, options2) {
+    let path = options2.path;
+    if (!options2.domain || options2.domain === url.hostname) {
+      path = resolve(normalized_url, path);
+    }
+    new_cookies[name] = { name, value, options: { ...options2, path } };
   }
   return { cookies, new_cookies, get_cookie_header, set_internal };
 }
 function domain_matches(hostname, constraint) {
-  if (!constraint)
-    return true;
+  if (!constraint) return true;
   const normalized = constraint[0] === "." ? constraint.slice(1) : constraint;
-  if (hostname === normalized)
-    return true;
+  if (hostname === normalized) return true;
   return hostname.endsWith("." + normalized);
 }
 function path_matches(path, constraint) {
-  if (!constraint)
-    return true;
+  if (!constraint) return true;
   const normalized = constraint.endsWith("/") ? constraint.slice(0, -1) : constraint;
-  if (path === normalized)
-    return true;
+  if (path === normalized) return true;
   return path.startsWith(normalized + "/");
 }
-function add_cookies_to_headers(headers, cookies) {
+function add_cookies_to_headers(headers2, cookies) {
   for (const new_cookie of cookies) {
     const { name, value, options: options2 } = new_cookie;
-    headers.append("set-cookie", serialize(name, value, options2));
+    headers2.append("set-cookie", serialize(name, value, options2));
+    if (options2.path.endsWith(".html")) {
+      const path = add_data_suffix(options2.path);
+      headers2.append("set-cookie", serialize(name, value, { ...options2, path }));
+    }
   }
 }
 function create_fetch({ event, options: options2, manifest, state, get_cookie_header, set_internal }) {
-  return async (info, init2) => {
+  const server_fetch = async (info, init2) => {
     const original_request = normalize_fetch_input(info, init2, event.url);
     let mode = (info instanceof Request ? info.mode : init2?.mode) ?? "cors";
     let credentials = (info instanceof Request ? info.credentials : init2?.credentials) ?? "same-origin";
-    return await options2.hooks.handleFetch({
+    return options2.hooks.handleFetch({
       event,
       request: original_request,
       fetch: async (info2, init3) => {
@@ -2522,8 +2725,7 @@ function create_fetch({ event, options: options2, manifest, state, get_cookie_he
         if (url.origin !== event.url.origin) {
           if (`.${url.hostname}`.endsWith(`.${event.url.hostname}`) && credentials !== "omit") {
             const cookie = get_cookie_header(url, request.headers.get("cookie"));
-            if (cookie)
-              request.headers.set("cookie", cookie);
+            if (cookie) request.headers.set("cookie", cookie);
           }
           return fetch(request);
         }
@@ -2570,18 +2772,27 @@ function create_fetch({ event, options: options2, manifest, state, get_cookie_he
         const set_cookie = response.headers.get("set-cookie");
         if (set_cookie) {
           for (const str of set_cookie_parser.splitCookiesString(set_cookie)) {
-            const { name, value, ...options3 } = set_cookie_parser.parseString(str);
-            set_internal(
-              name,
-              value,
-              /** @type {import('cookie').CookieSerializeOptions} */
+            const { name, value, ...options3 } = set_cookie_parser.parseString(str, {
+              decodeValues: false
+            });
+            const path = options3.path ?? (url.pathname.split("/").slice(0, -1).join("/") || "/");
+            set_internal(name, value, {
+              path,
+              encode: (value2) => value2,
+              .../** @type {import('cookie').CookieSerializeOptions} */
               options3
-            );
+            });
           }
         }
         return response;
       }
     });
+  };
+  return (input, init2) => {
+    const response = server_fetch(input, init2);
+    response.catch(() => {
+    });
+    return response;
   };
 }
 function normalize_fetch_input(info, init2, url) {
@@ -2592,11 +2803,9 @@ function normalize_fetch_input(info, init2, url) {
 }
 function validator(expected) {
   function validate(module, file) {
-    if (!module)
-      return;
+    if (!module) return;
     for (const key2 in module) {
-      if (key2[0] === "_" || expected.has(key2))
-        continue;
+      if (key2[0] === "_" || expected.has(key2)) continue;
       const values = [...expected.values()];
       const hint = hint_for_supported_files(key2, file?.slice(file.lastIndexOf("."))) ?? `valid exports are ${values.join(", ")}, or anything with a '_' prefix`;
       throw new Error(`Invalid export '${key2}'${file ? ` in ${file}` : ""} (${hint})`);
@@ -2655,6 +2864,33 @@ const validate_page_exports = validator(valid_page_exports);
 const validate_layout_server_exports = validator(valid_layout_server_exports);
 const validate_page_server_exports = validator(valid_page_server_exports);
 const validate_server_exports = validator(valid_server_exports);
+let body;
+let etag;
+let headers;
+function get_public_env(request) {
+  body ??= `export const env=${JSON.stringify(public_env)}`;
+  etag ??= `W/${Date.now()}`;
+  headers ??= new Headers({
+    "content-type": "application/javascript; charset=utf-8",
+    etag
+  });
+  if (request.headers.get("if-none-match") === etag) {
+    return new Response(void 0, { status: 304, headers });
+  }
+  return new Response(body, { headers });
+}
+function get_page_config(nodes) {
+  let current = {};
+  for (const node of nodes) {
+    if (!node?.universal?.config && !node?.server?.config) continue;
+    current = {
+      ...current,
+      ...node?.universal?.config,
+      ...node?.server?.config
+    };
+  }
+  return Object.keys(current).length ? current : void 0;
+}
 const default_transform = ({ html }) => html;
 const default_filter = () => false;
 const default_preload = ({ type }) => type === "js" || type === "css";
@@ -2665,16 +2901,27 @@ async function respond(request, options2, manifest, state) {
   if (options2.csrf_check_origin) {
     const forbidden = is_form_content_type(request) && (request.method === "POST" || request.method === "PUT" || request.method === "PATCH" || request.method === "DELETE") && request.headers.get("origin") !== url.origin;
     if (forbidden) {
-      const csrf_error = error(403, `Cross-site ${request.method} form submissions are forbidden`);
+      const csrf_error = new HttpError(
+        403,
+        `Cross-site ${request.method} form submissions are forbidden`
+      );
       if (request.headers.get("accept") === "application/json") {
         return json(csrf_error.body, { status: csrf_error.status });
       }
       return text(csrf_error.body.message, { status: csrf_error.status });
     }
   }
+  let rerouted_path;
+  try {
+    rerouted_path = options2.hooks.reroute({ url: new URL(url) }) ?? url.pathname;
+  } catch {
+    return text("Internal Server Error", {
+      status: 500
+    });
+  }
   let decoded;
   try {
-    decoded = decode_pathname(url.pathname);
+    decoded = decode_pathname(rerouted_path);
   } catch {
     return text("Malformed URI", { status: 400 });
   }
@@ -2685,6 +2932,12 @@ async function respond(request, options2, manifest, state) {
       return text("Not found", { status: 404 });
     }
     decoded = decoded.slice(base.length) || "/";
+  }
+  if (decoded === `/${options2.app_dir}/env.js`) {
+    return get_public_env(request);
+  }
+  if (decoded.startsWith(`/${options2.app_dir}`)) {
+    return text("Not found", { status: 404 });
   }
   const is_data_request = has_data_suffix(decoded);
   let invalidated_data_nodes;
@@ -2699,8 +2952,7 @@ async function respond(request, options2, manifest, state) {
     const matchers = await manifest._.matchers();
     for (const candidate of manifest._.routes) {
       const match = candidate.pattern.exec(decoded);
-      if (!match)
-        continue;
+      if (!match) continue;
       const matched = exec(match, candidate.params, matchers);
       if (matched) {
         route = candidate;
@@ -2710,7 +2962,7 @@ async function respond(request, options2, manifest, state) {
     }
   }
   let trailing_slash = void 0;
-  const headers = {};
+  const headers2 = {};
   let cookies_to_add = {};
   const event = {
     // @ts-expect-error `cookies` and `fetch` need to be created after the `event` itself
@@ -2735,10 +2987,10 @@ async function respond(request, options2, manifest, state) {
           throw new Error(
             "Use `event.cookies.set(name, value, options)` instead of `event.setHeaders` to set cookies"
           );
-        } else if (lower in headers) {
+        } else if (lower in headers2) {
           throw new Error(`"${key2}" header is already set`);
         } else {
-          headers[lower] = value;
+          headers2[lower] = value;
           if (state.prerendering && lower === "cache-control") {
             state.prerendering.cache = /** @type {string} */
             value;
@@ -2760,19 +3012,13 @@ async function respond(request, options2, manifest, state) {
       if (url.pathname === base || url.pathname === base + "/") {
         trailing_slash = "always";
       } else if (route.page) {
-        const nodes = await Promise.all([
-          // we use == here rather than === because [undefined] serializes as "[null]"
-          ...route.page.layouts.map((n) => n == void 0 ? n : manifest._.nodes[n]()),
-          manifest._.nodes[route.page.leaf]()
-        ]);
-        if (DEV)
-          ;
+        const nodes = await load_page_nodes(route.page, manifest);
+        if (DEV) ;
         trailing_slash = get_option(nodes, "trailingSlash");
       } else if (route.endpoint) {
         const node = await route.endpoint();
         trailing_slash = node.trailingSlash;
-        if (DEV)
-          ;
+        if (DEV) ;
       }
       if (!is_data_request) {
         const normalized = normalize_path(url.pathname, trailing_slash ?? "never");
@@ -2787,6 +3033,25 @@ async function respond(request, options2, manifest, state) {
               )
             }
           });
+        }
+      }
+      if (state.before_handle || state.emulator?.platform) {
+        let config = {};
+        let prerender = false;
+        if (route.endpoint) {
+          const node = await route.endpoint();
+          config = node.config ?? config;
+          prerender = node.prerender ?? prerender;
+        } else if (route.page) {
+          const nodes = await load_page_nodes(route.page, manifest);
+          config = get_page_config(nodes) ?? config;
+          prerender = get_option(nodes, "prerender") ?? false;
+        }
+        if (state.before_handle) {
+          state.before_handle(event, config, prerender);
+        }
+        if (state.emulator?.platform) {
+          event.platform = await state.emulator.platform({ config, prerender });
         }
       }
     }
@@ -2805,13 +3070,12 @@ async function respond(request, options2, manifest, state) {
       get_cookie_header,
       set_internal
     });
-    if (state.prerendering && !state.prerendering.fallback)
-      disable_search(url);
+    if (state.prerendering && !state.prerendering.fallback) disable_search(url);
     const response = await options2.hooks.handle({
       event,
-      resolve: (event2, opts) => resolve(event2, opts).then((response2) => {
-        for (const key2 in headers) {
-          const value = headers[key2];
+      resolve: (event2, opts) => resolve2(event2, opts).then((response2) => {
+        for (const key2 in headers2) {
+          const value = headers2[key2];
           response2.headers.set(
             key2,
             /** @type {string} */
@@ -2830,12 +3094,12 @@ async function respond(request, options2, manifest, state) {
       if (if_none_match_value?.startsWith('W/"')) {
         if_none_match_value = if_none_match_value.substring(2);
       }
-      const etag = (
+      const etag2 = (
         /** @type {string} */
         response.headers.get("etag")
       );
-      if (if_none_match_value === etag) {
-        const headers2 = new Headers({ etag });
+      if (if_none_match_value === etag2) {
+        const headers22 = new Headers({ etag: etag2 });
         for (const key2 of [
           "cache-control",
           "content-location",
@@ -2845,12 +3109,11 @@ async function respond(request, options2, manifest, state) {
           "set-cookie"
         ]) {
           const value = response.headers.get(key2);
-          if (value)
-            headers2.set(key2, value);
+          if (value) headers22.set(key2, value);
         }
         return new Response(void 0, {
           status: 304,
-          headers: headers2
+          headers: headers22
         });
       }
     }
@@ -2873,14 +3136,9 @@ async function respond(request, options2, manifest, state) {
     }
     return await handle_fatal_error(event, options2, e);
   }
-  async function resolve(event2, opts) {
+  async function resolve2(event2, opts) {
     try {
       if (opts) {
-        if ("ssr" in opts) {
-          throw new Error(
-            "ssr has been removed, set it in the appropriate +layout.js instead. See the PR for more information: https://github.com/sveltejs/kit/pull/6197"
-          );
-        }
         resolve_opts = {
           transformPageChunk: opts.transformPageChunk || default_transform,
           filterSerializedResponseHeaders: opts.filterSerializedResponseHeaders || default_filter,
@@ -2982,7 +3240,7 @@ async function respond(request, options2, manifest, state) {
           manifest,
           state,
           status: 404,
-          error: new Error(`Not found: ${event2.url.pathname}`),
+          error: new SvelteKitError(404, "Not Found", `Not found: ${event2.url.pathname}`),
           resolve_opts
         });
       }
@@ -3004,7 +3262,11 @@ async function respond(request, options2, manifest, state) {
 }
 function afterUpdate() {
 }
+let prerendering = false;
 function set_building() {
+}
+function set_prerendering() {
+  prerendering = true;
 }
 const Root = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { stores } = $$props;
@@ -3018,20 +3280,13 @@ const Root = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     setContext("__svelte__", stores);
   }
   afterUpdate(stores.page.notify);
-  if ($$props.stores === void 0 && $$bindings.stores && stores !== void 0)
-    $$bindings.stores(stores);
-  if ($$props.page === void 0 && $$bindings.page && page2 !== void 0)
-    $$bindings.page(page2);
-  if ($$props.constructors === void 0 && $$bindings.constructors && constructors !== void 0)
-    $$bindings.constructors(constructors);
-  if ($$props.components === void 0 && $$bindings.components && components !== void 0)
-    $$bindings.components(components);
-  if ($$props.form === void 0 && $$bindings.form && form !== void 0)
-    $$bindings.form(form);
-  if ($$props.data_0 === void 0 && $$bindings.data_0 && data_0 !== void 0)
-    $$bindings.data_0(data_0);
-  if ($$props.data_1 === void 0 && $$bindings.data_1 && data_1 !== void 0)
-    $$bindings.data_1(data_1);
+  if ($$props.stores === void 0 && $$bindings.stores && stores !== void 0) $$bindings.stores(stores);
+  if ($$props.page === void 0 && $$bindings.page && page2 !== void 0) $$bindings.page(page2);
+  if ($$props.constructors === void 0 && $$bindings.constructors && constructors !== void 0) $$bindings.constructors(constructors);
+  if ($$props.components === void 0 && $$bindings.components && components !== void 0) $$bindings.components(components);
+  if ($$props.form === void 0 && $$bindings.form && form !== void 0) $$bindings.form(form);
+  if ($$props.data_0 === void 0 && $$bindings.data_0 && data_0 !== void 0) $$bindings.data_0(data_0);
+  if ($$props.data_1 === void 0 && $$bindings.data_1 && data_1 !== void 0) $$bindings.data_1(data_1);
   let $$settled;
   let $$rendered;
   let previous_head = $$result.head;
@@ -3079,11 +3334,15 @@ const Root = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   } while (!$$settled);
   return $$rendered;
 });
+function set_read_implementation(fn) {
+}
+function set_manifest(_) {
+}
 const options = {
+  app_dir: "_app",
   app_template_contains_nonce: false,
   csp: { "mode": "auto", "directives": { "upgrade-insecure-requests": false, "block-all-mixed-content": false }, "reportOnly": { "upgrade-insecure-requests": false, "block-all-mixed-content": false } },
   csrf_check_origin: true,
-  track_server_fetches: false,
   embedded: false,
   env_public_prefix: "PUBLIC_",
   env_private_prefix: "",
@@ -3093,7 +3352,7 @@ const options = {
   root: Root,
   service_worker: false,
   templates: {
-    app: ({ head, body, assets: assets2, nonce, env }) => '<!DOCTYPE html>\n<html lang="en">\n  <head>\n    <meta charset="utf-8" />\n    <link rel="icon" href="' + assets2 + '/favicon.png" />\n    <link rel="manifest" href="' + assets2 + '/waterwaylabs.webmanifest" />\n    <meta name="viewport" content="width=device-width, initial-scale=1" />\n    ' + head + '\n  </head>\n  <body data-sveltekit-preload-data="hover">\n    <div style="display: contents">' + body + "</div>\n  </body>\n</html>\n",
+    app: ({ head, body: body2, assets: assets2, nonce, env }) => '<!doctype html>\n<html lang="en">\n  <head>\n    <meta charset="utf-8" />\n    <meta content="width=device-width, initial-scale=1" name="viewport" />\n\n    <title>Waterway Labs</title>\n    <link href="https://waterwaylabs.xyz" rel="canonical" />\n    <meta\n      content="Waterway Labs is a UK based technology company."\n      name="description"\n    />\n    <meta content="Waterway Labs" property="og:title" />\n    <meta\n      content="Waterway Labs is a UK based technology company."\n      property="og:description"\n    />\n    <meta content="website" property="og:type" />\n    <meta content="https://waterwaylabs.xyz" property="og:url" />\n    <meta\n      content="https://waterwaylabs.xyz/meta-share.jpg"\n      property="og:image"\n    />\n    <meta content="summary_large_image" name="twitter:card" />\n    <meta content="Waterway Labs" name="twitter:title" />\n    <meta\n      content="Waterway Labs is a UK based technology company."\n      name="twitter:description"\n    />\n    <meta\n      content="https://waterwaylabs.xyz/meta-share.jpg"\n      name="twitter:image"\n    />\n\n    <link crossorigin="anonymous" href="/manifest.webmanifest" rel="manifest" />\n\n    <!-- Favicon -->\n    <link\n      rel="icon"\n      type="image/png"\n      sizes="32x32"\n      href="' + assets2 + '/favicons/favicon-32x32.png"\n    />\n    <link\n      rel="icon"\n      type="image/png"\n      sizes="16x16"\n      href="' + assets2 + '/favicons/favicon-16x16.png"\n    />\n    <link rel="shortcut icon" href="' + assets2 + '/favicons/favicon.ico" />\n\n    <!-- iOS meta tags & icons -->\n    <meta name="apple-mobile-web-app-capable" content="yes" />\n    <meta name="apple-mobile-web-app-status-bar-style" content="#2CE3A6" />\n    <meta name="apple-mobile-web-app-title" content="Waterway Labs" />\n    <link\n      rel="apple-touch-icon"\n      href="' + assets2 + '/favicons/apple-touch-icon.png"\n    />\n\n    <!-- MS -->\n    <meta name="msapplication-TileColor" content="#101111" />\n    <meta\n      name="msapplication-config"\n      content="' + assets2 + '/favicons/browserconfig.xml"\n    />\n\n    <meta content="#2CE3A6" name="theme-color" />\n    ' + head + '\n\n    <style>\n      html,\n      body {\n        height: 100%;\n        margin: 0;\n      }\n\n      @font-face {\n        font-display: swap;\n        font-family: "Rubik";\n        font-style: normal;\n        font-weight: 400;\n        src: url("' + assets2 + '/Rubik-Regular.woff2") format("woff2");\n      }\n      body {\n        font-family: "Rubik", sans-serif !important;\n        color: white !important;\n        height: 100vh;\n        margin: 0;\n        background-image: url("/background.jpg");\n        background-size: cover;\n        background-position: center;\n        background-repeat: no-repeat;\n        background-attachment: fixed;\n      }\n\n      #app-spinner {\n        --spinner-size: 30px;\n\n        width: var(--spinner-size);\n        height: var(--spinner-size);\n\n        animation: app-spinner-linear-rotate 2000ms linear infinite;\n\n        position: absolute;\n        top: calc(50% - (var(--spinner-size) / 2));\n        left: calc(50% - (var(--spinner-size) / 2));\n\n        --radius: 45px;\n        --circumference: calc(3.14159265359 * var(--radius) * 2);\n\n        --start: calc((1 - 0.05) * var(--circumference));\n        --end: calc((1 - 0.8) * var(--circumference));\n      }\n\n      #app-spinner circle {\n        stroke-dasharray: var(--circumference);\n        stroke-width: 10%;\n        transform-origin: 50% 50% 0;\n\n        transition-property: stroke;\n\n        animation-name: app-spinner-stroke-rotate-100;\n        animation-duration: 4000ms;\n        animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1);\n        animation-iteration-count: infinite;\n\n        fill: transparent;\n        stroke: currentColor;\n\n        transition: stroke-dashoffset 225ms linear;\n      }\n\n      @keyframes app-spinner-linear-rotate {\n        0% {\n          transform: rotate(0deg);\n        }\n        100% {\n          transform: rotate(360deg);\n        }\n      }\n\n      @keyframes app-spinner-stroke-rotate-100 {\n        0% {\n          stroke-dashoffset: var(--start);\n          transform: rotate(0);\n        }\n        12.5% {\n          stroke-dashoffset: var(--end);\n          transform: rotate(0);\n        }\n        12.5001% {\n          stroke-dashoffset: var(--end);\n          transform: rotateX(180deg) rotate(72.5deg);\n        }\n        25% {\n          stroke-dashoffset: var(--start);\n          transform: rotateX(180deg) rotate(72.5deg);\n        }\n\n        25.0001% {\n          stroke-dashoffset: var(--start);\n          transform: rotate(270deg);\n        }\n        37.5% {\n          stroke-dashoffset: var(--end);\n          transform: rotate(270deg);\n        }\n        37.5001% {\n          stroke-dashoffset: var(--end);\n          transform: rotateX(180deg) rotate(161.5deg);\n        }\n        50% {\n          stroke-dashoffset: var(--start);\n          transform: rotateX(180deg) rotate(161.5deg);\n        }\n\n        50.0001% {\n          stroke-dashoffset: var(--start);\n          transform: rotate(180deg);\n        }\n        62.5% {\n          stroke-dashoffset: var(--end);\n          transform: rotate(180deg);\n        }\n        62.5001% {\n          stroke-dashoffset: var(--end);\n          transform: rotateX(180deg) rotate(251.5deg);\n        }\n        75% {\n          stroke-dashoffset: var(--start);\n          transform: rotateX(180deg) rotate(251.5deg);\n        }\n\n        75.0001% {\n          stroke-dashoffset: var(--start);\n          transform: rotate(90deg);\n        }\n        87.5% {\n          stroke-dashoffset: var(--end);\n          transform: rotate(90deg);\n        }\n        87.5001% {\n          stroke-dashoffset: var(--end);\n          transform: rotateX(180deg) rotate(341.5deg);\n        }\n        100% {\n          stroke-dashoffset: var(--start);\n          transform: rotateX(180deg) rotate(341.5deg);\n        }\n      }\n    </style>\n  </head>\n  <body data-sveltekit-preload-data="hover">\n    <div style="display: contents">' + body2 + '</div>\n\n    <svg\n      id="app-spinner"\n      preserveAspectRatio="xMidYMid meet"\n      focusable="false"\n      aria-hidden="true"\n      data-tid="spinner"\n      viewBox="0 0 100 100"\n    >\n      <circle cx="50%" cy="50%" r="45" />\n    </svg>\n  </body>\n</html>\n',
     error: ({ status, message }) => '<!doctype html>\n<html lang="en">\n	<head>\n		<meta charset="utf-8" />\n		<title>' + message + `</title>
 
 		<style>
@@ -3165,9 +3424,9 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "1jflt03"
+  version_hash: "38pzhu"
 };
-function get_hooks() {
+async function get_hooks() {
   return {};
 }
 function filter_private_env(env, { public_prefix, private_prefix }) {
@@ -3184,6 +3443,13 @@ function filter_public_env(env, { public_prefix, private_prefix }) {
     )
   );
 }
+const prerender_env_handler = {
+  get({ type }, prop) {
+    throw new Error(
+      `Cannot read values from $env/dynamic/${type} while prerendering (attempted to read env.${prop.toString()}). Use $env/static/${type} instead`
+    );
+  }
+};
 class Server {
   /** @type {import('types').SSROptions} */
   #options;
@@ -3196,33 +3462,37 @@ class Server {
   }
   /**
    * @param {{
-   *   env: Record<string, string>
+   *   env: Record<string, string>;
+   *   read?: (file: string) => ReadableStream;
    * }} opts
    */
-  async init({ env }) {
+  async init({ env, read }) {
+    const prefixes = {
+      public_prefix: this.#options.env_public_prefix,
+      private_prefix: this.#options.env_private_prefix
+    };
+    const private_env = filter_private_env(env, prefixes);
+    const public_env2 = filter_public_env(env, prefixes);
     set_private_env(
-      filter_private_env(env, {
-        public_prefix: this.#options.env_public_prefix,
-        private_prefix: this.#options.env_private_prefix
-      })
+      prerendering ? new Proxy({ type: "private" }, prerender_env_handler) : private_env
     );
     set_public_env(
-      filter_public_env(env, {
-        public_prefix: this.#options.env_public_prefix,
-        private_prefix: this.#options.env_private_prefix
-      })
+      prerendering ? new Proxy({ type: "public" }, prerender_env_handler) : public_env2
     );
+    set_safe_public_env(public_env2);
     if (!this.#options.hooks) {
       try {
         const module = await get_hooks();
         this.#options.hooks = {
-          handle: module.handle || (({ event, resolve }) => resolve(event)),
-          handleError: module.handleError || (({ error: error2 }) => console.error(error2)),
-          handleFetch: module.handleFetch || (({ request, fetch: fetch2 }) => fetch2(request))
+          handle: module.handle || (({ event, resolve: resolve2 }) => resolve2(event)),
+          handleError: module.handleError || (({ error }) => console.error(error)),
+          handleFetch: module.handleFetch || (({ request, fetch: fetch2 }) => fetch2(request)),
+          reroute: module.reroute || (() => {
+          })
         };
-      } catch (error2) {
+      } catch (error) {
         {
-          throw error2;
+          throw error;
         }
       }
     }
@@ -3232,11 +3502,6 @@ class Server {
    * @param {import('types').RequestOptions} options
    */
   async respond(request, options2) {
-    if (!(request instanceof Request)) {
-      throw new Error(
-        "The first argument to server.respond must be a Request object. See https://github.com/sveltejs/kit/pull/3384 for details"
-      );
-    }
     return respond(request, this.#options, this.#manifest, {
       ...options2,
       error: false,
@@ -3247,6 +3512,16 @@ class Server {
 const Layout$1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   return `${slots.default ? slots.default({}) : ``}`;
 });
+function get(key2, parse2 = JSON.parse) {
+  try {
+    return parse2(sessionStorage[key2]);
+  } catch {
+  }
+}
+const SNAPSHOT_KEY = "sveltekit:snapshot";
+const SCROLL_KEY = "sveltekit:scroll";
+get(SCROLL_KEY) ?? {};
+get(SNAPSHOT_KEY) ?? {};
 const getStores = () => {
   const stores = getContext("__svelte__");
   return {
@@ -3274,110 +3549,366 @@ const Error$1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   $$unsubscribe_page();
   return `<h1>${escape($page.status)}</h1> <p>${escape($page.error?.message)}</p>`;
 });
-const isLoading = writable(true);
-const loadingText = writable("Loading");
-BigInt(
-  60 * 60 * 1e3 * 1e3 * 1e3 * 24 * 14
-);
-function createToastStore() {
-  const { subscribe: subscribe2, set, update } = writable({
-    visible: false,
-    message: "",
-    type: "success"
-  });
-  function show(message, type = "success") {
-    update(() => ({ visible: true, message, type }));
-    setTimeout(
-      () => set({ visible: false, message: "", type: "success" }),
-      3e3
-    );
-  }
-  return { subscribe: subscribe2, show };
-}
-const toastStore = createToastStore();
-const WalletIcon = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { className = "" } = $$props;
-  if ($$props.className === void 0 && $$bindings.className && className !== void 0)
-    $$bindings.className(className);
-  return `<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"${add_attribute("class", className, 0)} fill="currentColor" viewBox="0 0 24 24"><path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499L12.136.326zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484L5.562 3zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-13z"></path><path d="M15.5,6.5v3a1,1,0,0,1-1,1h-3.5v-5H14.5A1,1,0,0,1,15.5,6.5Z"></path><path d="M12,8a.5,.5 0,1,1,.001,0Z"></path></svg>`;
-});
-const Header_svelte_svelte_type_style_lang = "";
-const css$3 = {
-  code: 'header.svelte-197nckd{background-color:rgba(36, 37, 41, 0.9)}.nav-underline.svelte-197nckd{position:relative;display:inline-block;color:white}.nav-underline.svelte-197nckd::after{content:"";position:absolute;width:100%;height:2px;background-color:#2ce3a6;bottom:0;left:0;transform:scaleX(0);transition:transform 0.3s ease-in-out;color:#2ce3a6}.nav-underline.svelte-197nckd:hover::after,.nav-underline.active.svelte-197nckd::after{transform:scaleX(1);color:#2ce3a6}.nav-underline.svelte-197nckd:hover::after{transform:scaleX(1);background-color:gray}.nav-button.svelte-197nckd{background-color:transparent}.nav-button.svelte-197nckd:hover{background-color:transparent;color:#2ce3a6;border:none}',
-  map: null
+const css$6 = {
+  code: "header.svelte-ae1j2n{background-color:rgba(36, 37, 41, 0.9)}",
+  map: '{"version":3,"file":"Header.svelte","sources":["Header.svelte"],"sourcesContent":["<header>\\n  <nav class=\\"text-white\\">\\n    <div class=\\"px-4 h-16 flex justify-between items-center w-full\\">\\n      <a href=\\"/\\" class=\\"hover:text-gray-400 flex items-center\\">\\n        <img src=\\"logo.png\\" class=\\"h-8\\" alt=\\"logo\\" />\\n        <b class=\\"ml-2\\">Waterway Labs</b>\\n      </a>\\n  </nav>\\n</header>\\n\\n<style>\\n  header {\\n    background-color: rgba(36, 37, 41, 0.9);\\n  }</style>\\n"],"names":[],"mappings":"AAWE,oBAAO,CACL,gBAAgB,CAAE,KAAK,EAAE,CAAC,CAAC,EAAE,CAAC,CAAC,EAAE,CAAC,CAAC,GAAG,CACxC"}'
 };
 const Header = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let $$unsubscribe_page;
-  $$unsubscribe_page = subscribe(page, (value) => value);
-  onDestroy(() => {
-  });
-  $$result.css.add(css$3);
-  $$unsubscribe_page();
-  return `<header class="svelte-197nckd"><nav class="text-white"><div class="px-4 h-16 flex justify-between items-center w-full"><a href="/" class="hover:text-gray-400 flex items-center" data-svelte-h="svelte-2isqi1"><img src="logo.png" class="h-8" alt="logo"> <b class="ml-2">Waterway Labs</b></a> <button class="md:hidden focus:outline-none" data-svelte-h="svelte-10fl43a"><svg width="24" height="18" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="2" rx="1" fill="currentColor"></rect><rect y="8" width="24" height="2" rx="1" fill="currentColor"></rect><rect y="16" width="24" height="2" rx="1" fill="currentColor"></rect></svg></button> ${`<ul class="hidden md:flex"><li class="mx-2 flex items-center h-16"><button class="flex items-center justify-center px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50 nav-button svelte-197nckd">Connect
-              ${validate_component(WalletIcon, "WalletIcon").$$render($$result, { className: "ml-2 h-6 w-6 mt-1" }, {}, {})}</button></li></ul> <div class="${escape(null_to_empty(`absolute top-12 right-2.5 bg-black rounded-lg shadow-md z-10 p-2 ${"hidden"} md:hidden`), true) + " svelte-197nckd"}"><ul class="flex flex-col"><li class="p-2"><button class="flex items-center justify-center px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50 nav-button svelte-197nckd">Connect
-                ${validate_component(WalletIcon, "WalletIcon").$$render($$result, { className: "ml-2 h-6 w-6 mt-1" }, {}, {})}</button></li></ul></div>`}</div></nav> </header>`;
+  $$result.css.add(css$6);
+  return `<header class="svelte-ae1j2n" data-svelte-h="svelte-11juch7"><nav class="text-white"><div class="px-4 h-16 flex justify-between items-center w-full"><a href="/" class="hover:text-gray-400 flex items-center"><img src="logo.png" class="h-8" alt="logo"> <b class="ml-2">Waterway Labs</b></a></div></nav> </header>`;
 });
 const Footer = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  return `<footer class="bg-gray-900 text-white py-3" data-svelte-h="svelte-1p4bh77"><div class="container mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs"><div class="flex-1"><div class="flex justify-start"><div class="flex flex-row pl-4"><a href="https://oc.app/?ref=zv6hh-xaaaa-aaaar-ac35q-cai" target="_blank" rel="noopener noreferrer"><img src="openchat.png" class="h-4 w-auto mb-2 mr-2" alt="OpenChat"></a> <a href="https://twitter.com/beadle1989" target="_blank" rel="noopener noreferrer"><img src="twitter.png" class="h-4 w-auto mb-2 mr-2" alt="Twitter"></a> <a href="https://github.com/jamesbeadle" target="_blank" rel="noopener noreferrer"><img src="github.png" class="h-4 w-auto mb-2" alt="GitHub"></a></div></div> <div class="flex justify-start"><div class="flex flex-col sm:flex-row sm:space-x-2 pl-4"><a href="/terms" class="hover:text-gray-300">Terms &amp; Conditions</a></div></div></div> <div class="flex-0"><a href="/"><b class="px-4 mt-2 sm:mt-0 sm:px-10 flex items-center">Waterway Labs</b></a></div> <div class="flex-1"><div class="flex justify-end"><div class="text-right px-4 sm:px-0 mt-1 sm:mt-0 md:mr-4">Waterway Labs Ltd (Reg: 15281491)</div></div></div></div></footer>`;
+  return `<footer class="bg-gray-600 text-white py-3" data-svelte-h="svelte-1i4eenv"><div class="container mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs"><div class="flex-1"><div class="flex justify-start"><div class="flex flex-row pl-4"><a href="https://oc.app/?ref=zv6hh-xaaaa-aaaar-ac35q-cai" target="_blank" rel="noopener noreferrer"><img src="openchat.png" class="h-4 w-auto mb-2 mr-2" alt="OpenChat"></a> <a href="https://github.com/jamesbeadle" target="_blank" rel="noopener noreferrer"><img src="github.png" class="h-4 w-auto mb-2" alt="GitHub"></a></div></div></div> <div class="flex-0"><a href="/"><b class="px-4 mt-2 sm:mt-0 sm:px-10 flex items-center">Waterway Labs</b></a></div> <div class="flex-1"><div class="flex justify-end"><div class="text-right px-4 sm:px-0 mt-1 sm:mt-0 md:mr-4">Waterway Labs Ltd (UK Reg: 15281491)</div></div></div></div></footer>`;
 });
-const toast_svelte_svelte_type_style_lang = "";
+const DEFAULT_ICON_SIZE = 20;
+const core = {
+  close: "Close",
+  back: "Back",
+  menu: "Open menu to access navigation options",
+  collapse: "Collapse",
+  expand: "Expand",
+  copy: "Copy to clipboard"
+};
+const theme = {
+  switch_theme: "Switch theme"
+};
+const progress = {
+  completed: "Completed",
+  in_progress: "In progress"
+};
+const en = {
+  core,
+  theme,
+  progress
+};
+const i18n = readable({
+  lang: "en",
+  ...en
+});
+const layoutBottomOffset = writable(0);
+const initBusyStore = () => {
+  const DEFAULT_STATE = [];
+  const { subscribe: subscribe2, update, set } = writable(DEFAULT_STATE);
+  return {
+    subscribe: subscribe2,
+    /**
+     * Show the busy-screen if not visible
+     */
+    startBusy({ initiator: newInitiator, text: text2 }) {
+      update((state) => [
+        ...state.filter(({ initiator }) => newInitiator !== initiator),
+        { initiator: newInitiator, text: text2 }
+      ]);
+    },
+    /**
+     * Hide the busy-screen if no other initiators are done
+     */
+    stopBusy(initiatorToRemove) {
+      update((state) => state.filter(({ initiator }) => initiator !== initiatorToRemove));
+    },
+    resetForTesting() {
+      set(DEFAULT_STATE);
+    }
+  };
+};
+const busyStore = initBusyStore();
+const busy = derived(busyStore, ($busyStore) => $busyStore.length > 0);
+const busyMessage = derived(busyStore, ($busyStore) => $busyStore.reverse().find(({ text: text2 }) => nonNullish(text2))?.text);
+const css$5 = {
+  code: ".medium.svelte-85668t{--spinner-size:30px}.small.svelte-85668t{--spinner-size:calc(var(--line-height-standard) * 1rem)}.tiny.svelte-85668t{--spinner-size:calc(var(--line-height-standard) * 0.5rem)}svg.svelte-85668t{width:var(--spinner-size);height:var(--spinner-size);animation:spinner-linear-rotate 2000ms linear infinite;position:absolute;top:calc(50% - var(--spinner-size) / 2);left:calc(50% - var(--spinner-size) / 2);--radius:45px;--circumference:calc(3.1415926536 * var(--radius) * 2);--start:calc((1 - 0.05) * var(--circumference));--end:calc((1 - 0.8) * var(--circumference))}svg.inline.svelte-85668t{display:inline-block;position:relative}circle.svelte-85668t{stroke-dasharray:var(--circumference);stroke-width:10%;transform-origin:50% 50% 0;transition-property:stroke;animation-name:spinner-stroke-rotate-100;animation-duration:4000ms;animation-timing-function:cubic-bezier(0.35, 0, 0.25, 1);animation-iteration-count:infinite;fill:transparent;stroke:currentColor;transition:stroke-dashoffset 225ms linear}@keyframes spinner-linear-rotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes spinner-stroke-rotate-100{0%{stroke-dashoffset:var(--start);transform:rotate(0)}12.5%{stroke-dashoffset:var(--end);transform:rotate(0)}12.5001%{stroke-dashoffset:var(--end);transform:rotateX(180deg) rotate(72.5deg)}25%{stroke-dashoffset:var(--start);transform:rotateX(180deg) rotate(72.5deg)}25.0001%{stroke-dashoffset:var(--start);transform:rotate(270deg)}37.5%{stroke-dashoffset:var(--end);transform:rotate(270deg)}37.5001%{stroke-dashoffset:var(--end);transform:rotateX(180deg) rotate(161.5deg)}50%{stroke-dashoffset:var(--start);transform:rotateX(180deg) rotate(161.5deg)}50.0001%{stroke-dashoffset:var(--start);transform:rotate(180deg)}62.5%{stroke-dashoffset:var(--end);transform:rotate(180deg)}62.5001%{stroke-dashoffset:var(--end);transform:rotateX(180deg) rotate(251.5deg)}75%{stroke-dashoffset:var(--start);transform:rotateX(180deg) rotate(251.5deg)}75.0001%{stroke-dashoffset:var(--start);transform:rotate(90deg)}87.5%{stroke-dashoffset:var(--end);transform:rotate(90deg)}87.5001%{stroke-dashoffset:var(--end);transform:rotateX(180deg) rotate(341.5deg)}100%{stroke-dashoffset:var(--start);transform:rotateX(180deg) rotate(341.5deg)}}",
+  map: '{"version":3,"file":"Spinner.svelte","sources":["Spinner.svelte"],"sourcesContent":["<!-- adapted source: https://github.com/angular/components/tree/master/src/material/progress-spinner -->\\n<script>export let inline = false;\\nexport let size = \\"medium\\";\\n<\/script>\\n\\n<svg\\n  class:inline\\n  class={size}\\n  preserveAspectRatio=\\"xMidYMid meet\\"\\n  focusable=\\"false\\"\\n  aria-hidden=\\"true\\"\\n  data-tid=\\"spinner\\"\\n  viewBox=\\"0 0 100 100\\"><circle cx=\\"50%\\" cy=\\"50%\\" r=\\"45\\" /></svg\\n>\\n\\n<style>.medium {\\n  --spinner-size: 30px;\\n}\\n\\n.small {\\n  --spinner-size: calc(var(--line-height-standard) * 1rem);\\n}\\n\\n.tiny {\\n  --spinner-size: calc(var(--line-height-standard) * 0.5rem);\\n}\\n\\nsvg {\\n  width: var(--spinner-size);\\n  height: var(--spinner-size);\\n  animation: spinner-linear-rotate 2000ms linear infinite;\\n  position: absolute;\\n  top: calc(50% - var(--spinner-size) / 2);\\n  left: calc(50% - var(--spinner-size) / 2);\\n  --radius: 45px;\\n  --circumference: calc(3.1415926536 * var(--radius) * 2);\\n  --start: calc((1 - 0.05) * var(--circumference));\\n  --end: calc((1 - 0.8) * var(--circumference));\\n}\\nsvg.inline {\\n  display: inline-block;\\n  position: relative;\\n}\\n\\ncircle {\\n  stroke-dasharray: var(--circumference);\\n  stroke-width: 10%;\\n  transform-origin: 50% 50% 0;\\n  transition-property: stroke;\\n  animation-name: spinner-stroke-rotate-100;\\n  animation-duration: 4000ms;\\n  animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1);\\n  animation-iteration-count: infinite;\\n  fill: transparent;\\n  stroke: currentColor;\\n  transition: stroke-dashoffset 225ms linear;\\n}\\n\\n/* -global- */\\n@keyframes -global-spinner-linear-rotate {\\n  0% {\\n    transform: rotate(0deg);\\n  }\\n  100% {\\n    transform: rotate(360deg);\\n  }\\n}\\n/* -global- */\\n@keyframes -global-spinner-stroke-rotate-100 {\\n  0% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotate(0);\\n  }\\n  12.5% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotate(0);\\n  }\\n  12.5001% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotateX(180deg) rotate(72.5deg);\\n  }\\n  25% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotateX(180deg) rotate(72.5deg);\\n  }\\n  25.0001% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotate(270deg);\\n  }\\n  37.5% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotate(270deg);\\n  }\\n  37.5001% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotateX(180deg) rotate(161.5deg);\\n  }\\n  50% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotateX(180deg) rotate(161.5deg);\\n  }\\n  50.0001% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotate(180deg);\\n  }\\n  62.5% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotate(180deg);\\n  }\\n  62.5001% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotateX(180deg) rotate(251.5deg);\\n  }\\n  75% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotateX(180deg) rotate(251.5deg);\\n  }\\n  75.0001% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotate(90deg);\\n  }\\n  87.5% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotate(90deg);\\n  }\\n  87.5001% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotateX(180deg) rotate(341.5deg);\\n  }\\n  100% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotateX(180deg) rotate(341.5deg);\\n  }\\n}</style>\\n"],"names":[],"mappings":"AAeO,qBAAQ,CACb,cAAc,CAAE,IAClB,CAEA,oBAAO,CACL,cAAc,CAAE,wCAClB,CAEA,mBAAM,CACJ,cAAc,CAAE,0CAClB,CAEA,iBAAI,CACF,KAAK,CAAE,IAAI,cAAc,CAAC,CAC1B,MAAM,CAAE,IAAI,cAAc,CAAC,CAC3B,SAAS,CAAE,qBAAqB,CAAC,MAAM,CAAC,MAAM,CAAC,QAAQ,CACvD,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,KAAK,GAAG,CAAC,CAAC,CAAC,IAAI,cAAc,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CACxC,IAAI,CAAE,KAAK,GAAG,CAAC,CAAC,CAAC,IAAI,cAAc,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CACzC,QAAQ,CAAE,IAAI,CACd,eAAe,CAAE,sCAAsC,CACvD,OAAO,CAAE,uCAAuC,CAChD,KAAK,CAAE,sCACT,CACA,GAAG,qBAAQ,CACT,OAAO,CAAE,YAAY,CACrB,QAAQ,CAAE,QACZ,CAEA,oBAAO,CACL,gBAAgB,CAAE,IAAI,eAAe,CAAC,CACtC,YAAY,CAAE,GAAG,CACjB,gBAAgB,CAAE,GAAG,CAAC,GAAG,CAAC,CAAC,CAC3B,mBAAmB,CAAE,MAAM,CAC3B,cAAc,CAAE,yBAAyB,CACzC,kBAAkB,CAAE,MAAM,CAC1B,yBAAyB,CAAE,aAAa,IAAI,CAAC,CAAC,CAAC,CAAC,CAAC,IAAI,CAAC,CAAC,CAAC,CAAC,CACzD,yBAAyB,CAAE,QAAQ,CACnC,IAAI,CAAE,WAAW,CACjB,MAAM,CAAE,YAAY,CACpB,UAAU,CAAE,iBAAiB,CAAC,KAAK,CAAC,MACtC,CAGA,WAAmB,qBAAsB,CACvC,EAAG,CACD,SAAS,CAAE,OAAO,IAAI,CACxB,CACA,IAAK,CACH,SAAS,CAAE,OAAO,MAAM,CAC1B,CACF,CAEA,WAAmB,yBAA0B,CAC3C,EAAG,CACD,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,OAAO,CAAC,CACrB,CACA,KAAM,CACJ,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,OAAO,CAAC,CACrB,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,OAAO,CAC3C,CACA,GAAI,CACF,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,OAAO,CAC3C,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,OAAO,MAAM,CAC1B,CACA,KAAM,CACJ,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,OAAO,MAAM,CAC1B,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,GAAI,CACF,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,OAAO,MAAM,CAC1B,CACA,KAAM,CACJ,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,OAAO,MAAM,CAC1B,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,GAAI,CACF,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,OAAO,KAAK,CACzB,CACA,KAAM,CACJ,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,OAAO,KAAK,CACzB,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,IAAK,CACH,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACF"}'
+};
+const Spinner = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { inline = false } = $$props;
+  let { size = "medium" } = $$props;
+  if ($$props.inline === void 0 && $$bindings.inline && inline !== void 0) $$bindings.inline(inline);
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  $$result.css.add(css$5);
+  return `  <svg class="${[escape(null_to_empty(size), true) + " svelte-85668t", inline ? "inline" : ""].join(" ").trim()}" preserveAspectRatio="xMidYMid meet" focusable="false" aria-hidden="true" data-tid="spinner" viewBox="0 0 100 100"><circle cx="50%" cy="50%" r="45" class="svelte-85668t"></circle></svg>`;
+});
+const css$4 = {
+  code: "div.svelte-14plyno{z-index:calc(var(--z-index) + 1000);position:fixed;top:0;right:0;bottom:0;left:0;background:var(--backdrop);color:var(--backdrop-contrast)}.content.svelte-14plyno{display:flex;flex-direction:column;justify-content:center;align-items:center}p.svelte-14plyno{padding-bottom:var(--padding);max-width:calc(var(--section-max-width) / 2)}",
+  map: '{"version":3,"file":"BusyScreen.svelte","sources":["BusyScreen.svelte"],"sourcesContent":["<script>import { fade } from \\"svelte/transition\\";\\nimport { busy, busyMessage } from \\"../stores/busy.store\\";\\nimport Spinner from \\"./Spinner.svelte\\";\\nimport { nonNullish } from \\"@dfinity/utils\\";\\n<\/script>\\n\\n<!-- Display spinner and lock UI if busyStore is not empty -->\\n{#if $busy}\\n  <div data-tid=\\"busy\\" transition:fade|global>\\n    <div class=\\"content\\">\\n      {#if nonNullish($busyMessage)}\\n        <p>{$busyMessage}</p>\\n      {/if}\\n      <span>\\n        <Spinner inline />\\n      </span>\\n    </div>\\n  </div>\\n{/if}\\n\\n<style>div {\\n  z-index: calc(var(--z-index) + 1000);\\n  position: fixed;\\n  top: 0;\\n  right: 0;\\n  bottom: 0;\\n  left: 0;\\n  background: var(--backdrop);\\n  color: var(--backdrop-contrast);\\n}\\n\\n.content {\\n  display: flex;\\n  flex-direction: column;\\n  justify-content: center;\\n  align-items: center;\\n}\\n\\np {\\n  padding-bottom: var(--padding);\\n  max-width: calc(var(--section-max-width) / 2);\\n}</style>\\n"],"names":[],"mappings":"AAoBO,kBAAI,CACT,OAAO,CAAE,KAAK,IAAI,SAAS,CAAC,CAAC,CAAC,CAAC,IAAI,CAAC,CACpC,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,KAAK,CAAE,CAAC,CACR,MAAM,CAAE,CAAC,CACT,IAAI,CAAE,CAAC,CACP,UAAU,CAAE,IAAI,UAAU,CAAC,CAC3B,KAAK,CAAE,IAAI,mBAAmB,CAChC,CAEA,uBAAS,CACP,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAAM,CACtB,eAAe,CAAE,MAAM,CACvB,WAAW,CAAE,MACf,CAEA,gBAAE,CACA,cAAc,CAAE,IAAI,SAAS,CAAC,CAC9B,SAAS,CAAE,KAAK,IAAI,mBAAmB,CAAC,CAAC,CAAC,CAAC,CAAC,CAC9C"}'
+};
+const BusyScreen = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let $busy, $$unsubscribe_busy;
+  let $busyMessage, $$unsubscribe_busyMessage;
+  $$unsubscribe_busy = subscribe(busy, (value) => $busy = value);
+  $$unsubscribe_busyMessage = subscribe(busyMessage, (value) => $busyMessage = value);
+  $$result.css.add(css$4);
+  $$unsubscribe_busy();
+  $$unsubscribe_busyMessage();
+  return ` ${$busy ? `<div data-tid="busy" class="svelte-14plyno"><div class="content svelte-14plyno">${nonNullish($busyMessage) ? `<p class="svelte-14plyno">${escape($busyMessage)}</p>` : ``} <span>${validate_component(Spinner, "Spinner").$$render($$result, { inline: true }, {}, {})}</span></div></div>` : ``}`;
+});
+const IconCheckCircle = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { size = `24px` } = $$props;
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  return `  <svg${add_attribute("width", size, 0)}${add_attribute("height", size, 0)} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.25" y="1.25" width="21.5" height="21.5" rx="10.75" fill="var(--icon-check-circle-background, transparent)"></rect><path d="M7 11L11 15L17 9" stroke="var(--icon-check-circle-color, currentColor)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><rect x="1.25" y="1.25" width="21.5" height="21.5" rx="10.75" stroke="var(--icon-check-circle-background, currentColor)" stroke-width="1.5"></rect></svg>`;
+});
+const IconClose = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { size = `${DEFAULT_ICON_SIZE}px` } = $$props;
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  return `  <svg${add_attribute("height", size, 0)}${add_attribute("width", size, 0)} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="14.4194" y="4.52441" width="1.5" height="14" rx="0.75" transform="rotate(45 14.4194 4.52441)" fill="currentColor"></rect><rect x="4.5199" y="5.58496" width="1.5" height="14" rx="0.75" transform="rotate(-45 4.5199 5.58496)" fill="currentColor"></rect></svg>`;
+});
+const IconError = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { size = `${DEFAULT_ICON_SIZE}px` } = $$props;
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  return `  <svg xmlns="http://www.w3.org/2000/svg"${add_attribute("height", size, 0)} viewBox="0 0 24 24"${add_attribute("width", size, 0)} fill="currentColor"><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>`;
+});
+const css$3 = {
+  code: "svg.svelte-1lui9gh{vertical-align:middle}",
+  map: '{"version":3,"file":"IconInfo.svelte","sources":["IconInfo.svelte"],"sourcesContent":["<!-- source: DFINITY foundation -->\\n<script>import { DEFAULT_ICON_SIZE } from \\"../constants/constants\\";\\nexport let size = `${DEFAULT_ICON_SIZE}px`;\\n<\/script>\\n\\n<svg\\n  width={size}\\n  height={size}\\n  viewBox=\\"0 0 20 20\\"\\n  fill=\\"none\\"\\n  xmlns=\\"http://www.w3.org/2000/svg\\"\\n  data-tid=\\"icon-info\\"\\n>\\n  <path\\n    d=\\"M10.2222 17.5C14.3643 17.5 17.7222 14.1421 17.7222 10C17.7222 5.85786 14.3643 2.5 10.2222 2.5C6.08003 2.5 2.72217 5.85786 2.72217 10C2.72217 14.1421 6.08003 17.5 10.2222 17.5Z\\"\\n    stroke=\\"currentColor\\"\\n    stroke-width=\\"1.5\\"\\n    stroke-linecap=\\"round\\"\\n    stroke-linejoin=\\"round\\"\\n  />\\n  <path\\n    d=\\"M10.2222 13.3333V10\\"\\n    stroke=\\"currentColor\\"\\n    stroke-width=\\"1.5\\"\\n    stroke-linecap=\\"round\\"\\n    stroke-linejoin=\\"round\\"\\n  />\\n  <path\\n    d=\\"M10.2222 6.66699H10.2305\\"\\n    stroke=\\"currentColor\\"\\n    stroke-width=\\"1.5\\"\\n    stroke-linecap=\\"round\\"\\n    stroke-linejoin=\\"round\\"\\n  />\\n</svg>\\n\\n<style>svg {\\n  vertical-align: middle;\\n}</style>\\n"],"names":[],"mappings":"AAoCO,kBAAI,CACT,cAAc,CAAE,MAClB"}'
+};
+const IconInfo = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { size = `${DEFAULT_ICON_SIZE}px` } = $$props;
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  $$result.css.add(css$3);
+  return `  <svg${add_attribute("width", size, 0)}${add_attribute("height", size, 0)} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" data-tid="icon-info" class="svelte-1lui9gh"><path d="M10.2222 17.5C14.3643 17.5 17.7222 14.1421 17.7222 10C17.7222 5.85786 14.3643 2.5 10.2222 2.5C6.08003 2.5 2.72217 5.85786 2.72217 10C2.72217 14.1421 6.08003 17.5 10.2222 17.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M10.2222 13.3333V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M10.2222 6.66699H10.2305" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
+});
+const IconWarning = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { size = `${DEFAULT_ICON_SIZE}px` } = $$props;
+  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
+  return `  <svg xmlns="http://www.w3.org/2000/svg"${add_attribute("height", size, 0)} viewBox="0 0 24 24"${add_attribute("width", size, 0)} fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path></svg>`;
+});
+const Html = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { text: text2 = void 0 } = $$props;
+  if ($$props.text === void 0 && $$bindings.text && text2 !== void 0) $$bindings.text(text2);
+  return `${``}`;
+});
+var Theme;
+(function(Theme2) {
+  Theme2["DARK"] = "dark";
+  Theme2["LIGHT"] = "light";
+})(Theme || (Theme = {}));
+const isNode = () => typeof process !== "undefined" && process.versions != null && process.versions.node != null;
+const enumFromStringExists = ({ obj, value }) => Object.values(obj).includes(value);
+const THEME_ATTRIBUTE = "theme";
+const LOCALSTORAGE_THEME_KEY = "nnsTheme";
+const initTheme = () => {
+  if (isNode()) {
+    return void 0;
+  }
+  const theme2 = document.documentElement.getAttribute(THEME_ATTRIBUTE);
+  const initialTheme = enumFromStringExists({
+    obj: Theme,
+    value: theme2
+  }) ? theme2 : Theme.DARK;
+  applyTheme({ theme: initialTheme, preserve: false });
+  return initialTheme;
+};
+const applyTheme = ({ theme: theme2, preserve = true }) => {
+  const { documentElement, head } = document;
+  documentElement.setAttribute(THEME_ATTRIBUTE, theme2);
+  const color = getComputedStyle(documentElement).getPropertyValue("--theme-color");
+  head?.children?.namedItem("theme-color")?.setAttribute("content", color.trim());
+  if (preserve) {
+    localStorage.setItem(LOCALSTORAGE_THEME_KEY, JSON.stringify(theme2));
+  }
+};
+initTheme();
+var Menu;
+(function(Menu2) {
+  Menu2["COLLAPSED"] = "collapsed";
+  Menu2["EXPANDED"] = "expanded";
+})(Menu || (Menu = {}));
+const MENU_ATTRIBUTE = "menu";
+const LOCALSTORAGE_MENU_KEY = "nnsMenu";
+const initMenu = () => {
+  if (isNode()) {
+    return void 0;
+  }
+  const menu = document.documentElement.getAttribute(MENU_ATTRIBUTE);
+  const initialMenu2 = enumFromStringExists({
+    obj: Menu,
+    value: menu
+  }) ? menu : Menu.EXPANDED;
+  applyMenu({ menu: initialMenu2, preserve: false });
+  return initialMenu2;
+};
+const applyMenu = ({ menu, preserve = true }) => {
+  const { documentElement } = document;
+  documentElement.setAttribute(MENU_ATTRIBUTE, menu);
+  if (preserve) {
+    localStorage.setItem(LOCALSTORAGE_MENU_KEY, JSON.stringify(menu));
+  }
+};
+const initialMenu = initMenu();
+const initMenuStore = () => {
+  const { subscribe: subscribe2, update } = writable(initialMenu);
+  return {
+    subscribe: subscribe2,
+    toggle: () => {
+      update((state) => {
+        const menu = state === Menu.EXPANDED ? Menu.COLLAPSED : Menu.EXPANDED;
+        applyMenu({ menu, preserve: true });
+        return menu;
+      });
+    }
+  };
+};
+const menuStore = initMenuStore();
+derived(menuStore, ($menuStore) => $menuStore === Menu.COLLAPSED);
+const initToastsStore = () => {
+  const { subscribe: subscribe2, update, set } = writable([]);
+  return {
+    subscribe: subscribe2,
+    show({ id, ...rest }) {
+      const toastId = id ?? Symbol("toast");
+      update((messages) => {
+        return [...messages, { ...rest, id: toastId }];
+      });
+      return toastId;
+    },
+    hide(idToHide) {
+      update((messages) => messages.filter(({ id }) => id !== idToHide));
+    },
+    update({ id, content }) {
+      update((messages) => (
+        // use map to preserve order
+        messages.map((message) => {
+          if (message.id !== id) {
+            return message;
+          }
+          return {
+            ...message,
+            ...content
+          };
+        })
+      ));
+    },
+    reset(levels) {
+      if (nonNullish(levels) && levels.length > 0) {
+        update((messages) => messages.filter(({ level }) => !levels.includes(level)));
+        return;
+      }
+      set([]);
+    }
+  };
+};
+const toastsStore = initToastsStore();
 const css$2 = {
-  code: "@keyframes svelte-1pzngus-fadeIn{from{opacity:0}to{opacity:1}}@keyframes svelte-1pzngus-fadeOut{from{opacity:1}to{opacity:0}}.toast-panel.svelte-1pzngus{animation-name:svelte-1pzngus-fadeIn, svelte-1pzngus-fadeOut;animation-duration:0.2s, 1s;animation-delay:0s, 2s;animation-fill-mode:forwards;position:fixed;z-index:9999 !important}",
-  map: null
+  code: ".toast.svelte-w1j1kj.svelte-w1j1kj{display:flex;justify-content:space-between;align-items:center;gap:var(--padding-1_5x);background:var(--overlay-background);color:var(--overlay-background-contrast);--button-secondary-background:var(--focus-background);border-radius:var(--border-radius);box-shadow:var(--strong-shadow, 8px 8px 16px 0 rgba(0, 0, 0, 0.25));padding:var(--padding-1_5x);box-sizing:border-box}.toast.inverted.svelte-w1j1kj.svelte-w1j1kj{background:var(--toast-inverted-background);color:var(--toast-inverted-background-contrast)}.toast.svelte-w1j1kj .icon.svelte-w1j1kj{line-height:0}.toast.svelte-w1j1kj .icon.success.svelte-w1j1kj{color:var(--positive-emphasis)}.toast.svelte-w1j1kj .icon.info.svelte-w1j1kj{color:var(--primary)}.toast.svelte-w1j1kj .icon.warn.svelte-w1j1kj{color:var(--warning-emphasis-shade)}.toast.svelte-w1j1kj .icon.error.svelte-w1j1kj{color:var(--negative-emphasis)}.toast.svelte-w1j1kj .msg.svelte-w1j1kj{flex-grow:1;margin:0;word-break:break-word}.toast.svelte-w1j1kj .msg.scroll.svelte-w1j1kj{overflow-y:auto;max-height:calc(var(--font-size-standard) * 3 * 1.3);line-height:normal}.toast.svelte-w1j1kj .msg.truncate.svelte-w1j1kj{white-space:var(--text-white-space, nowrap);overflow:hidden;text-overflow:ellipsis}.toast.svelte-w1j1kj .msg.truncate .title.svelte-w1j1kj{white-space:var(--text-white-space, nowrap);overflow:hidden;text-overflow:ellipsis}.toast.svelte-w1j1kj .msg.clamp.svelte-w1j1kj{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}.toast.svelte-w1j1kj .msg.clamp .title.svelte-w1j1kj{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}.toast.svelte-w1j1kj .title.svelte-w1j1kj{display:block;font-size:var(--font-size-standard);line-height:var(--line-height-standard);font-weight:var(--font-weight-bold);line-height:normal}.toast.svelte-w1j1kj button.close.svelte-w1j1kj{padding:0;line-height:0;color:inherit}",
+  map: '{"version":3,"file":"Toast.svelte","sources":["Toast.svelte"],"sourcesContent":["<script>import { toastsStore } from \\"../stores/toasts.store\\";\\nimport { fade, fly } from \\"svelte/transition\\";\\nimport { i18n } from \\"../stores/i18n\\";\\nimport { onDestroy, onMount } from \\"svelte\\";\\nimport Spinner from \\"./Spinner.svelte\\";\\nimport IconWarning from \\"../icons/IconWarning.svelte\\";\\nimport IconClose from \\"../icons/IconClose.svelte\\";\\nimport IconInfo from \\"../icons/IconInfo.svelte\\";\\nimport IconCheckCircle from \\"../icons/IconCheckCircle.svelte\\";\\nimport IconError from \\"../icons/IconError.svelte\\";\\nimport { DEFAULT_ICON_SIZE } from \\"../constants/constants\\";\\nimport { isNullish, nonNullish } from \\"@dfinity/utils\\";\\nimport Html from \\"./Html.svelte\\";\\nexport let msg;\\nconst iconMapper = (level2) => ({\\n  [\\"success\\"]: IconCheckCircle,\\n  [\\"warn\\"]: IconWarning,\\n  [\\"error\\"]: IconError,\\n  [\\"info\\"]: IconInfo,\\n  [\\"custom\\"]: void 0\\n})[level2];\\nconst close = () => toastsStore.hide(msg.id);\\nlet text;\\nlet level;\\nlet spinner;\\nlet title;\\nlet overflow;\\nlet position;\\nlet icon;\\nlet theme;\\nlet renderAsHtml;\\n$:\\n  ({\\n    text,\\n    level,\\n    spinner,\\n    title,\\n    overflow,\\n    position,\\n    icon,\\n    theme,\\n    renderAsHtml\\n  } = msg);\\nlet scroll;\\n$:\\n  scroll = overflow === void 0 || overflow === \\"scroll\\";\\nlet truncate;\\n$:\\n  truncate = overflow === \\"truncate\\";\\nlet clamp;\\n$:\\n  clamp = overflow === \\"clamp\\";\\nlet timeoutId = void 0;\\nconst autoHide = () => {\\n  const { duration } = msg;\\n  if (isNullish(duration)) {\\n    return;\\n  }\\n  timeoutId = setTimeout(close, duration);\\n};\\nconst cleanUpAutoHide = () => {\\n  if (isNullish(timeoutId)) {\\n    return;\\n  }\\n  clearTimeout(timeoutId);\\n};\\nconst minHeightMessage = `min-height: ${DEFAULT_ICON_SIZE}px;`;\\nonMount(autoHide);\\nonDestroy(cleanUpAutoHide);\\n<\/script>\\n\\n<div\\n  role=\\"dialog\\"\\n  class={`toast ${theme ?? \\"themed\\"}`}\\n  in:fly|global={{ y: (position === \\"top\\" ? -1 : 1) * 100, duration: 200 }}\\n  out:fade|global={{ delay: 100 }}\\n>\\n  <div class=\\"icon {level}\\" aria-hidden=\\"true\\">\\n    {#if spinner}\\n      <Spinner size=\\"small\\" inline />\\n    {:else if nonNullish(icon)}\\n      <svelte:component this={icon} />\\n    {:else if iconMapper(level)}\\n      <svelte:component this={iconMapper(level)} size={DEFAULT_ICON_SIZE} />\\n    {/if}\\n  </div>\\n\\n  <p\\n    class=\\"msg\\"\\n    class:truncate\\n    class:clamp\\n    class:scroll\\n    style={minHeightMessage}\\n  >\\n    {#if nonNullish(title)}\\n      <span class=\\"title\\">{title}</span>\\n    {/if}\\n    {#if renderAsHtml}\\n      <Html {text} />\\n    {:else}\\n      {text}\\n    {/if}\\n  </p>\\n\\n  <button class=\\"close\\" on:click={close} aria-label={$i18n.core.close}\\n    ><IconClose /></button\\n  >\\n</div>\\n\\n<style>.toast {\\n  display: flex;\\n  justify-content: space-between;\\n  align-items: center;\\n  gap: var(--padding-1_5x);\\n  background: var(--overlay-background);\\n  color: var(--overlay-background-contrast);\\n  --button-secondary-background: var(--focus-background);\\n  border-radius: var(--border-radius);\\n  box-shadow: var(--strong-shadow, 8px 8px 16px 0 rgba(0, 0, 0, 0.25));\\n  padding: var(--padding-1_5x);\\n  box-sizing: border-box;\\n}\\n.toast.inverted {\\n  background: var(--toast-inverted-background);\\n  color: var(--toast-inverted-background-contrast);\\n}\\n.toast .icon {\\n  line-height: 0;\\n}\\n.toast .icon.success {\\n  color: var(--positive-emphasis);\\n}\\n.toast .icon.info {\\n  color: var(--primary);\\n}\\n.toast .icon.warn {\\n  color: var(--warning-emphasis-shade);\\n}\\n.toast .icon.error {\\n  color: var(--negative-emphasis);\\n}\\n.toast .msg {\\n  flex-grow: 1;\\n  margin: 0;\\n  word-break: break-word;\\n}\\n.toast .msg.scroll {\\n  overflow-y: auto;\\n  max-height: calc(var(--font-size-standard) * 3 * 1.3);\\n  line-height: normal;\\n}\\n.toast .msg.truncate {\\n  white-space: var(--text-white-space, nowrap);\\n  overflow: hidden;\\n  text-overflow: ellipsis;\\n}\\n.toast .msg.truncate .title {\\n  white-space: var(--text-white-space, nowrap);\\n  overflow: hidden;\\n  text-overflow: ellipsis;\\n}\\n.toast .msg.clamp {\\n  display: -webkit-box;\\n  -webkit-box-orient: vertical;\\n  -webkit-line-clamp: 3;\\n  overflow: hidden;\\n}\\n.toast .msg.clamp .title {\\n  display: -webkit-box;\\n  -webkit-box-orient: vertical;\\n  -webkit-line-clamp: 2;\\n  overflow: hidden;\\n}\\n.toast .title {\\n  display: block;\\n  font-size: var(--font-size-standard);\\n  line-height: var(--line-height-standard);\\n  font-weight: var(--font-weight-bold);\\n  line-height: normal;\\n}\\n.toast button.close {\\n  padding: 0;\\n  line-height: 0;\\n  color: inherit;\\n}</style>\\n"],"names":[],"mappings":"AA6GO,kCAAO,CACZ,OAAO,CAAE,IAAI,CACb,eAAe,CAAE,aAAa,CAC9B,WAAW,CAAE,MAAM,CACnB,GAAG,CAAE,IAAI,cAAc,CAAC,CACxB,UAAU,CAAE,IAAI,oBAAoB,CAAC,CACrC,KAAK,CAAE,IAAI,6BAA6B,CAAC,CACzC,6BAA6B,CAAE,uBAAuB,CACtD,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,eAAe,CAAC,mCAAmC,CAAC,CACpE,OAAO,CAAE,IAAI,cAAc,CAAC,CAC5B,UAAU,CAAE,UACd,CACA,MAAM,qCAAU,CACd,UAAU,CAAE,IAAI,2BAA2B,CAAC,CAC5C,KAAK,CAAE,IAAI,oCAAoC,CACjD,CACA,oBAAM,CAAC,mBAAM,CACX,WAAW,CAAE,CACf,CACA,oBAAM,CAAC,KAAK,sBAAS,CACnB,KAAK,CAAE,IAAI,mBAAmB,CAChC,CACA,oBAAM,CAAC,KAAK,mBAAM,CAChB,KAAK,CAAE,IAAI,SAAS,CACtB,CACA,oBAAM,CAAC,KAAK,mBAAM,CAChB,KAAK,CAAE,IAAI,wBAAwB,CACrC,CACA,oBAAM,CAAC,KAAK,oBAAO,CACjB,KAAK,CAAE,IAAI,mBAAmB,CAChC,CACA,oBAAM,CAAC,kBAAK,CACV,SAAS,CAAE,CAAC,CACZ,MAAM,CAAE,CAAC,CACT,UAAU,CAAE,UACd,CACA,oBAAM,CAAC,IAAI,qBAAQ,CACjB,UAAU,CAAE,IAAI,CAChB,UAAU,CAAE,KAAK,IAAI,oBAAoB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CACrD,WAAW,CAAE,MACf,CACA,oBAAM,CAAC,IAAI,uBAAU,CACnB,WAAW,CAAE,IAAI,kBAAkB,CAAC,OAAO,CAAC,CAC5C,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,QACjB,CACA,oBAAM,CAAC,IAAI,SAAS,CAAC,oBAAO,CAC1B,WAAW,CAAE,IAAI,kBAAkB,CAAC,OAAO,CAAC,CAC5C,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,QACjB,CACA,oBAAM,CAAC,IAAI,oBAAO,CAChB,OAAO,CAAE,WAAW,CACpB,kBAAkB,CAAE,QAAQ,CAC5B,kBAAkB,CAAE,CAAC,CACrB,QAAQ,CAAE,MACZ,CACA,oBAAM,CAAC,IAAI,MAAM,CAAC,oBAAO,CACvB,OAAO,CAAE,WAAW,CACpB,kBAAkB,CAAE,QAAQ,CAC5B,kBAAkB,CAAE,CAAC,CACrB,QAAQ,CAAE,MACZ,CACA,oBAAM,CAAC,oBAAO,CACZ,OAAO,CAAE,KAAK,CACd,SAAS,CAAE,IAAI,oBAAoB,CAAC,CACpC,WAAW,CAAE,IAAI,sBAAsB,CAAC,CACxC,WAAW,CAAE,IAAI,kBAAkB,CAAC,CACpC,WAAW,CAAE,MACf,CACA,oBAAM,CAAC,MAAM,oBAAO,CAClB,OAAO,CAAE,CAAC,CACV,WAAW,CAAE,CAAC,CACd,KAAK,CAAE,OACT"}'
 };
 const Toast = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let $toastStore, $$unsubscribe_toastStore;
-  $$unsubscribe_toastStore = subscribe(toastStore, (value) => $toastStore = value);
+  let $i18n, $$unsubscribe_i18n;
+  $$unsubscribe_i18n = subscribe(i18n, (value) => $i18n = value);
+  let { msg } = $$props;
+  const iconMapper = (level2) => ({
+    ["success"]: IconCheckCircle,
+    ["warn"]: IconWarning,
+    ["error"]: IconError,
+    ["info"]: IconInfo,
+    ["custom"]: void 0
+  })[level2];
+  let text2;
+  let level;
+  let spinner;
+  let title;
+  let overflow;
+  let position;
+  let icon;
+  let theme2;
+  let renderAsHtml;
+  let scroll;
+  let truncate;
+  let clamp;
+  let timeoutId = void 0;
+  const cleanUpAutoHide = () => {
+    if (isNullish(timeoutId)) {
+      return;
+    }
+    clearTimeout(timeoutId);
+  };
+  const minHeightMessage = `min-height: ${DEFAULT_ICON_SIZE}px;`;
+  onDestroy(cleanUpAutoHide);
+  if ($$props.msg === void 0 && $$bindings.msg && msg !== void 0) $$bindings.msg(msg);
   $$result.css.add(css$2);
-  $$unsubscribe_toastStore();
-  return `${$toastStore.visible ? `<div class="${escape(null_to_empty(`fixed inset-x-0 bottom-0 text-white text-center py-2 toast-panel-${$toastStore.type}`), true) + " svelte-1pzngus"}">${escape($toastStore.message)}</div>` : ``}`;
+  ({ text: text2, level, spinner, title, overflow, position, icon, theme: theme2, renderAsHtml } = msg);
+  scroll = overflow === void 0 || overflow === "scroll";
+  truncate = overflow === "truncate";
+  clamp = overflow === "clamp";
+  $$unsubscribe_i18n();
+  return `<div role="dialog" class="${escape(null_to_empty(`toast ${theme2 ?? "themed"}`), true) + " svelte-w1j1kj"}"><div class="${"icon " + escape(level, true) + " svelte-w1j1kj"}" aria-hidden="true">${spinner ? `${validate_component(Spinner, "Spinner").$$render($$result, { size: "small", inline: true }, {}, {})}` : `${nonNullish(icon) ? `${validate_component(icon || missing_component, "svelte:component").$$render($$result, {}, {}, {})}` : `${iconMapper(level) ? `${validate_component(iconMapper(level) || missing_component, "svelte:component").$$render($$result, { size: DEFAULT_ICON_SIZE }, {}, {})}` : ``}`}`}</div> <p class="${[
+    "msg svelte-w1j1kj",
+    (truncate ? "truncate" : "") + " " + (clamp ? "clamp" : "") + " " + (scroll ? "scroll" : "")
+  ].join(" ").trim()}"${add_attribute("style", minHeightMessage, 0)}>${nonNullish(title) ? `<span class="title svelte-w1j1kj">${escape(title)}</span>` : ``} ${renderAsHtml ? `${validate_component(Html, "Html").$$render($$result, { text: text2 }, {}, {})}` : `${escape(text2)}`}</p> <button class="close svelte-w1j1kj"${add_attribute("aria-label", $i18n.core.close, 0)}>${validate_component(IconClose, "IconClose").$$render($$result, {}, {}, {})}</button> </div>`;
 });
-const LoadingIcon_svelte_svelte_type_style_lang = "";
 const css$1 = {
-  code: "@keyframes svelte-1ormd53-pulse{0%,100%{fill:#ffffff}50%{fill:#2ce3a6}}@keyframes svelte-1ormd53-pulse-text{0%,100%{color:#ffffff}50%{color:#2ce3a6}}.pulse-color.svelte-1ormd53{animation:svelte-1ormd53-pulse 2s infinite}.pulse-text-color.svelte-1ormd53{animation:svelte-1ormd53-pulse-text 2s infinite}",
-  map: null
+  code: ".wrapper.svelte-24m335{position:fixed;left:50%;transform:translate(-50%, 0);bottom:calc(var(--layout-bottom-offset, 0) + var(--padding-2x));width:calc(100% - var(--padding-8x) - var(--padding-0_5x));display:flex;flex-direction:column;gap:var(--padding);z-index:var(--toast-info-z-index)}.wrapper.error.svelte-24m335{z-index:var(--toast-error-z-index)}@media(min-width: 1024px){.wrapper.svelte-24m335{max-width:calc(var(--section-max-width) - var(--padding-2x))}}.top.svelte-24m335{top:calc(var(--header-height) + var(--padding-3x));bottom:unset;width:calc(100% - var(--padding-6x))}@media(min-width: 1024px){.top.svelte-24m335{right:var(--padding-2x);left:unset;transform:none;max-width:calc(var(--section-max-width) / 1.5 - var(--padding-2x))}}",
+  map: '{"version":3,"file":"Toasts.svelte","sources":["Toasts.svelte"],"sourcesContent":["<script>import { toastsStore } from \\"../stores/toasts.store\\";\\nimport Toast from \\"./Toast.svelte\\";\\nimport { layoutBottomOffset } from \\"../stores/layout.store\\";\\nexport let position = \\"bottom\\";\\nlet toasts = [];\\n$:\\n  toasts = $toastsStore.filter(\\n    ({ position: pos }) => (pos ?? \\"bottom\\") === position\\n  );\\nlet hasErrors;\\n$:\\n  hasErrors = toasts.find(({ level }) => [\\"error\\", \\"warn\\"].includes(level)) !== void 0;\\n<\/script>\\n\\n{#if toasts.length > 0}\\n  <div\\n    class={`wrapper ${position}`}\\n    class:error={hasErrors}\\n    style={`--layout-bottom-offset: ${$layoutBottomOffset}px`}\\n  >\\n    {#each toasts as msg (msg.id)}\\n      <Toast {msg} />\\n    {/each}\\n  </div>\\n{/if}\\n\\n<style>.wrapper {\\n  position: fixed;\\n  left: 50%;\\n  transform: translate(-50%, 0);\\n  bottom: calc(var(--layout-bottom-offset, 0) + var(--padding-2x));\\n  width: calc(100% - var(--padding-8x) - var(--padding-0_5x));\\n  display: flex;\\n  flex-direction: column;\\n  gap: var(--padding);\\n  z-index: var(--toast-info-z-index);\\n}\\n.wrapper.error {\\n  z-index: var(--toast-error-z-index);\\n}\\n@media (min-width: 1024px) {\\n  .wrapper {\\n    max-width: calc(var(--section-max-width) - var(--padding-2x));\\n  }\\n}\\n\\n.top {\\n  top: calc(var(--header-height) + var(--padding-3x));\\n  bottom: unset;\\n  width: calc(100% - var(--padding-6x));\\n}\\n@media (min-width: 1024px) {\\n  .top {\\n    right: var(--padding-2x);\\n    left: unset;\\n    transform: none;\\n    max-width: calc(var(--section-max-width) / 1.5 - var(--padding-2x));\\n  }\\n}</style>\\n"],"names":[],"mappings":"AA0BO,sBAAS,CACd,QAAQ,CAAE,KAAK,CACf,IAAI,CAAE,GAAG,CACT,SAAS,CAAE,UAAU,IAAI,CAAC,CAAC,CAAC,CAAC,CAC7B,MAAM,CAAE,KAAK,IAAI,sBAAsB,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,IAAI,YAAY,CAAC,CAAC,CAChE,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,YAAY,CAAC,CAAC,CAAC,CAAC,IAAI,cAAc,CAAC,CAAC,CAC3D,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAAM,CACtB,GAAG,CAAE,IAAI,SAAS,CAAC,CACnB,OAAO,CAAE,IAAI,oBAAoB,CACnC,CACA,QAAQ,oBAAO,CACb,OAAO,CAAE,IAAI,qBAAqB,CACpC,CACA,MAAO,YAAY,MAAM,CAAE,CACzB,sBAAS,CACP,SAAS,CAAE,KAAK,IAAI,mBAAmB,CAAC,CAAC,CAAC,CAAC,IAAI,YAAY,CAAC,CAC9D,CACF,CAEA,kBAAK,CACH,GAAG,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,CAAC,CAAC,IAAI,YAAY,CAAC,CAAC,CACnD,MAAM,CAAE,KAAK,CACb,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,YAAY,CAAC,CACtC,CACA,MAAO,YAAY,MAAM,CAAE,CACzB,kBAAK,CACH,KAAK,CAAE,IAAI,YAAY,CAAC,CACxB,IAAI,CAAE,KAAK,CACX,SAAS,CAAE,IAAI,CACf,SAAS,CAAE,KAAK,IAAI,mBAAmB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,IAAI,YAAY,CAAC,CACpE,CACF"}'
 };
-const LoadingIcon = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let $loadingText, $$unsubscribe_loadingText;
-  $$unsubscribe_loadingText = subscribe(loadingText, (value) => $loadingText = value);
-  let { className = "" } = $$props;
-  if ($$props.className === void 0 && $$bindings.className && className !== void 0)
-    $$bindings.className(className);
+const Toasts = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let $toastsStore, $$unsubscribe_toastsStore;
+  let $layoutBottomOffset, $$unsubscribe_layoutBottomOffset;
+  $$unsubscribe_toastsStore = subscribe(toastsStore, (value) => $toastsStore = value);
+  $$unsubscribe_layoutBottomOffset = subscribe(layoutBottomOffset, (value) => $layoutBottomOffset = value);
+  let { position = "bottom" } = $$props;
+  let toasts = [];
+  let hasErrors;
+  if ($$props.position === void 0 && $$bindings.position && position !== void 0) $$bindings.position(position);
   $$result.css.add(css$1);
-  $$unsubscribe_loadingText();
-  return `<div class="flex justify-center items-center h-screen"><div class="${escape(null_to_empty(`${className} flex flex-col justify-center items-center h-screen pulse-text-color`), true) + " svelte-1ormd53"}"><img src="logo.png" alt="logo"> ${escape($loadingText)}</div> </div>`;
+  toasts = $toastsStore.filter(({ position: pos }) => (pos ?? "bottom") === position);
+  hasErrors = toasts.find(({ level }) => ["error", "warn"].includes(level)) !== void 0;
+  $$unsubscribe_toastsStore();
+  $$unsubscribe_layoutBottomOffset();
+  return `${toasts.length > 0 ? `<div class="${[
+    escape(null_to_empty(`wrapper ${position}`), true) + " svelte-24m335",
+    hasErrors ? "error" : ""
+  ].join(" ").trim()}"${add_attribute("style", `--layout-bottom-offset: ${$layoutBottomOffset}px`, 0)}>${each(toasts, (msg) => {
+    return `${validate_component(Toast, "Toast").$$render($$result, { msg }, {}, {})}`;
+  })}</div>` : ``}`;
 });
-const app = "";
-const Layout_svelte_svelte_type_style_lang = "";
 const css = {
-  code: ".loading-overlay.svelte-1ynyyny{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;justify-content:center;align-items:center;background-color:rgba(0, 0, 0, 0.5);z-index:10}main.svelte-1ynyyny{flex:1;display:flex;flex-direction:column}",
-  map: null
+  code: "main.svelte-cbh2q9{flex:1;display:flex;flex-direction:column}",
+  map: '{"version":3,"file":"Layout.svelte","sources":["Layout.svelte"],"sourcesContent":["<script lang=\\"ts\\">import { onMount } from \\"svelte\\";\\nimport { fade } from \\"svelte/transition\\";\\nimport { browser } from \\"$app/environment\\";\\nimport Header from \\"$lib/shared/Header.svelte\\";\\nimport Footer from \\"$lib/shared/Footer.svelte\\";\\nimport \\"../app.css\\";\\nimport { BusyScreen, Spinner, Toasts } from \\"@dfinity/gix-components\\";\\nconst init = async () => await Promise.all([syncAuthStore()]);\\nconst syncAuthStore = async () => {\\n    if (!browser) {\\n        return;\\n    }\\n};\\n$: (() => {\\n    if (!browser) {\\n        return;\\n    }\\n    const spinner = document.querySelector(\\"body > #app-spinner\\");\\n    spinner?.remove();\\n})();\\n<\/script>\\n\\n<svelte:window on:storage={syncAuthStore} />\\n{#await init()}\\n  <div in:fade>\\n    <Spinner />\\n  </div>\\n{:then _}\\n  <div class=\\"flex flex-col h-screen justify-between default-text\\">\\n    <Header />\\n    <main class=\\"page-wrapper\\">\\n      <slot />\\n    </main>\\n    <Toasts />\\n    <Footer />\\n  </div>\\n{/await}\\n\\n<BusyScreen />\\n\\n<style>\\n  main {\\n    flex: 1;\\n    display: flex;\\n    flex-direction: column;\\n  }</style>\\n"],"names":[],"mappings":"AAyCE,kBAAK,CACH,IAAI,CAAE,CAAC,CACP,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAClB"}'
 };
 const Layout = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let $isLoading, $$unsubscribe_isLoading;
-  $$unsubscribe_isLoading = subscribe(isLoading, (value2) => $isLoading = value2);
-  let value = { "__CANDID_UI_CANISTER_ID": "c2lt4-zmaaa-aaaaa-qaaiq-cai", "BACKEND_CANISTER_ID": "c5kvi-uuaaa-aaaaa-qaaia-cai", "FRONTEND_CANISTER_ID": "ctiya-peaaa-aaaaa-qaaja-cai", "DFX_NETWORK": "local" }.DFX_NETWORK;
-  console.log(value);
+  const init2 = async () => await Promise.all([syncAuthStore()]);
+  const syncAuthStore = async () => {
+    {
+      return;
+    }
+  };
   $$result.css.add(css);
-  $$unsubscribe_isLoading();
-  return `<div class="flex flex-col h-screen justify-between">${validate_component(Header, "Header").$$render($$result, {}, {}, {})} ${$isLoading ? `<div class="loading-overlay svelte-1ynyyny">${validate_component(LoadingIcon, "LoadingIcon").$$render($$result, {}, {}, {})}</div>` : `<main class="svelte-1ynyyny">${slots.default ? slots.default({}) : ``}</main> ${validate_component(Toast, "Toast").$$render($$result, {}, {}, {})}`} ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})} </div>`;
+  return ` ${function(__value) {
+    if (is_promise(__value)) {
+      __value.then(null, noop);
+      return ` <div>${validate_component(Spinner, "Spinner").$$render($$result, {}, {}, {})}</div> `;
+    }
+    return function(_) {
+      return ` <div class="flex flex-col h-screen justify-between default-text">${validate_component(Header, "Header").$$render($$result, {}, {}, {})} <main class="page-wrapper svelte-cbh2q9">${slots.default ? slots.default({}) : ``}</main> ${validate_component(Toasts, "Toasts").$$render($$result, {}, {}, {})} ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}</div> `;
+    }();
+  }(init2())} ${validate_component(BusyScreen, "BusyScreen").$$render($$result, {}, {}, {})}`;
+});
+const Page$1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  return `${validate_component(Layout, "Layout").$$render($$result, {}, {}, {
+    default: () => {
+      return `<div class="flex items-center justify-center h-full flex-col" data-svelte-h="svelte-ul7zm2"><img src="logo.png" alt="logo" class="w-24"> <div class="text-center"><h1 class="text-4xl font-bold">Welcome to Waterway Labs</h1> <p class="mt-4">Our mission is to decentralise key services using the Internet Computer blockchain.</p> <a href="/projects"><button class="btn mt-4">Projects</button></a></div></div>`;
+    }
+  })}`;
 });
 const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   return `${validate_component(Layout, "Layout").$$render($$result, {}, {}, {
     default: () => {
-      return `<h1 data-svelte-h="svelte-2cpe0">Waterway Labs</h1>`;
+      return `<div class="m-4 mx-8" data-svelte-h="svelte-ey6t2h"><p class="text-lg my-4">Information on all projects under development by Waterway Labs can be found here:</p> <div class="flex flex-col space-y-2"><a href="https://openfpl.xyz/whitepaper">https://openfpl.xyz/whitepaper</a> <a href="https://icpfa.org/whitepaper">https://icpfa.org/whitepaper</a> <a href="https://companiesdao.com/whitepaper">https://companiesdao.com/whitepaper</a> <a href="https://footballgod.xyz/whitepaper">https://footballgod.xyz/whitepaper</a> <a href="https://openbook.services/whitepaper">https://openbook.services/whitepaper</a> <a href="https://opencare.services/whitepaper">https://opencare.services/whitepaper</a> <a href="https://golfpad.xyz/whitepaper">https://golfpad.xyz/whitepaper</a> <a href="https://doxxed.app/whitepaper">https://doxxed.app/whitepaper</a> <a href="https://icp.casino/whitepaper">https://icp.casino/whitepaper</a> <a href="https://betty.bingo/whitepaper">https://betty.bingo/whitepaper</a> <a href="https://opencore.live/whitepaper">https://opencore.live/whitepaper</a></div> <p class="text-lg my-4">We will also be assisting with development of the following projects:</p> <div class="flex h-full flex-col space-y-2"><a href="https://chainofcommand.xyz/whitepaper">https://chainofcommand.xyz/whitepaper</a> <a href="https://opendna.xyz/whitepaper">https://opendna.xyz/whitepaper</a> <a href="https://opennfl.xyz/whitepaper">https://opennfl.xyz/whitepaper</a></div></div>`;
     }
   })}`;
 });
 export {
   Error$1 as E,
   Layout$1 as L,
-  Page as P,
+  Page$1 as P,
   Server as S,
   set_building as a,
-  set_private_env as b,
-  set_public_env as c,
+  set_manifest as b,
+  set_prerendering as c,
+  set_private_env as d,
+  set_public_env as e,
+  set_read_implementation as f,
   get_hooks as g,
+  set_safe_public_env as h,
+  Page as i,
   options as o,
   set_assets as s
 };

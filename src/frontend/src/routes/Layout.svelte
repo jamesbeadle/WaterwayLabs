@@ -32,22 +32,13 @@
     <Spinner />
   </div>
 {:then _}
-  <div class="flex flex-col h-screen justify-between default-text">
+  <div class="flex flex-col min-h-screen">
     <Header />
-    <main class="page-wrapper">
+    <main class="flex-1 flex flex-col items-center justify-center p-4">
       <slot />
     </main>
-    <Toasts />
     <Footer />
   </div>
 {/await}
 
 <BusyScreen />
-
-<style>
-  main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-</style>
