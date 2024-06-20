@@ -3,7 +3,7 @@ import * as devalue from "devalue";
 import { Buffer } from "buffer";
 import { parse, serialize } from "cookie";
 import * as set_cookie_parser from "set-cookie-parser";
-import { nonNullish, isNullish } from "@dfinity/utils";
+import { nonNullish } from "@dfinity/utils";
 import "dompurify";
 let base = "";
 let assets = base;
@@ -935,9 +935,6 @@ function set_current_component(component) {
 function get_current_component() {
   if (!current_component) throw new Error("Function called outside component initialization");
   return current_component;
-}
-function onDestroy(fn) {
-  get_current_component().$$.on_destroy.push(fn);
 }
 function setContext(key2, context) {
   get_current_component().$$.context.set(key2, context);
@@ -3424,7 +3421,7 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "38pzhu"
+  version_hash: "1ln2fyx"
 };
 async function get_hooks() {
   return {};
@@ -3549,18 +3546,12 @@ const Error$1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   $$unsubscribe_page();
   return `<h1>${escape($page.status)}</h1> <p>${escape($page.error?.message)}</p>`;
 });
-const css$6 = {
-  code: "header.svelte-ae1j2n{background-color:rgba(36, 37, 41, 0.9)}",
-  map: '{"version":3,"file":"Header.svelte","sources":["Header.svelte"],"sourcesContent":["<header>\\n  <nav class=\\"text-white\\">\\n    <div class=\\"px-4 h-16 flex justify-between items-center w-full\\">\\n      <a href=\\"/\\" class=\\"hover:text-gray-400 flex items-center\\">\\n        <img src=\\"logo.png\\" class=\\"h-8\\" alt=\\"logo\\" />\\n        <b class=\\"ml-2\\">Waterway Labs</b>\\n      </a>\\n  </nav>\\n</header>\\n\\n<style>\\n  header {\\n    background-color: rgba(36, 37, 41, 0.9);\\n  }</style>\\n"],"names":[],"mappings":"AAWE,oBAAO,CACL,gBAAgB,CAAE,KAAK,EAAE,CAAC,CAAC,EAAE,CAAC,CAAC,EAAE,CAAC,CAAC,GAAG,CACxC"}'
-};
 const Header = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  $$result.css.add(css$6);
-  return `<header class="svelte-ae1j2n" data-svelte-h="svelte-11juch7"><nav class="text-white"><div class="px-4 h-16 flex justify-between items-center w-full"><a href="/" class="hover:text-gray-400 flex items-center"><img src="logo.png" class="h-8" alt="logo"> <b class="ml-2">Waterway Labs</b></a></div></nav> </header>`;
+  return `<header class="w-full bg-WaterwayCompBlue fixed top-0 left-0 right-0 z-5 border-b border-WaterwayCompLight" data-svelte-h="svelte-112wi5s"><nav class="text-white"><div class="px-4 h-16 flex justify-between items-center w-full"><a href="/" class="flex items-center"><img src="logo.png" class="h-8" alt="logo"> <b class="ml-2">Waterway Labs</b></a></div></nav></header>`;
 });
 const Footer = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  return `<footer class="bg-gray-600 text-white py-3" data-svelte-h="svelte-1i4eenv"><div class="container mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs"><div class="flex-1"><div class="flex justify-start"><div class="flex flex-row pl-4"><a href="https://oc.app/?ref=zv6hh-xaaaa-aaaar-ac35q-cai" target="_blank" rel="noopener noreferrer"><img src="openchat.png" class="h-4 w-auto mb-2 mr-2" alt="OpenChat"></a> <a href="https://github.com/jamesbeadle" target="_blank" rel="noopener noreferrer"><img src="github.png" class="h-4 w-auto mb-2" alt="GitHub"></a></div></div></div> <div class="flex-0"><a href="/"><b class="px-4 mt-2 sm:mt-0 sm:px-10 flex items-center">Waterway Labs</b></a></div> <div class="flex-1"><div class="flex justify-end"><div class="text-right px-4 sm:px-0 mt-1 sm:mt-0 md:mr-4">Waterway Labs Ltd (UK Reg: 15281491)</div></div></div></div></footer>`;
+  return `<footer class="w-full bg-WaterwayCompDarkBlue py-3 fixed bottom-0 left-0 right-0 z-50 border-t-2 border-WaterwayCompGray" data-svelte-h="svelte-1fgqcs4"><div class="container mx-auto flex flex-col sm:flex-row items-center text-xs"><div class="flex justify-center sm:justify-start w-full sm:w-auto mb-2 sm:mb-0 sm:flex-1"><a href="https://github.com/Waterway-Labs" target="_blank" rel="noopener noreferrer"><img src="github.png" class="w-6" alt="GitHub"></a></div> <div class="flex justify-center w-full sm:w-auto sm:flex-1 text-center mb-2 sm:mb-0"><a class="flex flex-row items-center" href="/"><img src="logo.png" class="h-6 mr-2" alt="logo"> <b>Waterway Labs <span id="currentYear"></span></b></a></div> <div class="flex justify-center sm:justify-end w-full sm:w-auto sm:flex-1"><div class="text-center sm:text-right px-4">Company Reg: 15281491</div></div></div></footer>`;
 });
-const DEFAULT_ICON_SIZE = 20;
 const core = {
   close: "Close",
   back: "Back",
@@ -3581,11 +3572,10 @@ const en = {
   theme,
   progress
 };
-const i18n = readable({
+readable({
   lang: "en",
   ...en
 });
-const layoutBottomOffset = writable(0);
 const initBusyStore = () => {
   const DEFAULT_STATE = [];
   const { subscribe: subscribe2, update, set } = writable(DEFAULT_STATE);
@@ -3614,7 +3604,7 @@ const initBusyStore = () => {
 const busyStore = initBusyStore();
 const busy = derived(busyStore, ($busyStore) => $busyStore.length > 0);
 const busyMessage = derived(busyStore, ($busyStore) => $busyStore.reverse().find(({ text: text2 }) => nonNullish(text2))?.text);
-const css$5 = {
+const css$2 = {
   code: ".medium.svelte-85668t{--spinner-size:30px}.small.svelte-85668t{--spinner-size:calc(var(--line-height-standard) * 1rem)}.tiny.svelte-85668t{--spinner-size:calc(var(--line-height-standard) * 0.5rem)}svg.svelte-85668t{width:var(--spinner-size);height:var(--spinner-size);animation:spinner-linear-rotate 2000ms linear infinite;position:absolute;top:calc(50% - var(--spinner-size) / 2);left:calc(50% - var(--spinner-size) / 2);--radius:45px;--circumference:calc(3.1415926536 * var(--radius) * 2);--start:calc((1 - 0.05) * var(--circumference));--end:calc((1 - 0.8) * var(--circumference))}svg.inline.svelte-85668t{display:inline-block;position:relative}circle.svelte-85668t{stroke-dasharray:var(--circumference);stroke-width:10%;transform-origin:50% 50% 0;transition-property:stroke;animation-name:spinner-stroke-rotate-100;animation-duration:4000ms;animation-timing-function:cubic-bezier(0.35, 0, 0.25, 1);animation-iteration-count:infinite;fill:transparent;stroke:currentColor;transition:stroke-dashoffset 225ms linear}@keyframes spinner-linear-rotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes spinner-stroke-rotate-100{0%{stroke-dashoffset:var(--start);transform:rotate(0)}12.5%{stroke-dashoffset:var(--end);transform:rotate(0)}12.5001%{stroke-dashoffset:var(--end);transform:rotateX(180deg) rotate(72.5deg)}25%{stroke-dashoffset:var(--start);transform:rotateX(180deg) rotate(72.5deg)}25.0001%{stroke-dashoffset:var(--start);transform:rotate(270deg)}37.5%{stroke-dashoffset:var(--end);transform:rotate(270deg)}37.5001%{stroke-dashoffset:var(--end);transform:rotateX(180deg) rotate(161.5deg)}50%{stroke-dashoffset:var(--start);transform:rotateX(180deg) rotate(161.5deg)}50.0001%{stroke-dashoffset:var(--start);transform:rotate(180deg)}62.5%{stroke-dashoffset:var(--end);transform:rotate(180deg)}62.5001%{stroke-dashoffset:var(--end);transform:rotateX(180deg) rotate(251.5deg)}75%{stroke-dashoffset:var(--start);transform:rotateX(180deg) rotate(251.5deg)}75.0001%{stroke-dashoffset:var(--start);transform:rotate(90deg)}87.5%{stroke-dashoffset:var(--end);transform:rotate(90deg)}87.5001%{stroke-dashoffset:var(--end);transform:rotateX(180deg) rotate(341.5deg)}100%{stroke-dashoffset:var(--start);transform:rotateX(180deg) rotate(341.5deg)}}",
   map: '{"version":3,"file":"Spinner.svelte","sources":["Spinner.svelte"],"sourcesContent":["<!-- adapted source: https://github.com/angular/components/tree/master/src/material/progress-spinner -->\\n<script>export let inline = false;\\nexport let size = \\"medium\\";\\n<\/script>\\n\\n<svg\\n  class:inline\\n  class={size}\\n  preserveAspectRatio=\\"xMidYMid meet\\"\\n  focusable=\\"false\\"\\n  aria-hidden=\\"true\\"\\n  data-tid=\\"spinner\\"\\n  viewBox=\\"0 0 100 100\\"><circle cx=\\"50%\\" cy=\\"50%\\" r=\\"45\\" /></svg\\n>\\n\\n<style>.medium {\\n  --spinner-size: 30px;\\n}\\n\\n.small {\\n  --spinner-size: calc(var(--line-height-standard) * 1rem);\\n}\\n\\n.tiny {\\n  --spinner-size: calc(var(--line-height-standard) * 0.5rem);\\n}\\n\\nsvg {\\n  width: var(--spinner-size);\\n  height: var(--spinner-size);\\n  animation: spinner-linear-rotate 2000ms linear infinite;\\n  position: absolute;\\n  top: calc(50% - var(--spinner-size) / 2);\\n  left: calc(50% - var(--spinner-size) / 2);\\n  --radius: 45px;\\n  --circumference: calc(3.1415926536 * var(--radius) * 2);\\n  --start: calc((1 - 0.05) * var(--circumference));\\n  --end: calc((1 - 0.8) * var(--circumference));\\n}\\nsvg.inline {\\n  display: inline-block;\\n  position: relative;\\n}\\n\\ncircle {\\n  stroke-dasharray: var(--circumference);\\n  stroke-width: 10%;\\n  transform-origin: 50% 50% 0;\\n  transition-property: stroke;\\n  animation-name: spinner-stroke-rotate-100;\\n  animation-duration: 4000ms;\\n  animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1);\\n  animation-iteration-count: infinite;\\n  fill: transparent;\\n  stroke: currentColor;\\n  transition: stroke-dashoffset 225ms linear;\\n}\\n\\n/* -global- */\\n@keyframes -global-spinner-linear-rotate {\\n  0% {\\n    transform: rotate(0deg);\\n  }\\n  100% {\\n    transform: rotate(360deg);\\n  }\\n}\\n/* -global- */\\n@keyframes -global-spinner-stroke-rotate-100 {\\n  0% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotate(0);\\n  }\\n  12.5% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotate(0);\\n  }\\n  12.5001% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotateX(180deg) rotate(72.5deg);\\n  }\\n  25% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotateX(180deg) rotate(72.5deg);\\n  }\\n  25.0001% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotate(270deg);\\n  }\\n  37.5% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotate(270deg);\\n  }\\n  37.5001% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotateX(180deg) rotate(161.5deg);\\n  }\\n  50% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotateX(180deg) rotate(161.5deg);\\n  }\\n  50.0001% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotate(180deg);\\n  }\\n  62.5% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotate(180deg);\\n  }\\n  62.5001% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotateX(180deg) rotate(251.5deg);\\n  }\\n  75% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotateX(180deg) rotate(251.5deg);\\n  }\\n  75.0001% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotate(90deg);\\n  }\\n  87.5% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotate(90deg);\\n  }\\n  87.5001% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotateX(180deg) rotate(341.5deg);\\n  }\\n  100% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotateX(180deg) rotate(341.5deg);\\n  }\\n}</style>\\n"],"names":[],"mappings":"AAeO,qBAAQ,CACb,cAAc,CAAE,IAClB,CAEA,oBAAO,CACL,cAAc,CAAE,wCAClB,CAEA,mBAAM,CACJ,cAAc,CAAE,0CAClB,CAEA,iBAAI,CACF,KAAK,CAAE,IAAI,cAAc,CAAC,CAC1B,MAAM,CAAE,IAAI,cAAc,CAAC,CAC3B,SAAS,CAAE,qBAAqB,CAAC,MAAM,CAAC,MAAM,CAAC,QAAQ,CACvD,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,KAAK,GAAG,CAAC,CAAC,CAAC,IAAI,cAAc,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CACxC,IAAI,CAAE,KAAK,GAAG,CAAC,CAAC,CAAC,IAAI,cAAc,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CACzC,QAAQ,CAAE,IAAI,CACd,eAAe,CAAE,sCAAsC,CACvD,OAAO,CAAE,uCAAuC,CAChD,KAAK,CAAE,sCACT,CACA,GAAG,qBAAQ,CACT,OAAO,CAAE,YAAY,CACrB,QAAQ,CAAE,QACZ,CAEA,oBAAO,CACL,gBAAgB,CAAE,IAAI,eAAe,CAAC,CACtC,YAAY,CAAE,GAAG,CACjB,gBAAgB,CAAE,GAAG,CAAC,GAAG,CAAC,CAAC,CAC3B,mBAAmB,CAAE,MAAM,CAC3B,cAAc,CAAE,yBAAyB,CACzC,kBAAkB,CAAE,MAAM,CAC1B,yBAAyB,CAAE,aAAa,IAAI,CAAC,CAAC,CAAC,CAAC,CAAC,IAAI,CAAC,CAAC,CAAC,CAAC,CACzD,yBAAyB,CAAE,QAAQ,CACnC,IAAI,CAAE,WAAW,CACjB,MAAM,CAAE,YAAY,CACpB,UAAU,CAAE,iBAAiB,CAAC,KAAK,CAAC,MACtC,CAGA,WAAmB,qBAAsB,CACvC,EAAG,CACD,SAAS,CAAE,OAAO,IAAI,CACxB,CACA,IAAK,CACH,SAAS,CAAE,OAAO,MAAM,CAC1B,CACF,CAEA,WAAmB,yBAA0B,CAC3C,EAAG,CACD,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,OAAO,CAAC,CACrB,CACA,KAAM,CACJ,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,OAAO,CAAC,CACrB,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,OAAO,CAC3C,CACA,GAAI,CACF,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,OAAO,CAC3C,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,OAAO,MAAM,CAC1B,CACA,KAAM,CACJ,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,OAAO,MAAM,CAC1B,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,GAAI,CACF,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,OAAO,MAAM,CAC1B,CACA,KAAM,CACJ,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,OAAO,MAAM,CAC1B,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,GAAI,CACF,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,OAAO,KAAK,CACzB,CACA,KAAM,CACJ,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,OAAO,KAAK,CACzB,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,IAAK,CACH,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACF"}'
 };
@@ -3623,10 +3613,10 @@ const Spinner = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { size = "medium" } = $$props;
   if ($$props.inline === void 0 && $$bindings.inline && inline !== void 0) $$bindings.inline(inline);
   if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-  $$result.css.add(css$5);
+  $$result.css.add(css$2);
   return `  <svg class="${[escape(null_to_empty(size), true) + " svelte-85668t", inline ? "inline" : ""].join(" ").trim()}" preserveAspectRatio="xMidYMid meet" focusable="false" aria-hidden="true" data-tid="spinner" viewBox="0 0 100 100"><circle cx="50%" cy="50%" r="45" class="svelte-85668t"></circle></svg>`;
 });
-const css$4 = {
+const css$1 = {
   code: "div.svelte-14plyno{z-index:calc(var(--z-index) + 1000);position:fixed;top:0;right:0;bottom:0;left:0;background:var(--backdrop);color:var(--backdrop-contrast)}.content.svelte-14plyno{display:flex;flex-direction:column;justify-content:center;align-items:center}p.svelte-14plyno{padding-bottom:var(--padding);max-width:calc(var(--section-max-width) / 2)}",
   map: '{"version":3,"file":"BusyScreen.svelte","sources":["BusyScreen.svelte"],"sourcesContent":["<script>import { fade } from \\"svelte/transition\\";\\nimport { busy, busyMessage } from \\"../stores/busy.store\\";\\nimport Spinner from \\"./Spinner.svelte\\";\\nimport { nonNullish } from \\"@dfinity/utils\\";\\n<\/script>\\n\\n<!-- Display spinner and lock UI if busyStore is not empty -->\\n{#if $busy}\\n  <div data-tid=\\"busy\\" transition:fade|global>\\n    <div class=\\"content\\">\\n      {#if nonNullish($busyMessage)}\\n        <p>{$busyMessage}</p>\\n      {/if}\\n      <span>\\n        <Spinner inline />\\n      </span>\\n    </div>\\n  </div>\\n{/if}\\n\\n<style>div {\\n  z-index: calc(var(--z-index) + 1000);\\n  position: fixed;\\n  top: 0;\\n  right: 0;\\n  bottom: 0;\\n  left: 0;\\n  background: var(--backdrop);\\n  color: var(--backdrop-contrast);\\n}\\n\\n.content {\\n  display: flex;\\n  flex-direction: column;\\n  justify-content: center;\\n  align-items: center;\\n}\\n\\np {\\n  padding-bottom: var(--padding);\\n  max-width: calc(var(--section-max-width) / 2);\\n}</style>\\n"],"names":[],"mappings":"AAoBO,kBAAI,CACT,OAAO,CAAE,KAAK,IAAI,SAAS,CAAC,CAAC,CAAC,CAAC,IAAI,CAAC,CACpC,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,KAAK,CAAE,CAAC,CACR,MAAM,CAAE,CAAC,CACT,IAAI,CAAE,CAAC,CACP,UAAU,CAAE,IAAI,UAAU,CAAC,CAC3B,KAAK,CAAE,IAAI,mBAAmB,CAChC,CAEA,uBAAS,CACP,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAAM,CACtB,eAAe,CAAE,MAAM,CACvB,WAAW,CAAE,MACf,CAEA,gBAAE,CACA,cAAc,CAAE,IAAI,SAAS,CAAC,CAC9B,SAAS,CAAE,KAAK,IAAI,mBAAmB,CAAC,CAAC,CAAC,CAAC,CAAC,CAC9C"}'
 };
@@ -3635,45 +3625,10 @@ const BusyScreen = create_ssr_component(($$result, $$props, $$bindings, slots) =
   let $busyMessage, $$unsubscribe_busyMessage;
   $$unsubscribe_busy = subscribe(busy, (value) => $busy = value);
   $$unsubscribe_busyMessage = subscribe(busyMessage, (value) => $busyMessage = value);
-  $$result.css.add(css$4);
+  $$result.css.add(css$1);
   $$unsubscribe_busy();
   $$unsubscribe_busyMessage();
   return ` ${$busy ? `<div data-tid="busy" class="svelte-14plyno"><div class="content svelte-14plyno">${nonNullish($busyMessage) ? `<p class="svelte-14plyno">${escape($busyMessage)}</p>` : ``} <span>${validate_component(Spinner, "Spinner").$$render($$result, { inline: true }, {}, {})}</span></div></div>` : ``}`;
-});
-const IconCheckCircle = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { size = `24px` } = $$props;
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-  return `  <svg${add_attribute("width", size, 0)}${add_attribute("height", size, 0)} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.25" y="1.25" width="21.5" height="21.5" rx="10.75" fill="var(--icon-check-circle-background, transparent)"></rect><path d="M7 11L11 15L17 9" stroke="var(--icon-check-circle-color, currentColor)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><rect x="1.25" y="1.25" width="21.5" height="21.5" rx="10.75" stroke="var(--icon-check-circle-background, currentColor)" stroke-width="1.5"></rect></svg>`;
-});
-const IconClose = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { size = `${DEFAULT_ICON_SIZE}px` } = $$props;
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-  return `  <svg${add_attribute("height", size, 0)}${add_attribute("width", size, 0)} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="14.4194" y="4.52441" width="1.5" height="14" rx="0.75" transform="rotate(45 14.4194 4.52441)" fill="currentColor"></rect><rect x="4.5199" y="5.58496" width="1.5" height="14" rx="0.75" transform="rotate(-45 4.5199 5.58496)" fill="currentColor"></rect></svg>`;
-});
-const IconError = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { size = `${DEFAULT_ICON_SIZE}px` } = $$props;
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-  return `  <svg xmlns="http://www.w3.org/2000/svg"${add_attribute("height", size, 0)} viewBox="0 0 24 24"${add_attribute("width", size, 0)} fill="currentColor"><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path></svg>`;
-});
-const css$3 = {
-  code: "svg.svelte-1lui9gh{vertical-align:middle}",
-  map: '{"version":3,"file":"IconInfo.svelte","sources":["IconInfo.svelte"],"sourcesContent":["<!-- source: DFINITY foundation -->\\n<script>import { DEFAULT_ICON_SIZE } from \\"../constants/constants\\";\\nexport let size = `${DEFAULT_ICON_SIZE}px`;\\n<\/script>\\n\\n<svg\\n  width={size}\\n  height={size}\\n  viewBox=\\"0 0 20 20\\"\\n  fill=\\"none\\"\\n  xmlns=\\"http://www.w3.org/2000/svg\\"\\n  data-tid=\\"icon-info\\"\\n>\\n  <path\\n    d=\\"M10.2222 17.5C14.3643 17.5 17.7222 14.1421 17.7222 10C17.7222 5.85786 14.3643 2.5 10.2222 2.5C6.08003 2.5 2.72217 5.85786 2.72217 10C2.72217 14.1421 6.08003 17.5 10.2222 17.5Z\\"\\n    stroke=\\"currentColor\\"\\n    stroke-width=\\"1.5\\"\\n    stroke-linecap=\\"round\\"\\n    stroke-linejoin=\\"round\\"\\n  />\\n  <path\\n    d=\\"M10.2222 13.3333V10\\"\\n    stroke=\\"currentColor\\"\\n    stroke-width=\\"1.5\\"\\n    stroke-linecap=\\"round\\"\\n    stroke-linejoin=\\"round\\"\\n  />\\n  <path\\n    d=\\"M10.2222 6.66699H10.2305\\"\\n    stroke=\\"currentColor\\"\\n    stroke-width=\\"1.5\\"\\n    stroke-linecap=\\"round\\"\\n    stroke-linejoin=\\"round\\"\\n  />\\n</svg>\\n\\n<style>svg {\\n  vertical-align: middle;\\n}</style>\\n"],"names":[],"mappings":"AAoCO,kBAAI,CACT,cAAc,CAAE,MAClB"}'
-};
-const IconInfo = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { size = `${DEFAULT_ICON_SIZE}px` } = $$props;
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-  $$result.css.add(css$3);
-  return `  <svg${add_attribute("width", size, 0)}${add_attribute("height", size, 0)} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" data-tid="icon-info" class="svelte-1lui9gh"><path d="M10.2222 17.5C14.3643 17.5 17.7222 14.1421 17.7222 10C17.7222 5.85786 14.3643 2.5 10.2222 2.5C6.08003 2.5 2.72217 5.85786 2.72217 10C2.72217 14.1421 6.08003 17.5 10.2222 17.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M10.2222 13.3333V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M10.2222 6.66699H10.2305" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
-});
-const IconWarning = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { size = `${DEFAULT_ICON_SIZE}px` } = $$props;
-  if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-  return `  <svg xmlns="http://www.w3.org/2000/svg"${add_attribute("height", size, 0)} viewBox="0 0 24 24"${add_attribute("width", size, 0)} fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path></svg>`;
-});
-const Html = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let { text: text2 = void 0 } = $$props;
-  if ($$props.text === void 0 && $$bindings.text && text2 !== void 0) $$bindings.text(text2);
-  return `${``}`;
 });
 var Theme;
 (function(Theme2) {
@@ -3748,121 +3703,6 @@ const initMenuStore = () => {
 };
 const menuStore = initMenuStore();
 derived(menuStore, ($menuStore) => $menuStore === Menu.COLLAPSED);
-const initToastsStore = () => {
-  const { subscribe: subscribe2, update, set } = writable([]);
-  return {
-    subscribe: subscribe2,
-    show({ id, ...rest }) {
-      const toastId = id ?? Symbol("toast");
-      update((messages) => {
-        return [...messages, { ...rest, id: toastId }];
-      });
-      return toastId;
-    },
-    hide(idToHide) {
-      update((messages) => messages.filter(({ id }) => id !== idToHide));
-    },
-    update({ id, content }) {
-      update((messages) => (
-        // use map to preserve order
-        messages.map((message) => {
-          if (message.id !== id) {
-            return message;
-          }
-          return {
-            ...message,
-            ...content
-          };
-        })
-      ));
-    },
-    reset(levels) {
-      if (nonNullish(levels) && levels.length > 0) {
-        update((messages) => messages.filter(({ level }) => !levels.includes(level)));
-        return;
-      }
-      set([]);
-    }
-  };
-};
-const toastsStore = initToastsStore();
-const css$2 = {
-  code: ".toast.svelte-w1j1kj.svelte-w1j1kj{display:flex;justify-content:space-between;align-items:center;gap:var(--padding-1_5x);background:var(--overlay-background);color:var(--overlay-background-contrast);--button-secondary-background:var(--focus-background);border-radius:var(--border-radius);box-shadow:var(--strong-shadow, 8px 8px 16px 0 rgba(0, 0, 0, 0.25));padding:var(--padding-1_5x);box-sizing:border-box}.toast.inverted.svelte-w1j1kj.svelte-w1j1kj{background:var(--toast-inverted-background);color:var(--toast-inverted-background-contrast)}.toast.svelte-w1j1kj .icon.svelte-w1j1kj{line-height:0}.toast.svelte-w1j1kj .icon.success.svelte-w1j1kj{color:var(--positive-emphasis)}.toast.svelte-w1j1kj .icon.info.svelte-w1j1kj{color:var(--primary)}.toast.svelte-w1j1kj .icon.warn.svelte-w1j1kj{color:var(--warning-emphasis-shade)}.toast.svelte-w1j1kj .icon.error.svelte-w1j1kj{color:var(--negative-emphasis)}.toast.svelte-w1j1kj .msg.svelte-w1j1kj{flex-grow:1;margin:0;word-break:break-word}.toast.svelte-w1j1kj .msg.scroll.svelte-w1j1kj{overflow-y:auto;max-height:calc(var(--font-size-standard) * 3 * 1.3);line-height:normal}.toast.svelte-w1j1kj .msg.truncate.svelte-w1j1kj{white-space:var(--text-white-space, nowrap);overflow:hidden;text-overflow:ellipsis}.toast.svelte-w1j1kj .msg.truncate .title.svelte-w1j1kj{white-space:var(--text-white-space, nowrap);overflow:hidden;text-overflow:ellipsis}.toast.svelte-w1j1kj .msg.clamp.svelte-w1j1kj{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}.toast.svelte-w1j1kj .msg.clamp .title.svelte-w1j1kj{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}.toast.svelte-w1j1kj .title.svelte-w1j1kj{display:block;font-size:var(--font-size-standard);line-height:var(--line-height-standard);font-weight:var(--font-weight-bold);line-height:normal}.toast.svelte-w1j1kj button.close.svelte-w1j1kj{padding:0;line-height:0;color:inherit}",
-  map: '{"version":3,"file":"Toast.svelte","sources":["Toast.svelte"],"sourcesContent":["<script>import { toastsStore } from \\"../stores/toasts.store\\";\\nimport { fade, fly } from \\"svelte/transition\\";\\nimport { i18n } from \\"../stores/i18n\\";\\nimport { onDestroy, onMount } from \\"svelte\\";\\nimport Spinner from \\"./Spinner.svelte\\";\\nimport IconWarning from \\"../icons/IconWarning.svelte\\";\\nimport IconClose from \\"../icons/IconClose.svelte\\";\\nimport IconInfo from \\"../icons/IconInfo.svelte\\";\\nimport IconCheckCircle from \\"../icons/IconCheckCircle.svelte\\";\\nimport IconError from \\"../icons/IconError.svelte\\";\\nimport { DEFAULT_ICON_SIZE } from \\"../constants/constants\\";\\nimport { isNullish, nonNullish } from \\"@dfinity/utils\\";\\nimport Html from \\"./Html.svelte\\";\\nexport let msg;\\nconst iconMapper = (level2) => ({\\n  [\\"success\\"]: IconCheckCircle,\\n  [\\"warn\\"]: IconWarning,\\n  [\\"error\\"]: IconError,\\n  [\\"info\\"]: IconInfo,\\n  [\\"custom\\"]: void 0\\n})[level2];\\nconst close = () => toastsStore.hide(msg.id);\\nlet text;\\nlet level;\\nlet spinner;\\nlet title;\\nlet overflow;\\nlet position;\\nlet icon;\\nlet theme;\\nlet renderAsHtml;\\n$:\\n  ({\\n    text,\\n    level,\\n    spinner,\\n    title,\\n    overflow,\\n    position,\\n    icon,\\n    theme,\\n    renderAsHtml\\n  } = msg);\\nlet scroll;\\n$:\\n  scroll = overflow === void 0 || overflow === \\"scroll\\";\\nlet truncate;\\n$:\\n  truncate = overflow === \\"truncate\\";\\nlet clamp;\\n$:\\n  clamp = overflow === \\"clamp\\";\\nlet timeoutId = void 0;\\nconst autoHide = () => {\\n  const { duration } = msg;\\n  if (isNullish(duration)) {\\n    return;\\n  }\\n  timeoutId = setTimeout(close, duration);\\n};\\nconst cleanUpAutoHide = () => {\\n  if (isNullish(timeoutId)) {\\n    return;\\n  }\\n  clearTimeout(timeoutId);\\n};\\nconst minHeightMessage = `min-height: ${DEFAULT_ICON_SIZE}px;`;\\nonMount(autoHide);\\nonDestroy(cleanUpAutoHide);\\n<\/script>\\n\\n<div\\n  role=\\"dialog\\"\\n  class={`toast ${theme ?? \\"themed\\"}`}\\n  in:fly|global={{ y: (position === \\"top\\" ? -1 : 1) * 100, duration: 200 }}\\n  out:fade|global={{ delay: 100 }}\\n>\\n  <div class=\\"icon {level}\\" aria-hidden=\\"true\\">\\n    {#if spinner}\\n      <Spinner size=\\"small\\" inline />\\n    {:else if nonNullish(icon)}\\n      <svelte:component this={icon} />\\n    {:else if iconMapper(level)}\\n      <svelte:component this={iconMapper(level)} size={DEFAULT_ICON_SIZE} />\\n    {/if}\\n  </div>\\n\\n  <p\\n    class=\\"msg\\"\\n    class:truncate\\n    class:clamp\\n    class:scroll\\n    style={minHeightMessage}\\n  >\\n    {#if nonNullish(title)}\\n      <span class=\\"title\\">{title}</span>\\n    {/if}\\n    {#if renderAsHtml}\\n      <Html {text} />\\n    {:else}\\n      {text}\\n    {/if}\\n  </p>\\n\\n  <button class=\\"close\\" on:click={close} aria-label={$i18n.core.close}\\n    ><IconClose /></button\\n  >\\n</div>\\n\\n<style>.toast {\\n  display: flex;\\n  justify-content: space-between;\\n  align-items: center;\\n  gap: var(--padding-1_5x);\\n  background: var(--overlay-background);\\n  color: var(--overlay-background-contrast);\\n  --button-secondary-background: var(--focus-background);\\n  border-radius: var(--border-radius);\\n  box-shadow: var(--strong-shadow, 8px 8px 16px 0 rgba(0, 0, 0, 0.25));\\n  padding: var(--padding-1_5x);\\n  box-sizing: border-box;\\n}\\n.toast.inverted {\\n  background: var(--toast-inverted-background);\\n  color: var(--toast-inverted-background-contrast);\\n}\\n.toast .icon {\\n  line-height: 0;\\n}\\n.toast .icon.success {\\n  color: var(--positive-emphasis);\\n}\\n.toast .icon.info {\\n  color: var(--primary);\\n}\\n.toast .icon.warn {\\n  color: var(--warning-emphasis-shade);\\n}\\n.toast .icon.error {\\n  color: var(--negative-emphasis);\\n}\\n.toast .msg {\\n  flex-grow: 1;\\n  margin: 0;\\n  word-break: break-word;\\n}\\n.toast .msg.scroll {\\n  overflow-y: auto;\\n  max-height: calc(var(--font-size-standard) * 3 * 1.3);\\n  line-height: normal;\\n}\\n.toast .msg.truncate {\\n  white-space: var(--text-white-space, nowrap);\\n  overflow: hidden;\\n  text-overflow: ellipsis;\\n}\\n.toast .msg.truncate .title {\\n  white-space: var(--text-white-space, nowrap);\\n  overflow: hidden;\\n  text-overflow: ellipsis;\\n}\\n.toast .msg.clamp {\\n  display: -webkit-box;\\n  -webkit-box-orient: vertical;\\n  -webkit-line-clamp: 3;\\n  overflow: hidden;\\n}\\n.toast .msg.clamp .title {\\n  display: -webkit-box;\\n  -webkit-box-orient: vertical;\\n  -webkit-line-clamp: 2;\\n  overflow: hidden;\\n}\\n.toast .title {\\n  display: block;\\n  font-size: var(--font-size-standard);\\n  line-height: var(--line-height-standard);\\n  font-weight: var(--font-weight-bold);\\n  line-height: normal;\\n}\\n.toast button.close {\\n  padding: 0;\\n  line-height: 0;\\n  color: inherit;\\n}</style>\\n"],"names":[],"mappings":"AA6GO,kCAAO,CACZ,OAAO,CAAE,IAAI,CACb,eAAe,CAAE,aAAa,CAC9B,WAAW,CAAE,MAAM,CACnB,GAAG,CAAE,IAAI,cAAc,CAAC,CACxB,UAAU,CAAE,IAAI,oBAAoB,CAAC,CACrC,KAAK,CAAE,IAAI,6BAA6B,CAAC,CACzC,6BAA6B,CAAE,uBAAuB,CACtD,aAAa,CAAE,IAAI,eAAe,CAAC,CACnC,UAAU,CAAE,IAAI,eAAe,CAAC,mCAAmC,CAAC,CACpE,OAAO,CAAE,IAAI,cAAc,CAAC,CAC5B,UAAU,CAAE,UACd,CACA,MAAM,qCAAU,CACd,UAAU,CAAE,IAAI,2BAA2B,CAAC,CAC5C,KAAK,CAAE,IAAI,oCAAoC,CACjD,CACA,oBAAM,CAAC,mBAAM,CACX,WAAW,CAAE,CACf,CACA,oBAAM,CAAC,KAAK,sBAAS,CACnB,KAAK,CAAE,IAAI,mBAAmB,CAChC,CACA,oBAAM,CAAC,KAAK,mBAAM,CAChB,KAAK,CAAE,IAAI,SAAS,CACtB,CACA,oBAAM,CAAC,KAAK,mBAAM,CAChB,KAAK,CAAE,IAAI,wBAAwB,CACrC,CACA,oBAAM,CAAC,KAAK,oBAAO,CACjB,KAAK,CAAE,IAAI,mBAAmB,CAChC,CACA,oBAAM,CAAC,kBAAK,CACV,SAAS,CAAE,CAAC,CACZ,MAAM,CAAE,CAAC,CACT,UAAU,CAAE,UACd,CACA,oBAAM,CAAC,IAAI,qBAAQ,CACjB,UAAU,CAAE,IAAI,CAChB,UAAU,CAAE,KAAK,IAAI,oBAAoB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CACrD,WAAW,CAAE,MACf,CACA,oBAAM,CAAC,IAAI,uBAAU,CACnB,WAAW,CAAE,IAAI,kBAAkB,CAAC,OAAO,CAAC,CAC5C,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,QACjB,CACA,oBAAM,CAAC,IAAI,SAAS,CAAC,oBAAO,CAC1B,WAAW,CAAE,IAAI,kBAAkB,CAAC,OAAO,CAAC,CAC5C,QAAQ,CAAE,MAAM,CAChB,aAAa,CAAE,QACjB,CACA,oBAAM,CAAC,IAAI,oBAAO,CAChB,OAAO,CAAE,WAAW,CACpB,kBAAkB,CAAE,QAAQ,CAC5B,kBAAkB,CAAE,CAAC,CACrB,QAAQ,CAAE,MACZ,CACA,oBAAM,CAAC,IAAI,MAAM,CAAC,oBAAO,CACvB,OAAO,CAAE,WAAW,CACpB,kBAAkB,CAAE,QAAQ,CAC5B,kBAAkB,CAAE,CAAC,CACrB,QAAQ,CAAE,MACZ,CACA,oBAAM,CAAC,oBAAO,CACZ,OAAO,CAAE,KAAK,CACd,SAAS,CAAE,IAAI,oBAAoB,CAAC,CACpC,WAAW,CAAE,IAAI,sBAAsB,CAAC,CACxC,WAAW,CAAE,IAAI,kBAAkB,CAAC,CACpC,WAAW,CAAE,MACf,CACA,oBAAM,CAAC,MAAM,oBAAO,CAClB,OAAO,CAAE,CAAC,CACV,WAAW,CAAE,CAAC,CACd,KAAK,CAAE,OACT"}'
-};
-const Toast = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let $i18n, $$unsubscribe_i18n;
-  $$unsubscribe_i18n = subscribe(i18n, (value) => $i18n = value);
-  let { msg } = $$props;
-  const iconMapper = (level2) => ({
-    ["success"]: IconCheckCircle,
-    ["warn"]: IconWarning,
-    ["error"]: IconError,
-    ["info"]: IconInfo,
-    ["custom"]: void 0
-  })[level2];
-  let text2;
-  let level;
-  let spinner;
-  let title;
-  let overflow;
-  let position;
-  let icon;
-  let theme2;
-  let renderAsHtml;
-  let scroll;
-  let truncate;
-  let clamp;
-  let timeoutId = void 0;
-  const cleanUpAutoHide = () => {
-    if (isNullish(timeoutId)) {
-      return;
-    }
-    clearTimeout(timeoutId);
-  };
-  const minHeightMessage = `min-height: ${DEFAULT_ICON_SIZE}px;`;
-  onDestroy(cleanUpAutoHide);
-  if ($$props.msg === void 0 && $$bindings.msg && msg !== void 0) $$bindings.msg(msg);
-  $$result.css.add(css$2);
-  ({ text: text2, level, spinner, title, overflow, position, icon, theme: theme2, renderAsHtml } = msg);
-  scroll = overflow === void 0 || overflow === "scroll";
-  truncate = overflow === "truncate";
-  clamp = overflow === "clamp";
-  $$unsubscribe_i18n();
-  return `<div role="dialog" class="${escape(null_to_empty(`toast ${theme2 ?? "themed"}`), true) + " svelte-w1j1kj"}"><div class="${"icon " + escape(level, true) + " svelte-w1j1kj"}" aria-hidden="true">${spinner ? `${validate_component(Spinner, "Spinner").$$render($$result, { size: "small", inline: true }, {}, {})}` : `${nonNullish(icon) ? `${validate_component(icon || missing_component, "svelte:component").$$render($$result, {}, {}, {})}` : `${iconMapper(level) ? `${validate_component(iconMapper(level) || missing_component, "svelte:component").$$render($$result, { size: DEFAULT_ICON_SIZE }, {}, {})}` : ``}`}`}</div> <p class="${[
-    "msg svelte-w1j1kj",
-    (truncate ? "truncate" : "") + " " + (clamp ? "clamp" : "") + " " + (scroll ? "scroll" : "")
-  ].join(" ").trim()}"${add_attribute("style", minHeightMessage, 0)}>${nonNullish(title) ? `<span class="title svelte-w1j1kj">${escape(title)}</span>` : ``} ${renderAsHtml ? `${validate_component(Html, "Html").$$render($$result, { text: text2 }, {}, {})}` : `${escape(text2)}`}</p> <button class="close svelte-w1j1kj"${add_attribute("aria-label", $i18n.core.close, 0)}>${validate_component(IconClose, "IconClose").$$render($$result, {}, {}, {})}</button> </div>`;
-});
-const css$1 = {
-  code: ".wrapper.svelte-24m335{position:fixed;left:50%;transform:translate(-50%, 0);bottom:calc(var(--layout-bottom-offset, 0) + var(--padding-2x));width:calc(100% - var(--padding-8x) - var(--padding-0_5x));display:flex;flex-direction:column;gap:var(--padding);z-index:var(--toast-info-z-index)}.wrapper.error.svelte-24m335{z-index:var(--toast-error-z-index)}@media(min-width: 1024px){.wrapper.svelte-24m335{max-width:calc(var(--section-max-width) - var(--padding-2x))}}.top.svelte-24m335{top:calc(var(--header-height) + var(--padding-3x));bottom:unset;width:calc(100% - var(--padding-6x))}@media(min-width: 1024px){.top.svelte-24m335{right:var(--padding-2x);left:unset;transform:none;max-width:calc(var(--section-max-width) / 1.5 - var(--padding-2x))}}",
-  map: '{"version":3,"file":"Toasts.svelte","sources":["Toasts.svelte"],"sourcesContent":["<script>import { toastsStore } from \\"../stores/toasts.store\\";\\nimport Toast from \\"./Toast.svelte\\";\\nimport { layoutBottomOffset } from \\"../stores/layout.store\\";\\nexport let position = \\"bottom\\";\\nlet toasts = [];\\n$:\\n  toasts = $toastsStore.filter(\\n    ({ position: pos }) => (pos ?? \\"bottom\\") === position\\n  );\\nlet hasErrors;\\n$:\\n  hasErrors = toasts.find(({ level }) => [\\"error\\", \\"warn\\"].includes(level)) !== void 0;\\n<\/script>\\n\\n{#if toasts.length > 0}\\n  <div\\n    class={`wrapper ${position}`}\\n    class:error={hasErrors}\\n    style={`--layout-bottom-offset: ${$layoutBottomOffset}px`}\\n  >\\n    {#each toasts as msg (msg.id)}\\n      <Toast {msg} />\\n    {/each}\\n  </div>\\n{/if}\\n\\n<style>.wrapper {\\n  position: fixed;\\n  left: 50%;\\n  transform: translate(-50%, 0);\\n  bottom: calc(var(--layout-bottom-offset, 0) + var(--padding-2x));\\n  width: calc(100% - var(--padding-8x) - var(--padding-0_5x));\\n  display: flex;\\n  flex-direction: column;\\n  gap: var(--padding);\\n  z-index: var(--toast-info-z-index);\\n}\\n.wrapper.error {\\n  z-index: var(--toast-error-z-index);\\n}\\n@media (min-width: 1024px) {\\n  .wrapper {\\n    max-width: calc(var(--section-max-width) - var(--padding-2x));\\n  }\\n}\\n\\n.top {\\n  top: calc(var(--header-height) + var(--padding-3x));\\n  bottom: unset;\\n  width: calc(100% - var(--padding-6x));\\n}\\n@media (min-width: 1024px) {\\n  .top {\\n    right: var(--padding-2x);\\n    left: unset;\\n    transform: none;\\n    max-width: calc(var(--section-max-width) / 1.5 - var(--padding-2x));\\n  }\\n}</style>\\n"],"names":[],"mappings":"AA0BO,sBAAS,CACd,QAAQ,CAAE,KAAK,CACf,IAAI,CAAE,GAAG,CACT,SAAS,CAAE,UAAU,IAAI,CAAC,CAAC,CAAC,CAAC,CAC7B,MAAM,CAAE,KAAK,IAAI,sBAAsB,CAAC,EAAE,CAAC,CAAC,CAAC,CAAC,IAAI,YAAY,CAAC,CAAC,CAChE,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,YAAY,CAAC,CAAC,CAAC,CAAC,IAAI,cAAc,CAAC,CAAC,CAC3D,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAAM,CACtB,GAAG,CAAE,IAAI,SAAS,CAAC,CACnB,OAAO,CAAE,IAAI,oBAAoB,CACnC,CACA,QAAQ,oBAAO,CACb,OAAO,CAAE,IAAI,qBAAqB,CACpC,CACA,MAAO,YAAY,MAAM,CAAE,CACzB,sBAAS,CACP,SAAS,CAAE,KAAK,IAAI,mBAAmB,CAAC,CAAC,CAAC,CAAC,IAAI,YAAY,CAAC,CAC9D,CACF,CAEA,kBAAK,CACH,GAAG,CAAE,KAAK,IAAI,eAAe,CAAC,CAAC,CAAC,CAAC,IAAI,YAAY,CAAC,CAAC,CACnD,MAAM,CAAE,KAAK,CACb,KAAK,CAAE,KAAK,IAAI,CAAC,CAAC,CAAC,IAAI,YAAY,CAAC,CACtC,CACA,MAAO,YAAY,MAAM,CAAE,CACzB,kBAAK,CACH,KAAK,CAAE,IAAI,YAAY,CAAC,CACxB,IAAI,CAAE,KAAK,CACX,SAAS,CAAE,IAAI,CACf,SAAS,CAAE,KAAK,IAAI,mBAAmB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,IAAI,YAAY,CAAC,CACpE,CACF"}'
-};
-const Toasts = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  let $toastsStore, $$unsubscribe_toastsStore;
-  let $layoutBottomOffset, $$unsubscribe_layoutBottomOffset;
-  $$unsubscribe_toastsStore = subscribe(toastsStore, (value) => $toastsStore = value);
-  $$unsubscribe_layoutBottomOffset = subscribe(layoutBottomOffset, (value) => $layoutBottomOffset = value);
-  let { position = "bottom" } = $$props;
-  let toasts = [];
-  let hasErrors;
-  if ($$props.position === void 0 && $$bindings.position && position !== void 0) $$bindings.position(position);
-  $$result.css.add(css$1);
-  toasts = $toastsStore.filter(({ position: pos }) => (pos ?? "bottom") === position);
-  hasErrors = toasts.find(({ level }) => ["error", "warn"].includes(level)) !== void 0;
-  $$unsubscribe_toastsStore();
-  $$unsubscribe_layoutBottomOffset();
-  return `${toasts.length > 0 ? `<div class="${[
-    escape(null_to_empty(`wrapper ${position}`), true) + " svelte-24m335",
-    hasErrors ? "error" : ""
-  ].join(" ").trim()}"${add_attribute("style", `--layout-bottom-offset: ${$layoutBottomOffset}px`, 0)}>${each(toasts, (msg) => {
-    return `${validate_component(Toast, "Toast").$$render($$result, { msg }, {}, {})}`;
-  })}</div>` : ``}`;
-});
-const css = {
-  code: "main.svelte-cbh2q9{flex:1;display:flex;flex-direction:column}",
-  map: '{"version":3,"file":"Layout.svelte","sources":["Layout.svelte"],"sourcesContent":["<script lang=\\"ts\\">import { onMount } from \\"svelte\\";\\nimport { fade } from \\"svelte/transition\\";\\nimport { browser } from \\"$app/environment\\";\\nimport Header from \\"$lib/shared/Header.svelte\\";\\nimport Footer from \\"$lib/shared/Footer.svelte\\";\\nimport \\"../app.css\\";\\nimport { BusyScreen, Spinner, Toasts } from \\"@dfinity/gix-components\\";\\nconst init = async () => await Promise.all([syncAuthStore()]);\\nconst syncAuthStore = async () => {\\n    if (!browser) {\\n        return;\\n    }\\n};\\n$: (() => {\\n    if (!browser) {\\n        return;\\n    }\\n    const spinner = document.querySelector(\\"body > #app-spinner\\");\\n    spinner?.remove();\\n})();\\n<\/script>\\n\\n<svelte:window on:storage={syncAuthStore} />\\n{#await init()}\\n  <div in:fade>\\n    <Spinner />\\n  </div>\\n{:then _}\\n  <div class=\\"flex flex-col h-screen justify-between default-text\\">\\n    <Header />\\n    <main class=\\"page-wrapper\\">\\n      <slot />\\n    </main>\\n    <Toasts />\\n    <Footer />\\n  </div>\\n{/await}\\n\\n<BusyScreen />\\n\\n<style>\\n  main {\\n    flex: 1;\\n    display: flex;\\n    flex-direction: column;\\n  }</style>\\n"],"names":[],"mappings":"AAyCE,kBAAK,CACH,IAAI,CAAE,CAAC,CACP,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAClB"}'
-};
 const Layout = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   const init2 = async () => await Promise.all([syncAuthStore()]);
   const syncAuthStore = async () => {
@@ -3870,28 +3710,213 @@ const Layout = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       return;
     }
   };
-  $$result.css.add(css);
   return ` ${function(__value) {
     if (is_promise(__value)) {
       __value.then(null, noop);
       return ` <div>${validate_component(Spinner, "Spinner").$$render($$result, {}, {}, {})}</div> `;
     }
     return function(_) {
-      return ` <div class="flex flex-col h-screen justify-between default-text">${validate_component(Header, "Header").$$render($$result, {}, {}, {})} <main class="page-wrapper svelte-cbh2q9">${slots.default ? slots.default({}) : ``}</main> ${validate_component(Toasts, "Toasts").$$render($$result, {}, {}, {})} ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}</div> `;
+      return ` <div class="flex flex-col min-h-screen overflow-hidden">${validate_component(Header, "Header").$$render($$result, {}, {}, {})} <main class="flex-1 flex flex-col justify-center items-center p-4 overflow-hidden"><div class="w-full h-full flex items-center justify-center">${slots.default ? slots.default({}) : ``}</div></main> ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}</div> `;
     }();
   }(init2())} ${validate_component(BusyScreen, "BusyScreen").$$render($$result, {}, {}, {})}`;
 });
 const Page$1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   return `${validate_component(Layout, "Layout").$$render($$result, {}, {}, {
     default: () => {
-      return `<div class="flex items-center justify-center h-full flex-col" data-svelte-h="svelte-ul7zm2"><img src="logo.png" alt="logo" class="w-24"> <div class="text-center"><h1 class="text-4xl font-bold">Welcome to Waterway Labs</h1> <p class="mt-4">Our mission is to decentralise key services using the Internet Computer blockchain.</p> <a href="/projects"><button class="btn mt-4">Projects</button></a></div></div>`;
+      return `<div class="flex items-center justify-center min-h-screen flex-col" data-svelte-h="svelte-1cpwrog"><img src="logo.png" alt="logo" class="w-24"> <div class="text-center flex flex-col space-y-3"><h1 class="text-xl sm:text-2xl md:text-3xl font-bold">Welcome to Waterway Labs</h1> <p>Web3 Technology Company</p> <a href="/projects"><button class="btn">Projects</button></a></div></div>`;
     }
   })}`;
 });
+const Openbook = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { className = "" } = $$props;
+  let { fill = "" } = $$props;
+  if ($$props.className === void 0 && $$bindings.className && className !== void 0) $$bindings.className(className);
+  if ($$props.fill === void 0 && $$bindings.fill && fill !== void 0) $$bindings.fill(fill);
+  return `<svg xmlns="http://www.w3.org/2000/svg"${add_attribute("class", className, 0)} fill="none" viewBox="0 0 300 434"><path d="M300 347.611V419.35C281.348 408.198 258.913 401.741 234.783 401.741C215.087 401.741 196.565 406.045 180.261 413.676C168.978 418.958 158.739 425.806 150 433.958C141.261 425.806 131.022 418.958 119.739 413.676C103.435 406.045 84.913 401.741 65.2174 401.741C41.087 401.741 18.6522 408.198 0 419.35V347.611C11.7391 340.567 24.913 335.415 39.1304 332.611C47.5435 330.915 56.2826 330.002 65.2174 330.002C71.8696 330.002 78.4565 330.524 84.7826 331.437C110.217 335.219 132.913 346.306 150 362.219C167.087 346.306 189.783 335.219 215.217 331.437C221.543 330.524 228.13 330.002 234.783 330.002C243.717 330.002 252.457 330.915 260.87 332.611C275.087 335.415 288.261 340.567 300 347.611Z" fill="white"></path><path d="M150 0C67.1739 0 0 67.1739 0 150C0 232.826 67.1739 300 150 300C232.826 300 300 232.826 300 150C300 67.1739 232.826 0 150 0ZM150 228.261C106.761 228.261 71.7391 193.239 71.7391 150C71.7391 106.761 106.761 71.7391 150 71.7391C193.239 71.7391 228.261 106.761 228.261 150C228.261 193.239 193.239 228.261 150 228.261Z" fill="#101111"></path></svg>`;
+});
+const Golfpad = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { className = "" } = $$props;
+  let { fill = "" } = $$props;
+  if ($$props.className === void 0 && $$bindings.className && className !== void 0) $$bindings.className(className);
+  if ($$props.fill === void 0 && $$bindings.fill && fill !== void 0) $$bindings.fill(fill);
+  return `<svg xmlns="http://www.w3.org/2000/svg"${add_attribute("class", className, 0)} fill="none" viewBox="0 0 200 200"><defs><linearGradient id="grass-sky" x1="0" y1="1" x2="0" y2="0"><stop offset="50%" stop-color="#2D7B66"></stop><stop offset="50%" stop-color="#2D5D7A"></stop></linearGradient></defs><circle cx="100" cy="100" r="100" fill="url(#grass-sky)"></circle><circle cx="100" cy="100" r="50" fill="#FFFFFF" stroke-width="1"></circle><defs><pattern id="dimples" patternUnits="userSpaceOnUse" width="10" height="10"><circle cx="1" cy="1" r="1" fill="#2D5D7A"></circle></pattern></defs><circle cx="100" cy="100" r="46" fill="url(#dimples)"></circle><circle cx="100" cy="100" r="50" fill="none" stroke="#2D5D7A" stroke-width="4"></circle><circle cx="100" cy="100" r="99.5" stroke="#D9EDFA" stroke-width="1"></circle></svg>`;
+});
+const Transferkings = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { className = "" } = $$props;
+  let { fill = "" } = $$props;
+  if ($$props.className === void 0 && $$bindings.className && className !== void 0) $$bindings.className(className);
+  if ($$props.fill === void 0 && $$bindings.fill && fill !== void 0) $$bindings.fill(fill);
+  return `<svg xmlns="http://www.w3.org/2000/svg"${add_attribute("class", className, 0)} fill="none" viewBox="0 0 119 118"><path d="M46.6292 95.4787C42.6798 96.3015 39.6731 96.7241 37.73 96.9196C36.5527 97.038 35.6089 98.0884 35.6364 99.2713C35.6872 101.455 35.661 104.079 35.8442 104.995C37.1747 111.647 40.2975 113.94 41.0643 114.412C41.177 114.482 41.2938 114.526 41.422 114.559C42.8638 114.924 52.5373 117.274 64.1689 117.658C64.7159 117.676 65.2461 117.464 65.6331 117.077L74.9523 107.758C75.8724 106.838 75.684 105.298 74.5723 104.622C72.2459 103.207 69.2335 101.349 67.5647 100.237C65.6133 98.9359 61.9793 95.2268 59.7095 92.7894C59.0976 92.1323 58.1266 91.9495 57.2969 92.2924C55.1665 93.1727 51.3886 94.4872 46.6292 95.4787Z" fill="#FFFFFF"></path><path d="M117.683 76.7635C119.161 72.6979 119.159 67.6006 118.804 63.9461C118.657 62.4284 116.898 61.8085 115.742 62.8035L107.915 69.5441C107.3 70.0736 106.998 70.941 107.024 71.7521C107.056 72.7482 107.04 74.3482 106.898 76.7635C106.676 80.5448 103.837 88.1768 101.929 92.7808C101.522 93.7635 101.933 94.9015 102.896 95.3536C104.832 96.2625 107.151 97.2554 107.532 97.0646C108.167 96.7474 115.145 83.742 117.683 76.7635Z" fill="#FFFFFF"></path><path d="M0.482453 49.1884L9.96382 37.1445C10.8242 36.0516 12.5097 36.1488 13.2386 37.3334L21.4796 50.725C21.7417 51.1509 21.8347 51.6597 21.7403 52.1509L17.4628 74.3938C17.2722 75.385 16.3729 76.0788 15.3658 76.0117L4.11115 75.2614C3.34335 75.2102 2.66998 74.7238 2.43392 73.9914C2.24231 73.3969 2.03932 72.686 1.90323 72.0056C1.65867 70.7828 0.608827 57.6772 0.0597851 50.5764C0.0211178 50.0763 0.172196 49.5825 0.482453 49.1884Z" fill="#FFFFFF"></path><path d="M43.1398 1.58602C37.697 2.53261 29.6243 7.23081 25.5588 9.91831C25.0437 10.2588 24.7419 10.8368 24.7419 11.4542C24.7419 12.7933 26.1094 13.7081 27.3592 13.2274C29.8488 12.2698 33.3065 11.0317 36.4785 10.1506C40.5949 9.00711 45.1922 8.46477 47.5309 8.29137C47.9748 8.25846 48.3977 8.08906 48.7341 7.79757L52.808 4.26679C52.9178 4.17166 53.0376 4.08876 53.1653 4.01958L56.8741 2.01066C57.8012 1.50847 57.4236 0.137308 56.3711 0.200833C52.4309 0.438651 47.2056 0.878937 43.1398 1.58602Z" fill="#FFFFFF"></path><path d="M102.14 18.3978C97.9668 13.8453 93.2974 10.3089 90.1455 8.2392C89.6724 7.92853 89.2364 8.47056 89.6238 8.88321C90.9694 10.3167 92.4651 11.895 93.2583 12.6881C94.406 13.8359 96.3324 18.0117 97.394 20.52C97.5927 20.9897 97.9572 21.3691 98.4192 21.585C99.7758 22.2188 101.935 23.2651 103.409 24.1075C104.693 24.8414 107.934 28.3829 110.59 31.4475C110.976 31.8936 111.59 31.4806 111.292 30.9711C109.25 27.482 106.047 22.6603 102.14 18.3978Z" fill="#FFFFFF"></path><path transform="translate(40, 30)" d="M44.6021 24.8356L16.4245 36.8429C15.8284 37.0969 15.5485 37.7924 15.8025 38.3885L16.7262 40.556C16.9802 41.152 17.6757 41.4319 18.2718 41.1779L46.4494 29.1706C47.0455 28.9166 47.3253 28.2211 47.0713 27.625L46.1477 25.4575C45.8937 24.8614 45.1982 24.5816 44.6021 24.8356ZM39.7008 1.31318C37.9058 2.07807 37.0701 4.15493 37.8349 5.9499C38.0399 6.43082 38.3388 6.83169 38.7045 7.16405L35.0532 12.1935C34.2756 13.2611 32.7776 13.4833 31.7245 12.6835L22.0881 5.37695C22.5589 4.47204 22.652 3.3759 22.2191 2.35988C21.4542 0.564907 19.3773 -0.27082 17.5823 0.49407C15.7874 1.25896 14.9516 3.33583 15.7165 5.1308C16.1495 6.14682 17.0046 6.83887 17.9834 7.12609L16.579 19.1375C16.4264 20.451 15.2218 21.3805 13.9199 21.199L7.77002 20.3461C7.77973 19.8618 7.70149 19.3589 7.49655 18.878C6.73167 17.083 4.6548 16.2473 2.85983 17.0122C1.06486 17.7771 0.222357 19.8568 0.987246 21.6518C1.75214 23.4468 3.829 24.2825 5.62397 23.5176C5.80008 23.4425 5.96465 23.3404 6.12244 23.2412L16.5846 34.2136L42.5947 23.1299L41.927 7.98378C42.1079 7.93871 42.2956 7.89076 42.4717 7.81571C44.2666 7.05082 45.1024 4.97396 44.3375 3.17898C43.5726 1.38401 41.4957 0.548287 39.7008 1.31318Z" fill="#FFFFFF"></path></svg>`;
+});
+const Openchef = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { className = "" } = $$props;
+  let { fill = "" } = $$props;
+  if ($$props.className === void 0 && $$bindings.className && className !== void 0) $$bindings.className(className);
+  if ($$props.fill === void 0 && $$bindings.fill && fill !== void 0) $$bindings.fill(fill);
+  return `<svg xmlns="http://www.w3.org/2000/svg"${add_attribute("class", className, 0)} fill="none" viewBox="0 0 200 200"><circle cx="100" cy="100" r="90" fill="#f2f2f2" stroke="#332225" stroke-width="5"></circle><circle cx="100" cy="100" r="70" fill="#ffffff" stroke="#A61C35" stroke-width="3"></circle><circle cx="100" cy="100" r="80" fill="none" stroke="#662B36" stroke-width="1"></circle><circle cx="100" cy="100" r="60" fill="none" stroke="#731728" stroke-width="1"></circle></svg>`;
+});
+const Opencare = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { className = "" } = $$props;
+  let { fill = "" } = $$props;
+  if ($$props.className === void 0 && $$bindings.className && className !== void 0) $$bindings.className(className);
+  if ($$props.fill === void 0 && $$bindings.fill && fill !== void 0) $$bindings.fill(fill);
+  return `<svg xmlns="http://www.w3.org/2000/svg"${add_attribute("class", className, 0)} fill="none" viewBox="0 0 325 323"><g clip-path="url(#clip0_448_6875)"><path d="M229 -5.79657e-06C279.67 -8.01142e-06 321.16 39.25 324.75 89C324.92 91.31 325 93.65 325 96L325 285.93C325 306.4 308.4 323 287.93 323L96.3901 323C96.7101 323 97.0301 323 97.3401 322.98C117.2 322.4 133 305.9 133 285.93L133 96C133 93.65 133.08 91.31 133.25 89C136.84 39.25 178.33 -3.58171e-06 229 -5.79657e-06Z" fill="white"></path><path d="M96 131L133 131L133 285.93C133 305.9 117.2 322.4 97.34 322.98C97.03 323 96.71 323 96.39 323L96 323C66.22 323 39.6 309.44 22 288.15C8.25 271.55 -3.18044e-06 250.24 -4.19629e-06 227C-5.21215e-06 203.76 8.24999 182.45 22 165.85C39.6 144.56 66.22 131 96 131Z" fill="url(#paint0_linear_448_6875)"></path></g><defs><linearGradient id="paint0_linear_448_6875" x1="-4.19629e-06" y1="227" x2="133" y2="227" gradientUnits="userSpaceOnUse"><stop stop-color="white"></stop><stop offset="1" stop-color="#D5D5D5"></stop></linearGradient><clipPath id="clip0_448_6875"><rect width="323" height="325" fill="white" transform="translate(0 323) rotate(-90)"></rect></clipPath></defs></svg>`;
+});
+const Footballgod = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { className = "" } = $$props;
+  let { fill = "" } = $$props;
+  if ($$props.className === void 0 && $$bindings.className && className !== void 0) $$bindings.className(className);
+  if ($$props.fill === void 0 && $$bindings.fill && fill !== void 0) $$bindings.fill(fill);
+  return `<svg xmlns="http://www.w3.org/2000/svg"${add_attribute("class", className, 0)} fill="none" viewBox="0 0 160 160"><path fill-rule="evenodd" clip-rule="evenodd" d="M160 80C160 124.183 124.183 160 80 160C35.8172 160 0 124.183 0 80C0 35.8172 35.8172 0 80 0C124.183 0 160 35.8172 160 80ZM132.282 65.8446L139.297 38.0102C130.753 25.9655 118.63 16.6371 104.479 11.574L78.7755 25.3062L54.6791 11.881C41.243 16.8774 29.6852 25.7354 21.3544 37.1061L28.598 65.8446L7.79184 88.0861C9.03586 99.3203 12.8414 109.782 18.6114 118.875L47.1891 124.821L56.3685 148.723C63.777 151.27 71.727 152.653 80 152.653C88.0652 152.653 95.8235 151.339 103.072 148.913L112.325 124.821L141.462 118.758C147.335 109.465 151.158 98.7472 152.297 87.2404L132.282 65.8446Z" fill="#FFFFFF"></path><g clip-path="url(#clip0_269_2886)"><path d="M108.571 53.2523V60.1036C108.571 62.0153 107.038 63.5599 105.141 63.5599H70.8658C67.6781 63.5599 65.0901 66.1674 65.0901 69.379V106.748C65.0901 108.66 63.5569 110.204 61.6595 110.204H54.8591C52.9617 110.204 51.4286 108.66 51.4286 106.748V69.4172C51.4286 58.582 60.1492 49.796 70.9038 49.796H105.141C107.038 49.796 108.571 51.3406 108.571 53.2523Z" fill="#FFFFFF"></path><path d="M108.571 75.6569V96.4556C108.571 104.049 102.462 110.212 94.9176 110.212H77.4157C76.0268 110.212 74.8959 109.073 74.8959 107.673V98.979C74.8959 97.5797 76.0268 96.4403 77.4157 96.4403H92.3902C93.7791 96.4403 94.91 95.301 94.91 93.9017V89.4131C94.91 88.0138 93.7791 86.8744 92.3902 86.8744H77.4157C76.0268 86.8744 74.8959 85.7351 74.8959 84.3358V75.6416C74.8959 74.2422 76.0268 73.1029 77.4157 73.1029H106.052C107.441 73.1029 108.571 74.2422 108.571 75.6416V75.6569Z" fill="#FFFFFF"></path></g><defs><clipPath id="clip0_269_2886"><rect width="57.1429" height="60.4082" fill="white" transform="translate(51.4286 49.796)"></rect></clipPath></defs></svg>`;
+});
+const Openfpl = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { className = "" } = $$props;
+  let { fill = "" } = $$props;
+  if ($$props.className === void 0 && $$bindings.className && className !== void 0) $$bindings.className(className);
+  if ($$props.fill === void 0 && $$bindings.fill && fill !== void 0) $$bindings.fill(fill);
+  return `<svg xmlns="http://www.w3.org/2000/svg"${add_attribute("class", className, 0)} fill="none" viewBox="0 0 219 301"><path d="M109.745 0C68.3936 6.73684 31.3094 23.9774 0.122783 48.8346L0.0151367 49.0601V207.496L109.637 300.752L218.037 207.496L218.06 48.9925C187.327 25.1278 150.197 6.63158 109.745 0ZM131.413 232.023C131.413 232.804 130.921 233.586 130.121 233.782L109.637 240.526C109.238 240.624 108.838 240.624 108.438 240.526L87.9544 233.782C87.1548 233.489 86.655 232.804 86.655 232.023V225.18C86.655 224.496 87.0548 223.812 87.6545 223.519L108.138 212.962C108.738 212.669 109.338 212.669 109.937 212.962L130.421 223.519C131.021 223.812 131.413 224.496 131.413 225.18V232.023ZM169.935 156.662C169.935 157.346 169.535 158.03 168.835 158.323L154.249 165.654C153.25 166.143 152.95 167.316 153.449 168.195L167.636 193.902C168.036 194.684 167.936 195.564 167.336 196.15L143.154 219.414C142.454 220.098 141.455 220.098 140.655 219.609L113.082 200.158C112.183 199.474 111.983 198.203 112.782 197.323L134.665 173.474C135.965 172.008 134.465 169.857 132.666 170.444L109.584 177.774C109.184 177.872 108.784 177.872 108.384 177.774L85.4093 170.444C83.5102 169.857 82.1108 172.105 83.4102 173.474L105.285 197.323C106.085 198.203 105.885 199.474 104.986 200.158L77.4128 219.609C76.6131 220.098 75.6135 220.098 74.9138 219.414L50.7396 196.053C50.1398 195.466 50.0399 194.586 50.4397 193.805L64.6259 168.098C65.1257 167.12 64.7259 166.045 63.8263 165.556L49.2402 158.226C48.6405 157.932 48.1407 157.248 48.1407 156.564V105.346C48.1407 103.88 49.84 102.902 51.1394 103.782L63.1266 111.699C63.6264 112.09 63.9262 112.579 63.9262 113.263L64.0262 126.459C64.0262 127.045 64.3261 127.632 64.8259 128.023L82.4106 140.045C83.7101 140.925 85.5093 139.947 85.4093 138.383L84.3098 115.12C84.3098 114.534 84.0099 113.947 83.5102 113.654L48.9403 90.4887C48.4406 90.0977 48.1407 89.5113 48.1407 88.9248V77.4887C48.1407 77.0977 48.2406 76.609 48.5405 76.3158L61.0275 60.8722C61.5273 60.188 62.4269 59.9925 63.2265 60.2857L108.284 76.609C108.684 76.8045 109.184 76.8045 109.584 76.609L154.649 60.2857C155.449 59.9925 156.341 60.2857 156.84 60.8722L169.335 76.3158C169.635 76.609 169.735 77.0977 169.735 77.4887V88.9248C169.735 89.5113 169.435 90.0977 168.935 90.4887L134.365 113.654C134.065 114.045 133.766 114.632 133.766 115.218L132.666 138.481C132.566 140.045 134.365 141.023 135.665 140.143L153.25 128.12C153.749 127.729 154.049 127.241 154.049 126.556L154.149 113.361C154.149 112.774 154.449 112.188 154.949 111.797L166.936 103.88C168.235 103 169.935 103.88 169.935 105.444V156.662Z" fill="#FFFFFF"></path></svg>`;
+});
+const Icpfa = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { className = "" } = $$props;
+  let { fill = "" } = $$props;
+  if ($$props.className === void 0 && $$bindings.className && className !== void 0) $$bindings.className(className);
+  if ($$props.fill === void 0 && $$bindings.fill && fill !== void 0) $$bindings.fill(fill);
+  return `<svg xmlns="http://www.w3.org/2000/svg"${add_attribute("class", className, 0)} fill="none" viewBox="0 0 75 47"><path d="M58.3573 23.4917C58.4663 28.7703 52.3498 32.2642 47.884 29.516L47.8672 29.4992L46.4345 28.3346L46.2083 28.1587L46.1915 28.1419C42.773 25.3602 34.52 18.6405 31.0261 15.7917L31.001 15.7666L29.6436 14.6606V14.6439C29.6436 14.6439 29.5515 14.5768 29.5012 14.5433L29.4761 14.5266C18.1397 7.41307 6.55203 22.3439 16.3551 31.5604C16.9332 31.9542 33.4978 43.2654 34.7044 44.0865C18.2487 53.2779 -2.34612 39.3442 0.217756 20.5508C1.84322 5.50274 18.5335 -4.32544 32.6683 1.89991H32.6851C37.1007 4.99164 44.1723 9.94343 48.6548 13.0687L55.2405 17.6686C57.1257 18.9254 58.3741 21.0452 58.3741 23.4917H58.3573Z" fill="black"></path><path d="M74.8465 23.4918C75.1482 39.3443 58.5081 51.0744 43.703 45.6618L41.9184 44.4385C34.763 39.5537 27.9595 34.8198 20.7957 29.935L20.779 29.9183H20.7622L18.4916 28.3598C12.836 22.344 20.1757 13.3034 27.2389 17.6184L27.2557 17.6351L28.4371 18.5987L28.4622 18.6238L34.2602 23.3326V23.3494C35.8606 24.6648 44.2811 31.4935 45.6971 32.6581C53.0452 37.3418 62.9739 31.351 62.1193 22.5115V22.4948C61.8261 19.4282 60.2593 16.7219 57.9384 14.9205L57.4021 14.5518L40.494 2.71273C55.7013 -5.54026 75.0979 6.08096 74.8465 23.5002V23.4918Z" fill="black"></path></svg>`;
+});
+const css = {
+  code: ".svg-background.svelte-l5c36i{background-color:#f0f0f0}",
+  map: `{"version":3,"file":"+page.svelte","sources":["+page.svelte"],"sourcesContent":["<script lang=\\"ts\\">import { onMount } from \\"svelte\\";\\nimport { isLoading } from \\"$lib/stores/global-stores\\";\\nimport Layout from \\"../Layout.svelte\\";\\nimport ProjectInfoModal from \\"$lib/components/project/project-info-modal.svelte\\";\\nimport OpenBookIcon from \\"$lib/icons/svgs/openbook.svelte\\";\\nimport GolfPadIcon from \\"$lib/icons/svgs/golfpad.svelte\\";\\nimport TransferKingsIcon from \\"$lib/icons/svgs/transferkings.svelte\\";\\nimport OpenChefIcon from \\"$lib/icons/svgs/openchef.svelte\\";\\nimport OpenCareIcon from \\"$lib/icons/svgs/opencare.svelte\\";\\nimport FootballGodIcon from \\"$lib/icons/svgs/footballgod.svelte\\";\\nimport OpenFPLIcon from \\"$lib/icons/svgs/openfpl.svelte\\";\\nimport ICPFAIcon from \\"$lib/icons/svgs/icpfa.svelte\\";\\nconst iconMap = {\\n    OpenBookIcon,\\n    GolfPadIcon,\\n    TransferKingsIcon,\\n    OpenChefIcon,\\n    OpenCareIcon,\\n    FootballGodIcon,\\n    OpenFPLIcon,\\n    ICPFAIcon\\n};\\nlet selectedProject = null;\\nlet showSelectedProject = false;\\nonMount(async () => {\\n    try {\\n        // Fetch your data here if needed\\n    }\\n    catch (error) {\\n        console.error(\\"Error fetching homepage data:\\", error);\\n    }\\n    finally {\\n        isLoading.set(false);\\n    }\\n});\\nconst projects = [\\n    {\\n        id: 1,\\n        title: \\"OpenBook\\",\\n        description: \\"Decentralised business management.\\",\\n        image: \\"openbook.jpg\\",\\n        imageComponent: iconMap.OpenBookIcon,\\n        link: \\"https://openbook.services\\",\\n        linkDisplay: \\"openbook.services\\",\\n        status: \\"Development\\",\\n        summary: \\"OpenBook is evolving into a comprehensive, 100% on-chain business management platform. OpenBook's initial offering of sales, accountancy, recruitment, timesheet and task management are just the first step on delivering the perfect single SaaS for businesses at the lowest possible price.\\",\\n        primaryColour: \\"#66E094\\",\\n        secondaryColour: \\"#000000\\"\\n    },\\n    {\\n        id: 7,\\n        title: \\"GolfPad\\",\\n        description: \\"Golf meets Web3.\\",\\n        image: \\"golfpad.jpg\\",\\n        imageComponent: iconMap.GolfPadIcon,\\n        link: \\"https://golfpad.xyz\\",\\n        linkDisplay: \\"golfpad.xyz\\",\\n        status: \\"Design\\",\\n        summary: \\"GolfPad gives golfers of all levels a new dimension to their game. GolfPad focuses on individual achievements throughout your round rather than a single round's total score. This allows you to compete against your friends within a new framework, training your golf game for new scenarios.\\",\\n        primaryColour: \\"#D9EDFA\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 3,\\n        title: \\"Transfer Kings\\",\\n        description: \\"Become a football agent today.\\",\\n        image: \\"transferkings.jpg\\",\\n        imageComponent: iconMap.TransferKingsIcon,\\n        link: \\"https://transferkings.xyz\\",\\n        linkDisplay: \\"transferkings.xyz\\",\\n        status: \\"Development\\",\\n        summary: \\"Transfer Kings allows you to become your own football agent, earning $FOOTBALL tokens as your selected players achieve your expected career goals. Designed for the football expert that can spot prospects around the world, Transfer Kings is the worldwide football game Web3 has been waiting for.\\",\\n        primaryColour: \\"#194B63\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 8,\\n        title: \\"OpenChef\\",\\n        description: \\"Build your own cooking community.\\",\\n        image: \\"openchef.jpg\\",\\n        imageComponent: iconMap.OpenChefIcon,\\n        link: \\"https://openchef.xyz\\",\\n        linkDisplay: \\"openchef.xyz\\",\\n        status: \\"Design\\",\\n        summary: \\"OpenChef is designed to promote signature dishes around the world, rewarding chefs for perfecting a recipe the world loves. This community based cooking platform ensures that your passion for cooking is rewarded as you perfect your skills.\\",\\n        primaryColour: \\"#731728\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 6,\\n        title: \\"OpenCare\\",\\n        description: \\"The future of social care.\\",\\n        image: \\"opencare.jpg\\",\\n        imageComponent: iconMap.OpenCareIcon,\\n        link: \\"https://opencare.services\\",\\n        linkDisplay: \\"opencare.services\\",\\n        status: \\"Design\\",\\n        summary: \\"OpenCare has been designed with care professionals and families who have elderly relatives in carehomes. Caring for the elderly will be a huge challenge for society going forwards and OpenCare will provide a caring, efficient and secure solution to help all stakeholders involved.\\",\\n        primaryColour: \\"#F279B2\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 2,\\n        title: \\"Football God\\",\\n        description: \\"Live play to earn football games.\\",\\n        image: \\"footballgod.jpg\\",\\n        imageComponent: iconMap.FootballGodIcon,\\n        link: \\"https://footballgod.xyz\\",\\n        linkDisplay: \\"footballgod.xyz\\",\\n        status: \\"Live\\",\\n        summary: \\"FootballGod is the home of peer to peer football prediction games on the Internet Computer. Games such as Transfer Kings utilise the $FOOTBALL utility token in a wide range of unique and exciting games.\\",\\n        primaryColour: \\"#242529\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 4,\\n        title: \\"OpenFPL\\",\\n        description: \\"Decentralised fantasy football.\\",\\n        image: \\"openfpl.jpg\\",\\n        imageComponent: iconMap.OpenFPLIcon,\\n        link: \\"https://openfpl.xyz\\",\\n        linkDisplay: \\"openfpl.xyz\\",\\n        status: \\"Decentralized\\",\\n        summary: \\"OpenFPL is a decentralised autonomous organisation (DAO) hosted through the Internet Computer's network nervous system. The OpenFPL token holders reach community consensus for player and data validation ensuring the entire platform operates entirely on the blockchain with zero dependencies.\\",\\n        primaryColour: \\"#2ce3a6\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 5,\\n        title: \\"ICPFA\\",\\n        description: \\"Supporting community football.\\",\\n        image: \\"icpfa.jpg\\",\\n        imageComponent: iconMap.ICPFAIcon,\\n        link: \\"https://icpfa.org\\",\\n        linkDisplay: \\"icpfa.org\\",\\n        status: \\"Development\\",\\n        summary: \\"The ICPFA has been setup to support community grassroots football causes, funded by revenue from our football related applications.\\",\\n        primaryColour: \\"#FFFFFF\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n];\\nfunction loadInfoModal(project) {\\n    selectedProject = project;\\n    showSelectedProject = true;\\n}\\n;\\nfunction closeInfoModal() {\\n    selectedProject = null;\\n    showSelectedProject = false;\\n}\\n;\\n<\/script>\\n\\n<style>\\n  .svg-background {\\n    background-color: #f0f0f0; /* Example color, change as needed */\\n  }</style>\\n\\n{#if showSelectedProject}\\n  <ProjectInfoModal closeModal={closeInfoModal} visible={showSelectedProject} {selectedProject} />\\n{/if}\\n\\n<Layout>\\n  <div class=\\"flex items-center justify-center flex-col mt-16 mb-16\\">\\n    <div class=\\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4\\">\\n      {#each projects as project}\\n        <div class=\\"rounded-lg shadow-lg overflow-hidden border-2 border-WaterwayLightBlue bg-WaterwayCompDarkBlue\\">\\n          <div class=\\"w-full h-48 flex items-center justify-center\\" style=\\"background-color: {project.primaryColour};\\">\\n            <svelte:component className=\\"w-16\\" this={project.imageComponent} />\\n          </div>\\n          <div class=\\"p-4 bg-WaterwayCompDarkBlue\\">\\n            <h3 class=\\"text-lg font-semibold\\">{project.title}</h3>\\n            <p class=\\"text-white my-2 text-sm\\">{project.description}</p>\\n            <div class=\\"horizontal-divider my-2 mb-4\\" />\\n            <div class=\\"flex justify-between items-center mt-4\\">\\n              <a href={project.link} target=\\"_blank\\" class=\\"text-WaterwayBaseE hover:underline text-sm mr-4\\">{project.linkDisplay}</a>\\n              <span class={\`px-3 py-2 text-xs rounded-md text-center\\n                \${project.status === 'Design' ? 'badge-design' : ''} \\n                \${project.status === 'Development' ? 'badge-development' : ''} \\n                \${project.status === 'Live' ? 'badge-live' : ''} \\n                \${project.status === 'Decentralized' ? 'badge-decentralized' : ''}\`}>\\n                {project.status}\\n              </span>\\n            </div>\\n            <button on:click={() => loadInfoModal(project)} class=\\"mt-4 w-full btn text-white py-2 rounded hover:bg-WaterwayBaseB focus:outline-none text-sm\\">More Info</button>\\n          </div>\\n        </div>\\n      {/each}\\n    </div>\\n  </div>\\n</Layout>\\n"],"names":[],"mappings":"AA0JE,6BAAgB,CACd,gBAAgB,CAAE,OACpB"}`
+};
 const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  return `${validate_component(Layout, "Layout").$$render($$result, {}, {}, {
+  const iconMap = {
+    OpenBookIcon: Openbook,
+    GolfPadIcon: Golfpad,
+    TransferKingsIcon: Transferkings,
+    OpenChefIcon: Openchef,
+    OpenCareIcon: Opencare,
+    FootballGodIcon: Footballgod,
+    OpenFPLIcon: Openfpl,
+    ICPFAIcon: Icpfa
+  };
+  const projects = [
+    {
+      id: 1,
+      title: "OpenBook",
+      description: "Decentralised business management.",
+      image: "openbook.jpg",
+      imageComponent: iconMap.OpenBookIcon,
+      link: "https://openbook.services",
+      linkDisplay: "openbook.services",
+      status: "Development",
+      summary: "OpenBook is evolving into a comprehensive, 100% on-chain business management platform. OpenBook's initial offering of sales, accountancy, recruitment, timesheet and task management are just the first step on delivering the perfect single SaaS for businesses at the lowest possible price.",
+      primaryColour: "#66E094",
+      secondaryColour: "#000000"
+    },
+    {
+      id: 7,
+      title: "GolfPad",
+      description: "Golf meets Web3.",
+      image: "golfpad.jpg",
+      imageComponent: iconMap.GolfPadIcon,
+      link: "https://golfpad.xyz",
+      linkDisplay: "golfpad.xyz",
+      status: "Design",
+      summary: "GolfPad gives golfers of all levels a new dimension to their game. GolfPad focuses on individual achievements throughout your round rather than a single round's total score. This allows you to compete against your friends within a new framework, training your golf game for new scenarios.",
+      primaryColour: "#D9EDFA",
+      secondaryColour: "#FFFFFF"
+    },
+    {
+      id: 3,
+      title: "Transfer Kings",
+      description: "Become a football agent today.",
+      image: "transferkings.jpg",
+      imageComponent: iconMap.TransferKingsIcon,
+      link: "https://transferkings.xyz",
+      linkDisplay: "transferkings.xyz",
+      status: "Development",
+      summary: "Transfer Kings allows you to become your own football agent, earning $FOOTBALL tokens as your selected players achieve your expected career goals. Designed for the football expert that can spot prospects around the world, Transfer Kings is the worldwide football game Web3 has been waiting for.",
+      primaryColour: "#194B63",
+      secondaryColour: "#FFFFFF"
+    },
+    {
+      id: 8,
+      title: "OpenChef",
+      description: "Build your own cooking community.",
+      image: "openchef.jpg",
+      imageComponent: iconMap.OpenChefIcon,
+      link: "https://openchef.xyz",
+      linkDisplay: "openchef.xyz",
+      status: "Design",
+      summary: "OpenChef is designed to promote signature dishes around the world, rewarding chefs for perfecting a recipe the world loves. This community based cooking platform ensures that your passion for cooking is rewarded as you perfect your skills.",
+      primaryColour: "#731728",
+      secondaryColour: "#FFFFFF"
+    },
+    {
+      id: 6,
+      title: "OpenCare",
+      description: "The future of social care.",
+      image: "opencare.jpg",
+      imageComponent: iconMap.OpenCareIcon,
+      link: "https://opencare.services",
+      linkDisplay: "opencare.services",
+      status: "Design",
+      summary: "OpenCare has been designed with care professionals and families who have elderly relatives in carehomes. Caring for the elderly will be a huge challenge for society going forwards and OpenCare will provide a caring, efficient and secure solution to help all stakeholders involved.",
+      primaryColour: "#F279B2",
+      secondaryColour: "#FFFFFF"
+    },
+    {
+      id: 2,
+      title: "Football God",
+      description: "Live play to earn football games.",
+      image: "footballgod.jpg",
+      imageComponent: iconMap.FootballGodIcon,
+      link: "https://footballgod.xyz",
+      linkDisplay: "footballgod.xyz",
+      status: "Live",
+      summary: "FootballGod is the home of peer to peer football prediction games on the Internet Computer. Games such as Transfer Kings utilise the $FOOTBALL utility token in a wide range of unique and exciting games.",
+      primaryColour: "#242529",
+      secondaryColour: "#FFFFFF"
+    },
+    {
+      id: 4,
+      title: "OpenFPL",
+      description: "Decentralised fantasy football.",
+      image: "openfpl.jpg",
+      imageComponent: iconMap.OpenFPLIcon,
+      link: "https://openfpl.xyz",
+      linkDisplay: "openfpl.xyz",
+      status: "Decentralized",
+      summary: "OpenFPL is a decentralised autonomous organisation (DAO) hosted through the Internet Computer's network nervous system. The OpenFPL token holders reach community consensus for player and data validation ensuring the entire platform operates entirely on the blockchain with zero dependencies.",
+      primaryColour: "#2ce3a6",
+      secondaryColour: "#FFFFFF"
+    },
+    {
+      id: 5,
+      title: "ICPFA",
+      description: "Supporting community football.",
+      image: "icpfa.jpg",
+      imageComponent: iconMap.ICPFAIcon,
+      link: "https://icpfa.org",
+      linkDisplay: "icpfa.org",
+      status: "Development",
+      summary: "The ICPFA has been setup to support community grassroots football causes, funded by revenue from our football related applications.",
+      primaryColour: "#FFFFFF",
+      secondaryColour: "#FFFFFF"
+    }
+  ];
+  $$result.css.add(css);
+  return `${``} ${validate_component(Layout, "Layout").$$render($$result, {}, {}, {
     default: () => {
-      return `<div class="m-4 mx-8" data-svelte-h="svelte-ey6t2h"><p class="text-lg my-4">Information on all projects under development by Waterway Labs can be found here:</p> <div class="flex flex-col space-y-2"><a href="https://openfpl.xyz/whitepaper">https://openfpl.xyz/whitepaper</a> <a href="https://icpfa.org/whitepaper">https://icpfa.org/whitepaper</a> <a href="https://companiesdao.com/whitepaper">https://companiesdao.com/whitepaper</a> <a href="https://footballgod.xyz/whitepaper">https://footballgod.xyz/whitepaper</a> <a href="https://openbook.services/whitepaper">https://openbook.services/whitepaper</a> <a href="https://opencare.services/whitepaper">https://opencare.services/whitepaper</a> <a href="https://golfpad.xyz/whitepaper">https://golfpad.xyz/whitepaper</a> <a href="https://doxxed.app/whitepaper">https://doxxed.app/whitepaper</a> <a href="https://icp.casino/whitepaper">https://icp.casino/whitepaper</a> <a href="https://betty.bingo/whitepaper">https://betty.bingo/whitepaper</a> <a href="https://opencore.live/whitepaper">https://opencore.live/whitepaper</a></div> <p class="text-lg my-4">We will also be assisting with development of the following projects:</p> <div class="flex h-full flex-col space-y-2"><a href="https://chainofcommand.xyz/whitepaper">https://chainofcommand.xyz/whitepaper</a> <a href="https://opendna.xyz/whitepaper">https://opendna.xyz/whitepaper</a> <a href="https://opennfl.xyz/whitepaper">https://opennfl.xyz/whitepaper</a></div></div>`;
+      return `<div class="flex items-center justify-center flex-col mt-16 mb-16"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">${each(projects, (project) => {
+        return `<div class="rounded-lg shadow-lg overflow-hidden border-2 border-WaterwayLightBlue bg-WaterwayCompDarkBlue"><div class="w-full h-48 flex items-center justify-center" style="${"background-color: " + escape(project.primaryColour, true) + ";"}">${validate_component(project.imageComponent || missing_component, "svelte:component").$$render($$result, { className: "w-16" }, {}, {})}</div> <div class="p-4 bg-WaterwayCompDarkBlue"><h3 class="text-lg font-semibold">${escape(project.title)}</h3> <p class="text-white my-2 text-sm">${escape(project.description)}</p> <div class="horizontal-divider my-2 mb-4"></div> <div class="flex justify-between items-center mt-4"><a${add_attribute("href", project.link, 0)} target="_blank" class="text-WaterwayBaseE hover:underline text-sm mr-4">${escape(project.linkDisplay)}</a> <span class="${escape(
+          null_to_empty(`px-3 py-2 text-xs rounded-md text-center
+                ${project.status === "Design" ? "badge-design" : ""} 
+                ${project.status === "Development" ? "badge-development" : ""} 
+                ${project.status === "Live" ? "badge-live" : ""} 
+                ${project.status === "Decentralized" ? "badge-decentralized" : ""}`),
+          true
+        ) + " svelte-l5c36i"}">${escape(project.status)} </span></div> <button class="mt-4 w-full btn text-white py-2 rounded hover:bg-WaterwayBaseB focus:outline-none text-sm" data-svelte-h="svelte-1h7ih0q">More Info</button></div> </div>`;
+      })}</div></div>`;
     }
   })}`;
 });

@@ -42,9 +42,10 @@ body {
 .modal .content {
   left: 0 !important;
   right: 0 !important;
-  background-color: #161819 !important;
+  background-color: #213740 !important;
   border-radius: 8px;
-  border: 1px solid #2e323a !important;
+  border: 1px solid #89c2d9 !important;
+  color: white !important;
 }
 
 .modal .container {
@@ -62,5 +63,23 @@ body {
 }
 
 .btn {
-  @apply bg-WaterwayBaseA px-4 py-2 rounded-md hover:bg-WaterwayBaseB hover:text-WaterwayBaseA text-white;
+  @apply bg-WaterwayBlue text-white px-4 py-2 rounded-md hover:bg-WaterwayLightBlue hover:text-white;
+}
+
+.horizontal-divider {
+  min-height: 2px;
+  @apply flex-shrink-0 h-px bg-WaterwayCompLight self-stretch;
+}
+
+.badge-design {
+  @apply bg-WaterwayBeige text-white;
+}
+.badge-development {
+  @apply bg-WaterwayLightBlue text-white;
+}
+.badge-live {
+  @apply bg-WaterwayBlue text-white;
+}
+.badge-decentralized {
+  @apply bg-WaterwayGreen text-white;
 }
