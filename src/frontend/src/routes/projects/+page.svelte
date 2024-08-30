@@ -13,6 +13,7 @@
   import FootballGodIcon from "$lib/icons/svgs/footballgod.svelte";
   import OpenFPLIcon from "$lib/icons/svgs/openfpl.svelte";
   import ICPFAIcon from "$lib/icons/svgs/icpfa.svelte";
+    import OpenBeatsIcon from "$lib/icons/svgs/openbeats.svelte";
 
   const iconMap = {
     OpenBookIcon,
@@ -22,7 +23,8 @@
     OpenCareIcon,
     FootballGodIcon,
     OpenFPLIcon,
-    ICPFAIcon
+    ICPFAIcon,
+    OpenBeatsIcon
   };
 
   type IconKeys = keyof typeof iconMap;
@@ -41,6 +43,45 @@
   });
 
   const projects: Array<Project & { imageComponent: typeof iconMap[IconKeys] }> = [
+    {
+      id: 4,
+      title: "OpenFPL",
+      description: "Decentralised fantasy football.",
+      image: "openfpl.jpg",
+      imageComponent: iconMap.OpenFPLIcon,
+      link: "https://openfpl.xyz",
+      linkDisplay: "openfpl.xyz",
+      status: "Decentralised",
+      summary: "OpenFPL is a decentralised fantasy football game for the Premier League hosted through the Internet Computer's network nervous system. OpenFPL token holders reach community consensus for player valuations, data validation and more to ensure the entire platform operates entirely on the blockchain with zero dependencies.",
+      primaryColour: "#2ce3a6",
+      secondaryColour: "#FFFFFF"
+    },
+    {
+      id: 2,
+      title: "Football God",
+      description: "Live play to earn football games.",
+      image: "footballgod.jpg",
+      imageComponent: iconMap.FootballGodIcon,
+      link: "https://footballgod.xyz",
+      linkDisplay: "footballgod.xyz",
+      status: "Development",
+      summary: "FootballGod will be a fixed odds betting platform funded by the OpenFPL DAO. Data managed to run OpenFPL and Transfer Kings will be used to offer odds on worldwide football matches. Algorithms for FootballGod will be managed by the OpenFPL DAO, allowing FootballGod to be used as a useful tool for controlling the FPL token supply. FootballGod has been designed to take advantage of the highly profitable nature of betting platforms to benefit OpenFPL token holders. FootballGod will send all profits to the OpenFPL DAO FPL Treasury, with the DAO able to burn these profit at it's discression.",
+      primaryColour: "#242529",
+      secondaryColour: "#FFFFFF"
+    },
+    {
+      id: 3,
+      title: "Transfer Kings",
+      description: "Become a football agent today.",
+      image: "transferkings.jpg",
+      imageComponent: iconMap.TransferKingsIcon,
+      link: "https://transferkings.xyz",
+      linkDisplay: "transferkings.xyz",
+      status: "Development",
+      summary: "Transfer Kings is our upcoming purchase to play football agency game. Groups of friends will be able to setup their own agency, competing against each other for custom reward pools. Transfer Kings is designed to span multiple seasons and international tournaments, allowing your contracted players to achieve their expected career goals. Designed for the football expert that can spot prospects around the world, Transfer Kings is the worldwide football game Web3 has been waiting for.",
+      primaryColour: "#194B63",
+      secondaryColour: "#FFFFFF"
+    },
     {
       id: 1,
       title: "OpenBook",
@@ -64,20 +105,20 @@
       linkDisplay: "golfpad.xyz",
       status: "Design",
       summary: "GolfPad gives golfers of all levels a new dimension to their game. GolfPad focuses on individual achievements throughout your round rather than a single round's total score. This allows you to compete against your friends within a new framework, training your golf game for new scenarios.",
-      primaryColour: "#D9EDFA",
-      secondaryColour: "#FFFFFF"
+      primaryColour: "#F4C802",
+      secondaryColour: "#000000"
     },
     {
-      id: 3,
-      title: "Transfer Kings",
-      description: "Become a football agent today.",
-      image: "transferkings.jpg",
-      imageComponent: iconMap.TransferKingsIcon,
-      link: "https://transferkings.xyz",
-      linkDisplay: "transferkings.xyz",
-      status: "Development",
-      summary: "Transfer Kings allows you to become your own football agent, earning $FOOTBALL tokens as your selected players achieve your expected career goals. Designed for the football expert that can spot prospects around the world, Transfer Kings is the worldwide football game Web3 has been waiting for.",
-      primaryColour: "#194B63",
+      id: 9,
+      title: "OpenBeats",
+      description: "Decentralised Audio Network.",
+      image: "openbeats.jpg",
+      imageComponent: iconMap.OpenBeatsIcon,
+      link: "https://openbeats.xyz",
+      linkDisplay: "openbeats.xyz",
+      status: "Design",
+      summary: "OpenBeats is a decentralised audio network enabling producers to create tracks using audio samples from the OpenBeats library. Creators of samples share the monthly subscription revenue based on how often their sample is used in the projects being composed.",
+      primaryColour: "#000000",
       secondaryColour: "#FFFFFF"
     },
     {
@@ -89,47 +130,8 @@
       link: "https://openchef.xyz",
       linkDisplay: "openchef.xyz",
       status: "Design",
-      summary: "OpenChef is designed to promote signature dishes around the world, rewarding chefs for perfecting a recipe the world loves. This community based cooking platform ensures that your passion for cooking is rewarded as you perfect your skills.",
+      summary: "OpenChef is designed to enable chefs to earn as they help people within their local community. Chefs will create projects that receive funding through sponsorship, charitable donations and a share of premium content subscriptions. This funding will be used to feed the community, giving a chef the opportunity to show off their passion for cooking through charitable content. The DAO will vote on rewards for chefs that help the most people, ensuring as much good as possible can be done.",
       primaryColour: "#731728",
-      secondaryColour: "#FFFFFF"
-    },
-    {
-      id: 6,
-      title: "OpenCare",
-      description: "The future of social care.",
-      image: "opencare.jpg",
-      imageComponent: iconMap.OpenCareIcon,
-      link: "https://opencare.services",
-      linkDisplay: "opencare.services",
-      status: "Design",
-      summary: "OpenCare has been designed with care professionals and families who have elderly relatives in carehomes. Caring for the elderly will be a huge challenge for society going forwards and OpenCare will provide a caring, efficient and secure solution to help all stakeholders involved.",
-      primaryColour: "#F279B2",
-      secondaryColour: "#FFFFFF"
-    },
-    {
-      id: 2,
-      title: "Football God",
-      description: "Live play to earn football games.",
-      image: "footballgod.jpg",
-      imageComponent: iconMap.FootballGodIcon,
-      link: "https://footballgod.xyz",
-      linkDisplay: "footballgod.xyz",
-      status: "Live",
-      summary: "FootballGod is the home of peer to peer football prediction games on the Internet Computer. Games such as Transfer Kings utilise the $FOOTBALL utility token in a wide range of unique and exciting games.",
-      primaryColour: "#242529",
-      secondaryColour: "#FFFFFF"
-    },
-    {
-      id: 4,
-      title: "OpenFPL",
-      description: "Decentralised fantasy football.",
-      image: "openfpl.jpg",
-      imageComponent: iconMap.OpenFPLIcon,
-      link: "https://openfpl.xyz",
-      linkDisplay: "openfpl.xyz",
-      status: "Decentralized",
-      summary: "OpenFPL is a decentralised autonomous organisation (DAO) hosted through the Internet Computer's network nervous system. The OpenFPL token holders reach community consensus for player and data validation ensuring the entire platform operates entirely on the blockchain with zero dependencies.",
-      primaryColour: "#2ce3a6",
       secondaryColour: "#FFFFFF"
     },
     {
@@ -143,6 +145,19 @@
       status: "Development",
       summary: "The ICPFA has been setup to support community grassroots football causes, funded by revenue from our football related applications.",
       primaryColour: "#FFFFFF",
+      secondaryColour: "#FFFFFF"
+    },
+    {
+      id: 6,
+      title: "OpenCare",
+      description: "The future of social care.",
+      image: "opencare.jpg",
+      imageComponent: iconMap.OpenCareIcon,
+      link: "https://opencare.services",
+      linkDisplay: "opencare.services",
+      status: "Design",
+      summary: "OpenCare has been designed with care professionals and families who have elderly relatives in carehomes. Caring for the elderly will be a huge challenge for society going forwards and OpenCare will provide a caring, efficient and secure solution to help all stakeholders involved.",
+      primaryColour: "#F279B2",
       secondaryColour: "#FFFFFF"
     },
   ];
@@ -186,7 +201,7 @@
                 ${project.status === 'Design' ? 'badge-design' : ''} 
                 ${project.status === 'Development' ? 'badge-development' : ''} 
                 ${project.status === 'Live' ? 'badge-live' : ''} 
-                ${project.status === 'Decentralized' ? 'badge-decentralized' : ''}`}>
+                ${project.status === 'Decentralised' ? 'badge-decentralised' : ''}`}>
                 {project.status}
               </span>
             </div>

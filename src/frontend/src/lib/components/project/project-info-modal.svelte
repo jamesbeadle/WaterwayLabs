@@ -53,7 +53,7 @@ import ICPFAIcon from "$lib/icons/svgs/icpfa.svelte";
                         ${selectedProject?.status === 'Design' ? 'badge-design' : ''} 
                         ${selectedProject?.status === 'Development' ? 'badge-development' : ''} 
                         ${selectedProject?.status === 'Live' ? 'badge-live' : ''} 
-                        ${selectedProject?.status === 'Decentralized' ? 'badge-decentralized' : ''}`}>
+                        ${selectedProject?.status === 'Decentralised' ? 'badge-decentralised' : ''}`}>
                         {selectedProject?.status}
                       </span>
                 </div>

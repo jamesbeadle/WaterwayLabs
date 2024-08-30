@@ -71,6 +71,11 @@ body {
   @apply flex-shrink-0 h-px bg-WaterwayCompLight self-stretch;
 }
 
+.vertical-divider {
+  min-width: 2px;
+  @apply flex-shrink-0 w-px bg-WaterwayCompLight self-stretch;
+}
+
 .badge-design {
   @apply bg-WaterwayBeige text-white;
 }
@@ -80,6 +85,6 @@ body {
 .badge-live {
   @apply bg-WaterwayBlue text-white;
 }
-.badge-decentralized {
+.badge-decentralised {
   @apply bg-WaterwayGreen text-white;
 }

@@ -5,7 +5,7 @@ export interface Project {
   image: string;
   link: string;
   linkDisplay: string;
-  status: "Design" | "Development" | "Live" | "Decentralized";
+  status: "Design" | "Development" | "Live" | "Decentralised";
   summary: string;
   primaryColour: string;
   secondaryColour: string;

@@ -3421,7 +3421,7 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "1ln2fyx"
+  version_hash: "nfuki8"
 };
 async function get_hooks() {
   return {};
@@ -3550,7 +3550,7 @@ const Header = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   return `<header class="w-full bg-WaterwayCompBlue fixed top-0 left-0 right-0 z-5 border-b border-WaterwayCompLight" data-svelte-h="svelte-112wi5s"><nav class="text-white"><div class="px-4 h-16 flex justify-between items-center w-full"><a href="/" class="flex items-center"><img src="logo.png" class="h-8" alt="logo"> <b class="ml-2">Waterway Labs</b></a></div></nav></header>`;
 });
 const Footer = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  return `<footer class="w-full bg-WaterwayCompDarkBlue py-3 fixed bottom-0 left-0 right-0 z-50 border-t-2 border-WaterwayCompGray" data-svelte-h="svelte-1fgqcs4"><div class="container mx-auto flex flex-col sm:flex-row items-center text-xs"><div class="flex justify-center sm:justify-start w-full sm:w-auto mb-2 sm:mb-0 sm:flex-1"><a href="https://github.com/Waterway-Labs" target="_blank" rel="noopener noreferrer"><img src="github.png" class="w-6" alt="GitHub"></a></div> <div class="flex justify-center w-full sm:w-auto sm:flex-1 text-center mb-2 sm:mb-0"><a class="flex flex-row items-center" href="/"><img src="logo.png" class="h-6 mr-2" alt="logo"> <b>Waterway Labs <span id="currentYear"></span></b></a></div> <div class="flex justify-center sm:justify-end w-full sm:w-auto sm:flex-1"><div class="text-center sm:text-right px-4">Company Reg: 15281491</div></div></div></footer>`;
+  return `<footer class="w-full bg-WaterwayCompDarkBlue py-3 fixed bottom-0 left-0 right-0 z-50 border-t-2 border-WaterwayCompGray" data-svelte-h="svelte-ad1nuc"><div class="container mx-auto flex flex-col sm:flex-row items-center text-xs"><div class="flex justify-center sm:justify-start w-full sm:w-auto mb-2 sm:mb-0 sm:flex-1 items-center"><a href="https://github.com/Waterway-Labs" target="_blank" rel="noopener noreferrer"><img src="github.png" class="w-6" alt="GitHub"></a></div> <div class="flex justify-center w-full sm:w-auto sm:flex-1 text-center mb-2 sm:mb-0"><a class="flex flex-row items-center" href="/"><img src="logo.png" class="h-6 mr-2" alt="logo"> <b>Waterway Labs <span id="currentYear"></span></b></a></div> <div class="flex justify-center sm:justify-end w-full sm:w-auto sm:flex-1"><a class="px-4" href="/team">Team</a> <div class="vertical-divider"></div> <div class="text-center sm:text-right px-4">Company Reg: 15281491</div></div></div></footer>`;
 });
 const core = {
   close: "Close",
@@ -3720,7 +3720,7 @@ const Layout = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     }();
   }(init2())} ${validate_component(BusyScreen, "BusyScreen").$$render($$result, {}, {}, {})}`;
 });
-const Page$1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+const Page$2 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   return `${validate_component(Layout, "Layout").$$render($$result, {}, {}, {
     default: () => {
       return `<div class="flex items-center justify-center min-h-screen flex-col" data-svelte-h="svelte-1cpwrog"><img src="logo.png" alt="logo" class="w-24"> <div class="text-center flex flex-col space-y-3"><h1 class="text-xl sm:text-2xl md:text-3xl font-bold">Welcome to Waterway Labs</h1> <p>Web3 Technology Company</p> <a href="/projects"><button class="btn">Projects</button></a></div></div>`;
@@ -3739,7 +3739,7 @@ const Golfpad = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { fill = "" } = $$props;
   if ($$props.className === void 0 && $$bindings.className && className !== void 0) $$bindings.className(className);
   if ($$props.fill === void 0 && $$bindings.fill && fill !== void 0) $$bindings.fill(fill);
-  return `<svg xmlns="http://www.w3.org/2000/svg"${add_attribute("class", className, 0)} fill="none" viewBox="0 0 200 200"><defs><linearGradient id="grass-sky" x1="0" y1="1" x2="0" y2="0"><stop offset="50%" stop-color="#2D7B66"></stop><stop offset="50%" stop-color="#2D5D7A"></stop></linearGradient></defs><circle cx="100" cy="100" r="100" fill="url(#grass-sky)"></circle><circle cx="100" cy="100" r="50" fill="#FFFFFF" stroke-width="1"></circle><defs><pattern id="dimples" patternUnits="userSpaceOnUse" width="10" height="10"><circle cx="1" cy="1" r="1" fill="#2D5D7A"></circle></pattern></defs><circle cx="100" cy="100" r="46" fill="url(#dimples)"></circle><circle cx="100" cy="100" r="50" fill="none" stroke="#2D5D7A" stroke-width="4"></circle><circle cx="100" cy="100" r="99.5" stroke="#D9EDFA" stroke-width="1"></circle></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg"${add_attribute("class", className, 0)} fill="none" viewBox="0 0 200 200"><defs><linearGradient id="grass-sky" x1="0" y1="1" x2="0" y2="0"><stop offset="50%" stop-color="#1C4932"></stop><stop offset="50%" stop-color="#3CA1FF"></stop></linearGradient></defs><circle cx="100" cy="100" r="100" fill="url(#grass-sky)"></circle><circle cx="100" cy="100" r="50" fill="#FFFFFF" stroke-width="1"></circle><defs><pattern id="dimples" patternUnits="userSpaceOnUse" width="10" height="10"><circle cx="1" cy="1" r="1" fill="#2D5D7A"></circle></pattern></defs><circle cx="100" cy="100" r="46" fill="url(#dimples)"></circle><circle cx="100" cy="100" r="50" fill="none" stroke="#2D5D7A" stroke-width="4"></circle><circle cx="100" cy="100" r="99.5" stroke="#F4C802" stroke-width="1"></circle></svg>`;
 });
 const Transferkings = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { className = "" } = $$props;
@@ -3783,11 +3783,18 @@ const Icpfa = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   if ($$props.fill === void 0 && $$bindings.fill && fill !== void 0) $$bindings.fill(fill);
   return `<svg xmlns="http://www.w3.org/2000/svg"${add_attribute("class", className, 0)} fill="none" viewBox="0 0 75 47"><path d="M58.3573 23.4917C58.4663 28.7703 52.3498 32.2642 47.884 29.516L47.8672 29.4992L46.4345 28.3346L46.2083 28.1587L46.1915 28.1419C42.773 25.3602 34.52 18.6405 31.0261 15.7917L31.001 15.7666L29.6436 14.6606V14.6439C29.6436 14.6439 29.5515 14.5768 29.5012 14.5433L29.4761 14.5266C18.1397 7.41307 6.55203 22.3439 16.3551 31.5604C16.9332 31.9542 33.4978 43.2654 34.7044 44.0865C18.2487 53.2779 -2.34612 39.3442 0.217756 20.5508C1.84322 5.50274 18.5335 -4.32544 32.6683 1.89991H32.6851C37.1007 4.99164 44.1723 9.94343 48.6548 13.0687L55.2405 17.6686C57.1257 18.9254 58.3741 21.0452 58.3741 23.4917H58.3573Z" fill="black"></path><path d="M74.8465 23.4918C75.1482 39.3443 58.5081 51.0744 43.703 45.6618L41.9184 44.4385C34.763 39.5537 27.9595 34.8198 20.7957 29.935L20.779 29.9183H20.7622L18.4916 28.3598C12.836 22.344 20.1757 13.3034 27.2389 17.6184L27.2557 17.6351L28.4371 18.5987L28.4622 18.6238L34.2602 23.3326V23.3494C35.8606 24.6648 44.2811 31.4935 45.6971 32.6581C53.0452 37.3418 62.9739 31.351 62.1193 22.5115V22.4948C61.8261 19.4282 60.2593 16.7219 57.9384 14.9205L57.4021 14.5518L40.494 2.71273C55.7013 -5.54026 75.0979 6.08096 74.8465 23.5002V23.4918Z" fill="black"></path></svg>`;
 });
+const Openbeats = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let { className = "" } = $$props;
+  let { fill = "" } = $$props;
+  if ($$props.className === void 0 && $$bindings.className && className !== void 0) $$bindings.className(className);
+  if ($$props.fill === void 0 && $$bindings.fill && fill !== void 0) $$bindings.fill(fill);
+  return `<svg xmlns="http://www.w3.org/2000/svg"${add_attribute("class", className, 0)} fill="none" viewBox="0 0 100 100"><circle cx="50" cy="50" r="15" fill="#1D3557"></circle><path d="M50,50 m-25,0 a25,25 0 0,1 50,0 a25,25 0 0,1 -50,0" fill="none" stroke="#457B9D" stroke-width="4"></path><path d="M50,50 m-35,0 a35,35 0 0,1 70,0 a35,35 0 0,1 -70,0" fill="none" stroke="#A8DADC" stroke-width="4"></path></svg>`;
+});
 const css = {
   code: ".svg-background.svelte-l5c36i{background-color:#f0f0f0}",
-  map: `{"version":3,"file":"+page.svelte","sources":["+page.svelte"],"sourcesContent":["<script lang=\\"ts\\">import { onMount } from \\"svelte\\";\\nimport { isLoading } from \\"$lib/stores/global-stores\\";\\nimport Layout from \\"../Layout.svelte\\";\\nimport ProjectInfoModal from \\"$lib/components/project/project-info-modal.svelte\\";\\nimport OpenBookIcon from \\"$lib/icons/svgs/openbook.svelte\\";\\nimport GolfPadIcon from \\"$lib/icons/svgs/golfpad.svelte\\";\\nimport TransferKingsIcon from \\"$lib/icons/svgs/transferkings.svelte\\";\\nimport OpenChefIcon from \\"$lib/icons/svgs/openchef.svelte\\";\\nimport OpenCareIcon from \\"$lib/icons/svgs/opencare.svelte\\";\\nimport FootballGodIcon from \\"$lib/icons/svgs/footballgod.svelte\\";\\nimport OpenFPLIcon from \\"$lib/icons/svgs/openfpl.svelte\\";\\nimport ICPFAIcon from \\"$lib/icons/svgs/icpfa.svelte\\";\\nconst iconMap = {\\n    OpenBookIcon,\\n    GolfPadIcon,\\n    TransferKingsIcon,\\n    OpenChefIcon,\\n    OpenCareIcon,\\n    FootballGodIcon,\\n    OpenFPLIcon,\\n    ICPFAIcon\\n};\\nlet selectedProject = null;\\nlet showSelectedProject = false;\\nonMount(async () => {\\n    try {\\n        // Fetch your data here if needed\\n    }\\n    catch (error) {\\n        console.error(\\"Error fetching homepage data:\\", error);\\n    }\\n    finally {\\n        isLoading.set(false);\\n    }\\n});\\nconst projects = [\\n    {\\n        id: 1,\\n        title: \\"OpenBook\\",\\n        description: \\"Decentralised business management.\\",\\n        image: \\"openbook.jpg\\",\\n        imageComponent: iconMap.OpenBookIcon,\\n        link: \\"https://openbook.services\\",\\n        linkDisplay: \\"openbook.services\\",\\n        status: \\"Development\\",\\n        summary: \\"OpenBook is evolving into a comprehensive, 100% on-chain business management platform. OpenBook's initial offering of sales, accountancy, recruitment, timesheet and task management are just the first step on delivering the perfect single SaaS for businesses at the lowest possible price.\\",\\n        primaryColour: \\"#66E094\\",\\n        secondaryColour: \\"#000000\\"\\n    },\\n    {\\n        id: 7,\\n        title: \\"GolfPad\\",\\n        description: \\"Golf meets Web3.\\",\\n        image: \\"golfpad.jpg\\",\\n        imageComponent: iconMap.GolfPadIcon,\\n        link: \\"https://golfpad.xyz\\",\\n        linkDisplay: \\"golfpad.xyz\\",\\n        status: \\"Design\\",\\n        summary: \\"GolfPad gives golfers of all levels a new dimension to their game. GolfPad focuses on individual achievements throughout your round rather than a single round's total score. This allows you to compete against your friends within a new framework, training your golf game for new scenarios.\\",\\n        primaryColour: \\"#D9EDFA\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 3,\\n        title: \\"Transfer Kings\\",\\n        description: \\"Become a football agent today.\\",\\n        image: \\"transferkings.jpg\\",\\n        imageComponent: iconMap.TransferKingsIcon,\\n        link: \\"https://transferkings.xyz\\",\\n        linkDisplay: \\"transferkings.xyz\\",\\n        status: \\"Development\\",\\n        summary: \\"Transfer Kings allows you to become your own football agent, earning $FOOTBALL tokens as your selected players achieve your expected career goals. Designed for the football expert that can spot prospects around the world, Transfer Kings is the worldwide football game Web3 has been waiting for.\\",\\n        primaryColour: \\"#194B63\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 8,\\n        title: \\"OpenChef\\",\\n        description: \\"Build your own cooking community.\\",\\n        image: \\"openchef.jpg\\",\\n        imageComponent: iconMap.OpenChefIcon,\\n        link: \\"https://openchef.xyz\\",\\n        linkDisplay: \\"openchef.xyz\\",\\n        status: \\"Design\\",\\n        summary: \\"OpenChef is designed to promote signature dishes around the world, rewarding chefs for perfecting a recipe the world loves. This community based cooking platform ensures that your passion for cooking is rewarded as you perfect your skills.\\",\\n        primaryColour: \\"#731728\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 6,\\n        title: \\"OpenCare\\",\\n        description: \\"The future of social care.\\",\\n        image: \\"opencare.jpg\\",\\n        imageComponent: iconMap.OpenCareIcon,\\n        link: \\"https://opencare.services\\",\\n        linkDisplay: \\"opencare.services\\",\\n        status: \\"Design\\",\\n        summary: \\"OpenCare has been designed with care professionals and families who have elderly relatives in carehomes. Caring for the elderly will be a huge challenge for society going forwards and OpenCare will provide a caring, efficient and secure solution to help all stakeholders involved.\\",\\n        primaryColour: \\"#F279B2\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 2,\\n        title: \\"Football God\\",\\n        description: \\"Live play to earn football games.\\",\\n        image: \\"footballgod.jpg\\",\\n        imageComponent: iconMap.FootballGodIcon,\\n        link: \\"https://footballgod.xyz\\",\\n        linkDisplay: \\"footballgod.xyz\\",\\n        status: \\"Live\\",\\n        summary: \\"FootballGod is the home of peer to peer football prediction games on the Internet Computer. Games such as Transfer Kings utilise the $FOOTBALL utility token in a wide range of unique and exciting games.\\",\\n        primaryColour: \\"#242529\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 4,\\n        title: \\"OpenFPL\\",\\n        description: \\"Decentralised fantasy football.\\",\\n        image: \\"openfpl.jpg\\",\\n        imageComponent: iconMap.OpenFPLIcon,\\n        link: \\"https://openfpl.xyz\\",\\n        linkDisplay: \\"openfpl.xyz\\",\\n        status: \\"Decentralized\\",\\n        summary: \\"OpenFPL is a decentralised autonomous organisation (DAO) hosted through the Internet Computer's network nervous system. The OpenFPL token holders reach community consensus for player and data validation ensuring the entire platform operates entirely on the blockchain with zero dependencies.\\",\\n        primaryColour: \\"#2ce3a6\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 5,\\n        title: \\"ICPFA\\",\\n        description: \\"Supporting community football.\\",\\n        image: \\"icpfa.jpg\\",\\n        imageComponent: iconMap.ICPFAIcon,\\n        link: \\"https://icpfa.org\\",\\n        linkDisplay: \\"icpfa.org\\",\\n        status: \\"Development\\",\\n        summary: \\"The ICPFA has been setup to support community grassroots football causes, funded by revenue from our football related applications.\\",\\n        primaryColour: \\"#FFFFFF\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n];\\nfunction loadInfoModal(project) {\\n    selectedProject = project;\\n    showSelectedProject = true;\\n}\\n;\\nfunction closeInfoModal() {\\n    selectedProject = null;\\n    showSelectedProject = false;\\n}\\n;\\n<\/script>\\n\\n<style>\\n  .svg-background {\\n    background-color: #f0f0f0; /* Example color, change as needed */\\n  }</style>\\n\\n{#if showSelectedProject}\\n  <ProjectInfoModal closeModal={closeInfoModal} visible={showSelectedProject} {selectedProject} />\\n{/if}\\n\\n<Layout>\\n  <div class=\\"flex items-center justify-center flex-col mt-16 mb-16\\">\\n    <div class=\\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4\\">\\n      {#each projects as project}\\n        <div class=\\"rounded-lg shadow-lg overflow-hidden border-2 border-WaterwayLightBlue bg-WaterwayCompDarkBlue\\">\\n          <div class=\\"w-full h-48 flex items-center justify-center\\" style=\\"background-color: {project.primaryColour};\\">\\n            <svelte:component className=\\"w-16\\" this={project.imageComponent} />\\n          </div>\\n          <div class=\\"p-4 bg-WaterwayCompDarkBlue\\">\\n            <h3 class=\\"text-lg font-semibold\\">{project.title}</h3>\\n            <p class=\\"text-white my-2 text-sm\\">{project.description}</p>\\n            <div class=\\"horizontal-divider my-2 mb-4\\" />\\n            <div class=\\"flex justify-between items-center mt-4\\">\\n              <a href={project.link} target=\\"_blank\\" class=\\"text-WaterwayBaseE hover:underline text-sm mr-4\\">{project.linkDisplay}</a>\\n              <span class={\`px-3 py-2 text-xs rounded-md text-center\\n                \${project.status === 'Design' ? 'badge-design' : ''} \\n                \${project.status === 'Development' ? 'badge-development' : ''} \\n                \${project.status === 'Live' ? 'badge-live' : ''} \\n                \${project.status === 'Decentralized' ? 'badge-decentralized' : ''}\`}>\\n                {project.status}\\n              </span>\\n            </div>\\n            <button on:click={() => loadInfoModal(project)} class=\\"mt-4 w-full btn text-white py-2 rounded hover:bg-WaterwayBaseB focus:outline-none text-sm\\">More Info</button>\\n          </div>\\n        </div>\\n      {/each}\\n    </div>\\n  </div>\\n</Layout>\\n"],"names":[],"mappings":"AA0JE,6BAAgB,CACd,gBAAgB,CAAE,OACpB"}`
+  map: `{"version":3,"file":"+page.svelte","sources":["+page.svelte"],"sourcesContent":["<script lang=\\"ts\\">import { onMount } from \\"svelte\\";\\nimport { isLoading } from \\"$lib/stores/global-stores\\";\\nimport Layout from \\"../Layout.svelte\\";\\nimport ProjectInfoModal from \\"$lib/components/project/project-info-modal.svelte\\";\\nimport OpenBookIcon from \\"$lib/icons/svgs/openbook.svelte\\";\\nimport GolfPadIcon from \\"$lib/icons/svgs/golfpad.svelte\\";\\nimport TransferKingsIcon from \\"$lib/icons/svgs/transferkings.svelte\\";\\nimport OpenChefIcon from \\"$lib/icons/svgs/openchef.svelte\\";\\nimport OpenCareIcon from \\"$lib/icons/svgs/opencare.svelte\\";\\nimport FootballGodIcon from \\"$lib/icons/svgs/footballgod.svelte\\";\\nimport OpenFPLIcon from \\"$lib/icons/svgs/openfpl.svelte\\";\\nimport ICPFAIcon from \\"$lib/icons/svgs/icpfa.svelte\\";\\nimport OpenBeatsIcon from \\"$lib/icons/svgs/openbeats.svelte\\";\\nconst iconMap = {\\n    OpenBookIcon,\\n    GolfPadIcon,\\n    TransferKingsIcon,\\n    OpenChefIcon,\\n    OpenCareIcon,\\n    FootballGodIcon,\\n    OpenFPLIcon,\\n    ICPFAIcon,\\n    OpenBeatsIcon\\n};\\nlet selectedProject = null;\\nlet showSelectedProject = false;\\nonMount(async () => {\\n    try {\\n        // Fetch your data here if needed\\n    }\\n    catch (error) {\\n        console.error(\\"Error fetching homepage data:\\", error);\\n    }\\n    finally {\\n        isLoading.set(false);\\n    }\\n});\\nconst projects = [\\n    {\\n        id: 4,\\n        title: \\"OpenFPL\\",\\n        description: \\"Decentralised fantasy football.\\",\\n        image: \\"openfpl.jpg\\",\\n        imageComponent: iconMap.OpenFPLIcon,\\n        link: \\"https://openfpl.xyz\\",\\n        linkDisplay: \\"openfpl.xyz\\",\\n        status: \\"Decentralised\\",\\n        summary: \\"OpenFPL is a decentralised fantasy football game for the Premier League hosted through the Internet Computer's network nervous system. OpenFPL token holders reach community consensus for player valuations, data validation and more to ensure the entire platform operates entirely on the blockchain with zero dependencies.\\",\\n        primaryColour: \\"#2ce3a6\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 2,\\n        title: \\"Football God\\",\\n        description: \\"Live play to earn football games.\\",\\n        image: \\"footballgod.jpg\\",\\n        imageComponent: iconMap.FootballGodIcon,\\n        link: \\"https://footballgod.xyz\\",\\n        linkDisplay: \\"footballgod.xyz\\",\\n        status: \\"Development\\",\\n        summary: \\"FootballGod will be a fixed odds betting platform funded by the OpenFPL DAO. Data managed to run OpenFPL and Transfer Kings will be used to offer odds on worldwide football matches. Algorithms for FootballGod will be managed by the OpenFPL DAO, allowing FootballGod to be used as a useful tool for controlling the FPL token supply. FootballGod has been designed to take advantage of the highly profitable nature of betting platforms to benefit OpenFPL token holders. FootballGod will send all profits to the OpenFPL DAO FPL Treasury, with the DAO able to burn these profit at it's discression.\\",\\n        primaryColour: \\"#242529\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 3,\\n        title: \\"Transfer Kings\\",\\n        description: \\"Become a football agent today.\\",\\n        image: \\"transferkings.jpg\\",\\n        imageComponent: iconMap.TransferKingsIcon,\\n        link: \\"https://transferkings.xyz\\",\\n        linkDisplay: \\"transferkings.xyz\\",\\n        status: \\"Development\\",\\n        summary: \\"Transfer Kings is our upcoming purchase to play football agency game. Groups of friends will be able to setup their own agency, competing against each other for custom reward pools. Transfer Kings is designed to span multiple seasons and international tournaments, allowing your contracted players to achieve their expected career goals. Designed for the football expert that can spot prospects around the world, Transfer Kings is the worldwide football game Web3 has been waiting for.\\",\\n        primaryColour: \\"#194B63\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 1,\\n        title: \\"OpenBook\\",\\n        description: \\"Decentralised business management.\\",\\n        image: \\"openbook.jpg\\",\\n        imageComponent: iconMap.OpenBookIcon,\\n        link: \\"https://openbook.services\\",\\n        linkDisplay: \\"openbook.services\\",\\n        status: \\"Development\\",\\n        summary: \\"OpenBook is evolving into a comprehensive, 100% on-chain business management platform. OpenBook's initial offering of sales, accountancy, recruitment, timesheet and task management are just the first step on delivering the perfect single SaaS for businesses at the lowest possible price.\\",\\n        primaryColour: \\"#66E094\\",\\n        secondaryColour: \\"#000000\\"\\n    },\\n    {\\n        id: 7,\\n        title: \\"GolfPad\\",\\n        description: \\"Golf meets Web3.\\",\\n        image: \\"golfpad.jpg\\",\\n        imageComponent: iconMap.GolfPadIcon,\\n        link: \\"https://golfpad.xyz\\",\\n        linkDisplay: \\"golfpad.xyz\\",\\n        status: \\"Design\\",\\n        summary: \\"GolfPad gives golfers of all levels a new dimension to their game. GolfPad focuses on individual achievements throughout your round rather than a single round's total score. This allows you to compete against your friends within a new framework, training your golf game for new scenarios.\\",\\n        primaryColour: \\"#F4C802\\",\\n        secondaryColour: \\"#000000\\"\\n    },\\n    {\\n        id: 9,\\n        title: \\"OpenBeats\\",\\n        description: \\"Decentralised Audio Network.\\",\\n        image: \\"openbeats.jpg\\",\\n        imageComponent: iconMap.OpenBeatsIcon,\\n        link: \\"https://openbeats.xyz\\",\\n        linkDisplay: \\"openbeats.xyz\\",\\n        status: \\"Design\\",\\n        summary: \\"OpenBeats is a decentralised audio network enabling producers to create tracks using audio samples from the OpenBeats library. Creators of samples share the monthly subscription revenue based on how often their sample is used in the projects being composed.\\",\\n        primaryColour: \\"#000000\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 8,\\n        title: \\"OpenChef\\",\\n        description: \\"Build your own cooking community.\\",\\n        image: \\"openchef.jpg\\",\\n        imageComponent: iconMap.OpenChefIcon,\\n        link: \\"https://openchef.xyz\\",\\n        linkDisplay: \\"openchef.xyz\\",\\n        status: \\"Design\\",\\n        summary: \\"OpenChef is designed to enable chefs to earn as they help people within their local community. Chefs will create projects that receive funding through sponsorship, charitable donations and a share of premium content subscriptions. This funding will be used to feed the community, giving a chef the opportunity to show off their passion for cooking through charitable content. The DAO will vote on rewards for chefs that help the most people, ensuring as much good as possible can be done.\\",\\n        primaryColour: \\"#731728\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 5,\\n        title: \\"ICPFA\\",\\n        description: \\"Supporting community football.\\",\\n        image: \\"icpfa.jpg\\",\\n        imageComponent: iconMap.ICPFAIcon,\\n        link: \\"https://icpfa.org\\",\\n        linkDisplay: \\"icpfa.org\\",\\n        status: \\"Development\\",\\n        summary: \\"The ICPFA has been setup to support community grassroots football causes, funded by revenue from our football related applications.\\",\\n        primaryColour: \\"#FFFFFF\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n    {\\n        id: 6,\\n        title: \\"OpenCare\\",\\n        description: \\"The future of social care.\\",\\n        image: \\"opencare.jpg\\",\\n        imageComponent: iconMap.OpenCareIcon,\\n        link: \\"https://opencare.services\\",\\n        linkDisplay: \\"opencare.services\\",\\n        status: \\"Design\\",\\n        summary: \\"OpenCare has been designed with care professionals and families who have elderly relatives in carehomes. Caring for the elderly will be a huge challenge for society going forwards and OpenCare will provide a caring, efficient and secure solution to help all stakeholders involved.\\",\\n        primaryColour: \\"#F279B2\\",\\n        secondaryColour: \\"#FFFFFF\\"\\n    },\\n];\\nfunction loadInfoModal(project) {\\n    selectedProject = project;\\n    showSelectedProject = true;\\n}\\n;\\nfunction closeInfoModal() {\\n    selectedProject = null;\\n    showSelectedProject = false;\\n}\\n;\\n<\/script>\\n\\n<style>\\n  .svg-background {\\n    background-color: #f0f0f0; /* Example color, change as needed */\\n  }</style>\\n\\n{#if showSelectedProject}\\n  <ProjectInfoModal closeModal={closeInfoModal} visible={showSelectedProject} {selectedProject} />\\n{/if}\\n\\n<Layout>\\n  <div class=\\"flex items-center justify-center flex-col mt-16 mb-16\\">\\n    <div class=\\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4\\">\\n      {#each projects as project}\\n        <div class=\\"rounded-lg shadow-lg overflow-hidden border-2 border-WaterwayLightBlue bg-WaterwayCompDarkBlue\\">\\n          <div class=\\"w-full h-48 flex items-center justify-center\\" style=\\"background-color: {project.primaryColour};\\">\\n            <svelte:component className=\\"w-16\\" this={project.imageComponent} />\\n          </div>\\n          <div class=\\"p-4 bg-WaterwayCompDarkBlue\\">\\n            <h3 class=\\"text-lg font-semibold\\">{project.title}</h3>\\n            <p class=\\"text-white my-2 text-sm\\">{project.description}</p>\\n            <div class=\\"horizontal-divider my-2 mb-4\\" />\\n            <div class=\\"flex justify-between items-center mt-4\\">\\n              <a href={project.link} target=\\"_blank\\" class=\\"text-WaterwayBaseE hover:underline text-sm mr-4\\">{project.linkDisplay}</a>\\n              <span class={\`px-3 py-2 text-xs rounded-md text-center\\n                \${project.status === 'Design' ? 'badge-design' : ''} \\n                \${project.status === 'Development' ? 'badge-development' : ''} \\n                \${project.status === 'Live' ? 'badge-live' : ''} \\n                \${project.status === 'Decentralised' ? 'badge-decentralised' : ''}\`}>\\n                {project.status}\\n              </span>\\n            </div>\\n            <button on:click={() => loadInfoModal(project)} class=\\"mt-4 w-full btn text-white py-2 rounded hover:bg-WaterwayBaseB focus:outline-none text-sm\\">More Info</button>\\n          </div>\\n        </div>\\n      {/each}\\n    </div>\\n  </div>\\n</Layout>\\n"],"names":[],"mappings":"AAyKE,6BAAgB,CACd,gBAAgB,CAAE,OACpB"}`
 };
-const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+const Page$1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   const iconMap = {
     OpenBookIcon: Openbook,
     GolfPadIcon: Golfpad,
@@ -3796,9 +3803,49 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
     OpenCareIcon: Opencare,
     FootballGodIcon: Footballgod,
     OpenFPLIcon: Openfpl,
-    ICPFAIcon: Icpfa
+    ICPFAIcon: Icpfa,
+    OpenBeatsIcon: Openbeats
   };
   const projects = [
+    {
+      id: 4,
+      title: "OpenFPL",
+      description: "Decentralised fantasy football.",
+      image: "openfpl.jpg",
+      imageComponent: iconMap.OpenFPLIcon,
+      link: "https://openfpl.xyz",
+      linkDisplay: "openfpl.xyz",
+      status: "Decentralised",
+      summary: "OpenFPL is a decentralised fantasy football game for the Premier League hosted through the Internet Computer's network nervous system. OpenFPL token holders reach community consensus for player valuations, data validation and more to ensure the entire platform operates entirely on the blockchain with zero dependencies.",
+      primaryColour: "#2ce3a6",
+      secondaryColour: "#FFFFFF"
+    },
+    {
+      id: 2,
+      title: "Football God",
+      description: "Live play to earn football games.",
+      image: "footballgod.jpg",
+      imageComponent: iconMap.FootballGodIcon,
+      link: "https://footballgod.xyz",
+      linkDisplay: "footballgod.xyz",
+      status: "Development",
+      summary: "FootballGod will be a fixed odds betting platform funded by the OpenFPL DAO. Data managed to run OpenFPL and Transfer Kings will be used to offer odds on worldwide football matches. Algorithms for FootballGod will be managed by the OpenFPL DAO, allowing FootballGod to be used as a useful tool for controlling the FPL token supply. FootballGod has been designed to take advantage of the highly profitable nature of betting platforms to benefit OpenFPL token holders. FootballGod will send all profits to the OpenFPL DAO FPL Treasury, with the DAO able to burn these profit at it's discression.",
+      primaryColour: "#242529",
+      secondaryColour: "#FFFFFF"
+    },
+    {
+      id: 3,
+      title: "Transfer Kings",
+      description: "Become a football agent today.",
+      image: "transferkings.jpg",
+      imageComponent: iconMap.TransferKingsIcon,
+      link: "https://transferkings.xyz",
+      linkDisplay: "transferkings.xyz",
+      status: "Development",
+      summary: "Transfer Kings is our upcoming purchase to play football agency game. Groups of friends will be able to setup their own agency, competing against each other for custom reward pools. Transfer Kings is designed to span multiple seasons and international tournaments, allowing your contracted players to achieve their expected career goals. Designed for the football expert that can spot prospects around the world, Transfer Kings is the worldwide football game Web3 has been waiting for.",
+      primaryColour: "#194B63",
+      secondaryColour: "#FFFFFF"
+    },
     {
       id: 1,
       title: "OpenBook",
@@ -3822,20 +3869,20 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       linkDisplay: "golfpad.xyz",
       status: "Design",
       summary: "GolfPad gives golfers of all levels a new dimension to their game. GolfPad focuses on individual achievements throughout your round rather than a single round's total score. This allows you to compete against your friends within a new framework, training your golf game for new scenarios.",
-      primaryColour: "#D9EDFA",
-      secondaryColour: "#FFFFFF"
+      primaryColour: "#F4C802",
+      secondaryColour: "#000000"
     },
     {
-      id: 3,
-      title: "Transfer Kings",
-      description: "Become a football agent today.",
-      image: "transferkings.jpg",
-      imageComponent: iconMap.TransferKingsIcon,
-      link: "https://transferkings.xyz",
-      linkDisplay: "transferkings.xyz",
-      status: "Development",
-      summary: "Transfer Kings allows you to become your own football agent, earning $FOOTBALL tokens as your selected players achieve your expected career goals. Designed for the football expert that can spot prospects around the world, Transfer Kings is the worldwide football game Web3 has been waiting for.",
-      primaryColour: "#194B63",
+      id: 9,
+      title: "OpenBeats",
+      description: "Decentralised Audio Network.",
+      image: "openbeats.jpg",
+      imageComponent: iconMap.OpenBeatsIcon,
+      link: "https://openbeats.xyz",
+      linkDisplay: "openbeats.xyz",
+      status: "Design",
+      summary: "OpenBeats is a decentralised audio network enabling producers to create tracks using audio samples from the OpenBeats library. Creators of samples share the monthly subscription revenue based on how often their sample is used in the projects being composed.",
+      primaryColour: "#000000",
       secondaryColour: "#FFFFFF"
     },
     {
@@ -3847,47 +3894,8 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       link: "https://openchef.xyz",
       linkDisplay: "openchef.xyz",
       status: "Design",
-      summary: "OpenChef is designed to promote signature dishes around the world, rewarding chefs for perfecting a recipe the world loves. This community based cooking platform ensures that your passion for cooking is rewarded as you perfect your skills.",
+      summary: "OpenChef is designed to enable chefs to earn as they help people within their local community. Chefs will create projects that receive funding through sponsorship, charitable donations and a share of premium content subscriptions. This funding will be used to feed the community, giving a chef the opportunity to show off their passion for cooking through charitable content. The DAO will vote on rewards for chefs that help the most people, ensuring as much good as possible can be done.",
       primaryColour: "#731728",
-      secondaryColour: "#FFFFFF"
-    },
-    {
-      id: 6,
-      title: "OpenCare",
-      description: "The future of social care.",
-      image: "opencare.jpg",
-      imageComponent: iconMap.OpenCareIcon,
-      link: "https://opencare.services",
-      linkDisplay: "opencare.services",
-      status: "Design",
-      summary: "OpenCare has been designed with care professionals and families who have elderly relatives in carehomes. Caring for the elderly will be a huge challenge for society going forwards and OpenCare will provide a caring, efficient and secure solution to help all stakeholders involved.",
-      primaryColour: "#F279B2",
-      secondaryColour: "#FFFFFF"
-    },
-    {
-      id: 2,
-      title: "Football God",
-      description: "Live play to earn football games.",
-      image: "footballgod.jpg",
-      imageComponent: iconMap.FootballGodIcon,
-      link: "https://footballgod.xyz",
-      linkDisplay: "footballgod.xyz",
-      status: "Live",
-      summary: "FootballGod is the home of peer to peer football prediction games on the Internet Computer. Games such as Transfer Kings utilise the $FOOTBALL utility token in a wide range of unique and exciting games.",
-      primaryColour: "#242529",
-      secondaryColour: "#FFFFFF"
-    },
-    {
-      id: 4,
-      title: "OpenFPL",
-      description: "Decentralised fantasy football.",
-      image: "openfpl.jpg",
-      imageComponent: iconMap.OpenFPLIcon,
-      link: "https://openfpl.xyz",
-      linkDisplay: "openfpl.xyz",
-      status: "Decentralized",
-      summary: "OpenFPL is a decentralised autonomous organisation (DAO) hosted through the Internet Computer's network nervous system. The OpenFPL token holders reach community consensus for player and data validation ensuring the entire platform operates entirely on the blockchain with zero dependencies.",
-      primaryColour: "#2ce3a6",
       secondaryColour: "#FFFFFF"
     },
     {
@@ -3902,6 +3910,19 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
       summary: "The ICPFA has been setup to support community grassroots football causes, funded by revenue from our football related applications.",
       primaryColour: "#FFFFFF",
       secondaryColour: "#FFFFFF"
+    },
+    {
+      id: 6,
+      title: "OpenCare",
+      description: "The future of social care.",
+      image: "opencare.jpg",
+      imageComponent: iconMap.OpenCareIcon,
+      link: "https://opencare.services",
+      linkDisplay: "opencare.services",
+      status: "Design",
+      summary: "OpenCare has been designed with care professionals and families who have elderly relatives in carehomes. Caring for the elderly will be a huge challenge for society going forwards and OpenCare will provide a caring, efficient and secure solution to help all stakeholders involved.",
+      primaryColour: "#F279B2",
+      secondaryColour: "#FFFFFF"
     }
   ];
   $$result.css.add(css);
@@ -3913,17 +3934,24 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
                 ${project.status === "Design" ? "badge-design" : ""} 
                 ${project.status === "Development" ? "badge-development" : ""} 
                 ${project.status === "Live" ? "badge-live" : ""} 
-                ${project.status === "Decentralized" ? "badge-decentralized" : ""}`),
+                ${project.status === "Decentralised" ? "badge-decentralised" : ""}`),
           true
         ) + " svelte-l5c36i"}">${escape(project.status)} </span></div> <button class="mt-4 w-full btn text-white py-2 rounded hover:bg-WaterwayBaseB focus:outline-none text-sm" data-svelte-h="svelte-1h7ih0q">More Info</button></div> </div>`;
       })}</div></div>`;
     }
   })}`;
 });
+const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  return `${validate_component(Layout, "Layout").$$render($$result, {}, {}, {
+    default: () => {
+      return `<div class="flex items-center justify-center flex-col mt-16 mb-16" data-svelte-h="svelte-5joygp"><p>Waterway Labs Team</p> <p>Zoe Duffy: Managing Director</p> <p>Kelly Howlett: Head of Operations</p> <p>James Beadle: Development Manager</p> <p>George Robinson: Community Manager</p> <p>Josh Wray: Head of Promotion</p></div>`;
+    }
+  })}`;
+});
 export {
   Error$1 as E,
   Layout$1 as L,
-  Page$1 as P,
+  Page$2 as P,
   Server as S,
   set_building as a,
   set_manifest as b,
@@ -3933,7 +3961,8 @@ export {
   set_read_implementation as f,
   get_hooks as g,
   set_safe_public_env as h,
-  Page as i,
+  Page$1 as i,
+  Page as j,
   options as o,
   set_assets as s
 };

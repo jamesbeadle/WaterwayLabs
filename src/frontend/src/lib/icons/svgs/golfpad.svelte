@@ -8,8 +8,8 @@
   viewBox="0 0 200 200">
   <defs>
     <linearGradient id="grass-sky" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="50%" stop-color="#2D7B66" />
-      <stop offset="50%" stop-color="#2D5D7A" />
+      <stop offset="50%" stop-color="#1C4932" />
+      <stop offset="50%" stop-color="#3CA1FF" />
     </linearGradient>
   </defs>
   <circle cx="100" cy="100" r="100" fill="url(#grass-sky)" />
@@ -27,5 +27,5 @@
 
   <circle cx="100" cy="100" r="50" fill="none" stroke="#2D5D7A" stroke-width="4"/>
 
-  <circle cx="100" cy="100" r="99.5" stroke="#D9EDFA" stroke-width="1"/>
+  <circle cx="100" cy="100" r="99.5" stroke="#F4C802" stroke-width="1"/>
 </svg>
