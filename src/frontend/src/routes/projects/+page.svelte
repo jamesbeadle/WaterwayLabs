@@ -52,7 +52,7 @@
       link: "https://openfpl.xyz",
       linkDisplay: "openfpl.xyz",
       status: "Decentralised",
-      summary: "OpenFPL is a decentralised fantasy football game for the Premier League hosted through the Internet Computer's network nervous system. OpenFPL token holders reach community consensus for player valuations, data validation and more to ensure the entire platform operates entirely on the blockchain with zero dependencies.",
+      summary: "OpenFPL is a decentralised fantasy football game for the Premier League hosted through the Internet Computer's Network Nervous System. OpenFPL token holders reach community consensus for player valuations, data validation and more to ensure the entire platform operates entirely on the blockchain with zero dependencies.",
       primaryColour: "#2ce3a6",
       secondaryColour: "#FFFFFF"
     },
@@ -103,7 +103,7 @@
       imageComponent: iconMap.GolfPadIcon,
       link: "https://golfpad.xyz",
       linkDisplay: "golfpad.xyz",
-      status: "Design",
+      status: "Development",
       summary: "GolfPad gives golfers of all levels a new dimension to their game. GolfPad focuses on individual achievements throughout your round rather than a single round's total score. This allows you to compete against your friends within a new framework, training your golf game for new scenarios.",
       primaryColour: "#F4C802",
       secondaryColour: "#000000"
@@ -187,16 +187,16 @@
   <div class="flex items-center justify-center flex-col mt-16 mb-16">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {#each projects as project}
-        <div class="rounded-lg shadow-lg overflow-hidden border-2 border-WaterwayLightBlue bg-WaterwayCompDarkBlue">
+        <div class="rounded-lg shadow-lg overflow-hidden border-2 border-WaterwayLightBlue bg-WaterwayLightBlue">
           <div class="w-full h-48 flex items-center justify-center" style="background-color: {project.primaryColour};">
             <svelte:component className="w-16" this={project.imageComponent} />
           </div>
-          <div class="p-4 bg-WaterwayCompDarkBlue">
+          <div class="p-4 bg-WaterwayBrown">
             <h3 class="text-lg font-semibold">{project.title}</h3>
             <p class="text-white my-2 text-sm">{project.description}</p>
             <div class="horizontal-divider my-2 mb-4" />
             <div class="flex justify-between items-center mt-4">
-              <a href={project.link} target="_blank" class="text-WaterwayBaseE hover:underline text-sm mr-4">{project.linkDisplay}</a>
+              <a href={project.link} target="_blank" class="text-WaterwayBeige hover:underline text-sm mr-4">{project.linkDisplay}</a>
               <span class={`px-3 py-2 text-xs rounded-md text-center
                 ${project.status === 'Design' ? 'badge-design' : ''} 
                 ${project.status === 'Development' ? 'badge-development' : ''} 
@@ -205,7 +205,7 @@
                 {project.status}
               </span>
             </div>
-            <button on:click={() => loadInfoModal(project)} class="mt-4 w-full btn text-white py-2 rounded hover:bg-WaterwayBaseB focus:outline-none text-sm">More Info</button>
+            <button on:click={() => loadInfoModal(project)} class="mt-4 w-full btn text-white py-2 rounded hover:bg-WaterwayBlue focus:outline-none text-sm">More Info</button>
           </div>
         </div>
       {/each}

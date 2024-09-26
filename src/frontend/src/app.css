@@ -63,24 +63,24 @@ body {
 }
 
 .btn {
-  @apply bg-WaterwayBlue text-white px-4 py-2 rounded-md hover:bg-WaterwayLightBlue hover:text-white;
+  @apply bg-WaterwayTeal text-white px-4 py-2 rounded-md hover:bg-WaterwayGreen hover:text-white;
 }
 
 .horizontal-divider {
   min-height: 2px;
-  @apply flex-shrink-0 h-px bg-WaterwayCompLight self-stretch;
+  @apply flex-shrink-0 h-px bg-WaterwayBlue self-stretch;
 }
 
 .vertical-divider {
   min-width: 2px;
-  @apply flex-shrink-0 w-px bg-WaterwayCompLight self-stretch;
+  @apply flex-shrink-0 w-px bg-white self-stretch;
 }
 
 .badge-design {
-  @apply bg-WaterwayBeige text-white;
+  @apply bg-WaterwayLightBlue text-WaterwayBrown;
 }
 .badge-development {
-  @apply bg-WaterwayLightBlue text-white;
+  @apply bg-WaterwayBlue text-white;
 }
 .badge-live {
   @apply bg-WaterwayBlue text-white;

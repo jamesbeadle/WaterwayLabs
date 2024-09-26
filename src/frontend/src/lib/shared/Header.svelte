@@ -1,4 +1,4 @@
-<header class="w-full bg-WaterwayCompBlue fixed top-0 left-0 right-0 z-5 border-b border-WaterwayCompLight">
+<header class="w-full bg-WaterwayBrown fixed top-0 left-0 right-0 z-5 border-b border-WaterwayBeige">
   <nav class="text-white">
     <div class="px-4 h-16 flex justify-between items-center w-full">
       <a href="/" class="flex items-center">

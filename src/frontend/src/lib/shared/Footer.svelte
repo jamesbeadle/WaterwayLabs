@@ -1,4 +1,4 @@
-<footer class="w-full bg-WaterwayCompDarkBlue py-3 fixed bottom-0 left-0 right-0 z-50 border-t-2 border-WaterwayCompGray">
+<footer class="w-full bg-WaterwayBrown py-3 fixed bottom-0 left-0 right-0 z-50 border-t-2 border-WaterwayBeige">
   <div class="container mx-auto flex flex-col sm:flex-row items-center text-xs">
     <div class="flex justify-center sm:justify-start w-full sm:w-auto mb-2 sm:mb-0 sm:flex-1 items-center">
       <a href="https://github.com/Waterway-Labs" target="_blank" rel="noopener noreferrer">
