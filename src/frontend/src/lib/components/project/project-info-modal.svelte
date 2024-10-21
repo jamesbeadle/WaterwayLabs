@@ -31,7 +31,7 @@ import ICPFAIcon from "$lib/icons/svgs/icpfa.svelte";
 {#if visible && selectedProject}
     <Modal {visible} on:nnsClose={closeModal}>
         <div class="p-6 text-xs" >
-            <div class="flex justify-between items-center mb-2 text-2xl">
+            <div class="flex items-center justify-between mb-2 text-2xl">
                 <h3 class="default-header">{selectedProject?.title}</h3>
                 <button class="times-button" on:click={closeModal}>&times;</button>
             </div>
@@ -39,12 +39,12 @@ import ICPFAIcon from "$lib/icons/svgs/icpfa.svelte";
                 <p class="text-base">{selectedProject?.description}</p>
             </div>
             
-            <div class="horizontal-divider my-2 mb-4" />
+            <div class="my-2 mb-4 horizontal-divider" />
             <div class="flex flex-row mt-4 space-x-4">
-                <div class="w-1/2 flex items-center justify-center" style="background-color: {selectedProject.primaryColour};">
+                <div class="flex items-center justify-center w-1/2" style="background-color: {selectedProject.backgroundColour};">
                     <svelte:component className="w-16" this={selectedProject.imageComponent} />
                 </div>
-                <div class="w-1/2 flex flex-col">
+                <div class="flex flex-col w-1/2">
                     <p class="mt-2 mb-1">The Mission:</p>
                     <p>{selectedProject?.summary}</p>
                     <p class="mt-4 mb-1">Website:</p>

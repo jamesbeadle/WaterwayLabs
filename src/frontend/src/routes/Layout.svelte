@@ -3,7 +3,6 @@
   import { fade } from "svelte/transition";
   import { browser } from "$app/environment";
   import Header from "$lib/shared/Header.svelte";
-  import Footer from "$lib/shared/Footer.svelte";
   import "../app.css";
 
   import { BusyScreen, Spinner, Toasts } from "@dfinity/gix-components";
@@ -37,7 +36,6 @@
     <main class="flex-1 p-4">
       <slot />
     </main>
-    <Footer />
   </div>
 {/await}
 
