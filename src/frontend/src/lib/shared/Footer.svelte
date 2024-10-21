@@ -1,22 +1,86 @@
-<footer class="w-full bg-WaterwayBrown py-3 fixed bottom-0 left-0 right-0 z-50 border-t-2 border-WaterwayBeige">
-  <div class="container mx-auto flex flex-col sm:flex-row items-center text-xs">
-    <div class="flex justify-center sm:justify-start w-full sm:w-auto mb-2 sm:mb-0 sm:flex-1 items-center">
-      <a href="https://github.com/Waterway-Labs" target="_blank" rel="noopener noreferrer">
-        <img src="github.png" class="w-6" alt="GitHub" />
-      </a>
-    </div>
-    <div class="flex justify-center w-full sm:w-auto sm:flex-1 text-center mb-2 sm:mb-0">
-      <a class="flex flex-row items-center" href="/">
-        <img src="logo.png" class="h-6 mr-2" alt="logo" />
-        <b>Waterway Labs <span id="currentYear"></span></b>
-      </a>
-    </div>
-    <div class="flex justify-center sm:justify-end w-full sm:w-auto sm:flex-1">
-      <a class="px-4" href="/team">Team</a>
-      <div class="vertical-divider"></div>
-      <div class="text-center sm:text-right px-4">
-        Company Reg: 15281491
+<footer class="relative py-8 bg-gray-900">
+  <!-- Add Ellipses for Blur Effect -->
+  <div class="absolute ellipse-1"></div>
+  <div class="absolute ellipse-2"></div>
+
+  <div class="relative z-10">
+    
+    <!-- First Row (Logo and Links) -->
+    <div class="flex items-center justify-between w-full px-12">
+      <div class="flex items-center mb-0">
+        <a href="/" class="flex items-center">
+          <img src="logo.png" class="h-6" alt="Waterway Labs Logo" />
+          <span class="ml-2 tracking-wide font-mona">
+            <span class="text-white">WATERWAY</span>
+            <span class="text-white font-exlight">LABS</span>
+          </span>
+        </a>
+      </div>
+      <div class="text-sm font-light text-right font-inter font-body">
+        <a href="/" class="mx-4 hover:text-blue-400">Products</a> | 
+        <a href="/about" class="mx-4 hover:text-blue-400">About Us</a> | 
+        <a href="/team" class="mx-4 hover:text-blue-400">The Team</a>
       </div>
     </div>
+    <!-- Divider -->
+    <hr class="my-6 border-t-2 border-[#4E4E4E] mx-auto" style="margin-bottom: 20px; width: 1450px;" />
+    
+    <!-- Second Row (Let's Connect and Social Links) -->
+    <div class="flex items-center justify-between w-full px-12">
+      <div class="flex flex-col text-sm">
+        <h4 class="font-mona font-h4">LET'S CONNECT</h4>
+      </div>
+      <div class="text-sm font-light text-right font-inter font-body">
+        <a href="https://github.com" target="_blank" class="mx-2 hover:text-white">GitHub</a>
+        <a href="https://twitter.com" target="_blank" class="mx-2 hover:text-white">Twitter</a>
+      </div>
+    </div>
+    
   </div>
 </footer>
+
+<style>
+  footer {
+    background-color: #272727;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Ellipse 1 */
+  .ellipse-1 {
+    width: 256px;
+    height: 256px;
+    background: rgba(79, 168, 246, 0.2); /* Adjust the color based on Figma */
+    filter: blur(240px);
+    position: absolute;
+    top: 10%;
+    left: 25%;
+  }
+
+  /* Ellipse 2 */
+  .ellipse-2 {
+    width: 240px;
+    height: 240px;
+    background: rgba(244, 223, 253, 0.2); /* Adjust the color based on Figma */
+    filter: blur(320px);
+    position: absolute;
+    bottom: 20%;
+    right: 30%;
+  }
+
+  footer a {
+    font-family: "Inter", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .relative {
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Optional: Ensure the divider is visually balanced */
+  hr {
+    border-color: #4E4E4E;
+  }
+</style>

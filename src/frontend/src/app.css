@@ -19,7 +19,11 @@ body {
 body {
   font-family: "Poppins", sans-serif !important;
   color: white !important;
-  background-color: #1a1a1d;
+  background: linear-gradient(
+    to right,
+    #272727 50%,
+    var(--selectedProject-bg-color, #2ce3a6) 50%
+  );
   height: 100vh;
   margin: 0;
 }
@@ -63,28 +67,28 @@ body {
 }
 
 .btn {
-  @apply bg-WaterwayTeal text-white px-4 py-2 rounded-md hover:bg-WaterwayGreen hover:text-white;
+  @apply px-4 py-2 text-white rounded-md bg-WaterwayTeal hover:bg-WaterwayGreen hover:text-white;
 }
 
 .horizontal-divider {
   min-height: 2px;
-  @apply flex-shrink-0 h-px bg-WaterwayBlue self-stretch;
+  @apply self-stretch flex-shrink-0 h-px bg-WaterwayBlue;
 }
 
 .vertical-divider {
   min-width: 2px;
-  @apply flex-shrink-0 w-px bg-white self-stretch;
+  @apply self-stretch flex-shrink-0 w-px bg-white;
 }
 
 .badge-design {
   @apply bg-WaterwayLightBlue text-WaterwayBrown;
 }
 .badge-development {
-  @apply bg-WaterwayBlue text-white;
+  @apply text-white bg-WaterwayBlue;
 }
 .badge-live {
-  @apply bg-WaterwayBlue text-white;
+  @apply text-white bg-WaterwayBlue;
 }
 .badge-decentralised {
-  @apply bg-WaterwayGreen text-white;
+  @apply text-white bg-WaterwayGreen;
 }
