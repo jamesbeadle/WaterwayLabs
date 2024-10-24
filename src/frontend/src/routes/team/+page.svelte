@@ -1,8 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { isLoading } from "$lib/stores/global-stores";
-  import Header from "$lib/shared/Header.svelte";
-  import Footer from "$lib/shared/Footer.svelte";
+  import Layout from "../Layout.svelte";
 
   const teamMembers = [
     { name: "Zoe Duffy", title: "Managing Director", image: "zoe.jpg", bio: "Zoe runs many tech companies through her management consultancy, providing expert advice to ensure compliance with various legal frameworks." },
@@ -26,7 +25,7 @@
   });
 </script>
 
-<Header />
+<Layout overrideBackground={true}>
 
 <!-- Team Section -->
 <section class="bg-[#272727] text-white py-16 px-8">
@@ -63,7 +62,7 @@
   </div>
 </section>
 
-<Footer />
+</Layout>
 
 <style>
   h2, p {

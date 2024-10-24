@@ -6,6 +6,7 @@ import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
 import type { UserConfig } from "vite";
 import { defineConfig, loadEnv } from "vite";
+import type { PluginBuild } from 'esbuild';
 
 const file = fileURLToPath(new URL("package.json", import.meta.url));
 const json = readFileSync(file, "utf8");
@@ -100,6 +101,15 @@ const config: UserConfig = {
         inject({
           modules: { Buffer: ["buffer", "Buffer"] },
         }),
+        {
+          name: "fix-node-globals-polyfill",
+          setup(build: PluginBuild) {
+            build.onResolve(
+              { filter: /_virtual-process-polyfill_\.js/ },
+              ({ path }) => ({ path }),
+            );
+          },
+        } as any, // Type assertion to bypass the type mismatch
       ],
     },
   },
@@ -123,13 +133,13 @@ const config: UserConfig = {
         NodeModulesPolyfillPlugin(),
         {
           name: "fix-node-globals-polyfill",
-          setup(build) {
+          setup(build: PluginBuild) {
             build.onResolve(
               { filter: /_virtual-process-polyfill_\.js/ },
               ({ path }) => ({ path }),
             );
           },
-        },
+        } as any, // Type assertion to bypass the type mismatch
       ],
     },
   },
@@ -163,6 +173,7 @@ export default defineConfig((): UserConfig => {
       },
       VITE_APP_VERSION: JSON.stringify(version),
       VITE_DFX_NETWORK: JSON.stringify(network),
+      'process.env.CANISTER_ID_BACKEND': JSON.stringify(process.env.CANISTER_ID_BACKEND),
     },
   };
 });

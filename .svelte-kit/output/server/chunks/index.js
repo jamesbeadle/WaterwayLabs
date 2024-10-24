@@ -152,6 +152,9 @@ function text(body2, init2) {
     headers: headers2
   });
 }
+function fail(status, data) {
+  return new ActionFailure(status, data);
+}
 function coalesce_to_error(err) {
   return err instanceof Error || err && /** @type {any} */
   err.name && /** @type {any} */
@@ -450,8 +453,8 @@ function is_action_json_request(event) {
   return accept === "application/json" && event.request.method === "POST";
 }
 async function handle_action_json_request(event, options2, server) {
-  const actions = server?.actions;
-  if (!actions) {
+  const actions2 = server?.actions;
+  if (!actions2) {
     const no_actions_error = new SvelteKitError(
       405,
       "Method Not Allowed",
@@ -472,9 +475,9 @@ async function handle_action_json_request(event, options2, server) {
       }
     );
   }
-  check_named_default_separate(actions);
+  check_named_default_separate(actions2);
   try {
-    const data = await call_action(event, actions);
+    const data = await call_action(event, actions2);
     if (false) ;
     if (data instanceof ActionFailure) {
       return action_json({
@@ -534,8 +537,8 @@ function is_action_request(event) {
   return event.request.method === "POST";
 }
 async function handle_action_request(event, server) {
-  const actions = server?.actions;
-  if (!actions) {
+  const actions2 = server?.actions;
+  if (!actions2) {
     event.setHeaders({
       // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/405
       // "The server must generate an Allow header field in a 405 status code response"
@@ -550,9 +553,9 @@ async function handle_action_request(event, server) {
       )
     };
   }
-  check_named_default_separate(actions);
+  check_named_default_separate(actions2);
   try {
-    const data = await call_action(event, actions);
+    const data = await call_action(event, actions2);
     if (false) ;
     if (data instanceof ActionFailure) {
       return {
@@ -583,14 +586,14 @@ async function handle_action_request(event, server) {
     };
   }
 }
-function check_named_default_separate(actions) {
-  if (actions.default && Object.keys(actions).length > 1) {
+function check_named_default_separate(actions2) {
+  if (actions2.default && Object.keys(actions2).length > 1) {
     throw new Error(
       "When using named actions, the default action cannot be used. See the docs for more info: https://kit.svelte.dev/docs/form-actions#named-actions"
     );
   }
 }
-async function call_action(event, actions) {
+async function call_action(event, actions2) {
   const url = new URL(event.request.url);
   let name = "default";
   for (const param of url.searchParams) {
@@ -602,7 +605,7 @@ async function call_action(event, actions) {
       break;
     }
   }
-  const action = actions[name];
+  const action = actions2[name];
   if (!action) {
     throw new SvelteKitError(404, "Not Found", `No action with name '${name}' found`);
   }
@@ -3423,7 +3426,7 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "ddibiz"
+  version_hash: "178am0g"
 };
 async function get_hooks() {
   return {};
@@ -3548,7 +3551,7 @@ const Error$1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   $$unsubscribe_page();
   return `<h1>${escape($page.status)}</h1> <p>${escape($page.error?.message)}</p>`;
 });
-const css$8 = {
+const css$9 = {
   code: ".button-style.svelte-12gcm1i{display:inline-flex;align-items:center;justify-content:space-between;padding:12px 24px;background-color:transparent;color:white;border:2px solid white;border-radius:9999px;font-family:'mona', sans-serif;font-weight:600;font-size:14px;line-height:12.6px;cursor:pointer;transition:background-color 0.3s ease}.button-style.svelte-12gcm1i:hover{background-color:rgba(255, 255, 255, 0.1)}.button-text.svelte-12gcm1i{margin-right:8px}.button-icon.svelte-12gcm1i{width:24px;height:24px;transition:transform 0.3s ease}",
   map: `{"version":3,"file":"project-section.svelte","sources":["project-section.svelte"],"sourcesContent":["<script lang=\\"ts\\">export let title;\\nexport let description;\\nexport let summary;\\nexport let buttonText;\\nexport let buttonLink;\\n<\/script>\\n  \\n  <section class=\\"space-y-6 lg:p-8\\"style=\\"margin-top: -35px;\\">\\n    <span class=\\"px-3 py-1 translate-y-2 text-xs text-[#272727] bg-white rounded-full\\">Decentralized</span>\\n    <h1 class=\\"font-semi text-h1 font-mona\\">{title}</h1>\\n    <h4 class=\\"text-h4 font-med font-mona\\">{description}</h4>\\n    <p class=\\"mr-8 font-light text-gray-300 font-inter text-body lg:mt-4 lg:mb-8\\">{summary}</p>\\n    <a\\n        href={buttonLink}\\n        target=\\"_blank\\"\\n        class=\\"button-style group\\"\\n        >\\n        <span class=\\"button-text\\">{buttonText}</span>\\n        <svg\\n            xmlns=\\"http://www.w3.org/2000/svg\\"\\n            viewBox=\\"0 0 24 24\\"\\n            fill=\\"currentColor\\"\\n            class=\\"transition-transform duration-300 button-icon group-hover:translate-x-2\\"\\n        >\\n            <path d=\\"M10 17l5-5-5-5v10z\\"/>\\n        </svg>\\n    </a>\\n  </section>\\n  <style>\\n    .button-style {\\n      display: inline-flex;\\n      align-items: center;\\n      justify-content: space-between;\\n      padding: 12px 24px;\\n      background-color: transparent;\\n      color: white;\\n      border: 2px solid white;\\n      border-radius: 9999px;\\n      font-family: 'mona', sans-serif;\\n      font-weight: 600;\\n      font-size: 14px;\\n      line-height: 12.6px;\\n      cursor: pointer;\\n      transition: background-color 0.3s ease;\\n    }\\n    \\n    .button-style:hover {\\n      background-color: rgba(255, 255, 255, 0.1);\\n    }\\n    \\n    .button-text {\\n      margin-right: 8px;\\n    }\\n    \\n    .button-icon {\\n      width: 24px;\\n      height: 24px;\\n      transition: transform 0.3s ease;\\n    }</style>"],"names":[],"mappings":"AA6BI,4BAAc,CACZ,OAAO,CAAE,WAAW,CACpB,WAAW,CAAE,MAAM,CACnB,eAAe,CAAE,aAAa,CAC9B,OAAO,CAAE,IAAI,CAAC,IAAI,CAClB,gBAAgB,CAAE,WAAW,CAC7B,KAAK,CAAE,KAAK,CACZ,MAAM,CAAE,GAAG,CAAC,KAAK,CAAC,KAAK,CACvB,aAAa,CAAE,MAAM,CACrB,WAAW,CAAE,MAAM,CAAC,CAAC,UAAU,CAC/B,WAAW,CAAE,GAAG,CAChB,SAAS,CAAE,IAAI,CACf,WAAW,CAAE,MAAM,CACnB,MAAM,CAAE,OAAO,CACf,UAAU,CAAE,gBAAgB,CAAC,IAAI,CAAC,IACpC,CAEA,4BAAa,MAAO,CAClB,gBAAgB,CAAE,KAAK,GAAG,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAC3C,CAEA,2BAAa,CACX,YAAY,CAAE,GAChB,CAEA,2BAAa,CACX,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,UAAU,CAAE,SAAS,CAAC,IAAI,CAAC,IAC7B"}`
 };
@@ -3563,7 +3566,7 @@ const Project_section = create_ssr_component(($$result, $$props, $$bindings, slo
   if ($$props.summary === void 0 && $$bindings.summary && summary !== void 0) $$bindings.summary(summary);
   if ($$props.buttonText === void 0 && $$bindings.buttonText && buttonText !== void 0) $$bindings.buttonText(buttonText);
   if ($$props.buttonLink === void 0 && $$bindings.buttonLink && buttonLink !== void 0) $$bindings.buttonLink(buttonLink);
-  $$result.css.add(css$8);
+  $$result.css.add(css$9);
   return `<section class="space-y-6 lg:p-8" style="margin-top: -35px;"><span class="px-3 py-1 translate-y-2 text-xs text-[#272727] bg-white rounded-full" data-svelte-h="svelte-ssmf6o">Decentralized</span> <h1 class="font-semi text-h1 font-mona">${escape(title)}</h1> <h4 class="text-h4 font-med font-mona">${escape(description)}</h4> <p class="mr-8 font-light text-gray-300 font-inter text-body lg:mt-4 lg:mb-8">${escape(summary)}</p> <a${add_attribute("href", buttonLink, 0)} target="_blank" class="button-style group svelte-12gcm1i"><span class="button-text svelte-12gcm1i">${escape(buttonText)}</span> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="transition-transform duration-300 button-icon group-hover:translate-x-2 svelte-12gcm1i"><path d="M10 17l5-5-5-5v10z"></path></svg></a> </section>`;
 });
 const Openfpl = create_ssr_component(($$result, $$props, $$bindings, slots) => {
@@ -3611,18 +3614,18 @@ const Opencare = create_ssr_component(($$result, $$props, $$bindings, slots) => 
   if ($$props.className === void 0 && $$bindings.className && className !== void 0) $$bindings.className(className);
   return `<svg xmlns="http://www.w3.org/2000/svg"${add_attribute("class", className, 0)} fill="none" viewBox="-35 -60 138 200"><g clip-path="url(#clip0_448_6875)"><path d="M53.5509 0.197966C65.3998 0.197966 75.1021 9.38515 75.9416 21.0301C75.9814 21.5708 76.0001 22.1185 76.0001 22.6686L76.0001 67.1252C76.0001 71.9166 72.1182 75.8021 67.3314 75.8021L22.5405 75.8021C22.6154 75.8021 22.6902 75.8021 22.7627 75.7974C27.4069 75.6617 31.1016 71.7996 31.1016 67.1252L31.1016 22.6686C31.1016 22.1185 31.1203 21.5708 31.1601 21.0301C31.9996 9.38515 41.7019 0.197967 53.5509 0.197966Z" fill="white"></path><path d="M22.4492 30.861L31.1015 30.861L31.1015 67.1252C31.1015 71.7995 27.4068 75.6617 22.7626 75.7974C22.6901 75.8021 22.6153 75.8021 22.5404 75.8021L22.4492 75.8021C15.4853 75.8021 9.26031 72.6282 5.14461 67.6448C1.92923 63.7593 -7.44441e-07 58.7713 -9.8222e-07 53.3315C-1.22e-06 47.8918 1.92923 42.9038 5.14461 39.0182C9.26031 34.0349 15.4853 30.861 22.4492 30.861Z" fill="url(#paint0_linear_71_302)"></path></g><defs><linearGradient id="paint0_linear_71_302" x1="8.71576e-07" y1="53.3315" x2="31.1015" y2="53.3315" gradientUnits="userSpaceOnUse"><stop stop-color="white"></stop><stop offset="1" stop-color="#FFCEE7"></stop></linearGradient><clipPath id="clip0_71_302"><rect width="75.6042" height="76" fill="white" transform="translate(0 75.8021) rotate(-90)"></rect></clipPath></defs></svg>`;
 });
-const css$7 = {
+const css$8 = {
   code: ".w-half.svelte-hgkyvu{width:50%}.w-full.svelte-hgkyvu{width:100%}",
-  map: `{"version":3,"file":"Header.svelte","sources":["Header.svelte"],"sourcesContent":["<script lang=\\"ts\\">import { page } from '$app/stores';\\nexport let logo = \\"logo.png\\";\\n<\/script>\\n\\n<header class=\\"{$page.url.pathname === '/' ? 'w-half' : 'w-full'} fixed top-0 left-0 right-0 bg-[#272727] z-10\\">\\n  <nav class=\\"text-white\\">\\n    <div class=\\"flex items-center justify-between h-16 px-8\\">\\n      <a href=\\"/\\" class=\\"flex items-center\\">\\n        <img src=\\"logo.png\\" class=\\"h-6\\" alt=\\"Waterway Labs Logo\\" />\\n        <span class=\\"ml-2 text-2xl tracking-wide font-mona\\">\\n          <span class=\\"text-white\\">WATERWAY</span>\\n          <span class=\\"text-white font-exlight\\">LABS</span>\\n        </span>\\n      </a>\\n      <div class=\\"flex space-x-8 text-sm font-mona\\">\\n        <a href=\\"/about\\" class=\\"hover:text-blue-400\\">ABOUT</a>\\n        <a href=\\"/team\\" class=\\"hover:text-blue-400\\">TEAM</a>\\n      </div>\\n    </div>\\n  </nav>\\n</header>\\n\\n<style>\\n  /* Styling for different widths */\\n  .w-half{\\n    width: 50%;\\n  }\\n  \\n  .w-full {\\n    width: 100%;\\n  }</style>"],"names":[],"mappings":"AAwBE,qBAAO,CACL,KAAK,CAAE,GACT,CAEA,qBAAQ,CACN,KAAK,CAAE,IACT"}`
+  map: `{"version":3,"file":"Header.svelte","sources":["Header.svelte"],"sourcesContent":["<script lang=\\"ts\\">import { page } from '$app/stores';\\nexport let logo = \\"logo.png\\";\\n<\/script>\\n\\n<header class=\\"{$page.url.pathname === '/' ? 'w-half' : 'w-full'} fixed top-0 left-0 right-0 bg-[#272727] z-10\\">\\n  <nav class=\\"text-white\\">\\n    <div class=\\"flex items-center justify-between h-16 px-8\\">\\n      <a href=\\"/\\" class=\\"flex items-center\\">\\n        <img src=\\"logo.png\\" class=\\"h-6\\" alt=\\"Waterway Labs Logo\\" />\\n        <span class=\\"ml-2 text-2xl tracking-wide font-mona\\">\\n          <span class=\\"text-white\\">WATERWAY</span>\\n          <span class=\\"text-white font-exlight\\">LABS</span>\\n        </span>\\n      </a>\\n      <div class=\\"flex space-x-8 text-sm font-mona\\">\\n        <a href=\\"/about\\" class=\\"hover:text-blue-400\\">ABOUT</a>\\n        <a href=\\"/team\\" class=\\"hover:text-blue-400\\">TEAM</a>\\n        <a href=\\"/contact\\" class=\\"hover:text-blue-400\\">CONTACT</a>\\n      </div>\\n    </div>\\n  </nav>\\n</header>\\n\\n<style>\\n  /* Styling for different widths */\\n  .w-half{\\n    width: 50%;\\n  }\\n  \\n  .w-full {\\n    width: 100%;\\n  }</style>"],"names":[],"mappings":"AAyBE,qBAAO,CACL,KAAK,CAAE,GACT,CAEA,qBAAQ,CACN,KAAK,CAAE,IACT"}`
 };
 const Header = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let $page, $$unsubscribe_page;
   $$unsubscribe_page = subscribe(page, (value) => $page = value);
   let { logo = "logo.png" } = $$props;
   if ($$props.logo === void 0 && $$bindings.logo && logo !== void 0) $$bindings.logo(logo);
-  $$result.css.add(css$7);
+  $$result.css.add(css$8);
   $$unsubscribe_page();
-  return `<header class="${escape($page.url.pathname === "/" ? "w-half" : "w-full", true) + " fixed top-0 left-0 right-0 bg-[#272727] z-10 svelte-hgkyvu"}"><nav class="text-white" data-svelte-h="svelte-a2uu2e"><div class="flex items-center justify-between h-16 px-8"><a href="/" class="flex items-center"><img src="logo.png" class="h-6" alt="Waterway Labs Logo"> <span class="ml-2 text-2xl tracking-wide font-mona"><span class="text-white">WATERWAY</span> <span class="text-white font-exlight">LABS</span></span></a> <div class="flex space-x-8 text-sm font-mona"><a href="/about" class="hover:text-blue-400">ABOUT</a> <a href="/team" class="hover:text-blue-400">TEAM</a></div></div></nav> </header>`;
+  return `<header class="${escape($page.url.pathname === "/" ? "w-half" : "w-full", true) + " fixed top-0 left-0 right-0 bg-[#272727] z-10 svelte-hgkyvu"}"><nav class="text-white" data-svelte-h="svelte-1jj5hz8"><div class="flex items-center justify-between h-16 px-8"><a href="/" class="flex items-center"><img src="logo.png" class="h-6" alt="Waterway Labs Logo"> <span class="ml-2 text-2xl tracking-wide font-mona"><span class="text-white">WATERWAY</span> <span class="text-white font-exlight">LABS</span></span></a> <div class="flex space-x-8 text-sm font-mona"><a href="/about" class="hover:text-blue-400">ABOUT</a> <a href="/team" class="hover:text-blue-400">TEAM</a> <a href="/contact" class="hover:text-blue-400">CONTACT</a></div></div></nav> </header>`;
 });
 const core = {
   close: "Close",
@@ -3676,7 +3679,7 @@ const initBusyStore = () => {
 const busyStore = initBusyStore();
 const busy = derived(busyStore, ($busyStore) => $busyStore.length > 0);
 const busyMessage = derived(busyStore, ($busyStore) => $busyStore.reverse().find(({ text: text2 }) => nonNullish(text2))?.text);
-const css$6 = {
+const css$7 = {
   code: ".medium.svelte-85668t{--spinner-size:30px}.small.svelte-85668t{--spinner-size:calc(var(--line-height-standard) * 1rem)}.tiny.svelte-85668t{--spinner-size:calc(var(--line-height-standard) * 0.5rem)}svg.svelte-85668t{width:var(--spinner-size);height:var(--spinner-size);animation:spinner-linear-rotate 2000ms linear infinite;position:absolute;top:calc(50% - var(--spinner-size) / 2);left:calc(50% - var(--spinner-size) / 2);--radius:45px;--circumference:calc(3.1415926536 * var(--radius) * 2);--start:calc((1 - 0.05) * var(--circumference));--end:calc((1 - 0.8) * var(--circumference))}svg.inline.svelte-85668t{display:inline-block;position:relative}circle.svelte-85668t{stroke-dasharray:var(--circumference);stroke-width:10%;transform-origin:50% 50% 0;transition-property:stroke;animation-name:spinner-stroke-rotate-100;animation-duration:4000ms;animation-timing-function:cubic-bezier(0.35, 0, 0.25, 1);animation-iteration-count:infinite;fill:transparent;stroke:currentColor;transition:stroke-dashoffset 225ms linear}@keyframes spinner-linear-rotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes spinner-stroke-rotate-100{0%{stroke-dashoffset:var(--start);transform:rotate(0)}12.5%{stroke-dashoffset:var(--end);transform:rotate(0)}12.5001%{stroke-dashoffset:var(--end);transform:rotateX(180deg) rotate(72.5deg)}25%{stroke-dashoffset:var(--start);transform:rotateX(180deg) rotate(72.5deg)}25.0001%{stroke-dashoffset:var(--start);transform:rotate(270deg)}37.5%{stroke-dashoffset:var(--end);transform:rotate(270deg)}37.5001%{stroke-dashoffset:var(--end);transform:rotateX(180deg) rotate(161.5deg)}50%{stroke-dashoffset:var(--start);transform:rotateX(180deg) rotate(161.5deg)}50.0001%{stroke-dashoffset:var(--start);transform:rotate(180deg)}62.5%{stroke-dashoffset:var(--end);transform:rotate(180deg)}62.5001%{stroke-dashoffset:var(--end);transform:rotateX(180deg) rotate(251.5deg)}75%{stroke-dashoffset:var(--start);transform:rotateX(180deg) rotate(251.5deg)}75.0001%{stroke-dashoffset:var(--start);transform:rotate(90deg)}87.5%{stroke-dashoffset:var(--end);transform:rotate(90deg)}87.5001%{stroke-dashoffset:var(--end);transform:rotateX(180deg) rotate(341.5deg)}100%{stroke-dashoffset:var(--start);transform:rotateX(180deg) rotate(341.5deg)}}",
   map: '{"version":3,"file":"Spinner.svelte","sources":["Spinner.svelte"],"sourcesContent":["<!-- adapted source: https://github.com/angular/components/tree/master/src/material/progress-spinner -->\\n<script>export let inline = false;\\nexport let size = \\"medium\\";\\n<\/script>\\n\\n<svg\\n  class:inline\\n  class={size}\\n  preserveAspectRatio=\\"xMidYMid meet\\"\\n  focusable=\\"false\\"\\n  aria-hidden=\\"true\\"\\n  data-tid=\\"spinner\\"\\n  viewBox=\\"0 0 100 100\\"><circle cx=\\"50%\\" cy=\\"50%\\" r=\\"45\\" /></svg\\n>\\n\\n<style>.medium {\\n  --spinner-size: 30px;\\n}\\n\\n.small {\\n  --spinner-size: calc(var(--line-height-standard) * 1rem);\\n}\\n\\n.tiny {\\n  --spinner-size: calc(var(--line-height-standard) * 0.5rem);\\n}\\n\\nsvg {\\n  width: var(--spinner-size);\\n  height: var(--spinner-size);\\n  animation: spinner-linear-rotate 2000ms linear infinite;\\n  position: absolute;\\n  top: calc(50% - var(--spinner-size) / 2);\\n  left: calc(50% - var(--spinner-size) / 2);\\n  --radius: 45px;\\n  --circumference: calc(3.1415926536 * var(--radius) * 2);\\n  --start: calc((1 - 0.05) * var(--circumference));\\n  --end: calc((1 - 0.8) * var(--circumference));\\n}\\nsvg.inline {\\n  display: inline-block;\\n  position: relative;\\n}\\n\\ncircle {\\n  stroke-dasharray: var(--circumference);\\n  stroke-width: 10%;\\n  transform-origin: 50% 50% 0;\\n  transition-property: stroke;\\n  animation-name: spinner-stroke-rotate-100;\\n  animation-duration: 4000ms;\\n  animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1);\\n  animation-iteration-count: infinite;\\n  fill: transparent;\\n  stroke: currentColor;\\n  transition: stroke-dashoffset 225ms linear;\\n}\\n\\n/* -global- */\\n@keyframes -global-spinner-linear-rotate {\\n  0% {\\n    transform: rotate(0deg);\\n  }\\n  100% {\\n    transform: rotate(360deg);\\n  }\\n}\\n/* -global- */\\n@keyframes -global-spinner-stroke-rotate-100 {\\n  0% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotate(0);\\n  }\\n  12.5% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotate(0);\\n  }\\n  12.5001% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotateX(180deg) rotate(72.5deg);\\n  }\\n  25% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotateX(180deg) rotate(72.5deg);\\n  }\\n  25.0001% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotate(270deg);\\n  }\\n  37.5% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotate(270deg);\\n  }\\n  37.5001% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotateX(180deg) rotate(161.5deg);\\n  }\\n  50% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotateX(180deg) rotate(161.5deg);\\n  }\\n  50.0001% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotate(180deg);\\n  }\\n  62.5% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotate(180deg);\\n  }\\n  62.5001% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotateX(180deg) rotate(251.5deg);\\n  }\\n  75% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotateX(180deg) rotate(251.5deg);\\n  }\\n  75.0001% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotate(90deg);\\n  }\\n  87.5% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotate(90deg);\\n  }\\n  87.5001% {\\n    stroke-dashoffset: var(--end);\\n    transform: rotateX(180deg) rotate(341.5deg);\\n  }\\n  100% {\\n    stroke-dashoffset: var(--start);\\n    transform: rotateX(180deg) rotate(341.5deg);\\n  }\\n}</style>\\n"],"names":[],"mappings":"AAeO,qBAAQ,CACb,cAAc,CAAE,IAClB,CAEA,oBAAO,CACL,cAAc,CAAE,wCAClB,CAEA,mBAAM,CACJ,cAAc,CAAE,0CAClB,CAEA,iBAAI,CACF,KAAK,CAAE,IAAI,cAAc,CAAC,CAC1B,MAAM,CAAE,IAAI,cAAc,CAAC,CAC3B,SAAS,CAAE,qBAAqB,CAAC,MAAM,CAAC,MAAM,CAAC,QAAQ,CACvD,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,KAAK,GAAG,CAAC,CAAC,CAAC,IAAI,cAAc,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CACxC,IAAI,CAAE,KAAK,GAAG,CAAC,CAAC,CAAC,IAAI,cAAc,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CACzC,QAAQ,CAAE,IAAI,CACd,eAAe,CAAE,sCAAsC,CACvD,OAAO,CAAE,uCAAuC,CAChD,KAAK,CAAE,sCACT,CACA,GAAG,qBAAQ,CACT,OAAO,CAAE,YAAY,CACrB,QAAQ,CAAE,QACZ,CAEA,oBAAO,CACL,gBAAgB,CAAE,IAAI,eAAe,CAAC,CACtC,YAAY,CAAE,GAAG,CACjB,gBAAgB,CAAE,GAAG,CAAC,GAAG,CAAC,CAAC,CAC3B,mBAAmB,CAAE,MAAM,CAC3B,cAAc,CAAE,yBAAyB,CACzC,kBAAkB,CAAE,MAAM,CAC1B,yBAAyB,CAAE,aAAa,IAAI,CAAC,CAAC,CAAC,CAAC,CAAC,IAAI,CAAC,CAAC,CAAC,CAAC,CACzD,yBAAyB,CAAE,QAAQ,CACnC,IAAI,CAAE,WAAW,CACjB,MAAM,CAAE,YAAY,CACpB,UAAU,CAAE,iBAAiB,CAAC,KAAK,CAAC,MACtC,CAGA,WAAmB,qBAAsB,CACvC,EAAG,CACD,SAAS,CAAE,OAAO,IAAI,CACxB,CACA,IAAK,CACH,SAAS,CAAE,OAAO,MAAM,CAC1B,CACF,CAEA,WAAmB,yBAA0B,CAC3C,EAAG,CACD,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,OAAO,CAAC,CACrB,CACA,KAAM,CACJ,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,OAAO,CAAC,CACrB,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,OAAO,CAC3C,CACA,GAAI,CACF,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,OAAO,CAC3C,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,OAAO,MAAM,CAC1B,CACA,KAAM,CACJ,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,OAAO,MAAM,CAC1B,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,GAAI,CACF,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,OAAO,MAAM,CAC1B,CACA,KAAM,CACJ,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,OAAO,MAAM,CAC1B,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,GAAI,CACF,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,OAAO,KAAK,CACzB,CACA,KAAM,CACJ,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,OAAO,KAAK,CACzB,CACA,QAAS,CACP,iBAAiB,CAAE,IAAI,KAAK,CAAC,CAC7B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACA,IAAK,CACH,iBAAiB,CAAE,IAAI,OAAO,CAAC,CAC/B,SAAS,CAAE,QAAQ,MAAM,CAAC,CAAC,OAAO,QAAQ,CAC5C,CACF"}'
 };
@@ -3685,10 +3688,10 @@ const Spinner = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { size = "medium" } = $$props;
   if ($$props.inline === void 0 && $$bindings.inline && inline !== void 0) $$bindings.inline(inline);
   if ($$props.size === void 0 && $$bindings.size && size !== void 0) $$bindings.size(size);
-  $$result.css.add(css$6);
+  $$result.css.add(css$7);
   return `  <svg class="${[escape(null_to_empty(size), true) + " svelte-85668t", inline ? "inline" : ""].join(" ").trim()}" preserveAspectRatio="xMidYMid meet" focusable="false" aria-hidden="true" data-tid="spinner" viewBox="0 0 100 100"><circle cx="50%" cy="50%" r="45" class="svelte-85668t"></circle></svg>`;
 });
-const css$5 = {
+const css$6 = {
   code: "div.svelte-14plyno{z-index:calc(var(--z-index) + 1000);position:fixed;top:0;right:0;bottom:0;left:0;background:var(--backdrop);color:var(--backdrop-contrast)}.content.svelte-14plyno{display:flex;flex-direction:column;justify-content:center;align-items:center}p.svelte-14plyno{padding-bottom:var(--padding);max-width:calc(var(--section-max-width) / 2)}",
   map: '{"version":3,"file":"BusyScreen.svelte","sources":["BusyScreen.svelte"],"sourcesContent":["<script>import { fade } from \\"svelte/transition\\";\\nimport { busy, busyMessage } from \\"../stores/busy.store\\";\\nimport Spinner from \\"./Spinner.svelte\\";\\nimport { nonNullish } from \\"@dfinity/utils\\";\\n<\/script>\\n\\n<!-- Display spinner and lock UI if busyStore is not empty -->\\n{#if $busy}\\n  <div data-tid=\\"busy\\" transition:fade|global>\\n    <div class=\\"content\\">\\n      {#if nonNullish($busyMessage)}\\n        <p>{$busyMessage}</p>\\n      {/if}\\n      <span>\\n        <Spinner inline />\\n      </span>\\n    </div>\\n  </div>\\n{/if}\\n\\n<style>div {\\n  z-index: calc(var(--z-index) + 1000);\\n  position: fixed;\\n  top: 0;\\n  right: 0;\\n  bottom: 0;\\n  left: 0;\\n  background: var(--backdrop);\\n  color: var(--backdrop-contrast);\\n}\\n\\n.content {\\n  display: flex;\\n  flex-direction: column;\\n  justify-content: center;\\n  align-items: center;\\n}\\n\\np {\\n  padding-bottom: var(--padding);\\n  max-width: calc(var(--section-max-width) / 2);\\n}</style>\\n"],"names":[],"mappings":"AAoBO,kBAAI,CACT,OAAO,CAAE,KAAK,IAAI,SAAS,CAAC,CAAC,CAAC,CAAC,IAAI,CAAC,CACpC,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,KAAK,CAAE,CAAC,CACR,MAAM,CAAE,CAAC,CACT,IAAI,CAAE,CAAC,CACP,UAAU,CAAE,IAAI,UAAU,CAAC,CAC3B,KAAK,CAAE,IAAI,mBAAmB,CAChC,CAEA,uBAAS,CACP,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAAM,CACtB,eAAe,CAAE,MAAM,CACvB,WAAW,CAAE,MACf,CAEA,gBAAE,CACA,cAAc,CAAE,IAAI,SAAS,CAAC,CAC9B,SAAS,CAAE,KAAK,IAAI,mBAAmB,CAAC,CAAC,CAAC,CAAC,CAAC,CAC9C"}'
 };
@@ -3697,18 +3700,63 @@ const BusyScreen = create_ssr_component(($$result, $$props, $$bindings, slots) =
   let $busyMessage, $$unsubscribe_busyMessage;
   $$unsubscribe_busy = subscribe(busy, (value) => $busy = value);
   $$unsubscribe_busyMessage = subscribe(busyMessage, (value) => $busyMessage = value);
-  $$result.css.add(css$5);
+  $$result.css.add(css$6);
   $$unsubscribe_busy();
   $$unsubscribe_busyMessage();
   return ` ${$busy ? `<div data-tid="busy" class="svelte-14plyno"><div class="content svelte-14plyno">${nonNullish($busyMessage) ? `<p class="svelte-14plyno">${escape($busyMessage)}</p>` : ``} <span>${validate_component(Spinner, "Spinner").$$render($$result, { inline: true }, {}, {})}</span></div></div>` : ``}`;
 });
+var Menu;
+(function(Menu2) {
+  Menu2["COLLAPSED"] = "collapsed";
+  Menu2["EXPANDED"] = "expanded";
+})(Menu || (Menu = {}));
+const isNode = () => typeof process !== "undefined" && process.versions != null && process.versions.node != null;
+const enumFromStringExists = ({ obj, value }) => Object.values(obj).includes(value);
+const MENU_ATTRIBUTE = "menu";
+const LOCALSTORAGE_MENU_KEY = "nnsMenu";
+const initMenu = () => {
+  if (isNode()) {
+    return void 0;
+  }
+  const menu = document.documentElement.getAttribute(MENU_ATTRIBUTE);
+  const initialMenu2 = enumFromStringExists({
+    obj: Menu,
+    value: menu
+  }) ? menu : Menu.EXPANDED;
+  applyMenu({ menu: initialMenu2, preserve: false });
+  return initialMenu2;
+};
+const applyMenu = ({ menu, preserve = true }) => {
+  const { documentElement } = document;
+  documentElement.setAttribute(MENU_ATTRIBUTE, menu);
+  if (preserve) {
+    localStorage.setItem(LOCALSTORAGE_MENU_KEY, JSON.stringify(menu));
+  }
+};
+const initialMenu = initMenu();
+const initMenuStore = () => {
+  const { subscribe: subscribe2, set, update } = writable(initialMenu);
+  return {
+    subscribe: subscribe2,
+    toggle: () => {
+      update((state) => {
+        const menu = state === Menu.EXPANDED ? Menu.COLLAPSED : Menu.EXPANDED;
+        applyMenu({ menu, preserve: true });
+        return menu;
+      });
+    },
+    resetForTesting: () => {
+      set(Menu.EXPANDED);
+    }
+  };
+};
+const menuStore = initMenuStore();
+derived(menuStore, ($menuStore) => $menuStore === Menu.COLLAPSED);
 var Theme;
 (function(Theme2) {
   Theme2["DARK"] = "dark";
   Theme2["LIGHT"] = "light";
 })(Theme || (Theme = {}));
-const isNode = () => typeof process !== "undefined" && process.versions != null && process.versions.node != null;
-const enumFromStringExists = ({ obj, value }) => Object.values(obj).includes(value);
 const THEME_ATTRIBUTE = "theme";
 const LOCALSTORAGE_THEME_KEY = "nnsTheme";
 const initTheme = () => {
@@ -3733,62 +3781,35 @@ const applyTheme = ({ theme: theme2, preserve = true }) => {
   }
 };
 initTheme();
-var Menu;
-(function(Menu2) {
-  Menu2["COLLAPSED"] = "collapsed";
-  Menu2["EXPANDED"] = "expanded";
-})(Menu || (Menu = {}));
-const MENU_ATTRIBUTE = "menu";
-const LOCALSTORAGE_MENU_KEY = "nnsMenu";
-const initMenu = () => {
-  if (isNode()) {
-    return void 0;
-  }
-  const menu = document.documentElement.getAttribute(MENU_ATTRIBUTE);
-  const initialMenu2 = enumFromStringExists({
-    obj: Menu,
-    value: menu
-  }) ? menu : Menu.EXPANDED;
-  applyMenu({ menu: initialMenu2, preserve: false });
-  return initialMenu2;
+const css$5 = {
+  code: 'footer.svelte-1l1jgex.svelte-1l1jgex{background-color:#272727;position:relative;overflow:hidden}.ellipse-1.svelte-1l1jgex.svelte-1l1jgex{width:256px;height:256px;background:rgba(79, 168, 246, 0.2);filter:blur(240px);position:absolute;top:10%;left:25%}.ellipse-2.svelte-1l1jgex.svelte-1l1jgex{width:240px;height:240px;background:rgba(244, 223, 253, 0.2);filter:blur(320px);position:absolute;bottom:20%;right:30%}footer.svelte-1l1jgex a.svelte-1l1jgex{font-family:"Inter", sans-serif;text-transform:uppercase;letter-spacing:1px}.relative.svelte-1l1jgex.svelte-1l1jgex{position:relative;z-index:10}hr.svelte-1l1jgex.svelte-1l1jgex{border-color:#4E4E4E}',
+  map: `{"version":3,"file":"Footer.svelte","sources":["Footer.svelte"],"sourcesContent":["<footer class=\\"relative py-8 bg-gray-900\\">\\n  <!-- Add Ellipses for Blur Effect -->\\n  <div class=\\"absolute ellipse-1\\"></div>\\n  <div class=\\"absolute ellipse-2\\"></div>\\n\\n  <div class=\\"relative z-10\\">\\n    \\n    <!-- First Row (Logo and Links) -->\\n    <div class=\\"flex items-center justify-between w-full px-12\\">\\n      <div class=\\"flex items-center mb-0\\">\\n        <a href=\\"/\\" class=\\"flex items-center\\">\\n          <img src=\\"logo.png\\" class=\\"h-6\\" alt=\\"Waterway Labs Logo\\" />\\n          <span class=\\"ml-2 tracking-wide font-mona\\">\\n            <span class=\\"text-white\\">WATERWAY</span>\\n            <span class=\\"text-white font-exlight\\">LABS</span>\\n          </span>\\n        </a>\\n      </div>\\n      <div class=\\"text-sm font-light text-right font-inter font-body\\">\\n        <a href=\\"/\\" class=\\"mx-4 hover:text-blue-400\\">Products</a> | \\n        <a href=\\"/about\\" class=\\"mx-4 hover:text-blue-400\\">About Us</a> | \\n        <a href=\\"/team\\" class=\\"mx-4 hover:text-blue-400\\">The Team</a>\\n      </div>\\n    </div>\\n    <!-- Divider -->\\n    <hr class=\\"my-6 border-t-2 border-[#4E4E4E] mx-auto\\" style=\\"margin-bottom: 20px; width: 1450px;\\" />\\n    \\n    <!-- Second Row (Let's Connect and Social Links) -->\\n    <div class=\\"flex items-center justify-between w-full px-12\\">\\n      <div class=\\"flex flex-col text-sm\\">\\n        <h4 class=\\"font-mona font-h4\\">LET'S CONNECT</h4>\\n      </div>\\n      <div class=\\"text-sm font-light text-right font-inter font-body\\">\\n        <a href=\\"https://github.com\\" target=\\"_blank\\" class=\\"mx-2 hover:text-white\\">GitHub</a>\\n        <a href=\\"https://twitter.com\\" target=\\"_blank\\" class=\\"mx-2 hover:text-white\\">Twitter</a>\\n      </div>\\n    </div>\\n    \\n  </div>\\n</footer>\\n\\n<style>\\n  footer {\\n    background-color: #272727;\\n    position: relative;\\n    overflow: hidden;\\n  }\\n\\n  /* Ellipse 1 */\\n  .ellipse-1 {\\n    width: 256px;\\n    height: 256px;\\n    background: rgba(79, 168, 246, 0.2); /* Adjust the color based on Figma */\\n    filter: blur(240px);\\n    position: absolute;\\n    top: 10%;\\n    left: 25%;\\n  }\\n\\n  /* Ellipse 2 */\\n  .ellipse-2 {\\n    width: 240px;\\n    height: 240px;\\n    background: rgba(244, 223, 253, 0.2); /* Adjust the color based on Figma */\\n    filter: blur(320px);\\n    position: absolute;\\n    bottom: 20%;\\n    right: 30%;\\n  }\\n\\n  footer a {\\n    font-family: \\"Inter\\", sans-serif;\\n    text-transform: uppercase;\\n    letter-spacing: 1px;\\n  }\\n\\n  .relative {\\n    position: relative;\\n    z-index: 10;\\n  }\\n\\n  /* Optional: Ensure the divider is visually balanced */\\n  hr {\\n    border-color: #4E4E4E;\\n  }</style>"],"names":[],"mappings":"AA0CE,oCAAO,CACL,gBAAgB,CAAE,OAAO,CACzB,QAAQ,CAAE,QAAQ,CAClB,QAAQ,CAAE,MACZ,CAGA,wCAAW,CACT,KAAK,CAAE,KAAK,CACZ,MAAM,CAAE,KAAK,CACb,UAAU,CAAE,KAAK,EAAE,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAAC,CACnC,MAAM,CAAE,KAAK,KAAK,CAAC,CACnB,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,GAAG,CACR,IAAI,CAAE,GACR,CAGA,wCAAW,CACT,KAAK,CAAE,KAAK,CACZ,MAAM,CAAE,KAAK,CACb,UAAU,CAAE,KAAK,GAAG,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAAC,CACpC,MAAM,CAAE,KAAK,KAAK,CAAC,CACnB,QAAQ,CAAE,QAAQ,CAClB,MAAM,CAAE,GAAG,CACX,KAAK,CAAE,GACT,CAEA,qBAAM,CAAC,gBAAE,CACP,WAAW,CAAE,OAAO,CAAC,CAAC,UAAU,CAChC,cAAc,CAAE,SAAS,CACzB,cAAc,CAAE,GAClB,CAEA,uCAAU,CACR,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,EACX,CAGA,gCAAG,CACD,YAAY,CAAE,OAChB"}`
 };
-const applyMenu = ({ menu, preserve = true }) => {
-  const { documentElement } = document;
-  documentElement.setAttribute(MENU_ATTRIBUTE, menu);
-  if (preserve) {
-    localStorage.setItem(LOCALSTORAGE_MENU_KEY, JSON.stringify(menu));
-  }
-};
-const initialMenu = initMenu();
-const initMenuStore = () => {
-  const { subscribe: subscribe2, update } = writable(initialMenu);
-  return {
-    subscribe: subscribe2,
-    toggle: () => {
-      update((state) => {
-        const menu = state === Menu.EXPANDED ? Menu.COLLAPSED : Menu.EXPANDED;
-        applyMenu({ menu, preserve: true });
-        return menu;
-      });
-    }
-  };
-};
-const menuStore = initMenuStore();
-derived(menuStore, ($menuStore) => $menuStore === Menu.COLLAPSED);
+const Footer = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  $$result.css.add(css$5);
+  return `<footer class="relative py-8 bg-gray-900 svelte-1l1jgex" data-svelte-h="svelte-i3ldfd"> <div class="absolute ellipse-1 svelte-1l1jgex"></div> <div class="absolute ellipse-2 svelte-1l1jgex"></div> <div class="relative z-10 svelte-1l1jgex"> <div class="flex items-center justify-between w-full px-12"><div class="flex items-center mb-0"><a href="/" class="flex items-center svelte-1l1jgex"><img src="logo.png" class="h-6" alt="Waterway Labs Logo"> <span class="ml-2 tracking-wide font-mona"><span class="text-white">WATERWAY</span> <span class="text-white font-exlight">LABS</span></span></a></div> <div class="text-sm font-light text-right font-inter font-body"><a href="/" class="mx-4 hover:text-blue-400 svelte-1l1jgex">Products</a> | 
+        <a href="/about" class="mx-4 hover:text-blue-400 svelte-1l1jgex">About Us</a> | 
+        <a href="/team" class="mx-4 hover:text-blue-400 svelte-1l1jgex">The Team</a></div></div>  <hr class="my-6 border-t-2 border-[#4E4E4E] mx-auto svelte-1l1jgex" style="margin-bottom: 20px; width: 1450px;">  <div class="flex items-center justify-between w-full px-12"><div class="flex flex-col text-sm"><h4 class="font-mona font-h4">LET&#39;S CONNECT</h4></div> <div class="text-sm font-light text-right font-inter font-body"><a href="https://github.com" target="_blank" class="mx-2 hover:text-white svelte-1l1jgex">GitHub</a> <a href="https://twitter.com" target="_blank" class="mx-2 hover:text-white svelte-1l1jgex">Twitter</a></div></div></div> </footer>`;
+});
 const Layout = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let $page, $$unsubscribe_page;
+  $$unsubscribe_page = subscribe(page, (value) => $page = value);
   const init2 = async () => await Promise.all([syncAuthStore()]);
   const syncAuthStore = async () => {
     {
       return;
     }
   };
+  let { overrideBackground = false } = $$props;
+  if ($$props.overrideBackground === void 0 && $$bindings.overrideBackground && overrideBackground !== void 0) $$bindings.overrideBackground(overrideBackground);
+  $$unsubscribe_page();
   return ` ${function(__value) {
     if (is_promise(__value)) {
       __value.then(null, noop);
       return ` <div>${validate_component(Spinner, "Spinner").$$render($$result, {}, {}, {})}</div> `;
     }
     return function(_) {
-      return ` <div class="flex flex-col min-h-screen">${validate_component(Header, "Header").$$render($$result, {}, {}, {})} <main class="flex-1 p-4">${slots.default ? slots.default({}) : ``}</main></div> `;
+      return ` <div class="flex flex-col min-h-screen">${validate_component(Header, "Header").$$render($$result, {}, {}, {})} <div class="flex-grow">${overrideBackground ? `${slots.default ? slots.default({}) : ``}` : `<div class="bg-[#272727] h-1/2 w-full absolute top-0 left-0 z-0"></div> <div class="bg-[var(--selectedProject-bg-color)] h-1/2 w-full absolute bottom-0 left-0 z-0"></div> <div class="relative z-10">${slots.default ? slots.default({}) : ``}</div>`}</div> ${$page.url.pathname !== "/" ? `${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})}` : ``}</div> `;
     }();
   }(init2())} ${validate_component(BusyScreen, "BusyScreen").$$render($$result, {}, {}, {})}`;
 });
@@ -3806,7 +3827,7 @@ const Icons_row = create_ssr_component(($$result, $$props, $$bindings, slots) =>
     return `<div class="${"icon-box " + escape(project.selected ? "selected" : "", true) + " svelte-7c773p"}" style="${"background-color: " + escape(project.backgroundColor, true) + ";"}" role="button"${add_attribute("aria-label", project.name, 0)}>${validate_component(project.component || missing_component, "svelte:component").$$render($$result, { className: "icon" }, {}, {})} </div>`;
   })} </div>`;
 });
-const Page$4 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+const Page$5 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let projects = [
     {
       component: Openfpl,
@@ -3950,20 +3971,10 @@ const Page$4 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   })}`;
 });
 const css$3 = {
-  code: 'footer.svelte-1l1jgex.svelte-1l1jgex{background-color:#272727;position:relative;overflow:hidden}.ellipse-1.svelte-1l1jgex.svelte-1l1jgex{width:256px;height:256px;background:rgba(79, 168, 246, 0.2);filter:blur(240px);position:absolute;top:10%;left:25%}.ellipse-2.svelte-1l1jgex.svelte-1l1jgex{width:240px;height:240px;background:rgba(244, 223, 253, 0.2);filter:blur(320px);position:absolute;bottom:20%;right:30%}footer.svelte-1l1jgex a.svelte-1l1jgex{font-family:"Inter", sans-serif;text-transform:uppercase;letter-spacing:1px}.relative.svelte-1l1jgex.svelte-1l1jgex{position:relative;z-index:10}hr.svelte-1l1jgex.svelte-1l1jgex{border-color:#4E4E4E}',
-  map: `{"version":3,"file":"Footer.svelte","sources":["Footer.svelte"],"sourcesContent":["<footer class=\\"relative py-8 bg-gray-900\\">\\n  <!-- Add Ellipses for Blur Effect -->\\n  <div class=\\"absolute ellipse-1\\"></div>\\n  <div class=\\"absolute ellipse-2\\"></div>\\n\\n  <div class=\\"relative z-10\\">\\n    \\n    <!-- First Row (Logo and Links) -->\\n    <div class=\\"flex items-center justify-between w-full px-12\\">\\n      <div class=\\"flex items-center mb-0\\">\\n        <a href=\\"/\\" class=\\"flex items-center\\">\\n          <img src=\\"logo.png\\" class=\\"h-6\\" alt=\\"Waterway Labs Logo\\" />\\n          <span class=\\"ml-2 tracking-wide font-mona\\">\\n            <span class=\\"text-white\\">WATERWAY</span>\\n            <span class=\\"text-white font-exlight\\">LABS</span>\\n          </span>\\n        </a>\\n      </div>\\n      <div class=\\"text-sm font-light text-right font-inter font-body\\">\\n        <a href=\\"/\\" class=\\"mx-4 hover:text-blue-400\\">Products</a> | \\n        <a href=\\"/about\\" class=\\"mx-4 hover:text-blue-400\\">About Us</a> | \\n        <a href=\\"/team\\" class=\\"mx-4 hover:text-blue-400\\">The Team</a>\\n      </div>\\n    </div>\\n    <!-- Divider -->\\n    <hr class=\\"my-6 border-t-2 border-[#4E4E4E] mx-auto\\" style=\\"margin-bottom: 20px; width: 1450px;\\" />\\n    \\n    <!-- Second Row (Let's Connect and Social Links) -->\\n    <div class=\\"flex items-center justify-between w-full px-12\\">\\n      <div class=\\"flex flex-col text-sm\\">\\n        <h4 class=\\"font-mona font-h4\\">LET'S CONNECT</h4>\\n      </div>\\n      <div class=\\"text-sm font-light text-right font-inter font-body\\">\\n        <a href=\\"https://github.com\\" target=\\"_blank\\" class=\\"mx-2 hover:text-white\\">GitHub</a>\\n        <a href=\\"https://twitter.com\\" target=\\"_blank\\" class=\\"mx-2 hover:text-white\\">Twitter</a>\\n      </div>\\n    </div>\\n    \\n  </div>\\n</footer>\\n\\n<style>\\n  footer {\\n    background-color: #272727;\\n    position: relative;\\n    overflow: hidden;\\n  }\\n\\n  /* Ellipse 1 */\\n  .ellipse-1 {\\n    width: 256px;\\n    height: 256px;\\n    background: rgba(79, 168, 246, 0.2); /* Adjust the color based on Figma */\\n    filter: blur(240px);\\n    position: absolute;\\n    top: 10%;\\n    left: 25%;\\n  }\\n\\n  /* Ellipse 2 */\\n  .ellipse-2 {\\n    width: 240px;\\n    height: 240px;\\n    background: rgba(244, 223, 253, 0.2); /* Adjust the color based on Figma */\\n    filter: blur(320px);\\n    position: absolute;\\n    bottom: 20%;\\n    right: 30%;\\n  }\\n\\n  footer a {\\n    font-family: \\"Inter\\", sans-serif;\\n    text-transform: uppercase;\\n    letter-spacing: 1px;\\n  }\\n\\n  .relative {\\n    position: relative;\\n    z-index: 10;\\n  }\\n\\n  /* Optional: Ensure the divider is visually balanced */\\n  hr {\\n    border-color: #4E4E4E;\\n  }</style>"],"names":[],"mappings":"AA0CE,oCAAO,CACL,gBAAgB,CAAE,OAAO,CACzB,QAAQ,CAAE,QAAQ,CAClB,QAAQ,CAAE,MACZ,CAGA,wCAAW,CACT,KAAK,CAAE,KAAK,CACZ,MAAM,CAAE,KAAK,CACb,UAAU,CAAE,KAAK,EAAE,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAAC,CACnC,MAAM,CAAE,KAAK,KAAK,CAAC,CACnB,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,GAAG,CACR,IAAI,CAAE,GACR,CAGA,wCAAW,CACT,KAAK,CAAE,KAAK,CACZ,MAAM,CAAE,KAAK,CACb,UAAU,CAAE,KAAK,GAAG,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAAC,CACpC,MAAM,CAAE,KAAK,KAAK,CAAC,CACnB,QAAQ,CAAE,QAAQ,CAClB,MAAM,CAAE,GAAG,CACX,KAAK,CAAE,GACT,CAEA,qBAAM,CAAC,gBAAE,CACP,WAAW,CAAE,OAAO,CAAC,CAAC,UAAU,CAChC,cAAc,CAAE,SAAS,CACzB,cAAc,CAAE,GAClB,CAEA,uCAAU,CACR,QAAQ,CAAE,QAAQ,CAClB,OAAO,CAAE,EACX,CAGA,gCAAG,CACD,YAAY,CAAE,OAChB"}`
-};
-const Footer = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  $$result.css.add(css$3);
-  return `<footer class="relative py-8 bg-gray-900 svelte-1l1jgex" data-svelte-h="svelte-i3ldfd"> <div class="absolute ellipse-1 svelte-1l1jgex"></div> <div class="absolute ellipse-2 svelte-1l1jgex"></div> <div class="relative z-10 svelte-1l1jgex"> <div class="flex items-center justify-between w-full px-12"><div class="flex items-center mb-0"><a href="/" class="flex items-center svelte-1l1jgex"><img src="logo.png" class="h-6" alt="Waterway Labs Logo"> <span class="ml-2 tracking-wide font-mona"><span class="text-white">WATERWAY</span> <span class="text-white font-exlight">LABS</span></span></a></div> <div class="text-sm font-light text-right font-inter font-body"><a href="/" class="mx-4 hover:text-blue-400 svelte-1l1jgex">Products</a> | 
-        <a href="/about" class="mx-4 hover:text-blue-400 svelte-1l1jgex">About Us</a> | 
-        <a href="/team" class="mx-4 hover:text-blue-400 svelte-1l1jgex">The Team</a></div></div>  <hr class="my-6 border-t-2 border-[#4E4E4E] mx-auto svelte-1l1jgex" style="margin-bottom: 20px; width: 1450px;">  <div class="flex items-center justify-between w-full px-12"><div class="flex flex-col text-sm"><h4 class="font-mona font-h4">LET&#39;S CONNECT</h4></div> <div class="text-sm font-light text-right font-inter font-body"><a href="https://github.com" target="_blank" class="mx-2 hover:text-white svelte-1l1jgex">GitHub</a> <a href="https://twitter.com" target="_blank" class="mx-2 hover:text-white svelte-1l1jgex">Twitter</a></div></div></div> </footer>`;
-});
-const css$2 = {
   code: 'h1.svelte-1v10eld{font-family:"Inter", sans-serif}p.svelte-1v10eld{font-family:"Inter", sans-serif;font-size:16px;line-height:25px;font-weight:300}.container.svelte-1v10eld{max-width:1500px;margin:0 auto}',
   map: '{"version":3,"file":"+page.svelte","sources":["+page.svelte"],"sourcesContent":["<script lang=\\"ts\\">import Footer from \\"$lib/shared/Footer.svelte\\";\\nimport Header from \\"$lib/shared/Header.svelte\\";\\nexport let missionText = \\"At Waterway Labs, we are committed to pioneering the next generation of decentralized solutions. Our mission is to create secure, innovative, and user-friendly blockchain products that empower individuals and businesses. We believe in a future where technology fosters transparency, freedom, and collaboration, allowing everyone to participate in the decentralized economy.\\";\\nexport let visionText = \\"To become a global leader in decentralized technology, enabling a more transparent, secure, and open digital ecosystem. We envision a world where individuals have complete control over their digital assets, identities, and privacy.\\";\\nexport let valuesText = `\\n    <strong style=\\"font-weight: 700;\\">Innovation:</strong> Constantly pushing the boundaries of what’s possible in decentralized technology.<br>\\n    <strong style=\\"font-weight: 700;\\">Transparency:</strong> Upholding openness in our processes, products, and communication.<br>\\n    <strong style=\\"font-weight: 700;\\">Empowerment:</strong> Giving users the tools and freedom to control their digital presence.<br>\\n    <strong style=\\"font-weight: 700;\\">Security:</strong> Prioritizing the highest standards of safety and reliability in every solution we build.\\n    `;\\nexport let journeyText = \\"Founded with a vision to challenge centralized norms, Waterway Labs started with a small team passionate about decentralization. Over the years, we have grown into a trusted name in blockchain innovation, known for our contributions to various web3 products and decentralized applications.\\";\\nexport let goalsText = \\"Looking ahead, Waterway Labs aims to broaden the accessibility of decentralized technologies, fostering an inclusive ecosystem for developers, businesses, and end-users alike. We are focused on pushing innovation further, partnering with like-minded communities to build the foundation of the next digital era.\\";\\n<\/script>\\n\\n<Header/>\\n\\n<section class=\\"bg-[#272727] text-white\\">\\n  <!-- Hero Section -->\\n    <div class=\\"container flex flex-col items-center justify-center py-20 lg:flex-row lg:px-20 lg:justify-between\\">\\n        <!-- Left side: Heading -->\\n        <div class=\\"text-center lg:w-1/2 lg:text-left\\"style=\\"margin-top: 25px;\\">\\n            <span class=\\"px-3 py-1 translate-y-4 text-xs text-[#272727] bg-white font-semi rounded-full\\">OUR MISSION</span>\\n            <h1 class=\\"mt-2 mb-0 text-5xl leading-tight font-semi font-mona font-h2\\">\\n                EMPOWERING <br> DECENTRALIZED <br> INNOVATION\\n            </h1>\\n        </div>\\n        <!-- Right side: Mission Text -->\\n        <div class=\\"lg:w-1/2 lg:mt-0 lg:pl-12\\">\\n            <p class=\\"font-light font-body font-inter\\" style=\\"margin-top: 110px;\\">\\n                {missionText}\\n            </p>\\n        </div>\\n    </div>\\n\\n    <hr class=\\"my-8 border-t-2 border-[#4E4E4E] mx-auto\\" style=\\"margin-top: -35px; margin-bottom: 70px; width: 1375px;\\"/>\\n  <!-- Image Section -->\\n    <div class=\\"mx-auto lg:w-4/5\\" style=\\"margin-top: 15px;\\">\\n        <img src=\\"about-page.png\\" alt=\\"Waterway Labs Mission Image\\" class=\\"h-auto rounded-lg\\" style=\\"width:2600px;\\">\\n    </div>\\n\\n    <hr class=\\"my-8 border-t-2 border-[#4E4E4E] mx-auto\\" style=\\"margin-top: 75px; margin-bottom: 20px; width: 1375px;\\"/>\\n  <!-- Vision Section -->\\n    <div class=\\"container flex flex-col items-center justify-center px-8 py-10 lg:flex-row lg:justify-between\\">\\n        <!-- Left side: Heading -->\\n        <div class=\\" lg:w-1/2 lg:text-left\\"style=\\"margin-top: -80px;\\">\\n            <h1 class=\\"mt-10 text-3xl ml-14 font-semi font-mona font-h3\\">\\n                VISION\\n            </h1>\\n        </div>\\n        <!-- Right side: Vision Text -->\\n        <div class=\\"lg:w-1/2 lg:mt-0 lg:pl-12\\">\\n            <p class=\\"mr-8 font-light font-body font-inter\\" style=\\"margin-top: -6px;\\">\\n                {visionText}\\n            </p>\\n        </div>\\n    </div>\\n    <hr class=\\"my-8 border-t-2 border-[#4E4E4E] mx-auto\\" style=\\"margin-top: 75px; margin-bottom: 20px; width: 1375px;\\"/>\\n  <!-- Values Section -->\\n<div class=\\"container flex flex-col items-center justify-center px-8 py-10 lg:flex-row lg:justify-between\\">\\n    <!-- Left side: Heading -->\\n    <div class=\\" lg:w-1/2 lg:text-left\\"style=\\"margin-top: -80px;\\">\\n        <h1 class=\\"mt-10 text-3xl ml-14 font-semi font-mona font-h3\\">\\n            VALUES\\n        </h1>\\n    </div>\\n    <!-- Right side: Vision Text -->\\n    <div class=\\"lg:w-1/2 lg:mt-0 lg:pl-12\\">\\n        <p class=\\"mr-8 font-light font-body font-inter\\" style=\\"margin-top: -6px;\\" bind:innerHTML={valuesText} contenteditable=\\"false\\"></p>\\n    </div>\\n</div>\\n<hr class=\\"my-8 border-t-2 border-[#4E4E4E] mx-auto\\" style=\\"margin-top: 45px; margin-bottom: 20px; width: 1375px;\\"/>\\n\\n  <!-- Journey Section -->\\n<div class=\\"container flex flex-col items-center justify-center px-8 py-10 lg:flex-row lg:justify-between\\">\\n    <!-- Left side: Heading -->\\n    <div class=\\" lg:w-1/2 lg:text-left\\"style=\\"margin-top: -80px;\\">\\n        <h1 class=\\"mt-10 text-3xl ml-14 font-semi font-mona font-h3\\">\\n            OUR JOURNEY\\n        </h1>\\n    </div>\\n    <!-- Right side: Vision Text -->\\n    <div class=\\"lg:w-1/2 lg:mt-0 lg:pl-12\\">\\n        <p class=\\"mr-8 font-light font-body font-inter\\" style=\\"margin-top: -6px;\\">\\n            {journeyText}\\n        </p>\\n    </div>\\n</div>\\n<hr class=\\"my-8 border-t-2 border-[#4E4E4E] mx-auto\\" style=\\"margin-top: 75px; margin-bottom: 20px; width: 1375px;\\"/>\\n\\n  <!-- Future Goals Section -->\\n  <div class=\\"container flex flex-col items-center justify-center px-8 py-10 lg:flex-row lg:justify-between\\">\\n    <!-- Left side: Heading -->\\n    <div class=\\" lg:w-1/2 lg:text-left\\"style=\\"margin-top: -80px;\\">\\n        <h1 class=\\"mt-10 text-3xl ml-14 font-semi font-mona font-h3\\">\\n            FUTURE GOALS\\n        </h1>\\n    </div>\\n    <!-- Right side: Vision Text -->\\n    <div class=\\"lg:w-1/2 lg:mt-0 lg:pl-12\\">\\n        <p class=\\"mr-8 font-light font-body font-inter\\" style=\\"margin-top: -6px;\\">\\n            {goalsText}\\n        </p>\\n    </div>\\n</div>\\n <Footer/>\\n</section>\\n\\n<style>\\n  h1, h2 {\\n    font-family: \\"Inter\\", sans-serif;\\n  }\\n  p {\\n    font-family: \\"Inter\\", sans-serif;\\n    font-size: 16px;\\n    line-height: 25px;\\n    font-weight: 300;\\n  }\\n  p strong {\\n    font-weight: 1000; /* Make bold text inside <p> have a font weight of 700 */\\n  }\\n  .container {\\n    max-width: 1500px; /* Set the maximum width for the page content */\\n    margin: 0 auto; /* Center the content */\\n  }</style>"],"names":[],"mappings":"AA4GE,iBAAO,CACL,WAAW,CAAE,OAAO,CAAC,CAAC,UACxB,CACA,gBAAE,CACA,WAAW,CAAE,OAAO,CAAC,CAAC,UAAU,CAChC,SAAS,CAAE,IAAI,CACf,WAAW,CAAE,IAAI,CACjB,WAAW,CAAE,GACf,CAIA,yBAAW,CACT,SAAS,CAAE,MAAM,CACjB,MAAM,CAAE,CAAC,CAAC,IACZ"}'
 };
-const Page$3 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+const Page$4 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   let { missionText = "At Waterway Labs, we are committed to pioneering the next generation of decentralized solutions. Our mission is to create secure, innovative, and user-friendly blockchain products that empower individuals and businesses. We believe in a future where technology fosters transparency, freedom, and collaboration, allowing everyone to participate in the decentralized economy." } = $$props;
   let { visionText = "To become a global leader in decentralized technology, enabling a more transparent, secure, and open digital ecosystem. We envision a world where individuals have complete control over their digital assets, identities, and privacy." } = $$props;
   let { valuesText = `
@@ -3979,19 +3990,31 @@ const Page$3 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   if ($$props.valuesText === void 0 && $$bindings.valuesText && valuesText !== void 0) $$bindings.valuesText(valuesText);
   if ($$props.journeyText === void 0 && $$bindings.journeyText && journeyText !== void 0) $$bindings.journeyText(journeyText);
   if ($$props.goalsText === void 0 && $$bindings.goalsText && goalsText !== void 0) $$bindings.goalsText(goalsText);
-  $$result.css.add(css$2);
+  $$result.css.add(css$3);
   return `${validate_component(Header, "Header").$$render($$result, {}, {}, {})} <section class="bg-[#272727] text-white"> <div class="container flex flex-col items-center justify-center py-20 lg:flex-row lg:px-20 lg:justify-between svelte-1v10eld"> <div class="text-center lg:w-1/2 lg:text-left" style="margin-top: 25px;" data-svelte-h="svelte-1w3kcr1"><span class="px-3 py-1 translate-y-4 text-xs text-[#272727] bg-white font-semi rounded-full">OUR MISSION</span> <h1 class="mt-2 mb-0 text-5xl leading-tight font-semi font-mona font-h2 svelte-1v10eld">EMPOWERING <br> DECENTRALIZED <br> INNOVATION</h1></div>  <div class="lg:w-1/2 lg:mt-0 lg:pl-12"><p class="font-light font-body font-inter svelte-1v10eld" style="margin-top: 110px;">${escape(missionText)}</p></div></div> <hr class="my-8 border-t-2 border-[#4E4E4E] mx-auto" style="margin-top: -35px; margin-bottom: 70px; width: 1375px;">  <div class="mx-auto lg:w-4/5" style="margin-top: 15px;" data-svelte-h="svelte-1y8dz62"><img src="about-page.png" alt="Waterway Labs Mission Image" class="h-auto rounded-lg" style="width:2600px;"></div> <hr class="my-8 border-t-2 border-[#4E4E4E] mx-auto" style="margin-top: 75px; margin-bottom: 20px; width: 1375px;">  <div class="container flex flex-col items-center justify-center px-8 py-10 lg:flex-row lg:justify-between svelte-1v10eld"> <div class="lg:w-1/2 lg:text-left" style="margin-top: -80px;" data-svelte-h="svelte-2apedd"><h1 class="mt-10 text-3xl ml-14 font-semi font-mona font-h3 svelte-1v10eld">VISION</h1></div>  <div class="lg:w-1/2 lg:mt-0 lg:pl-12"><p class="mr-8 font-light font-body font-inter svelte-1v10eld" style="margin-top: -6px;">${escape(visionText)}</p></div></div> <hr class="my-8 border-t-2 border-[#4E4E4E] mx-auto" style="margin-top: 75px; margin-bottom: 20px; width: 1375px;">  <div class="container flex flex-col items-center justify-center px-8 py-10 lg:flex-row lg:justify-between svelte-1v10eld"> <div class="lg:w-1/2 lg:text-left" style="margin-top: -80px;" data-svelte-h="svelte-auzyq7"><h1 class="mt-10 text-3xl ml-14 font-semi font-mona font-h3 svelte-1v10eld">VALUES</h1></div>  <div class="lg:w-1/2 lg:mt-0 lg:pl-12"><p class="mr-8 font-light font-body font-inter svelte-1v10eld" style="margin-top: -6px;" contenteditable="false">${/* @__PURE__ */ (($$value) => $$value === void 0 ? `` : $$value)(valuesText)}</p></div></div> <hr class="my-8 border-t-2 border-[#4E4E4E] mx-auto" style="margin-top: 45px; margin-bottom: 20px; width: 1375px;">  <div class="container flex flex-col items-center justify-center px-8 py-10 lg:flex-row lg:justify-between svelte-1v10eld"> <div class="lg:w-1/2 lg:text-left" style="margin-top: -80px;" data-svelte-h="svelte-hrybv9"><h1 class="mt-10 text-3xl ml-14 font-semi font-mona font-h3 svelte-1v10eld">OUR JOURNEY</h1></div>  <div class="lg:w-1/2 lg:mt-0 lg:pl-12"><p class="mr-8 font-light font-body font-inter svelte-1v10eld" style="margin-top: -6px;">${escape(journeyText)}</p></div></div> <hr class="my-8 border-t-2 border-[#4E4E4E] mx-auto" style="margin-top: 75px; margin-bottom: 20px; width: 1375px;">  <div class="container flex flex-col items-center justify-center px-8 py-10 lg:flex-row lg:justify-between svelte-1v10eld"> <div class="lg:w-1/2 lg:text-left" style="margin-top: -80px;" data-svelte-h="svelte-3qls38"><h1 class="mt-10 text-3xl ml-14 font-semi font-mona font-h3 svelte-1v10eld">FUTURE GOALS</h1></div>  <div class="lg:w-1/2 lg:mt-0 lg:pl-12"><p class="mr-8 font-light font-body font-inter svelte-1v10eld" style="margin-top: -6px;">${escape(goalsText)}</p></div></div> ${validate_component(Footer, "Footer").$$render($$result, {}, {}, {})} </section>`;
 });
-const css$1 = {
+const css$2 = {
   code: ".local-spinner.svelte-pvdm52{border:5px solid rgba(255, 255, 255, 0.3);border-top:5px solid white;border-radius:50%;width:50px;height:50px;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);animation:svelte-pvdm52-spin 1s linear infinite}@keyframes svelte-pvdm52-spin{0%{transform:translate(-50%, -50%) rotate(0deg)}100%{transform:translate(-50%, -50%) rotate(360deg)}}",
   map: '{"version":3,"file":"local-spinner.svelte","sources":["local-spinner.svelte"],"sourcesContent":["<div class=\\"local-spinner\\" />\\n\\n<style>\\n  .local-spinner {\\n    border: 5px solid rgba(255, 255, 255, 0.3);\\n    border-top: 5px solid white;\\n    border-radius: 50%;\\n    width: 50px;\\n    height: 50px;\\n    position: absolute;\\n    top: 50%;\\n    left: 50%;\\n    transform: translate(-50%, -50%);\\n    animation: spin 1s linear infinite;\\n  }\\n\\n  @keyframes spin {\\n    0% {\\n      transform: translate(-50%, -50%) rotate(0deg);\\n    }\\n    100% {\\n      transform: translate(-50%, -50%) rotate(360deg);\\n    }\\n  }</style>"],"names":[],"mappings":"AAGE,4BAAe,CACb,MAAM,CAAE,GAAG,CAAC,KAAK,CAAC,KAAK,GAAG,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAAC,CAAC,GAAG,CAAC,CAC1C,UAAU,CAAE,GAAG,CAAC,KAAK,CAAC,KAAK,CAC3B,aAAa,CAAE,GAAG,CAClB,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,IAAI,CACZ,QAAQ,CAAE,QAAQ,CAClB,GAAG,CAAE,GAAG,CACR,IAAI,CAAE,GAAG,CACT,SAAS,CAAE,UAAU,IAAI,CAAC,CAAC,IAAI,CAAC,CAChC,SAAS,CAAE,kBAAI,CAAC,EAAE,CAAC,MAAM,CAAC,QAC5B,CAEA,WAAW,kBAAK,CACd,EAAG,CACD,SAAS,CAAE,UAAU,IAAI,CAAC,CAAC,IAAI,CAAC,CAAC,OAAO,IAAI,CAC9C,CACA,IAAK,CACH,SAAS,CAAE,UAAU,IAAI,CAAC,CAAC,IAAI,CAAC,CAAC,OAAO,MAAM,CAChD,CACF"}'
 };
 const Local_spinner = create_ssr_component(($$result, $$props, $$bindings, slots) => {
-  $$result.css.add(css$1);
+  $$result.css.add(css$2);
   return `<div class="local-spinner svelte-pvdm52"></div>`;
 });
 const idlFactory = ({ IDL }) => {
-  return IDL.Service({});
+  return IDL.Service({
+    "submitForm": IDL.Func(
+      [
+        IDL.Record({
+          "name": IDL.Text,
+          "email": IDL.Text,
+          "message": IDL.Text
+        })
+      ],
+      [IDL.Text],
+      []
+    )
+  });
 };
 var define_process_env_default = { __CANDID_UI_CANISTER_ID: "be2us-64aaa-aaaaa-qaabq-cai", BACKEND_CANISTER_ID: "bkyz2-fmaaa-aaaaa-qaaaq-cai", FRONTEND_CANISTER_ID: "bd3sg-teaaa-aaaaa-qaaba-cai", DFX_NETWORK: "local" };
 const canisterId = define_process_env_default.CANISTER_ID_BACKEND;
@@ -4023,9 +4046,36 @@ BigInt(
 const Canisters = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   return `${`${validate_component(Local_spinner, "LocalSpinner").$$render($$result, {}, {}, {})}`}`;
 });
-const Page$2 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+const Page$3 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   return `${validate_component(Canisters, "Canisters").$$render($$result, {}, {}, {})}`;
 });
+const css$1 = {
+  code: "form.svelte-14u7xii{display:flex;flex-direction:column;max-width:500px;margin:0 auto;font-family:'Inter', sans-serif}label.svelte-14u7xii{margin-top:1rem}input.svelte-14u7xii,textarea.svelte-14u7xii{margin-bottom:1rem;padding:0.5rem}button.svelte-14u7xii{padding:0.5rem;background-color:#4CAF50;color:white;border:none;cursor:pointer}button.svelte-14u7xii:hover{background-color:#45a049}",
+  map: `{"version":3,"file":"+page.svelte","sources":["+page.svelte"],"sourcesContent":["<script lang=\\"ts\\">import Layout from \\"../Layout.svelte\\";\\nimport { enhance } from \\"$app/forms\\";\\nlet name = \\"\\";\\nlet email = \\"\\";\\nlet message = \\"\\";\\nlet formStatus = \\"\\";\\nfunction handleSubmit() {\\n    formStatus = \\"Sending...\\";\\n}\\n<\/script>\\n\\n<Layout overrideBackground={true}>\\n    <main class=\\"bg-[#272727] min-h-screen text-white px-10 pt-20\\">\\n        <h1 class=\\"mt-2 text-4xl leading-tight font-med font-mona font-h2\\">Contact Us</h1>\\n        <p class=\\"font-light font-body font-inter\\" style=\\"margin-top: 25px; transform: translateX(10%);\\">Feel free to contact us and we will get back to you as soon as we can.</p>\\n        <form method=\\"POST\\" use:enhance={() => {\\n            return ({ result }) => {\\n                if (result.type === 'success') {\\n                    formStatus = \\"Message sent successfully!\\";\\n                    name = \\"\\";\\n                    email = \\"\\";\\n                    message = \\"\\";\\n                } else {\\n                    formStatus = \\"Failed to send message. Please try again.\\";\\n                }\\n            };\\n        }} on:submit|preventDefault={handleSubmit} class=\\"max-w-md mx-auto\\">\\n            <label for=\\"name\\" class=\\"block mb-2\\">Name:</label>\\n            <input type=\\"text\\" id=\\"name\\" name=\\"name\\" bind:value={name} required class=\\"w-full p-2 mb-4 text-white bg-gray-700\\">\\n\\n            <label for=\\"email\\" class=\\"block mb-2\\">Email:</label>\\n            <input type=\\"email\\" id=\\"email\\" name=\\"email\\" bind:value={email} required class=\\"w-full p-2 mb-4 text-white bg-gray-700\\">\\n\\n            <label for=\\"message\\" class=\\"block mb-2\\">Message:</label>\\n            <textarea id=\\"message\\" name=\\"message\\" bind:value={message} required class=\\"w-full h-32 p-2 mb-4 text-white bg-gray-700\\"></textarea>\\n\\n            <button type=\\"submit\\" class=\\"w-full p-2 text-white transition-colors bg-blue-500 hover:bg-blue-600\\">Send</button>\\n        </form>\\n        {#if formStatus}\\n            <p class=\\"mt-4 text-center\\">{formStatus}</p>\\n        {/if}\\n    </main>\\n</Layout>\\n\\n<style>\\n    form {\\n        display: flex;\\n        flex-direction: column;\\n        max-width: 500px;\\n        margin: 0 auto;\\n        font-family: 'Inter', sans-serif;\\n    }\\n\\n    label {\\n        margin-top: 1rem;\\n    }\\n\\n    input, textarea {\\n        margin-bottom: 1rem;\\n        padding: 0.5rem;\\n    }\\n\\n    button {\\n        padding: 0.5rem;\\n        background-color: #4CAF50;\\n        color: white;\\n        border: none;\\n        cursor: pointer;\\n    }\\n\\n    button:hover {\\n        background-color: #45a049;\\n    }</style>\\n"],"names":[],"mappings":"AA6CI,mBAAK,CACD,OAAO,CAAE,IAAI,CACb,cAAc,CAAE,MAAM,CACtB,SAAS,CAAE,KAAK,CAChB,MAAM,CAAE,CAAC,CAAC,IAAI,CACd,WAAW,CAAE,OAAO,CAAC,CAAC,UAC1B,CAEA,oBAAM,CACF,UAAU,CAAE,IAChB,CAEA,oBAAK,CAAE,uBAAS,CACZ,aAAa,CAAE,IAAI,CACnB,OAAO,CAAE,MACb,CAEA,qBAAO,CACH,OAAO,CAAE,MAAM,CACf,gBAAgB,CAAE,OAAO,CACzB,KAAK,CAAE,KAAK,CACZ,MAAM,CAAE,IAAI,CACZ,MAAM,CAAE,OACZ,CAEA,qBAAM,MAAO,CACT,gBAAgB,CAAE,OACtB"}`
+};
+const Page$2 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
+  let name = "";
+  let email = "";
+  $$result.css.add(css$1);
+  return `${validate_component(Layout, "Layout").$$render($$result, { overrideBackground: true }, {}, {
+    default: () => {
+      return `<main class="bg-[#272727] min-h-screen text-white px-10 pt-20"><h1 class="mt-2 text-4xl leading-tight font-med font-mona font-h2" data-svelte-h="svelte-1a765lt">Contact Us</h1> <p class="font-light font-body font-inter" style="margin-top: 25px; transform: translateX(10%);" data-svelte-h="svelte-1uvrc7r">Feel free to contact us and we will get back to you as soon as we can.</p> <form method="POST" class="max-w-md mx-auto svelte-14u7xii"><label for="name" class="block mb-2 svelte-14u7xii" data-svelte-h="svelte-14esjp0">Name:</label> <input type="text" id="name" name="name" required class="w-full p-2 mb-4 text-white bg-gray-700 svelte-14u7xii"${add_attribute("value", name, 0)}> <label for="email" class="block mb-2 svelte-14u7xii" data-svelte-h="svelte-cr31ta">Email:</label> <input type="email" id="email" name="email" required class="w-full p-2 mb-4 text-white bg-gray-700 svelte-14u7xii"${add_attribute("value", email, 0)}> <label for="message" class="block mb-2 svelte-14u7xii" data-svelte-h="svelte-ucj54m">Message:</label> <textarea id="message" name="message" required class="w-full h-32 p-2 mb-4 text-white bg-gray-700 svelte-14u7xii">${escape("")}</textarea> <button type="submit" class="w-full p-2 text-white transition-colors bg-blue-500 hover:bg-blue-600 svelte-14u7xii" data-svelte-h="svelte-17ums7k">Send</button></form> ${``}</main>`;
+    }
+  })}`;
+});
+const actions = {
+  default: async ({ request }) => {
+    const formData = await request.formData();
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const message = formData.get("message");
+    if (!name || !email || !message) {
+      return fail(400, { error: "All fields are required" });
+    }
+    console.log("Form data:", { name, email, message });
+    return { success: true };
+  }
+};
 const Page$1 = create_ssr_component(($$result, $$props, $$bindings, slots) => {
   return ``;
 });
@@ -4092,7 +4142,7 @@ const Page = create_ssr_component(($$result, $$props, $$bindings, slots) => {
 export {
   Error$1 as E,
   Layout$1 as L,
-  Page$4 as P,
+  Page$5 as P,
   Server as S,
   set_building as a,
   set_manifest as b,
@@ -4102,10 +4152,12 @@ export {
   set_read_implementation as f,
   get_hooks as g,
   set_safe_public_env as h,
-  Page$3 as i,
-  Page$2 as j,
-  Page$1 as k,
-  Page as l,
+  Page$4 as i,
+  Page$3 as j,
+  Page$2 as k,
+  actions as l,
+  Page$1 as m,
+  Page as n,
   options as o,
   set_assets as s
 };

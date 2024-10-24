@@ -18,6 +18,7 @@
       <div class="flex space-x-8 text-sm font-mona">
         <a href="/about" class="hover:text-blue-400">ABOUT</a>
         <a href="/team" class="hover:text-blue-400">TEAM</a>
+        <a href="/contact" class="hover:text-blue-400">CONTACT</a>
       </div>
     </div>
   </nav>
