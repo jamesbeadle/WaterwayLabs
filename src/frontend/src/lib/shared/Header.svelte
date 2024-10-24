@@ -1,8 +1,5 @@
 <script lang="ts">
   import { page } from '$app/stores';
-
-  export let logo = "logo.png";
-
 </script>
 
 <header class="{$page.url.pathname === '/' ? 'w-half' : 'w-full'} fixed top-0 left-0 right-0 bg-[#272727] z-10">

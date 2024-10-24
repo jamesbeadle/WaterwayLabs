@@ -102,5 +102,7 @@
 </Layout>
 
 <style>
-    /* You can add any additional styles here if needed */
+    body {
+        overflow-x: hidden;
+    }
 </style>

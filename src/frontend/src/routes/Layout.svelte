@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, afterUpdate } from "svelte";
   import { fade } from "svelte/transition";
   import { browser } from "$app/environment";
   import Header from "$lib/shared/Header.svelte";
@@ -17,6 +17,7 @@
     }
   };
 
+  $: isHomePage = $page.url.pathname === '/';
   $: (() => {
     if (!browser) {
       return;
@@ -25,6 +26,14 @@
     const spinner = document.querySelector("body > #app-spinner");
     spinner?.remove();
   })();
+  afterUpdate(() => {
+    if (browser) {
+      document.body.style.height = '100%';
+      setTimeout(() => {
+        document.body.style.height = 'auto';
+      }, 0);
+    }
+  });
 </script>
 
 <svelte:window on:storage={syncAuthStore} />
@@ -35,10 +44,10 @@
 {:then _}
   <div class="flex flex-col min-h-screen" class:override-bg={overrideBackground}>
     <Header />
-    <main class="flex-1 p-4">
+    <main class="flex-1">
       <slot />
     </main>
-    {#if $page.url.pathname !== '/'}
+    {#if !isHomePage}
       <Footer/>
     {/if}
   </div>
@@ -47,6 +56,12 @@
 <BusyScreen />
 
 <style>
+  :global(body) {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
   .override-bg {
     background-color: #272727;
   }

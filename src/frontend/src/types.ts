@@ -13,6 +13,9 @@ export type Project = {
   previewImage: string;
   translateX: string;
   selected?: boolean;
+  status: string;
+  summaryClass?: string;
+  isFootballGod?: boolean;
 };
 
 export type CanisterType =

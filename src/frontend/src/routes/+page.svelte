@@ -27,6 +27,7 @@
       backgroundImage: "openFPL-background.png",
       previewImage: "openFPL-preview.png",
       translateX: "-214px",
+      status: "Decentralized",
     },
     {
       component: FootballGodIcon,
@@ -40,6 +41,8 @@
       backgroundImage: "footballGod-background.png",
       previewImage: "footballGod-preview.png",
       translateX: "-160px",
+      status: "Development",
+      isFootballGod: true,
     },
     {
       component: GolfPadIcon,
@@ -53,6 +56,7 @@
       backgroundImage: "golfpad-background.png",
       previewImage: "golfpad-preview.png",
       translateX: "-167px",
+      status: "Development",
     },
     {
       component: TransferKingsIcon,
@@ -66,6 +70,7 @@
       backgroundImage: "transferKings-background.png",
       previewImage: "transferKings-preview.png",
       translateX: "-145px",
+      status: "Development",
     },
     {
       component: OpenBookIcon,
@@ -79,6 +84,7 @@
       backgroundImage: "openBook-background.png",
       previewImage: "openBook-preview.png",
       translateX: "-220px",
+      status: "Development",
     },
     {
       component: OpenBeatsIcon,
@@ -92,6 +98,7 @@
       backgroundImage: "openBeats-background.png",
       previewImage: "openBeats-preview.png",
       translateX: "-160px",
+      status: "Design",
     },
     {
       component: OpenChefIcon,
@@ -105,6 +112,7 @@
       backgroundImage: "openChef-background.png",
       previewImage: "openChef-preview.png",
       translateX: "-60px",
+      status: "Design",
     },
     {
       component: ICPFAIcon,
@@ -118,6 +126,7 @@
       backgroundImage: "icpfa-background.png",
       previewImage: "icpfa-preview.png",
       translateX: "-125px",
+      status: "Development",
     },
     {
       component: OpenCareIcon,
@@ -131,34 +140,64 @@
       backgroundImage: "openCare-background.png",
       previewImage: "openCare-preview.png",
       translateX: "-88px",
+      status: "Development",
     },
   ];
 
   let selectedProject: Project | null = projects.find(p => p.name === "OpenFPL") || projects[0];
 
   function selectProject(project: Project) {
-  selectedProject = project;
-  // Update the selected state of projects
-  projects = projects.map(p => ({
-    ...p,
-    selected: p.name === project.name
-  }));
-  document.body.style.setProperty('--selectedProject-bg-color', project.backgroundColor);
-}
+    selectedProject = project;
+    // Update the selected state of projects
+    projects = projects.map(p => ({
+      ...p,
+      selected: p.name === project.name
+    }));
+    updateGlobalColor(project.backgroundColor);
+  }
+
+  function updateGlobalColor(color: string) {
+    document.body.style.setProperty('--selectedProject-bg-color', color);
+    // Update the global CSS
+    document.documentElement.style.setProperty('--selectedProject-bg-color', color);
+  }
+
+  function setDefaultProject() {
+    const defaultProject = projects.find(p => p.name === "OpenFPL") || projects[0];
+    selectProject(defaultProject);
+  }
+
+  onMount(() => {
+    // Add click event listeners to logo and "Waterway Labs" text
+    const logo = document.querySelector('.logo');
+    const waterwayLabs = document.querySelector('.waterway-labs');
+
+    if (logo) {
+      logo.addEventListener('click', setDefaultProject);
+    }
+
+    if (waterwayLabs) {
+      waterwayLabs.addEventListener('click', setDefaultProject);
+    }
+
+    updateGlobalColor(selectedProject?.backgroundColor ?? '#2CE3A6');
+  });
 
 </script>
 
 <Layout>
-  <main class="flex flex-col items-center min-h-screen px-10 pt-20 text-white lg:flex-row lg:items-start">
+  <main class="flex flex-col items-center min-h-screen px-10 pt-20 overflow-x-hidden text-white app-container lg:flex-row lg:items-start">
     <!-- Left Section: Project Information -->
     {#if selectedProject}
-      <div class="space-y-10 lg:w-1/2 bg-[#272727] in:fade={{ duration: 500 }}" style="z-index: 0;">
+      <div class="left-side space-y-10 lg:w-1/2 bg-[#272727] in:fade={{ duration: 500 }}" style="z-index: 0;">
         <ProjectSection
           title={selectedProject.title}
           description={selectedProject.description}
           summary={selectedProject.summary}
           buttonText={selectedProject.buttonText}
           buttonLink={selectedProject.buttonLink}
+          status={selectedProject.status}
+          isFootballGod={selectedProject.name === "Football God"}
         />
         <div class="fixed flex flex-col items-center justify-end mb-0 space-y-4"style="position: fixed; bottom: 170px; left: 50%; transform: translateX(-200%); z-index: 20;">
           <a href="https://x.com/OpenFPL_DAO" target="_blank" class="transition hover:opacity-80">
@@ -175,7 +214,7 @@
       </div>
    <!-- Right Section: Image/Graphic -->
       <div
-      class="relative flex items-center justify-center w-full lg:w-1/2"
+      class="relative flex items-center justify-center w-full right-side lg:w-1/2"
       style="background-color: {selectedProject?.backgroundColor}; margin-top: -115px; max-width: 100%;"
       >
         <img
@@ -187,12 +226,79 @@
         <img
             src={selectedProject?.previewImage}
             alt={`${selectedProject?.name} preview`}
-            class="absolute z-10 object-contain"
+            class="absolute z-10 object-contain preview-image-container"
             style="width: 650px; height:700px; transform: translate(20%, 10%);"
           />
       </div>
     {/if}
   </main>
  <!-- Bottom Icon Row -->
-<IconsRow {projects} {selectProject} />
+  <IconsRow {projects} {selectProject} />
 </Layout>
+
+<style>
+  :global(html),
+  :global(body) {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  :global(body) {
+    font-family: "Poppins", "Mona Sans Expanded", sans-serif !important;
+    color: white !important;
+    background: linear-gradient(
+      to right,
+      #272727 50%,
+      var(--selectedProject-bg-color, #2ce3a6) 50%
+    );
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .app-container {
+    display: flex;
+    width: 100%;
+    max-width: 100vw;
+    height: 100vh;
+  }
+
+  .left-side {
+    width: 50%;
+    background-color: #272727;
+  }
+
+  .right-side {
+    width: 50%;
+    background-color: var(--selectedProject-bg-color, #2ce3a6);
+  }
+
+  .preview-image-container {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+   .preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  } 
+
+  :global(.project-title) {
+    font-family: "Mona Sans Expanded", sans-serif;
+    font-size: 90px;
+    font-weight: 600;
+    line-height: 81px;
+    text-align: left;
+  }
+</style>
+
+
+
+
+
+
+
