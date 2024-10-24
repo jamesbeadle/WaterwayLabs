@@ -6,6 +6,7 @@
   import "../app.css";
 
   import { BusyScreen, Spinner, Toasts } from "@dfinity/gix-components";
+  import Footer from "$lib/shared/Footer.svelte";
 
   const init = async () => await Promise.all([syncAuthStore()]);
 
@@ -36,6 +37,9 @@
     <main class="flex-1 p-4">
       <slot />
     </main>
+    {#if $page.url.pathname !== '/'}
+      <Footer/>
+    {/if}
   </div>
 {/await}
 

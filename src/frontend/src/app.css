@@ -23,7 +23,7 @@ body {
     to right,
     #272727 50%,
     var(--selectedProject-bg-color, #2ce3a6) 50%
-  );
+  ); 
   height: 100vh;
   margin: 0;
 }
