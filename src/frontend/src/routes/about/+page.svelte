@@ -1,6 +1,5 @@
 <script lang="ts">
-    import Footer from "$lib/shared/Footer.svelte";
-    import Header from "$lib/shared/Header.svelte";
+    import Layout from "../Layout.svelte";
 
     export let missionText = "At Waterway Labs, we are committed to pioneering the next generation of decentralized solutions. Our mission is to create secure, innovative, and user-friendly blockchain products that empower individuals and businesses. We believe in a future where technology fosters transparency, freedom, and collaboration, allowing everyone to participate in the decentralized economy.";
     export let visionText = "To become a global leader in decentralized technology, enabling a more transparent, secure, and open digital ecosystem. We envision a world where individuals have complete control over their digital assets, identities, and privacy.";
@@ -14,9 +13,8 @@
     export let goalsText = "Looking ahead, Waterway Labs aims to broaden the accessibility of decentralized technologies, fostering an inclusive ecosystem for developers, businesses, and end-users alike. We are focused on pushing innovation further, partnering with like-minded communities to build the foundation of the next digital era.";
 </script>
 
-<Header/>
-
-<section class="bg-[#272727] text-white">
+<Layout overrideBackground={true}>
+<div class="bg-[#272727] text-white">
   <!-- Hero Section -->
     <div class="container flex flex-col items-center justify-center py-20 lg:flex-row lg:px-20 lg:justify-between">
         <!-- Left side: Heading -->
@@ -104,8 +102,8 @@
         </p>
     </div>
 </div>
- <Footer/>
-</section>
+</div>
+</Layout>
 
 <style>
   h1, h2 {

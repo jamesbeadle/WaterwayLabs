@@ -4,9 +4,10 @@
   import { browser } from "$app/environment";
   import Header from "$lib/shared/Header.svelte";
   import "../app.css";
-
+  import { page } from "$app/stores";
   import { BusyScreen, Spinner, Toasts } from "@dfinity/gix-components";
   import Footer from "$lib/shared/Footer.svelte";
+  export let overrideBackground = false;
 
   const init = async () => await Promise.all([syncAuthStore()]);
 
@@ -32,7 +33,7 @@
     <Spinner />
   </div>
 {:then _}
-  <div class="flex flex-col min-h-screen">
+  <div class="flex flex-col min-h-screen" class:override-bg={overrideBackground}>
     <Header />
     <main class="flex-1 p-4">
       <slot />
@@ -44,3 +45,9 @@
 {/await}
 
 <BusyScreen />
+
+<style>
+  .override-bg {
+    background-color: #272727;
+  }
+</style>

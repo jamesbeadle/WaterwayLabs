@@ -2,7 +2,9 @@
 	"/": [],
 	"/about": [],
 	"/admin": [],
-	"/contact": [],
+	"/contact": [
+		"src/frontend/src/routes/contact/+page.server.ts"
+	],
 	"/projects": [],
 	"/team": []
 }

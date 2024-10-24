@@ -194,6 +194,5 @@
     {/if}
   </main>
  <!-- Bottom Icon Row -->
-<IconsRow {projects} {selectProject}/>
+<IconsRow {projects} {selectProject} />
 </Layout>
-
