@@ -57,9 +57,8 @@ export class ActorFactory {
         if (store.identity) {
           resolve(store.identity);
           console.log("resolving store identity");
-        }
-        else{
-          console.log("WAITING FOR IDENTITY TO BE SET")
+        } else {
+          console.log("WAITING FOR IDENTITY TO BE SET");
         }
       });
       setTimeout(() => {

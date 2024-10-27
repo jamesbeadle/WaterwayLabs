@@ -1,8 +1,5 @@
 <script lang="ts">
   import { page } from '$app/stores';
-
-  export let logo = "logo.png";
-
 </script>
 
 <header class="{$page.url.pathname === '/' ? 'w-half' : 'w-full'} fixed top-0 left-0 right-0 bg-[#272727] z-10">
@@ -18,6 +15,7 @@
       <div class="flex space-x-8 text-sm font-mona">
         <a href="/about" class="hover:text-blue-400">ABOUT</a>
         <a href="/team" class="hover:text-blue-400">TEAM</a>
+        <a href="/contact" class="hover:text-blue-400">CONTACT</a>
       </div>
     </div>
   </nav>
