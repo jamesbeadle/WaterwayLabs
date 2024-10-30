@@ -11,11 +11,14 @@ export type Project = {
   backgroundColor: string;
   backgroundImage: string;
   previewImage: string;
+  mobilePreviewImage: string;
   translateX: string;
   selected?: boolean;
   status: string;
   summaryClass?: string;
   isFootballGod?: boolean;
+  twitter?: string;
+  github?: string;
 };
 
 export type CanisterType =

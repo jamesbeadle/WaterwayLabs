@@ -17,8 +17,8 @@
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col items-center mb-20 translate-y-12 md:flex-row md:items-start">
                 <div class="md:w-1/2">
-                    <span class="px-3 py-1 text-xs text-[#272727] bg-white font-semi rounded-full">CONTACT US</span>
-                    <h1 class="mt-2 mb-0 text-5xl leading-tight font-semi font-mona font-h2">
+                    <span class="px-3 py-1 text-xs text-[#272727] bg-white rounded-full">CONTACT US</span>
+                    <h1 class="mt-2 mb-0 text-5xl leading-tight font-med font-mona lg:text-5xl">
                         WE'D LOVE TO <br> HEAR FROM YOU!
                     </h1>
                 </div>
@@ -85,11 +85,8 @@
                 <div class="w-full md:w-1/2">
                     <h2 class="mb-6 text-2xl font-med font-mona">Contact Information</h2>
                     <div class="relative bg-[#272727] rounded-lg p-6 overflow-hidden mt-6">
-                        <!-- Ellipse 1 -->
                         <div class="absolute w-64 h-64 bg-[rgba(79,168,246,0.2)] filter blur-[240px] top-[10%] left-[25%]"></div>
-                        <!-- Ellipse 2 -->
                         <div class="absolute w-60 h-60 bg-[rgba(244,223,253,0.2)] filter blur-[320px] bottom-[20%] right-[30%]"></div>
-                        
                         <div class="relative z-10">
                             <p class="mb-2 text-lg font-inter">Email:</p>
                             <a href="mailto:hello@waterwaylabs.xyz" class="text-blue-400 transition hover:text-blue-300 font-inter">hello@waterwaylabs.xyz</a>

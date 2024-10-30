@@ -73,7 +73,6 @@
   },
   ".svelte-kit/generated/client-optimized/nodes/7.js": {
     "file": "_app/immutable/nodes/7.1fyw8eGh.js",
-    "name": "nodes/7",
     "src": ".svelte-kit/generated/client-optimized/nodes/7.js",
     "isEntry": true,
     "imports": [
