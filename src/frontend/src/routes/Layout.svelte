@@ -7,6 +7,16 @@
   import { page } from "$app/stores";
   import { BusyScreen, Spinner, Toasts } from "@dfinity/gix-components";
   import Footer from "$lib/shared/Footer.svelte";
+  
+  // Define the slot props interface
+  interface $$Slots {
+    default: {
+      isMenuOpen: boolean;
+    };
+  }
+  
+  export let isMenuOpen = false;
+  
   export let overrideBackground = false;
 
   const init = async () => await Promise.all([syncAuthStore()]);
@@ -26,6 +36,7 @@
     const spinner = document.querySelector("body > #app-spinner");
     spinner?.remove();
   })();
+  
   afterUpdate(() => {
     if (browser) {
       document.body.style.height = '100%';
@@ -43,9 +54,9 @@
   </div>
 {:then _}
   <div class="flex flex-col min-h-screen" class:override-bg={overrideBackground}>
-    <Header />
+    <Header bind:isMenuOpen />
     <main class="flex-1">
-      <slot />
+      <slot {isMenuOpen} />
     </main>
     {#if !isHomePage}
       <Footer/>

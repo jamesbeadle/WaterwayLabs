@@ -49,32 +49,28 @@
   --dialog-border-radius: 1px !important;
 }
 
-/* Keep the utility classes */
-.btn {
-  @apply px-4 py-2 text-white rounded-md bg-WaterwayTeal hover:bg-WaterwayGreen hover:text-white;
+/* Update body and html styles */
+:global(html),
+:global(body) {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  min-height: 100%; /* Changed from fixed height */
 }
 
-.horizontal-divider {
-  min-height: 2px;
-  @apply self-stretch flex-shrink-0 h-px bg-WaterwayBlue;
+:global(body) {
+  font-family: "Poppins", "Mona Sans Expanded", sans-serif !important;
+  color: white !important;
+  position: relative; /* Added */
 }
 
-.vertical-divider {
-  min-width: 2px;
-  @apply self-stretch flex-shrink-0 w-px bg-white;
-}
-
-.badge-design {
-  @apply bg-WaterwayLightBlue text-WaterwayBrown;
-}
-.badge-development {
-  @apply text-white bg-WaterwayBlue;
-}
-.badge-live {
-  @apply text-white bg-WaterwayBlue;
-}
-.badge-decentralised {
-  @apply text-white bg-WaterwayGreen;
+/* Remove any height constraints from mobile containers */
+@media (max-width: 1023px) { 
+  :global(body) {
+    background: #272727;
+    height: auto; /* Added */
+    min-height: 100%; /* Added */
+  }
 }
 
 /* New styles to ensure full width */
@@ -115,4 +111,32 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Keep the utility classes */
+.btn {
+  @apply px-4 py-2 text-white rounded-md bg-WaterwayTeal hover:bg-WaterwayGreen hover:text-white;
+}
+
+.horizontal-divider {
+  min-height: 2px;
+  @apply self-stretch flex-shrink-0 h-px bg-WaterwayBlue;
+}
+
+.vertical-divider {
+  min-width: 2px;
+  @apply self-stretch flex-shrink-0 w-px bg-white;
+}
+
+.badge-design {
+  @apply bg-WaterwayLightBlue text-WaterwayBrown;
+}
+.badge-development {
+  @apply text-white bg-WaterwayBlue;
+}
+.badge-live {
+  @apply text-white bg-WaterwayBlue;
+}
+.badge-decentralised {
+  @apply text-white bg-WaterwayGreen;
 }

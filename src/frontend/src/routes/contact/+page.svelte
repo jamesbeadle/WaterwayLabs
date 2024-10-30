@@ -17,8 +17,8 @@
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col items-center mb-20 translate-y-12 md:flex-row md:items-start">
                 <div class="md:w-1/2">
-                    <span class="px-3 py-1 text-xs text-[#272727] bg-white font-semi rounded-full">CONTACT US</span>
-                    <h1 class="mt-2 mb-0 text-5xl leading-tight font-semi font-mona font-h2">
+                    <span class="px-3 py-1 text-xs text-[#272727] bg-white rounded-full">CONTACT US</span>
+                    <h1 class="mt-2 mb-0 text-5xl leading-tight font-med font-mona lg:text-5xl">
                         WE'D LOVE TO <br> HEAR FROM YOU!
                     </h1>
                 </div>

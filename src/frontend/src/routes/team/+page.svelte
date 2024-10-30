@@ -16,7 +16,7 @@
 
   onMount(async () => {
     try {
-      // Your existing logic
+      isLoading.set(true);
     } catch (error) {
       console.error("Error fetching homepage data:", error);
     } finally {
@@ -28,34 +28,48 @@
 <Layout overrideBackground={true}>
 
 <!-- Team Section -->
-<section class="bg-[#272727] text-white py-16 px-8">
+<section class="bg-[#272727] text-white py-16 px-4 lg:px-8">
   <div class="max-w-screen-xl mx-auto">
-    <div class="container flex flex-col items-center justify-center py-5 lg:flex-row lg:px-10 lg:justify-between" style="transform: translateX(-4%);">
+    <!-- Header Section -->
+    <div class="container flex flex-col lg:flex-row lg:px-10 lg:justify-between">
       <!-- Left side: Heading -->
-      <div class="text-center lg:w-1/2 lg:text-left"style="margin-top: 20px;">
-          <span class="px-3 py-1 translate-y-4 text-xs text-[#272727] bg-white font-semi rounded-full">THE TEAM</span>
-          <h1 class="mt-2 text-6xl leading-tight font-med font-mona font-h2">
-            A TEAM OF <br> WEB3 EXPERTS
-          </h1>
+      <div class="pt-12 text-left lg:w-1/2 lg:pt-10">
+        <span class="px-3 py-1 text-xs text-[#272727] bg-white rounded-full">THE TEAM</span>
+        <h1 class="mt-2 text-6xl leading-tight lg:text-6xl font-med font-mona">
+          A TEAM OF <br> WEB3 EXPERTS
+        </h1>
       </div>
       <!-- Right side: Mission Text -->
-      <div class="mx-auto mt-2 lg:w-3/5 lg:mt-4 lg:pl-12">
-          <p class="font-light font-body font-inter" style="margin-top: 25px; transform: translateX(10%);">
-            At Waterway Labs, we are passionate about building innovative Web3 products that champion decentralization. Our team is dedicated to developing cutting-edge solutions that empower users, offering transparency, security, and freedom. With a shared belief in the transformative potential of blockchain technology, we are committed to pushing the boundaries of what’s possible in decentralized applications, fostering an open and collaborative ecosystem.          </p>
+      <div class="mt-6 lg:w-3/5 lg:mt-4 lg:pl-12" style="margin-top: 75px;">
+        <p class="font-light font-body font-inter lg:transform lg:translate-x-[10%]">
+          At Waterway Labs, we are passionate about building innovative Web3 products that champion decentralization. Our team is dedicated to developing cutting-edge solutions that empower users, offering transparency, security, and freedom. With a shared belief in the transformative potential of blockchain technology, we are committed to pushing the boundaries of what's possible in decentralized applications, fostering an open and collaborative ecosystem.
+        </p>
       </div>
     </div>
 
-    <hr class="my-8 border-t-2 border-[#4E4E4E] mx-auto" style="transform: translateX(-2%); margin-top: 15px; margin-bottom: 50px; width: 1360px;"/>
+    <hr class="my-8 border-t-2 border-[#4E4E4E] mx-auto lg:w-[1360px]"/>
 
-    <div class="grid grid-cols-1 gap-16 md:grid-cols-2 lg:grid-cols-4" style= "margin-top: -20px;">
+    <!-- Team Grid -->
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-16">
       {#each teamMembers as member}
-        <div class="p-6" style="transform: translateX(-15%);">
-          <div class="mx-auto mb-6 overflow-hidden w-80 h-80">
-            <img src={`team/${member.image}`} alt={member.name} class="object-cover w-full h-full" />
+        <div class="p-4 lg:p-6">
+          <!-- Fixed height for image container -->
+          <div class="w-full mb-6 overflow-hidden aspect-square">
+            <img 
+              src={`team/${member.image}`} 
+              alt={member.name} 
+              class="object-cover w-full h-full !aspect-square" 
+              style="min-height: 100%; object-fit: cover;"
+            />
           </div>
-          <span class="px-3 py-1 translate-y-4 mb-6 text-xs text-[#272727] bg-white font-semi rounded-full">{member.title}</span>
-          <h3 class="mt-2 mb-4 text-2xl font-mona font-med">{member.name}</h3>
-          <p class="text-sm font-light font-inter">{member.bio}</p>
+          <!-- Consistent spacing for title and other elements -->
+          <div class="space-y-4">
+            <span class="inline-block px-3 py-1 text-xs text-[#272727] bg-white rounded-full">
+              {member.title}
+            </span>
+            <h3 class="text-2xl font-mona font-med">{member.name}</h3>
+            <p class="text-sm font-light font-inter">{member.bio}</p>
+          </div>
         </div>
       {/each}
     </div>
@@ -65,14 +79,6 @@
 </Layout>
 
 <style>
-  h2, p {
-    font-family: "Inter", sans-serif;
-  }
-
-  h2 {
-    font-size: 24px;
-    font-weight: bold;
-  }
 
   p {
     font-size: 16px;
@@ -84,19 +90,23 @@
     gap: 24px;
   }
 
-  .bg-gray-800 {
-    background-color: #1F1F1F;
-  }
-
-  .text-blue-400 {
-    color: #61dafb;
-  }
-
   img {
     transition: transform 0.3s ease-in-out;
   }
 
   img:hover {
     transform: scale(1.05);
+  }
+
+  /* Mobile-specific adjustments */
+  @media (max-width: 1023px) {
+    .container {
+      padding: 0;
+    }
+    
+    img {
+      width: 100%;
+      height: auto;
+    }
   }
 </style>

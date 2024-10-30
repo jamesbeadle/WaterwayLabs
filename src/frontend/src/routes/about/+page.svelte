@@ -15,93 +15,70 @@
 
 <Layout overrideBackground={true}>
 <div class="bg-[#272727] text-white">
-  <!-- Hero Section -->
-    <div class="container flex flex-col items-center justify-center py-20 lg:flex-row lg:px-20 lg:justify-between">
+  <!-- Hero Section with reduced bottom padding for mobile -->
+    <div class="container flex flex-col px-4 py-8 lg:py-0 lg:flex-row lg:px-20 lg:justify-between">
         <!-- Left side: Heading -->
-        <div class="text-center lg:w-1/2 lg:text-left"style="margin-top: 25px;">
-            <span class="px-3 py-1 translate-y-4 text-xs text-[#272727] bg-white font-semi rounded-full">OUR MISSION</span>
-            <h1 class="mt-2 mb-0 text-5xl leading-tight font-semi font-mona font-h2">
+        <div class="pt-12 text-left lg:w-1/2 lg:pt-24">
+            <span class="inline-block px-3 py-1 text-xs text-[#272727] bg-white rounded-full mb-4">
+                OUR MISSION
+            </span>
+            <h1 class="text-4xl leading-tight lg:text-h2 font-med font-mona">
                 EMPOWERING <br> DECENTRALIZED <br> INNOVATION
             </h1>
         </div>
         <!-- Right side: Mission Text -->
-        <div class="lg:w-1/2 lg:mt-0 lg:pl-12">
-            <p class="font-light font-body font-inter" style="margin-top: 110px;">
+        <div class="lg:w-1/2 lg:mt-0 lg:pl-12 lg:pt-24">
+            <p class="font-light mt-28 font-body font-inter">
                 {missionText}
             </p>
         </div>
     </div>
 
-    <hr class="my-8 border-t-2 border-[#4E4E4E] mx-auto" style="margin-top: -35px; margin-bottom: 70px; width: 1375px;"/>
-  <!-- Image Section -->
-    <div class="mx-auto lg:w-4/5" style="margin-top: 15px;">
-        <img src="about-page.png" alt="Waterway Labs Mission Image" class="h-auto rounded-lg" style="width:2600px;">
+    <hr class="mx-4 lg:mx-auto my-6 lg:my-12 border-t-2 border-[#4E4E4E] lg:w-[1375px]"/>
+
+    <!-- Image Section with reduced vertical padding for mobile -->
+    <div class="px-4 mx-auto lg:px-0 lg:w-4/5">
+        <!-- Mobile Image -->
+        <img 
+            src="about-mobile-page.png" 
+            alt="Waterway Labs Mission Image" 
+            class="block lg:hidden object-contain w-full h-[500px] rounded-lg"
+        >
+        <!-- Desktop Image -->
+        <img 
+            src="about-page.png" 
+            alt="Waterway Labs Mission Image" 
+            class="hidden object-contain w-full h-auto rounded-lg lg:block"
+        >
     </div>
 
-    <hr class="my-8 border-t-2 border-[#4E4E4E] mx-auto" style="margin-top: 75px; margin-bottom: 20px; width: 1375px;"/>
-  <!-- Vision Section -->
-    <div class="container flex flex-col items-center justify-center px-8 py-10 lg:flex-row lg:justify-between">
-        <!-- Left side: Heading -->
-        <div class=" lg:w-1/2 lg:text-left"style="margin-top: -80px;">
-            <h1 class="mt-10 text-3xl ml-14 font-semi font-mona font-h3">
-                VISION
-            </h1>
+    <hr class="mx-4 lg:mx-auto my-6 lg:my-12 border-t-2 border-[#4E4E4E] lg:w-[1375px]"/>
+
+    <!-- Content Sections -->
+    {#each [
+        { title: 'VISION', text: visionText },
+        { title: 'VALUES', text: valuesText, isHTML: true },
+        { title: 'OUR JOURNEY', text: journeyText },
+        { title: 'FUTURE GOALS', text: goalsText }
+    ] as section}
+        <div class="container flex flex-col px-4 py-4 lg:py-8 lg:flex-row lg:px-20 lg:justify-between">
+            <!-- Heading -->
+            <div class="mb-6 text-left lg:w-1/2 lg:mb-0">
+                <h2 class="text-3xl font-semi font-mona">
+                    {section.title}
+                </h2>
+            </div>
+            <!-- Content -->
+            <div class="lg:w-1/2 lg:pl-12">
+                {#if section.isHTML}
+                    <p class="font-light font-body font-inter">{@html section.text}</p>
+                {:else}
+                    <p class="font-light font-body font-inter">{section.text}</p>
+                {/if}
+            </div>
         </div>
-        <!-- Right side: Vision Text -->
-        <div class="lg:w-1/2 lg:mt-0 lg:pl-12">
-            <p class="mr-8 font-light font-body font-inter" style="margin-top: -6px;">
-                {visionText}
-            </p>
-        </div>
-    </div>
-    <hr class="my-8 border-t-2 border-[#4E4E4E] mx-auto" style="margin-top: 75px; margin-bottom: 20px; width: 1375px;"/>
-  <!-- Values Section -->
-<div class="container flex flex-col items-center justify-center px-8 py-10 lg:flex-row lg:justify-between">
-    <!-- Left side: Heading -->
-    <div class=" lg:w-1/2 lg:text-left"style="margin-top: -80px;">
-        <h1 class="mt-10 text-3xl ml-14 font-semi font-mona font-h3">
-            VALUES
-        </h1>
-    </div>
-    <!-- Right side: Vision Text -->
-    <div class="lg:w-1/2 lg:mt-0 lg:pl-12">
-        <p class="mr-8 font-light font-body font-inter" style="margin-top: -6px;" bind:innerHTML={valuesText} contenteditable="false"></p>
-    </div>
-</div>
-<hr class="my-8 border-t-2 border-[#4E4E4E] mx-auto" style="margin-top: 45px; margin-bottom: 20px; width: 1375px;"/>
-
-  <!-- Journey Section -->
-<div class="container flex flex-col items-center justify-center px-8 py-10 lg:flex-row lg:justify-between">
-    <!-- Left side: Heading -->
-    <div class=" lg:w-1/2 lg:text-left"style="margin-top: -80px;">
-        <h1 class="mt-10 text-3xl ml-14 font-semi font-mona font-h3">
-            OUR JOURNEY
-        </h1>
-    </div>
-    <!-- Right side: Vision Text -->
-    <div class="lg:w-1/2 lg:mt-0 lg:pl-12">
-        <p class="mr-8 font-light font-body font-inter" style="margin-top: -6px;">
-            {journeyText}
-        </p>
-    </div>
-</div>
-<hr class="my-8 border-t-2 border-[#4E4E4E] mx-auto" style="margin-top: 75px; margin-bottom: 20px; width: 1375px;"/>
-
-  <!-- Future Goals Section -->
-  <div class="container flex flex-col items-center justify-center px-8 py-10 lg:flex-row lg:justify-between">
-    <!-- Left side: Heading -->
-    <div class=" lg:w-1/2 lg:text-left"style="margin-top: -80px;">
-        <h1 class="mt-10 text-3xl ml-14 font-semi font-mona font-h3">
-            FUTURE GOALS
-        </h1>
-    </div>
-    <!-- Right side: Vision Text -->
-    <div class="lg:w-1/2 lg:mt-0 lg:pl-12">
-        <p class="mr-8 font-light font-body font-inter" style="margin-top: -6px;">
-            {goalsText}
-        </p>
-    </div>
-</div>
+        <hr class="mx-4 lg:mx-auto my-8 lg:my-12 border-t-2 border-[#4E4E4E] lg:w-[1375px]"/>
+    {/each}
 </div>
 </Layout>
 
@@ -109,17 +86,27 @@
   h1, h2 {
     font-family: "Inter", sans-serif;
   }
+  
   p {
     font-family: "Inter", sans-serif;
     font-size: 16px;
     line-height: 25px;
     font-weight: 300;
   }
+  
   p strong {
-    font-weight: 1000; /* Make bold text inside <p> have a font weight of 700 */
+    font-weight: 700;
   }
+  
   .container {
-    max-width: 1500px; /* Set the maximum width for the page content */
-    margin: 0 auto; /* Center the content */
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+
+  /* Mobile-specific styles */
+  @media (max-width: 1023px) {
+    p {
+      padding-right: 0;
+    }
   }
 </style>
