@@ -52,7 +52,7 @@ export default {
         h3: ["40px", { lineHeight: "36px" }],
         h4: ["20px", { lineHeight: "18px" }],
         h4small: ["18px", { lineHeight: "16.2px" }],
-        body:["16px",{lineHeight: "22.4px"}],
+        body: ["16px", { lineHeight: "22.4px" }],
         bodysmall: ["14px", { lineHeight: "20px" }],
       },
     },

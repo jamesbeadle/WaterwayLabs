@@ -6,7 +6,7 @@ import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
 import type { UserConfig } from "vite";
 import { defineConfig, loadEnv } from "vite";
-import type { PluginBuild } from 'esbuild';
+import type { PluginBuild } from "esbuild";
 
 const file = fileURLToPath(new URL("package.json", import.meta.url));
 const json = readFileSync(file, "utf8");
@@ -173,7 +173,9 @@ export default defineConfig((): UserConfig => {
       },
       VITE_APP_VERSION: JSON.stringify(version),
       VITE_DFX_NETWORK: JSON.stringify(network),
-      'process.env.CANISTER_ID_BACKEND': JSON.stringify(process.env.CANISTER_ID_BACKEND),
+      "process.env.CANISTER_ID_BACKEND": JSON.stringify(
+        process.env.CANISTER_ID_BACKEND,
+      ),
     },
   };
 });

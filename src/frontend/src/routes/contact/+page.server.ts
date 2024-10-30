@@ -1,11 +1,13 @@
 import { fail } from "@sveltejs/kit";
 import type { Actions } from "./$types";
 import { Actor, HttpAgent } from "@dfinity/agent";
-import {idlFactory} from "../../../../declarations/backend";
+import { idlFactory } from "../../../../declarations/backend";
 
 const CANISTER_ID = process.env.BACKEND_CANISTER_ID;
 if (!CANISTER_ID) {
-  throw new Error('CANISTER_ID_BACKEND is not defined in environment variables');
+  throw new Error(
+    "CANISTER_ID_BACKEND is not defined in environment variables",
+  );
 }
 
 export const actions: Actions = {
@@ -20,30 +22,33 @@ export const actions: Actions = {
     }
 
     try {
-      console.log('Creating HttpAgent');
+      console.log("Creating HttpAgent");
       const agent = new HttpAgent({ host: "http://localhost:8080" });
-      
-      console.log('Fetching root key');
-      await agent.fetchRootKey();
-      
-      console.log('Creating actor');
-      const actor = Actor.createActor(idlFactory, { agent, canisterId: CANISTER_ID });
 
-      console.log('Calling submitForm');
+      console.log("Fetching root key");
+      await agent.fetchRootKey();
+
+      console.log("Creating actor");
+      const actor = Actor.createActor(idlFactory, {
+        agent,
+        canisterId: CANISTER_ID,
+      });
+
+      console.log("Calling submitForm");
       const result = await actor.submitForm({
         name: String(name),
         email: String(email),
-        message: String(message)
+        message: String(message),
       });
       console.log("Form submitted to canister:", result);
 
       return { success: true, message: result };
     } catch (error) {
-      console.error('Detailed error:', error);
+      console.error("Detailed error:", error);
       if (error instanceof Error) {
-        console.error('Stack:', error.stack);
+        console.error("Stack:", error.stack);
       }
-      return fail(500, { error: 'Failed to submit form' });
+      return fail(500, { error: "Failed to submit form" });
     }
   },
 };
