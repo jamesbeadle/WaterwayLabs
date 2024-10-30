@@ -2,13 +2,8 @@ import OpenfplIcon from "$lib/icons/svgs/openfpl.svelte";
 
 export type Project = {
   component: typeof OpenfplIcon;
-  name: string;
-  title: string;
-  description: string;
-  summary: string;
+  id: number
   buttonText: string;
-  buttonLink: string;
-  backgroundColor: string;
   backgroundImage: string;
   previewImage: string;
   mobilePreviewImage: string;
@@ -16,9 +11,6 @@ export type Project = {
   selected?: boolean;
   status: string;
   summaryClass?: string;
-  isFootballGod?: boolean;
-  twitter?: string;
-  github?: string;
 };
 
 export type CanisterType =

@@ -17,63 +17,38 @@
   let projects: Project[] = [
     {
       component: OpenFPLIcon,
-      name: "OpenFPL",
-      title: "OPENFPL",
-      description: "Decentralized fantasy football.",
-      summary: "OpenFPL is a decentralized fantasy football game for the Premier League hosted through the Internet Computer's Network Nervous System. OpenFPL token holders reach community consensus for player valuations, data validation, and more to ensure the entire platform operates entirely on the blockchain with zero dependencies.",
+      id: 3,
       buttonText: "Visit Site",
-      buttonLink: "https://openfpl.xyz",
-      backgroundColor: "#2CE3A6",
       backgroundImage: "openFPL-background.png",
       previewImage: "openFPL-preview.png",
       mobilePreviewImage: "openFPL-mobile-preview.png",
       translateX: "-214px",
       status: "Decentralized",
-      twitter: "https://x.com/OpenFPL_DAO",
-      github: "https://github.com/jamesbeadle/OpenFPL"
     },
     {
       component: FootballGodIcon,
-      name: "Football God",
-      title: "FOOTBALL GOD",
-      description: "Live play to earn football games.",
-      summary: "FootballGod will be a fixed odds betting platform funded by the OpenFPL DAO. Data managed to run OpenFPL and Transfer Kings will be used to offer odds on worldwide football matches. Algorithms for FootballGod will be managed by the OpenFPL DAO, allowing FootballGod to be used as a useful tool for controlling the FPL token supply. FootballGod has been designed to take advantage of the highly profitable nature of betting platforms to benefit OpenFPL token holders. FootballGod will send all profits to the OpenFPL DAO FPL Treasury, with the DAO able to burn these profit at it's discretion.",
+      id: 2,
       buttonText: "Visit Site",
-      buttonLink: "https://footballgod.xyz",
-      backgroundColor: "#7F56F1",
       backgroundImage: "footballGod-background.png",
       previewImage: "footballGod-preview.png",
       mobilePreviewImage: "footballGod-mobile-preview.png",
       translateX: "-160px",
       status: "Development",
-      isFootballGod: true,
     },
     {
       component: GolfPadIcon,
-      name: "GolfPad",
-      title: "GOLFPAD",
-      description: "Golf meets Web3.",
-      summary: "GolfPad gives golfers of all levels a new dimension to their game. GolfPad focuses on individual achievements throughout your round rather than a single round's total score. This allows you to compete against your friends within a new framework, training your golf game for new scenarios.",
+      id: 6,
       buttonText: "Visit Site",
-      buttonLink: "https://golfpad.xyz",
-      backgroundColor: "#F4C802",
       backgroundImage: "golfpad-background.png",
       previewImage: "golfpad-preview.png",
       mobilePreviewImage: "golfpad-mobile-preview.png",
       translateX: "-167px",
       status: "Development",
-      twitter: "https://x.com/GolfPadDAO",
-      github: "https://github.com/jamesbeadle/GolfPad",
     },
     {
       component: TransferKingsIcon,
-      name: "Transfer Kings",
-      title: "TRANSFER KINGS",
-      description: "Become a football agent today.",
-      summary: "Transfer Kings is our upcoming purchase to play football agency game. Groups of friends will be able to setup their own agency, competing against each other for custom reward pools. Transfer Kings is designed to span multiple seasons and international tournaments, allowing your contracted players to achieve their expected career goals. Designed for the football expert that can spot prospects around the world, Transfer Kings is the worldwide football game Web3 has been waiting for.",
+      id: 5,
       buttonText: "Visit Site",
-      buttonLink: "https://transferkings.xyz",
-      backgroundColor: "#2D64E3",
       backgroundImage: "transferKings-background.png",
       previewImage: "transferKings-preview.png",
       mobilePreviewImage: "transferKings-mobile-preview.png",
@@ -82,13 +57,8 @@
     },
     {
       component: OpenBookIcon,
-      name: "OpenBook",
-      title: "OPENBOOK",
-      description: "Decentralized business management.",
-      summary: "OpenBook is evolving into a comprehensive, 100% on-chain business management platform. OpenBook's initial offering of sales, accountancy, recruitment, timesheet and task management are just the first step on delivering the perfect single SaaS for businesses at the lowest possible price.",
+      id: 7,
       buttonText: "Visit Site",
-      buttonLink: "https://openbook.services",
-      backgroundColor: "#66E094",
       backgroundImage: "openBook-background.png",
       previewImage: "openBook-preview.png",
       mobilePreviewImage: "openBook-mobile-preview.png",
@@ -97,13 +67,8 @@
     },
     {
       component: OpenBeatsIcon,
-      name: "OpenBeats",
-      title: "OPENBEATS",
-      description: "Decentralized Audio Network.",
-      summary: "OpenBeats is a decentralized audio network enabling producers to create tracks using audio samples from the OpenBeats library. Creators of samples share the monthly subscription revenue based on how often their sample is used in the projects being composed.",
+      id: 8,
       buttonText: "Visit Site",
-      buttonLink: "https://openbeats.xyz",
-      backgroundColor: "#FF8D7D",
       backgroundImage: "openBeats-background.png",
       previewImage: "openBeats-preview.png",
       mobilePreviewImage: "openBeats-mobile-preview.png",
@@ -112,13 +77,8 @@
     },
     {
       component: OpenChefIcon,
-      name: "OpenChef",
-      title: "OPENCHEF",
-      description: "Build your own cooking community.",
-      summary: "OpenChef is designed to enable chefs to earn as they help people within their local community. Chefs will create projects that receive funding through sponsorship, charitable donations and a share of premium content subscriptions. This funding will be used to feed the community, giving a chef the opportunity to show off their passion for cooking through charitable content. The DAO will vote on rewards for chefs that help the most people, ensuring as much good as possible can be done.",
+      id: 9,
       buttonText: "Visit Site",
-      buttonLink: "https://openchef.xyz",
-      backgroundColor: "#731728",
       backgroundImage: "openChef-background.png",
       previewImage: "openChef-preview.png",
       mobilePreviewImage: "openChef-mobile-preview.png",
@@ -127,13 +87,8 @@
     },
     {
       component: ICPFAIcon,
-      name: "ICPFA",
-      title: "ICPFA",
-      description: "Supporting community football.",
-      summary: "The ICPFA has been setup to support community grassroots football causes, funded by revenue from our football related applications.",
+      id: 10,
       buttonText: "Visit Site",
-      buttonLink: "https://icpfa.org",
-      backgroundColor: "#F7F7F7",
       backgroundImage: "icpfa-background.png",
       previewImage: "icpfa-preview.png",
       mobilePreviewImage: "icpfa-mobile-preview.png",
@@ -142,13 +97,8 @@
     },
     {
       component: OpenCareIcon,
-      name: "OpenCare",
-      title: "OPENCARE",
-      description: "The Future Of Social Care",
-      summary: "OpenCare has been designed with care professionals and families who have elderly relatives in care-homes. Caring for the elderly will be a huge challenge for society going forwards and OpenCare will provide a caring, efficient and secure solution to help all stakeholders involved.",
+      id: 11,
       buttonText: "Visit Site",
-      buttonLink: "https://opencare.services",
-      backgroundColor: "#FF69B4",
       backgroundImage: "openCare-background.png",
       previewImage: "openCare-preview.png",
       mobilePreviewImage: "openCare-mobile-preview.png",
@@ -157,15 +107,15 @@
     },
   ];
 
-  let selectedProject: Project | null = projects.find(p => p.name === "OpenFPL") || projects[0];
+  let selectedProject: Project | null = projects.find(p => p.id === 3) || projects[0];
 
   function selectProject(project: Project) {
     selectedProject = project;
     projects = projects.map(p => ({
       ...p,
-      selected: p.name === project.name
+      selected: p.id === project.id
     }));
-    updateGlobalColor(project.backgroundColor);
+    updateGlobalColor(project.mainColour);
   }
 
   function updateGlobalColor(color: string) {

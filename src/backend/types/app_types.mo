@@ -6,7 +6,10 @@ module AppTypes {
         #NotFound;
     };
 
+    public type ProjectId = Nat16;
+
     public type Project = {
+        id: ProjectId;
         name: Text;
         backendCanisterId: Base.CanisterId;
         frontendCanisterId: Base.CanisterId;
@@ -14,6 +17,11 @@ module AppTypes {
         githubLink: Text;
         socialLinks: [(Text,Text)];
         status: ProjectStatus;
+        description: Text;
+        summary: Text;
+        mainColour: Text;
+        secondaryColour: Text;
+        thirdColour: Text;
     };
 
     public type ProjectStatus = {
