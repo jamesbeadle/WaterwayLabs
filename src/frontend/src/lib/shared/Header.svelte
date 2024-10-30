@@ -3,9 +3,8 @@
   export let isMenuOpen = false;
 
   $: isHomePage = $page.url.pathname === '/';
-  $: isDesktop = window?.innerWidth >= 768; // md breakpoint
+  $: isDesktop = window?.innerWidth >= 768; 
 
-  // Add window resize listener
   if (typeof window !== 'undefined') {
     window.addEventListener('resize', () => {
       isDesktop = window.innerWidth >= 768;
@@ -117,13 +116,11 @@
 </header>
 
 <style>
-  /* Optional: Add smooth transitions for menu items */
   a {
     position: relative;
     transition: all 0.3s ease;
   }
 
-  /* Optional: Add hover effect line animation */
   a::after {
     content: '';
     position: absolute;

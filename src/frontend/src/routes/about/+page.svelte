@@ -15,7 +15,6 @@
 
 <Layout overrideBackground={true}>
 <div class="bg-[#272727] text-white">
-  <!-- Hero Section with reduced bottom padding for mobile -->
     <div class="container flex flex-col px-4 py-8 lg:py-0 lg:flex-row lg:px-20 lg:justify-between">
         <!-- Left side: Heading -->
         <div class="pt-12 text-left lg:w-1/2 lg:pt-24">
@@ -36,7 +35,6 @@
 
     <hr class="mx-4 lg:mx-auto my-6 lg:my-12 border-t-2 border-[#4E4E4E] lg:w-[1375px]"/>
 
-    <!-- Image Section with reduced vertical padding for mobile -->
     <div class="px-4 mx-auto lg:px-0 lg:w-4/5">
         <!-- Mobile Image -->
         <img 

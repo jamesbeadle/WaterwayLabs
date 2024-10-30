@@ -19,7 +19,6 @@ export type Project = {
   isFootballGod?: boolean;
   twitter?: string;
   github?: string;
-  icon?: string;
 };
 
 export type CanisterType =

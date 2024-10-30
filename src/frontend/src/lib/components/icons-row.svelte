@@ -13,13 +13,11 @@
 
   onMount(() => {
     isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    // Check if running on Chrome mobile
     isChromeMobile = /Android.*Chrome/.test(navigator.userAgent) || 
-                     /CriOS/.test(navigator.userAgent); // for Chrome on iOS
+                     /CriOS/.test(navigator.userAgent); 
     console.log('Chrome mobile:', isChromeMobile);
   });
 
-  // Add a function to determine icon size class
   function getIconSizeClass(projectName: string) {
     switch(projectName.toLowerCase()) {
       case 'openfpl':
@@ -39,7 +37,7 @@
 </script>
 
 <!-- Desktop Bar for icons -->
-<div class="fixed bottom-0 left-0 right-0 hidden lg:block"> <!-- Updated classes -->
+<div class="fixed bottom-0 left-0 right-0 hidden lg:block"> 
   <div class="icon-bar">
     {#each projects as project}
       <div
@@ -133,7 +131,7 @@
     height: 100%;
   }
 
-  /* Add custom size classes */
+  /* custom size classes */
   .icon-box :global(.icon.icon-large) {
     transform: translate(-50%, -50%) scale(3);
   }
@@ -215,14 +213,14 @@
       box-shadow: 0 0 0 0 var(--border-color);
     }
     70% {
-      box-shadow: 0 0 0 10px rgba(0, 0, 0, 0); /* Increased pulse size */
+      box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
     }
     100% {
       box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
     }
   }
 
-  /* Specific icon adjustments for mobile */
+  /* icon adjustments for mobile */
   .mobile-icon-box :global(.icon.icon-large) {
     transform: translate(-50%, -50%) scale(2.8) !important;
   }

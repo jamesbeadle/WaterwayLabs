@@ -53,7 +53,6 @@
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-16">
       {#each teamMembers as member}
         <div class="p-4 lg:p-6">
-          <!-- Fixed height for image container -->
           <div class="w-full mb-6 overflow-hidden aspect-square">
             <img 
               src={`team/${member.image}`} 
@@ -62,7 +61,6 @@
               style="min-height: 100%; object-fit: cover;"
             />
           </div>
-          <!-- Consistent spacing for title and other elements -->
           <div class="space-y-4">
             <span class="inline-block px-3 py-1 text-xs text-[#272727] bg-white rounded-full">
               {member.title}
@@ -85,7 +83,6 @@
     line-height: 1.5;
   }
 
-  /* Adjusts the grid for team members */
   .grid {
     gap: 24px;
   }
@@ -98,7 +95,7 @@
     transform: scale(1.05);
   }
 
-  /* Mobile-specific adjustments */
+  /* Mobile adjustments */
   @media (max-width: 1023px) {
     .container {
       padding: 0;

@@ -1,10 +1,7 @@
 <footer class="relative py-8 bg-gray-900">
-  <!-- Add Ellipses for Blur Effect -->
   <div class="absolute ellipse-1"></div>
   <div class="absolute ellipse-2"></div>
-
   <div class="relative z-10">
-    
     <!-- First Row (Logo and Links) -->
     <div class="flex flex-col px-6 lg:px-12 lg:flex-row lg:items-center lg:justify-between">
       <!-- Logo Section -->
@@ -50,7 +47,6 @@
     overflow: hidden;
   }
 
-  /* Existing styles remain the same */
   .ellipse-1 {
     width: 256px;
     height: 256px;

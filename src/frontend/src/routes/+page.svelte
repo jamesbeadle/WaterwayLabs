@@ -30,8 +30,7 @@
       translateX: "-214px",
       status: "Decentralized",
       twitter: "https://x.com/OpenFPL_DAO",
-      github: "https://github.com/jamesbeadle/OpenFPL",
-      icon: "/icons/openFPL-icon.png"
+      github: "https://github.com/jamesbeadle/OpenFPL"
     },
     {
       component: FootballGodIcon,
@@ -48,7 +47,6 @@
       translateX: "-160px",
       status: "Development",
       isFootballGod: true,
-      icon: "/icons/footballGod-icon.png"
     },
     {
       component: GolfPadIcon,
@@ -66,7 +64,6 @@
       status: "Development",
       twitter: "https://x.com/GolfPadDAO",
       github: "https://github.com/jamesbeadle/GolfPad",
-      icon: "/icons/golfpad-icon.png"
     },
     {
       component: TransferKingsIcon,
@@ -82,7 +79,6 @@
       mobilePreviewImage: "transferKings-mobile-preview.png",
       translateX: "-145px",
       status: "Development",
-      icon: "/icons/transferKings-icon.png"
     },
     {
       component: OpenBookIcon,
@@ -98,7 +94,6 @@
       mobilePreviewImage: "openBook-mobile-preview.png",
       translateX: "-220px",
       status: "Development",
-      icon: "/icons/openBook-icon.png"
     },
     {
       component: OpenBeatsIcon,
@@ -114,7 +109,6 @@
       mobilePreviewImage: "openBeats-mobile-preview.png",
       translateX: "-160px",
       status: "Design",
-      icon: "/icons/openBeats-icon.png"
     },
     {
       component: OpenChefIcon,
@@ -130,7 +124,6 @@
       mobilePreviewImage: "openChef-mobile-preview.png",
       translateX: "-60px",
       status: "Design",
-      icon: "/icons/openChef-icon.png"
     },
     {
       component: ICPFAIcon,
@@ -146,7 +139,6 @@
       mobilePreviewImage: "icpfa-mobile-preview.png",
       translateX: "-125px",
       status: "Development",
-      icon: "/icons/icpfa-icon.png"
     },
     {
       component: OpenCareIcon,
@@ -162,7 +154,6 @@
       mobilePreviewImage: "openCare-mobile-preview.png",
       translateX: "-88px",
       status: "Development",
-      icon: "/icons/openCare-icon.png"
     },
   ];
 
@@ -359,7 +350,7 @@
   }
 
   /* Desktop-specific styles */
-  @media (min-width: 1024px) { /* Changed from 769px to match lg breakpoint */
+  @media (min-width: 1024px) { 
     :global(body) {
       background: linear-gradient(
         to right,

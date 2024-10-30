@@ -8,7 +8,6 @@
   import { BusyScreen, Spinner, Toasts } from "@dfinity/gix-components";
   import Footer from "$lib/shared/Footer.svelte";
   
-  // Define the slot props interface
   interface $$Slots {
     default: {
       isMenuOpen: boolean;
