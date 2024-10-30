@@ -2957,7 +2957,7 @@ ${indent}}`);
     }
   }
   head += rendered.head;
-  const html = options2.templates.app({
+  const html2 = options2.templates.app({
     head,
     body: body2,
     assets: assets$1,
@@ -2968,7 +2968,7 @@ ${indent}}`);
     env: safe_public_env
   });
   const transformed = await resolve_opts.transformPageChunk({
-    html,
+    html: html2,
     done: true
   }) || "";
   if (!chunks) {
@@ -3964,7 +3964,7 @@ function get_page_config(nodes) {
   }
   return Object.keys(current).length ? current : void 0;
 }
-const default_transform = ({ html }) => html;
+const default_transform = ({ html: html2 }) => html2;
 const default_filter = () => false;
 const default_preload = ({ type }) => type === "js" || type === "css";
 const page_methods = /* @__PURE__ */ new Set(["GET", "HEAD", "POST"]);
@@ -4402,6 +4402,25 @@ function get_parent_context(component_context2) {
 }
 const BLOCK_OPEN = `<!--${HYDRATION_START}-->`;
 const BLOCK_CLOSE = `<!--${HYDRATION_END}-->`;
+function html(value) {
+  var html2 = String(value ?? "");
+  var open = "<!---->";
+  return open + html2 + "<!---->";
+}
+function copy_payload({ out, css, head }) {
+  return {
+    out,
+    css: new Set(css),
+    head: {
+      title: head.title,
+      out: head.out
+    }
+  };
+}
+function assign_payload(p1, p2) {
+  p1.out = p2.out;
+  p1.head = p2.head;
+}
 let on_destroy = [];
 function render(component, options2 = {}) {
   const payload = { out: "", css: /* @__PURE__ */ new Set(), head: { title: "", out: "" } };
@@ -4443,6 +4462,19 @@ function attr(name, value, is_boolean = false) {
 }
 function stringify(value) {
   return typeof value === "string" ? value : value == null ? "" : value + "";
+}
+function style_object_to_string(style_object) {
+  return Object.keys(style_object).filter(
+    /** @param {any} key */
+    (key2) => style_object[key2] != null && style_object[key2] !== ""
+  ).map(
+    /** @param {any} key */
+    (key2) => `${key2}: ${escape_html(style_object[key2], true)};`
+  ).join(" ");
+}
+function add_styles(style_object) {
+  const styles = style_object_to_string(style_object);
+  return styles ? ` style="${styles}"` : "";
 }
 function store_get(store_values, store_name, store) {
   if (store_name in store_values && store_values[store_name][0] === store) {
@@ -4650,7 +4682,7 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "1b27n5d"
+  version_hash: "1cpsndi"
 };
 async function get_hooks() {
   return {};
@@ -4776,12 +4808,252 @@ const page = {
     return store.subscribe(fn);
   }
 };
+function Error$1($$payload, $$props) {
+  push();
+  var $$store_subs;
+  $$payload.out += `<h1>${escape_html(store_get($$store_subs ??= {}, "$page", page).status)}</h1> <p>${escape_html(store_get($$store_subs ??= {}, "$page", page).error?.message)}</p>`;
+  if ($$store_subs) unsubscribe_stores($$store_subs);
+  pop();
+}
+function Project_section($$payload, $$props) {
+  let title = $$props["title"];
+  let description = $$props["description"];
+  let summary = $$props["summary"];
+  let buttonText = $$props["buttonText"];
+  let buttonLink = $$props["buttonLink"];
+  let status = $$props["status"];
+  let isFootballGod = fallback($$props["isFootballGod"], false);
+  let twitter = fallback($$props["twitter"], void 0);
+  let github = fallback($$props["github"], void 0);
+  $$payload.out += `<section class="hidden space-y-6 project-section lg:p-8 lg:block" style="margin-top: -35px;"><span class="px-3 py-1 translate-y-2 text-xs text-[#272727] bg-white rounded-full">${escape_html(status)}</span> <h1 class="font-mona text-h1 font-semi">${escape_html(title)}</h1> <h4${attr("class", `font-med font-mona ${stringify(isFootballGod ? "text-h4small" : "text-h4")}`)}>${escape_html(description)}</h4> <p${attr("class", `mr-8 font-light text-gray-300 font-inter lg:mt-4 lg:mb-8 ${stringify(isFootballGod ? "text-bodysmall" : "text-body")}`)}>${escape_html(summary)}</p> <a${attr("href", buttonLink)} target="_blank" class="button-style group svelte-12gcm1i"><span class="button-text svelte-12gcm1i">${escape_html(buttonText)}</span> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="transition-transform duration-300 button-icon group-hover:translate-x-2 svelte-12gcm1i"><path d="M10 17l5-5-5-5v10z"></path></svg></a></section> <section class="lg:hidden"><div class="flex items-center justify-between mb-4"><span class="px-3 py-1 translate-y-2 text-xs text-[#272727] bg-white rounded-full">${escape_html(status)}</span> <div${add_styles({ transform: "translateY(10px)" })} class="flex items-center gap-4">`;
+  if (twitter) {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `<a${attr("href", twitter)} target="_blank" rel="noopener noreferrer"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.8767 0.0963813V0.0931396H13.7207L14.029 0.154732C14.2346 0.194718 14.4213 0.24712 14.589 0.311953C14.7567 0.376787 14.9191 0.452431 15.0759 0.538871C15.2328 0.62531 15.3751 0.713387 15.5028 0.803068C15.6294 0.891679 15.743 0.985688 15.8437 1.08509C15.9432 1.18559 16.0985 1.21152 16.3095 1.16289C16.5205 1.11427 16.7477 1.04673 16.9912 0.960289C17.2346 0.87385 17.4754 0.7766 17.7135 0.668538C17.9515 0.560477 18.0965 0.491866 18.1485 0.462691C18.1993 0.432446 18.2264 0.416238 18.2296 0.414066L18.2328 0.409204L18.2491 0.401099L18.2653 0.392995L18.2815 0.384891L18.2978 0.376787L18.301 0.371924L18.3059 0.368683L18.3108 0.365441L18.314 0.360578L18.3302 0.355716L18.3465 0.352474L18.3432 0.376787L18.3383 0.401099L18.3302 0.425412L18.3221 0.449725L18.314 0.465933L18.3059 0.482141L18.2978 0.506454C18.2924 0.522662 18.287 0.544268 18.2815 0.571288C18.2761 0.598307 18.2247 0.706352 18.1273 0.895456C18.03 1.08456 17.9082 1.27635 17.7621 1.47085C17.6161 1.66536 17.4851 1.8123 17.3694 1.91172C17.2525 2.01222 17.1751 2.08245 17.1373 2.12243C17.0994 2.16349 17.0534 2.2013 16.9993 2.23589L16.9181 2.28938L16.9019 2.29748L16.8857 2.30559L16.8824 2.31045L16.8776 2.31369L16.8727 2.31693L16.8694 2.3218L16.8532 2.3299L16.837 2.338L16.8338 2.34287L16.8289 2.34611L16.824 2.34935L16.8208 2.35421L16.8175 2.35908L16.8126 2.36232L16.8078 2.36556L16.8045 2.37042H16.8857L17.3401 2.27317C17.6431 2.20834 17.9326 2.13 18.2085 2.03815L18.6467 1.89227L18.6954 1.87606L18.7198 1.86796L18.736 1.85986L18.7522 1.85175L18.7685 1.84365L18.7847 1.83554L18.8171 1.83068L18.8496 1.82744V1.85986L18.8415 1.8631L18.8334 1.86796L18.8301 1.87282L18.8253 1.87606L18.8204 1.87931L18.8171 1.88417L18.8139 1.88903L18.809 1.89227L18.8042 1.89551L18.8009 1.90038L18.7977 1.90524L18.7928 1.90848L18.7847 1.92469L18.7766 1.9409L18.7717 1.94414C18.7695 1.94738 18.7008 2.03922 18.5656 2.21968C18.4303 2.40122 18.3573 2.49305 18.3465 2.49523C18.3356 2.49847 18.3205 2.51468 18.301 2.54385C18.2826 2.5741 18.1679 2.69459 17.9569 2.9053C17.7459 3.11601 17.5393 3.30347 17.3369 3.46773C17.1335 3.63306 17.0307 3.8362 17.0285 4.07717C17.0253 4.31705 17.0128 4.58828 16.9912 4.89083C16.9695 5.19339 16.929 5.52025 16.8694 5.87144C16.8099 6.22262 16.718 6.61973 16.5935 7.06276C16.4691 7.50578 16.3176 7.93801 16.1391 8.35943C15.9605 8.78085 15.7739 9.15904 15.5791 9.49402C15.3843 9.829 15.2058 10.1126 15.0435 10.345C14.8812 10.5773 14.7162 10.7961 14.5484 11.0014C14.3807 11.2067 14.1687 11.438 13.9122 11.6951C13.6547 11.9512 13.514 12.0917 13.4902 12.1165C13.4653 12.1403 13.3593 12.2289 13.1721 12.3824C12.986 12.5369 12.7858 12.6914 12.5715 12.8459C12.3584 12.9994 12.1625 13.1274 11.984 13.2301C11.8054 13.3327 11.5901 13.4499 11.338 13.5818C11.087 13.7147 10.8153 13.8379 10.5232 13.9513C10.231 14.0648 9.92265 14.1701 9.59803 14.2674C9.27341 14.3646 8.95962 14.4403 8.65664 14.4943C8.35368 14.5483 8.01012 14.5943 7.62598 14.6321L7.04979 14.6888V14.6969H5.99479V14.6888L5.85682 14.6807C5.76486 14.6753 5.68911 14.6699 5.62959 14.6645C5.57009 14.6591 5.34555 14.6294 4.95601 14.5754C4.56647 14.5213 4.2608 14.4673 4.03897 14.4133C3.81716 14.3592 3.48712 14.2566 3.04889 14.1053C2.61066 13.954 2.23572 13.8011 1.92409 13.6466C1.61355 13.4932 1.41878 13.3959 1.33978 13.3549C1.26187 13.3149 1.17423 13.2652 1.07684 13.2057L0.930764 13.1166L0.927534 13.1117L0.922648 13.1085L0.917779 13.1052L0.914533 13.1004L0.898302 13.0923L0.882071 13.0842L0.878841 13.0793L0.873956 13.0761L0.869086 13.0728L0.86584 13.068L0.86261 13.0631L0.857725 13.0599H0.849609V13.0274L0.86584 13.0307L0.882071 13.0356L0.95511 13.0437C1.0038 13.0491 1.13636 13.0572 1.35277 13.068C1.56919 13.0788 1.79911 13.0788 2.04258 13.068C2.28604 13.0572 2.53492 13.0328 2.78919 12.995C3.04348 12.9572 3.34375 12.8924 3.69001 12.8005C4.03627 12.7087 4.3544 12.5995 4.6444 12.4731C4.9333 12.3456 5.13888 12.2505 5.26117 12.1879C5.38235 12.1263 5.56738 12.0117 5.81625 11.8442L6.18956 11.593L6.1928 11.5881L6.19767 11.5849L6.20256 11.5817L6.20579 11.5768L6.20903 11.5719L6.2139 11.5687L6.21879 11.5655L6.22202 11.5606L6.23825 11.5557L6.25448 11.5525L6.25772 11.5363L6.26259 11.5201L6.26748 11.5168L6.27071 11.512L6.14086 11.5039C6.0543 11.4985 5.97044 11.493 5.88928 11.4877C5.80813 11.4823 5.68099 11.4579 5.50786 11.4147C5.33474 11.3715 5.14809 11.3067 4.9479 11.2202C4.74772 11.1338 4.55295 11.0311 4.36359 10.9123C4.17424 10.7934 4.03735 10.6945 3.95295 10.6156C3.86963 10.5378 3.76142 10.4276 3.62833 10.285C3.49632 10.1413 3.38162 9.99377 3.28424 9.8425C3.18685 9.69122 3.0938 9.51669 3.00508 9.31897L2.87035 9.02397L2.86223 8.99966L2.85412 8.97535L2.84925 8.95914L2.846 8.94293L2.87035 8.94617L2.8947 8.95103L3.07323 8.97535C3.19227 8.99156 3.37893 8.99695 3.6332 8.99156C3.88749 8.98616 4.06332 8.97535 4.1607 8.95914C4.25809 8.94293 4.3176 8.93212 4.33924 8.92672L4.3717 8.91862L4.41228 8.91051L4.45286 8.90241L4.4561 8.89755L4.46097 8.89431L4.46586 8.89106L4.46909 8.8862L4.43662 8.8781L4.40416 8.86999L4.3717 8.86189L4.33924 8.85378L4.30678 8.84568C4.28514 8.84028 4.24728 8.82947 4.19316 8.81326C4.13906 8.79706 3.99299 8.73762 3.75493 8.63497C3.51689 8.53232 3.32752 8.43237 3.18685 8.33512C3.04583 8.23758 2.91137 8.13092 2.78433 8.01581C2.65772 7.89911 2.51869 7.74891 2.36719 7.56522C2.21571 7.38153 2.08046 7.16811 1.96142 6.92498C1.8424 6.68186 1.75313 6.44954 1.69361 6.22802C1.63433 6.0078 1.59522 5.78266 1.57677 5.55537L1.54754 5.215L1.56377 5.21824L1.58 5.2231L1.59623 5.2312L1.61246 5.23931L1.62869 5.24741L1.64492 5.25552L1.8965 5.36898C2.06423 5.44462 2.27252 5.50945 2.52139 5.56348C2.77027 5.6175 2.91904 5.64723 2.96773 5.65262L3.04077 5.66073H3.18685L3.18362 5.65587L3.17873 5.65262L3.17387 5.64938L3.17062 5.64452L3.16739 5.63966L3.1625 5.63642L3.15763 5.63317L3.15439 5.62831L3.13816 5.62021L3.12193 5.6121L3.1187 5.60724L3.11381 5.604L3.10894 5.60076L3.1057 5.59589L3.08947 5.58779L3.07323 5.57969L3.07 5.57482C3.06676 5.57265 3.02022 5.53808 2.9304 5.47109C2.84167 5.40301 2.74862 5.31495 2.65123 5.20689C2.55385 5.09883 2.45646 4.98537 2.35908 4.86652C2.26151 4.74739 2.17461 4.61993 2.09938 4.48562C2.02365 4.35055 1.94357 4.17873 1.85917 3.97019C1.77585 3.76272 1.71255 3.55363 1.66927 3.34293C1.626 3.13222 1.60165 2.92421 1.59623 2.7189C1.59082 2.51359 1.59623 2.338 1.61246 2.19213C1.62869 2.04625 1.66115 1.88146 1.70984 1.69777C1.75854 1.51408 1.82888 1.31958 1.92084 1.11427L2.05881 0.80631L2.06692 0.781997L2.07504 0.757684L2.07992 0.754443L2.08315 0.74958L2.0864 0.744718L2.09127 0.741476L2.09615 0.744718L2.09938 0.74958L2.10263 0.754443L2.1075 0.757684L2.11238 0.760926L2.11561 0.765789L2.11886 0.770651L2.12373 0.773893L2.13185 0.790101L2.13996 0.80631L2.14485 0.809551L2.14808 0.814414L2.36719 1.05754C2.51327 1.21962 2.6864 1.40062 2.88658 1.60052C3.08677 1.80042 3.19768 1.90415 3.21931 1.91172C3.24096 1.92036 3.268 1.94521 3.30047 1.98628C3.33293 2.02627 3.44114 2.1219 3.62508 2.27317C3.80904 2.42444 4.0498 2.60005 4.34736 2.79994C4.64493 2.99984 4.97495 3.19705 5.33744 3.39155C5.69994 3.58605 6.08948 3.76164 6.50606 3.91832C6.92265 4.07501 7.21481 4.17766 7.38252 4.22628C7.55025 4.27491 7.83699 4.33704 8.24276 4.41268C8.64853 4.48833 8.95422 4.53695 9.1598 4.55856C9.36539 4.58016 9.50607 4.59259 9.5818 4.59584L9.69542 4.59908L9.69219 4.57476L9.6873 4.55045L9.65484 4.34785C9.6332 4.21278 9.62238 4.02368 9.62238 3.78055C9.62238 3.53743 9.64132 3.31322 9.67919 3.1079C9.71707 2.90259 9.77388 2.69459 9.84961 2.48388C9.92536 2.27317 9.99949 2.10405 10.072 1.97656C10.1456 1.85013 10.2419 1.70588 10.3609 1.54379C10.4799 1.38171 10.6341 1.21423 10.8235 1.04133C11.0128 0.868436 11.2292 0.714457 11.4727 0.579392C11.7162 0.444327 11.9407 0.341663 12.1463 0.271432C12.3519 0.201201 12.525 0.155266 12.6657 0.133661C12.8063 0.112055 12.8767 0.099623 12.8767 0.0963813Z"></path></svg></a>`;
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]--> `;
+  if (github) {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `<a${attr("href", github)} target="_blank" rel="noopener noreferrer"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M9.5 0C4.5305 0 0.5 4.02975 0.5 9C0.5 12.9765 3.0785 16.35 6.65525 17.5402C7.1045 17.6235 7.25 17.3445 7.25 17.1075V15.432C4.7465 15.9765 4.22525 14.37 4.22525 14.37C3.81575 13.3298 3.2255 13.053 3.2255 13.053C2.40875 12.4942 3.28775 12.5062 3.28775 12.5062C4.1915 12.5692 4.667 13.434 4.667 13.434C5.4695 14.8095 6.77225 14.412 7.286 14.1818C7.36625 13.6005 7.5995 13.203 7.8575 12.9788C5.85875 12.75 3.75725 11.9782 3.75725 8.5305C3.75725 7.54725 4.109 6.74475 4.68425 6.11475C4.59125 5.8875 4.283 4.97175 4.772 3.73275C4.772 3.73275 5.528 3.49125 7.24775 4.65525C7.9655 4.45575 8.735 4.356 9.5 4.35225C10.265 4.356 11.0352 4.45575 11.7545 4.65525C13.4727 3.49125 14.2272 3.73275 14.2272 3.73275C14.717 4.9725 14.4087 5.88825 14.3158 6.11475C14.8932 6.74475 15.242 7.548 15.242 8.5305C15.242 11.9872 13.1368 12.7485 11.1327 12.9713C11.4552 13.2502 11.75 13.7978 11.75 14.6378V17.1075C11.75 17.3468 11.894 17.628 12.3507 17.5395C15.9245 16.3477 18.5 12.975 18.5 9C18.5 4.02975 14.4703 0 9.5 0Z"></path></svg></a>`;
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]--></div></div> <h1 class="mb-4 text-4xl font-semi font-mona">${escape_html(title)}</h1> <p class="mb-4 text-xl font-med font-mona">${escape_html(description)}</p> <p class="mb-10 font-light text-gray-300 font-inter">${escape_html(summary)}</p> <a${attr("href", buttonLink)} target="_blank" class="button-style group svelte-12gcm1i"><span class="button-text svelte-12gcm1i">${escape_html(buttonText)}</span> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="transition-transform duration-300 button-icon group-hover:translate-x-2 svelte-12gcm1i"><path d="M10 17l5-5-5-5v10z"></path></svg></a></section>`;
+  bind_props($$props, {
+    title,
+    description,
+    summary,
+    buttonText,
+    buttonLink,
+    status,
+    isFootballGod,
+    twitter,
+    github
+  });
+}
+function Openfpl($$payload, $$props) {
+  let className = fallback($$props["className"], "");
+  let width = fallback($$props["width"], "43.16");
+  let height = fallback($$props["height"], "59.87");
+  $$payload.out += `<svg xmlns="http://www.w3.org/2000/svg"${attr("class", className)} fill="none" viewBox="-46 -155 157 400">${escape_html(width)}
+    ${escape_html(height)}
+    preserveAspectRatio="xMidYMid meet"
+> <path d="M34.2198 0C21.368 2.1056 9.8424 7.49415 0.149728 15.2632L0.116272 15.3337V64.853L34.1864 94L67.8765 64.853L67.8837 15.3126C58.332 7.8537 46.7921 2.0727 34.2198 0ZM40.9541 72.5186C40.9541 72.763 40.8011 73.0074 40.5526 73.0686L34.1864 75.1765C34.0621 75.207 33.9379 75.207 33.8136 75.1765L27.4474 73.0686C27.1989 72.9769 27.0435 72.763 27.0435 72.5186V70.3801C27.0435 70.1663 27.1678 69.9524 27.3542 69.8608L33.7204 66.5614C33.9068 66.4697 34.0932 66.4697 34.2796 66.5614L40.6458 69.8608C40.8322 69.9524 40.9541 70.1663 40.9541 70.3801V72.5186ZM52.9265 48.9646C52.9265 49.1785 52.8022 49.3923 52.5848 49.484L48.0515 51.7752C47.7408 51.928 47.6476 52.2945 47.803 52.5695L52.212 60.6042C52.3363 60.8486 52.3052 61.1235 52.1188 61.3068L44.6031 68.5777C44.3857 68.7915 44.075 68.7915 43.8265 68.6388L35.257 62.5593C34.9774 62.3455 34.9153 61.9483 35.1638 61.6734L41.9649 54.2192C42.3688 53.761 41.9028 53.0889 41.3436 53.2722L34.1697 55.5634C34.0454 55.594 33.9211 55.594 33.7969 55.5634L26.6564 53.2722C26.0662 53.0889 25.6312 53.7915 26.0351 54.2192L32.8338 61.6734C33.0823 61.9483 33.0202 62.3455 32.7406 62.5593L24.1711 68.6388C23.9226 68.7915 23.6119 68.7915 23.3945 68.5777L15.8812 61.2762C15.6948 61.0929 15.6637 60.818 15.788 60.5736L20.197 52.539C20.3524 52.2335 20.2281 51.8974 19.9485 51.7447L15.4152 49.4534C15.2288 49.3618 15.0735 49.1479 15.0735 48.934V32.9258C15.0735 32.4676 15.6016 32.1621 16.0055 32.437L19.731 34.9116C19.8864 35.0338 19.9796 35.1866 19.9796 35.4004L20.0106 39.5247C20.0106 39.708 20.1038 39.8913 20.2592 40.0135L25.7244 43.7711C26.1283 44.046 26.6875 43.7406 26.6564 43.2518L26.3147 35.9809C26.3147 35.7976 26.2215 35.6143 26.0662 35.5226L15.322 28.2822C15.1667 28.16 15.0735 27.9767 15.0735 27.7934V24.2191C15.0735 24.0969 15.1045 23.9441 15.1977 23.8525L19.0786 19.0256C19.234 18.8118 19.5136 18.7507 19.7621 18.8423L33.7658 23.9441C33.8901 24.0052 34.0454 24.0052 34.1697 23.9441L48.1758 18.8423C48.4243 18.7507 48.7015 18.8423 48.8568 19.0256L52.7401 23.8525C52.8333 23.9441 52.8644 24.0969 52.8644 24.2191V27.7934C52.8644 27.9767 52.7712 28.16 52.6158 28.2822L41.8717 35.5226C41.7785 35.6448 41.6853 35.8281 41.6853 36.0114L41.3436 43.2823C41.3125 43.7711 41.8717 44.0766 42.2756 43.8017L47.7408 40.044C47.8962 39.9218 47.9894 39.7691 47.9894 39.5552L48.0204 35.431C48.0204 35.2477 48.1136 35.0644 48.269 34.9422L51.9945 32.4676C52.3984 32.1926 52.9265 32.4676 52.9265 32.9564V48.9646Z" fill="#161819"></path></svg>`;
+  bind_props($$props, { className, width, height });
+}
+function Footballgod($$payload, $$props) {
+  let className = fallback($$props["className"], "");
+  $$payload.out += `<svg xmlns="http://www.w3.org/2000/svg"${attr("class", className)} fill="none" viewBox="-73 -68 300 300"><path fill-rule="evenodd" clip-rule="evenodd" d="M160 80C160 124.183 124.183 160 80 160C35.8172 160 0 124.183 0 80C0 35.8172 35.8172 0 80 0C124.183 0 160 35.8172 160 80ZM132.282 65.8446L139.297 38.0102C130.753 25.9655 118.63 16.6371 104.479 11.574L78.7755 25.3062L54.6791 11.881C41.243 16.8774 29.6852 25.7354 21.3544 37.1061L28.598 65.8446L7.79184 88.0861C9.03586 99.3203 12.8414 109.782 18.6114 118.875L47.1891 124.821L56.3685 148.723C63.777 151.27 71.727 152.653 80 152.653C88.0652 152.653 95.8235 151.339 103.072 148.913L112.325 124.821L141.462 118.758C147.335 109.465 151.158 98.7472 152.297 87.2404L132.282 65.8446Z" fill="#FFFFFF"></path><g clip-path="url(#clip0_269_2886)"><path d="M76 38C76 58.9868 58.9868 76 38 76C17.0132 76 0 58.9868 0 38C0 17.0132 17.0132 0 38 0C58.9868 0 76 17.0132 76 38ZM62.8338 31.2761L66.1662 18.0549C62.1075 12.3337 56.3494 7.90269 49.6276 5.49772L37.4184 12.0204L25.9727 5.64355C19.5905 8.01684 14.1005 12.2244 10.1434 17.6255L13.584 31.2761L3.7011 41.8407C4.29197 47.177 6.09957 52.1465 8.84029 56.4655L22.4148 59.2899L26.775 70.6437C30.2941 71.8535 34.0703 72.5103 38 72.5103C41.8309 72.5103 45.516 71.8861 48.9592 70.7338L53.3541 59.2899L67.1948 56.4101C69.9843 51.9957 71.8002 46.9048 72.341 41.4391L62.8338 31.2761Z" fill="white"></path></g><defs><clipPath id="clip0_269_2886"><rect width="55" height="60.4082" fill="white" transform="translate(51.4286 49.796)"></rect></clipPath></defs></svg>`;
+  bind_props($$props, { className });
+}
+function Golfpad($$payload, $$props) {
+  let className = fallback($$props["className"], "");
+  $$payload.out += `<svg${attr("class", className)} viewBox="-36 -34 144 144" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="circleClip"><circle cx="38" cy="38" r="35.5217"></circle></clipPath></defs><g><circle cx="38" cy="38" r="38" fill="#101111"></circle><path fill-rule="evenodd" clip-rule="evenodd" d="M73.0947 43.5257C73.376 41.7251 73.5219 39.8796 73.5219 38.0001C73.5219 18.3819 57.6183 2.47827 38.0001 2.47827C18.3819 2.47827 2.47827 18.3819 2.47827 38.0001C2.47827 39.8796 2.62425 41.7251 2.90548 43.5257H73.0947Z" fill="#F4C802"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M67.9727 43.5258C68.3614 41.6057 68.5654 39.6198 68.5654 37.587C68.5654 20.9344 54.8809 7.43481 38.0002 7.43481C21.1194 7.43481 7.43494 20.9344 7.43494 37.587C7.43494 39.6198 7.63886 41.6057 8.02764 43.5258H67.9727Z" fill="#F4C802"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M62.1644 43.5257C62.5691 41.7489 62.7827 39.8994 62.7827 38C62.7827 24.313 51.6872 13.2174 38.0001 13.2174C24.3131 13.2174 13.2175 24.313 13.2175 38C13.2175 39.8994 13.4312 41.7489 13.8358 43.5257H62.1644Z" fill="#F4C802"></path><g clip-path="url(#circleClip)"><rect x="-23.9564" y="38" width="123.087" height="54.5217" fill="#70B354"></rect><path d="M35.7926 72.5684C35.8356 73.119 36.2792 73.5675 36.8315 73.5675H39.9945C40.5468 73.5675 40.9904 73.119 41.0334 72.5684C41.3972 67.907 44.2865 63.8758 48.4724 61.5853C48.6353 61.4961 48.7391 61.3262 48.7391 61.1404C48.7391 60.7626 48.3346 60.5198 47.9934 60.6818C45.3573 61.9336 42.0299 62.6805 38.413 62.6805C34.7961 62.6805 31.4687 61.9336 28.8326 60.6818C28.4914 60.5198 28.0869 60.7626 28.0869 61.1404C28.0869 61.3262 28.1907 61.4961 28.3536 61.5853C32.5395 63.8758 35.4288 67.907 35.7926 72.5684Z" fill="#101111"></path><path d="M35.8315 63.6805C35.8315 63.1283 36.2792 62.6805 36.8315 62.6805H39.9945C40.5468 62.6805 40.9945 63.1283 40.9945 63.6805V86.5652C40.9945 87.1175 40.5468 87.5652 39.9945 87.5652H36.8315C36.2792 87.5652 35.8315 87.1175 35.8315 86.5652V63.6805Z" fill="#101111"></path></g><circle cx="38" cy="38" r="16.5217" fill="white"></circle><circle cx="38" cy="38" r="21.4783" fill="#101111"></circle><circle cx="38.0001" cy="38" r="18.1739" fill="white"></circle></g></svg>`;
+  bind_props($$props, { className });
+}
+function Transferkings($$payload, $$props) {
+  let className = fallback($$props["className"], "");
+  $$payload.out += `<svg xmlns="http://www.w3.org/2000/svg"${attr("class", className)} fill="none" viewBox="-30 -25 130 130"><path d="M29.78 61.4948C27.2577 62.0247 25.3375 62.2969 24.0965 62.4228C23.3446 62.4991 22.7418 63.1756 22.7594 63.9375C22.7919 65.3439 22.7751 67.034 22.8921 67.6239C23.7419 71.9083 25.7362 73.3851 26.226 73.6891C26.2979 73.7342 26.3725 73.7625 26.4544 73.7838C27.3752 74.0189 33.5533 75.5324 40.9818 75.7798C41.3312 75.7914 41.6698 75.6548 41.917 75.4056L47.8687 69.4035C48.4564 68.8109 48.336 67.8191 47.626 67.3837C46.1403 66.4723 44.2164 65.2757 43.1506 64.5595C41.9043 63.7215 39.5834 61.3325 38.1338 59.7627C37.743 59.3395 37.1229 59.2217 36.593 59.4426C35.2324 60.0096 32.8196 60.8562 29.78 61.4948Z" fill="white"></path><path d="M75.1588 49.4409C76.1028 46.8223 76.1015 43.5393 75.8748 41.1856C75.7809 40.2081 74.6575 39.8088 73.9192 40.4497L68.9205 44.7911C68.5277 45.1321 68.3348 45.6908 68.3514 46.2132C68.3719 46.8547 68.3616 47.8852 68.2709 49.4409C68.1292 51.8763 66.316 56.7918 65.0975 59.7571C64.8375 60.39 65.1 61.123 65.715 61.4142C66.9515 61.9995 68.4325 62.639 68.6759 62.5162C69.0814 62.3119 73.5379 53.9355 75.1588 49.4409Z" fill="white"></path><path d="M0.308158 31.6806L6.36348 23.9235C6.91297 23.2196 7.98942 23.2822 8.45494 24.0452L13.7181 32.6703C13.8855 32.9446 13.9449 33.2723 13.8846 33.5887L11.1527 47.9146C11.031 48.553 10.4567 48.9999 9.81349 48.9567L2.62564 48.4734C2.13529 48.4404 1.70523 48.1272 1.55447 47.6554C1.4321 47.2725 1.30246 46.8147 1.21555 46.3765C1.05936 45.5889 0.388868 37.148 0.0382191 32.5746C0.013524 32.2525 0.110011 31.9345 0.308158 31.6806Z" fill="white"></path><path d="M27.5514 1.02146C24.0754 1.63113 18.9197 4.65709 16.3232 6.38802C15.9943 6.60732 15.8015 6.97959 15.8015 7.37724C15.8015 8.23971 16.6749 8.8289 17.4731 8.5193C19.0631 7.90254 21.2713 7.10512 23.2972 6.53763C25.9261 5.80114 28.8622 5.45184 30.3558 5.34016C30.6393 5.31896 30.9094 5.20986 31.1243 5.02212L33.7261 2.74806C33.7962 2.68679 33.8727 2.63339 33.9543 2.58884L36.3229 1.29496C36.915 0.971512 36.6739 0.0883905 36.0017 0.129305C33.4852 0.282476 30.1481 0.56605 27.5514 1.02146Z" fill="white"></path><path d="M65.2323 11.8494C62.567 8.91729 59.5849 6.63961 57.5719 5.30658C57.2698 5.10649 56.9913 5.4556 57.2387 5.72137C58.0981 6.64464 59.0533 7.66117 59.5599 8.17198C60.2929 8.91124 61.5232 11.6007 62.2012 13.2163C62.3281 13.5188 62.5609 13.7631 62.8559 13.9022C63.7223 14.3104 65.1013 14.9843 66.0427 15.5268C66.8627 15.9995 68.9326 18.2805 70.6289 20.2543C70.8754 20.5416 71.2675 20.2756 71.0772 19.9475C69.7731 17.7003 67.7275 14.5948 65.2323 11.8494Z" fill="white"></path><path d="M57.2249 32.0975L39.2291 39.8311C38.8484 39.9946 38.6696 40.4426 38.8318 40.8265L39.4218 42.2225C39.584 42.6064 40.0282 42.7867 40.4089 42.6231L58.4047 34.8896C58.7854 34.726 58.9641 34.278 58.8018 33.8941L58.212 32.4981C58.0498 32.1142 57.6056 31.9339 57.2249 32.0975ZM54.0946 16.9475C52.9482 17.4402 52.4145 18.7778 52.903 19.9339C53.0339 20.2436 53.2248 20.5018 53.4583 20.7159L51.1264 23.9552C50.6298 24.6428 49.6731 24.7859 49.0005 24.2708L42.8462 19.5649C43.1469 18.982 43.2063 18.276 42.9298 17.6217C42.4413 16.4656 41.1149 15.9273 39.9685 16.42C38.8222 16.9126 38.2884 18.2502 38.7769 19.4063C39.0535 20.0607 39.5996 20.5064 40.2247 20.6914L39.3278 28.4276C39.2303 29.2736 38.461 29.8722 37.6295 29.7553L33.7018 29.206C33.708 28.8941 33.6581 28.5702 33.5272 28.2604C33.0387 27.1043 31.7123 26.5661 30.5659 27.0587C29.4196 27.5514 28.8815 28.8909 29.37 30.047C29.8585 31.2031 31.1849 31.7413 32.3313 31.2487C32.4438 31.2003 32.5488 31.1345 32.6496 31.0706L39.3313 38.1376L55.9428 30.999L55.5164 21.2438C55.6319 21.2148 55.7518 21.1839 55.8643 21.1356C57.0106 20.6429 57.5444 19.3053 57.0559 18.1492C56.5674 16.9931 55.2409 16.4549 54.0946 16.9475Z" fill="white"></path></svg>`;
+  bind_props($$props, { className });
+}
+function Openbook($$payload, $$props) {
+  let className = fallback($$props["className"], "");
+  $$payload.out += `<svg xmlns="http://www.w3.org/2000/svg"${attr("class", className)} fill="none" viewBox="-45 -60 140 200"><path d="M53.2698 60.8778V73.4416C50.0032 71.4885 46.0742 70.3578 41.8482 70.3578C38.3988 70.3578 35.1551 71.1116 32.2997 72.4479C30.3237 73.3731 28.5305 74.5724 27 76.0001C25.4695 74.5724 23.6763 73.3731 21.7004 72.4479C18.845 71.1116 15.6012 70.3578 12.1519 70.3578C7.92587 70.3578 3.99682 71.4885 0.730225 73.4416V60.8778C2.78612 59.6443 5.0933 58.7419 7.58322 58.2508C9.05661 57.9539 10.5871 57.7939 12.1519 57.7939C13.3169 57.7939 14.4705 57.8853 15.5784 58.0452C20.0328 58.7077 24.0076 60.6494 27 63.4362C29.9925 60.6494 33.9672 58.7077 38.4217 58.0452C39.5296 57.8853 40.6832 57.7939 41.8482 57.7939C43.4129 57.7939 44.9434 57.9539 46.4168 58.2508C48.9068 58.7419 51.2139 59.6443 53.2698 60.8778Z" fill="white"></path><path d="M27 0C12.4945 0 0.730225 11.7643 0.730225 26.2698C0.730225 40.7753 12.4945 52.5396 27 52.5396C41.5055 52.5396 53.2698 40.7753 53.2698 26.2698C53.2698 11.7643 41.5055 0 27 0ZM27 39.9758C19.4275 39.9758 13.294 33.8424 13.294 26.2698C13.294 18.6972 19.4275 12.5638 27 12.5638C34.5726 12.5638 40.706 18.6972 40.706 26.2698C40.706 33.8424 34.5726 39.9758 27 39.9758Z" fill="#101111"></path></svg>`;
+  bind_props($$props, { className });
+}
+function Openbeats($$payload, $$props) {
+  let className = fallback($$props["className"], "");
+  $$payload.out += `<svg xmlns="http://www.w3.org/2000/svg"${attr("class", className)} viewBox="-43 -60 140 200" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.354736 0H14.7443C23.6111 0 30.8199 6.98764 30.9964 15.6734H30.9999V45.8363H31.0375V15.6735C47.9449 15.6934 61.6451 29.1903 61.6451 45.8367C61.6451 62.4954 47.9248 76 30.9999 76C14.075 76 0.354736 62.4954 0.354736 45.8367V0Z" fill="url(#paint0_angular_71_293)"></path><defs><radialGradient id="paint0_angular_71_293" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(30.9999 46.0583) rotate(-90) scale(34.0817 34.6838)"><stop stop-color="#FFA295"></stop><stop offset="1" stop-color="white"></stop></radialGradient></defs></svg>`;
+  bind_props($$props, { className });
+}
+function Openchef($$payload, $$props) {
+  let className = fallback($$props["className"], "");
+  $$payload.out += `<svg xmlns="http://www.w3.org/2000/svg"${attr("class", className)} viewBox="-35 -70 125 200" fill="none"><g clip-path="url(#clip0_71_299)"><path fill-rule="evenodd" clip-rule="evenodd" d="M54.34 41.1973C53.7444 42.453 53.0552 43.6689 52.2756 44.8336C49.1393 49.5207 44.6815 53.1735 39.466 55.3306C34.2503 57.4876 28.5113 58.0521 22.9745 56.9523C17.4377 55.8528 12.3519 53.1385 8.36007 49.1526C4.36825 45.1667 1.6498 40.0886 0.548445 34.5601C-0.552871 29.0316 0.0123737 23.3012 2.17269 18.0935C4.33307 12.8858 7.99149 8.43474 12.6854 5.30311C17.3792 2.17151 22.8977 0.5 28.543 0.5V12.5321C19.7455 12.8922 12.724 20.1273 12.724 29C12.724 38.1028 20.1143 45.4819 29.2308 45.4819C34.9325 45.4819 39.9591 42.5955 42.9245 38.2062L45.8751 38.9791C42.5349 37.2787 40.0276 34.1514 38.8271 30.3735H32.4977C31.833 30.3735 31.2941 29.8354 31.2941 29.1717C31.2941 28.5079 31.833 27.9699 32.4977 27.9699H71.7564C72.4211 27.9699 72.96 28.5079 72.96 29.1717C72.96 29.8354 72.4211 30.3735 71.7564 30.3735H65.1471C62.7426 36.5357 57.1169 40.6005 51.1057 40.3499L54.34 41.1973ZM53.6584 30.3735H44.351C45.5567 31.8618 47.197 32.7771 49.0045 32.7771C50.812 32.7771 52.4524 31.8618 53.6584 30.3735Z" fill="white"></path></g><defs><clipPath id="clip0_71_299"><rect width="76" height="57" fill="white" transform="translate(0 0.5)"></rect></clipPath></defs></svg>`;
+  bind_props($$props, { className });
+}
+function Icpfa($$payload, $$props) {
+  let className = fallback($$props["className"], "");
+  $$payload.out += `<svg xmlns="http://www.w3.org/2000/svg"${attr("class", className)} fill="none" viewBox="-23 -75 115 200"><path d="M59.2535 23.9917C59.3641 29.3513 53.1537 32.8988 48.6193 30.1084L48.6023 30.0914L47.1475 28.9089L46.9178 28.7303L46.9008 28.7132C43.4298 25.8888 35.0501 19.0659 31.5026 16.1734L31.477 16.1479L30.0988 15.0249V15.0079C30.0988 15.0079 30.0053 14.9399 29.9542 14.9058L29.9287 14.8888C18.4183 7.66611 6.65264 22.8262 16.6062 32.1842C17.1932 32.5841 34.0122 44.069 35.2373 44.9027C18.5289 54.2352 -2.38214 40.0875 0.2211 21.0056C1.87152 5.72643 18.8181 -4.25267 33.17 2.06828H33.187C37.6704 5.20749 44.8506 10.2353 49.402 13.4086L56.0887 18.0791C58.0029 19.3552 59.2705 21.5075 59.2705 23.9917H59.2535Z" fill="black"></path><path d="M75.9959 23.9917C76.3021 40.0876 59.4066 51.9979 44.3741 46.5021L42.562 45.2601C35.2968 40.3003 28.3888 35.4936 21.1151 30.5339L21.098 30.5169H21.081L18.7755 28.9345C13.0331 22.8262 20.4855 13.6468 27.6572 18.0281L27.6742 18.0451L28.8737 19.0234L28.8993 19.049L34.7863 23.8301V23.8471C36.4112 25.1828 44.9611 32.1162 46.3989 33.2988C53.8598 38.0544 63.941 31.9716 63.0732 22.9964V22.9794C62.7755 19.8657 61.1846 17.1178 58.8281 15.2887L58.2836 14.9144L41.1158 2.89355C56.5566 -5.48617 76.2511 6.31349 75.9959 24.0002V23.9917Z" fill="black"></path></svg>`;
+  bind_props($$props, { className });
+}
+function Opencare($$payload, $$props) {
+  let className = fallback($$props["className"], "");
+  $$payload.out += `<svg xmlns="http://www.w3.org/2000/svg"${attr("class", className)} fill="none" viewBox="-35 -60 138 200"><g clip-path="url(#clip0_448_6875)"><path d="M53.5509 0.197966C65.3998 0.197966 75.1021 9.38515 75.9416 21.0301C75.9814 21.5708 76.0001 22.1185 76.0001 22.6686L76.0001 67.1252C76.0001 71.9166 72.1182 75.8021 67.3314 75.8021L22.5405 75.8021C22.6154 75.8021 22.6902 75.8021 22.7627 75.7974C27.4069 75.6617 31.1016 71.7996 31.1016 67.1252L31.1016 22.6686C31.1016 22.1185 31.1203 21.5708 31.1601 21.0301C31.9996 9.38515 41.7019 0.197967 53.5509 0.197966Z" fill="white"></path><path d="M22.4492 30.861L31.1015 30.861L31.1015 67.1252C31.1015 71.7995 27.4068 75.6617 22.7626 75.7974C22.6901 75.8021 22.6153 75.8021 22.5404 75.8021L22.4492 75.8021C15.4853 75.8021 9.26031 72.6282 5.14461 67.6448C1.92923 63.7593 -7.44441e-07 58.7713 -9.8222e-07 53.3315C-1.22e-06 47.8918 1.92923 42.9038 5.14461 39.0182C9.26031 34.0349 15.4853 30.861 22.4492 30.861Z" fill="url(#paint0_linear_71_302)"></path></g><defs><linearGradient id="paint0_linear_71_302" x1="8.71576e-07" y1="53.3315" x2="31.1015" y2="53.3315" gradientUnits="userSpaceOnUse"><stop stop-color="white"></stop><stop offset="1" stop-color="#FFCEE7"></stop></linearGradient><clipPath id="clip0_71_302"><rect width="75.6042" height="76" fill="white" transform="translate(0 75.8021) rotate(-90)"></rect></clipPath></defs></svg>`;
+  bind_props($$props, { className });
+}
+function Header($$payload, $$props) {
+  push();
+  var $$store_subs;
+  let isHomePage, isDesktop;
+  let isMenuOpen = fallback($$props["isMenuOpen"], false);
+  if (typeof window !== "undefined") {
+    window.addEventListener("resize", () => {
+      isDesktop = window.innerWidth >= 768;
+    });
+  }
+  isHomePage = store_get($$store_subs ??= {}, "$page", page).url.pathname === "/";
+  isDesktop = window?.innerWidth >= 768;
+  $$payload.out += `<header${attr("class", `fixed top-0 bg-[#272727] z-50 left-0 ${stringify([
+    !isHomePage || !isDesktop ? "right-0" : "",
+    isHomePage && isDesktop ? "right-[50%]" : ""
+  ].filter(Boolean).join(" "))}`)}><nav class="text-white"><div${attr("class", `flex items-center justify-between h-16 px-4 ${stringify([!isHomePage ? "lg:px-20" : ""].filter(Boolean).join(" "))}`)}><a href="/" class="flex items-center svelte-bhme2t"><img src="logo.png" class="h-6" alt="Waterway Labs Logo"> <span class="ml-2 text-xl tracking-wide font-mona"><span class="text-white">WATERWAY</span> <span class="text-white font-exlight">LABS</span></span></a> <div class="hidden space-x-8 text-sm md:flex font-mona"><a href="/about" class="hover:text-blue-400 svelte-bhme2t">ABOUT</a> <a href="/team" class="hover:text-blue-400 svelte-bhme2t">TEAM</a> <a href="/contact" class="hover:text-blue-400 svelte-bhme2t">CONTACT</a></div> <button class="p-2 md:hidden"><div class="flex flex-col space-y-1.5"><span${attr("class", `block w-6 h-0.5 bg-white transition-transform duration-300 ${stringify([
+    isMenuOpen ? "rotate-45" : "",
+    isMenuOpen ? "translate-y-2" : ""
+  ].filter(Boolean).join(" "))}`)}></span> <span${attr("class", `block w-6 h-0.5 bg-white transition-opacity duration-300 ${stringify([isMenuOpen ? "opacity-0" : ""].filter(Boolean).join(" "))}`)}></span> <span${attr("class", `block w-6 h-0.5 bg-white transition-transform duration-300 ${stringify([
+    isMenuOpen ? "-rotate-45" : "",
+    isMenuOpen ? "-translate-y-2" : ""
+  ].filter(Boolean).join(" "))}`)}></span></div></button></div></nav> `;
+  if (isMenuOpen) {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `<div${attr("class", `fixed inset-0 bg-[#272727] z-50 transition-opacity duration-300 ${stringify([
+      isMenuOpen ? "opacity-100" : "",
+      !isMenuOpen ? "opacity-0" : ""
+    ].filter(Boolean).join(" "))}`)}><div${attr("class", `flex items-center justify-between h-16 px-4 border-b border-[#4E4E4E] ${stringify([!isHomePage ? "lg:px-20" : ""].filter(Boolean).join(" "))}`)}><a href="/" class="flex items-center svelte-bhme2t"><img src="logo.png" class="h-6" alt="Waterway Labs Logo"> <span class="ml-2 text-xl tracking-wide font-mona"><span class="text-white">WATERWAY</span> <span class="text-white font-exlight">LABS</span></span></a> <button class="p-2"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div> <div class="flex flex-col items-start px-8 pt-16"><div class="flex items-center justify-between w-full"><a href="/about" class="transition-all duration-300 font-h4 font-med hover:text-blue-400 hover:translate-x-2 svelte-bhme2t">ABOUT</a> <a href="/about" class="svelte-bhme2t"><img src="arrow.svg" alt="arrow" class="w-6 h-6 cursor-pointer hover:opacity-80"></a></div> <hr class="w-full my-8 border-t-2 border-[#4E4E4E]"> <div class="flex items-center justify-between w-full"><a href="/team" class="transition-all duration-300 font-h4 font-med hover:text-blue-400 hover:translate-x-2 svelte-bhme2t">TEAM</a> <a href="/team" class="svelte-bhme2t"><img src="arrow.svg" alt="arrow" class="w-6 h-6 cursor-pointer hover:opacity-80"></a></div> <hr class="w-full my-8 border-t-2 border-[#4E4E4E]"> <div class="flex items-center justify-between w-full"><a href="/contact" class="transition-all duration-300 font-h4 font-med hover:text-blue-400 hover:translate-x-2 svelte-bhme2t">CONTACT</a> <a href="/contact" class="svelte-bhme2t"><img src="arrow.svg" alt="arrow" class="w-6 h-6 cursor-pointer hover:opacity-80"></a></div></div></div>`;
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]--></header>`;
+  if ($$store_subs) unsubscribe_stores($$store_subs);
+  bind_props($$props, { isMenuOpen });
+  pop();
+}
+function Footer($$payload) {
+  $$payload.out += `<footer class="relative py-8 bg-gray-900 svelte-17zxue9"><div class="absolute ellipse-1 svelte-17zxue9"></div> <div class="absolute ellipse-2 svelte-17zxue9"></div> <div class="relative z-10 svelte-17zxue9"><div class="flex flex-col px-6 lg:px-12 lg:flex-row lg:items-center lg:justify-between"><div class="flex items-center mb-6 lg:mb-0"><a href="/" class="flex items-center svelte-17zxue9"><img src="logo.png" class="h-6" alt="Waterway Labs Logo"> <span class="ml-2 tracking-wide font-mona"><span class="text-white">WATERWAY</span> <span class="text-white font-exlight">LABS</span></span></a></div> <div class="flex flex-col text-sm font-light lg:flex-row font-inter font-body"><a href="/" class="mb-4 lg:mb-0 lg:mx-4 hover:text-blue-400 svelte-17zxue9">Products</a> <a href="/about" class="mb-4 lg:mb-0 lg:mx-4 hover:text-blue-400 svelte-17zxue9">About Us</a> <a href="/team" class="mb-4 lg:mb-0 lg:mx-4 hover:text-blue-400 svelte-17zxue9">The Team</a></div></div> <hr class="my-6 border-t-2 border-[#4E4E4E] mx-6 lg:mx-auto lg:w-[1450px] svelte-17zxue9"> <div class="flex flex-col px-6 lg:px-12 lg:flex-row lg:items-center lg:justify-between"><div class="mb-4 lg:mb-0"><h4 class="font-mona font-h4">LET'S CONNECT</h4></div> <div class="flex flex-col text-sm font-light lg:flex-row font-inter font-body"><a href="https://github.com" target="_blank" class="mb-4 lg:mb-0 lg:mx-2 hover:text-white svelte-17zxue9">GitHub</a> <a href="https://twitter.com" target="_blank" class="mb-4 lg:mb-0 lg:mx-2 hover:text-white svelte-17zxue9">Twitter</a></div></div></div></footer>`;
+}
+function Local_spinner($$payload) {
+  $$payload.out += `<div class="local-spinner svelte-pvdm52"></div>`;
+}
+function Layout($$payload, $$props) {
+  push();
+  var $$store_subs;
+  let isHomePage;
+  let isMenuOpen = fallback($$props["isMenuOpen"], false);
+  let overrideBackground = fallback($$props["overrideBackground"], false);
   const init2 = async () => await Promise.all([syncAuthStore()]);
   const syncAuthStore = async () => {
     {
       return;
     }
   };
+  isHomePage = store_get($$store_subs ??= {}, "$page", page).url.pathname === "/";
+  let $$settled = true;
+  let $$inner_payload;
+  function $$render_inner($$payload2) {
+    $$payload2.out += `<!---->`;
+    await_block(
+      init2(),
+      () => {
+        $$payload2.out += `<div>`;
+        Local_spinner($$payload2);
+        $$payload2.out += `<!----></div>`;
+      },
+      (_) => {
+        $$payload2.out += `<div${attr("class", `flex flex-col min-h-screen svelte-1d1mt42 ${stringify([overrideBackground ? "override-bg" : ""].filter(Boolean).join(" "))}`)}>`;
+        Header($$payload2, {
+          get isMenuOpen() {
+            return isMenuOpen;
+          },
+          set isMenuOpen($$value) {
+            isMenuOpen = $$value;
+            $$settled = false;
+          }
+        });
+        $$payload2.out += `<!----> <main class="flex-1"><!---->`;
+        slot($$payload2, $$props, "default", { isMenuOpen });
+        $$payload2.out += `<!----></main> `;
+        if (!isHomePage) {
+          $$payload2.out += "<!--[-->";
+          Footer($$payload2);
+        } else {
+          $$payload2.out += "<!--[!-->";
+        }
+        $$payload2.out += `<!--]--></div>`;
+      }
+    );
+    $$payload2.out += `<!---->`;
+  }
+  do {
+    $$settled = true;
+    $$inner_payload = copy_payload($$payload);
+    $$render_inner($$inner_payload);
+  } while (!$$settled);
+  assign_payload($$payload, $$inner_payload);
+  if ($$store_subs) unsubscribe_stores($$store_subs);
+  bind_props($$props, { isMenuOpen, overrideBackground });
+  pop();
+}
+function Icons_row($$payload, $$props) {
+  push();
+  let projects = fallback($$props["projects"], () => [], true);
+  let selectProject = $$props["selectProject"];
+  let isMenuOpen = fallback($$props["isMenuOpen"], false);
+  function getIconSizeClass(projectName) {
+    switch (projectName.toLowerCase()) {
+      case "openfpl":
+        return "icon-large";
+      case "transferkings":
+        return "icon-transfer";
+      case "openbeats":
+      case "openchef":
+      case "icpfa":
+      case "openbook":
+      case "opencare":
+        return "icon-medium";
+      default:
+        return "";
+    }
+  }
+  const each_array = ensure_array_like(projects);
+  const each_array_1 = ensure_array_like(projects);
+  $$payload.out += `<div class="fixed bottom-0 left-0 right-0 hidden lg:block svelte-lrral"><div class="icon-bar svelte-lrral"><!--[-->`;
+  for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+    let project = each_array[$$index];
+    $$payload.out += `<div${attr("class", `icon-box ${stringify(project.selected ? "selected" : "")} svelte-lrral ${stringify([""].filter(Boolean).join(" "))}`)}${attr("style", `background-color: ${stringify(project.backgroundColor)}; --border-color: ${stringify(project.backgroundColor)};`)} role="button"${attr("aria-label", project.name)} tabindex="0"><!---->`;
+    project.component?.($$payload, {
+      className: `icon ${stringify(getIconSizeClass(project.name))}`
+    });
+    $$payload.out += `<!----></div>`;
+  }
+  $$payload.out += `<!--]--></div></div> <div${attr("class", `fixed bottom-0 left-0 right-0 bg-[#272727] lg:hidden z-50 transition-all duration-300 overflow-hidden svelte-lrral ${stringify([
+    isMenuOpen ? "opacity-0" : "",
+    isMenuOpen ? "pointer-events-none" : "",
+    isMenuOpen ? "translate-y-full" : ""
+  ].filter(Boolean).join(" "))}`)}><div class="py-8 pb-4 svelte-lrral"><div class="flex px-8 overflow-x-auto overflow-y-hidden snap-x snap-mandatory hide-scrollbar svelte-lrral"><div class="flex space-x-6 svelte-lrral"><!--[-->`;
+  for (let $$index_1 = 0, $$length = each_array_1.length; $$index_1 < $$length; $$index_1++) {
+    let project = each_array_1[$$index_1];
+    $$payload.out += `<div${attr("class", `mobile-icon-box flex-shrink-0 ${stringify(project.selected ? "selected" : "")} svelte-lrral ${stringify([""].filter(Boolean).join(" "))}`)}${attr("style", `background-color: ${stringify(project.backgroundColor)}; --border-color: ${stringify(project.backgroundColor)};`)} role="button"${attr("aria-label", project.name)} tabindex="0"><!---->`;
+    project.component?.($$payload, {
+      className: `icon ${stringify(getIconSizeClass(project.name))} ${stringify("")}`
+    });
+    $$payload.out += `<!----></div>`;
+  }
+  $$payload.out += `<!--]--></div></div></div></div>`;
+  bind_props($$props, { projects, selectProject, isMenuOpen });
+  pop();
+}
+function _page$5($$payload, $$props) {
+  push();
   let projects = [
     {
       component: Openfpl,
@@ -4794,6 +5066,11 @@ const page = {
       backgroundColor: "#2CE3A6",
       backgroundImage: "openFPL-background.png",
       previewImage: "openFPL-preview.png",
+      mobilePreviewImage: "openFPL-mobile-preview.png",
+      translateX: "-214px",
+      status: "Decentralized",
+      twitter: "https://x.com/OpenFPL_DAO",
+      github: "https://github.com/jamesbeadle/OpenFPL"
     },
     {
       component: Footballgod,
@@ -4806,6 +5083,7 @@ const page = {
       backgroundColor: "#7F56F1",
       backgroundImage: "footballGod-background.png",
       previewImage: "footballGod-preview.png",
+      mobilePreviewImage: "footballGod-mobile-preview.png",
       translateX: "-160px",
       status: "Development",
       isFootballGod: true
@@ -4821,6 +5099,11 @@ const page = {
       backgroundColor: "#F4C802",
       backgroundImage: "golfpad-background.png",
       previewImage: "golfpad-preview.png",
+      mobilePreviewImage: "golfpad-mobile-preview.png",
+      translateX: "-167px",
+      status: "Development",
+      twitter: "https://x.com/GolfPadDAO",
+      github: "https://github.com/jamesbeadle/GolfPad"
     },
     {
       component: Transferkings,
@@ -4833,6 +5116,7 @@ const page = {
       backgroundColor: "#2D64E3",
       backgroundImage: "transferKings-background.png",
       previewImage: "transferKings-preview.png",
+      mobilePreviewImage: "transferKings-mobile-preview.png",
       translateX: "-145px",
       status: "Development"
     },
@@ -4847,6 +5131,7 @@ const page = {
       backgroundColor: "#66E094",
       backgroundImage: "openBook-background.png",
       previewImage: "openBook-preview.png",
+      mobilePreviewImage: "openBook-mobile-preview.png",
       translateX: "-220px",
       status: "Development"
     },
@@ -4861,6 +5146,7 @@ const page = {
       backgroundColor: "#FF8D7D",
       backgroundImage: "openBeats-background.png",
       previewImage: "openBeats-preview.png",
+      mobilePreviewImage: "openBeats-mobile-preview.png",
       translateX: "-160px",
       status: "Design"
     },
@@ -4875,6 +5161,7 @@ const page = {
       backgroundColor: "#731728",
       backgroundImage: "openChef-background.png",
       previewImage: "openChef-preview.png",
+      mobilePreviewImage: "openChef-mobile-preview.png",
       translateX: "-60px",
       status: "Design"
     },
@@ -4889,6 +5176,7 @@ const page = {
       backgroundColor: "#F7F7F7",
       backgroundImage: "icpfa-background.png",
       previewImage: "icpfa-preview.png",
+      mobilePreviewImage: "icpfa-mobile-preview.png",
       translateX: "-125px",
       status: "Development"
     },
@@ -4903,6 +5191,7 @@ const page = {
       backgroundColor: "#FF69B4",
       backgroundImage: "openCare-background.png",
       previewImage: "openCare-preview.png",
+      mobilePreviewImage: "openCare-mobile-preview.png",
       translateX: "-88px",
       status: "Development"
     }
@@ -4912,13 +5201,136 @@ const page = {
     selectedProject = project;
     projects = projects.map((p) => ({ ...p, selected: p.name === project.name }));
     updateGlobalColor(project.backgroundColor);
-          title: selectedProject.title,
-          description: selectedProject.description,
-          summary: selectedProject.summary,
-          buttonText: selectedProject.buttonText,
-          buttonLink: selectedProject.buttonLink,
-          status: selectedProject.status,
-          isFootballGod: selectedProject.name === "Football God"
+  }
+  function updateGlobalColor(color) {
+    document.body.style.setProperty("--selectedProject-bg-color", color);
+    document.documentElement.style.setProperty("--selectedProject-bg-color", color);
+  }
+  let isMenuOpen = $$props["isMenuOpen"];
+  let $$settled = true;
+  let $$inner_payload;
+  function $$render_inner($$payload2) {
+    Layout($$payload2, {
+      get isMenuOpen() {
+        return isMenuOpen;
+      },
+      set isMenuOpen($$value) {
+        isMenuOpen = $$value;
+        $$settled = false;
+      },
+      children: ($$payload3) => {
+        $$payload3.out += `<main class="flex flex-col text-white">`;
+        if (selectedProject) {
+          $$payload3.out += "<!--[-->";
+          $$payload3.out += `<div class="pb-32 lg:hidden"><div class="w-full px-4 pt-20"${attr("style", `background-color: ${stringify(selectedProject?.backgroundColor)};`)}><div class="mobile-preview-container svelte-16jhh5e"><img${attr("src", selectedProject?.mobilePreviewImage)}${attr("alt", `${selectedProject?.name} preview`)} class="mobile-preview-image svelte-16jhh5e"></div></div> <div class="bg-[#272727] px-4 py-6">`;
+          Project_section($$payload3, {
+            title: selectedProject.title,
+            description: selectedProject.description,
+            summary: selectedProject.summary,
+            buttonText: selectedProject.buttonText,
+            buttonLink: selectedProject.buttonLink,
+            status: selectedProject.status,
+            isFootballGod: selectedProject.name === "Football God",
+            twitter: selectedProject.twitter,
+            github: selectedProject.github
+          });
+          $$payload3.out += `<!----></div></div> <div class="flex-row items-start hidden min-h-screen px-10 pt-20 overflow-x-hidden lg:flex"><div${attr("class", `w-1/2 space-y-10 bg-[#272727] in:fade=${stringify({ duration: 500 })} z-0 svelte-16jhh5e`)}>`;
+          Project_section($$payload3, {
+            title: selectedProject.title,
+            description: selectedProject.description,
+            summary: selectedProject.summary,
+            buttonText: selectedProject.buttonText,
+            buttonLink: selectedProject.buttonLink,
+            status: selectedProject.status,
+            isFootballGod: selectedProject.name === "Football God"
+          });
+          $$payload3.out += `<!----></div> <div class="relative flex items-center justify-center w-1/2 mt-[-115px]"${attr("style", `background-color: ${stringify(selectedProject?.backgroundColor)};`)}><img${attr("src", selectedProject?.backgroundImage)}${attr("alt", selectedProject?.name)}${attr("style", `width: 650px; height: 750px; transform: translateX(${stringify(selectedProject.translateX)}); z-index: 0;`)} class="object-contain"> <img${attr("src", selectedProject?.previewImage)}${attr("alt", `${selectedProject?.name} preview`)} class="absolute z-0 object-contain preview-image-container" style="width: 650px; height:700px; transform: translate(20%, 10%);"></div> <div class="fixed flex flex-col items-center justify-end space-y-4" style="position: fixed; bottom: 170px; left: 50%; transform: translateX(-200%); z-index: 2;">`;
+          if (selectedProject.twitter) {
+            $$payload3.out += "<!--[-->";
+            $$payload3.out += `<a${attr("href", selectedProject.twitter)} target="_blank" rel="noopener noreferrer" class="block transition hover:opacity-80 relative z-[2]"><svg class="w-6 h-6 pointer-events-auto" width="24" height="24"${attr("fill", selectedProject.backgroundColor)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.8767 0.0963813V0.0931396H13.7207L14.029 0.154732C14.2346 0.194718 14.4213 0.24712 14.589 0.311953C14.7567 0.376787 14.9191 0.452431 15.0759 0.538871C15.2328 0.62531 15.3751 0.713387 15.5028 0.803068C15.6294 0.891679 15.743 0.985688 15.8437 1.08509C15.9432 1.18559 16.0985 1.21152 16.3095 1.16289C16.5205 1.11427 16.7477 1.04673 16.9912 0.960289C17.2346 0.87385 17.4754 0.7766 17.7135 0.668538C17.9515 0.560477 18.0965 0.491866 18.1485 0.462691C18.1993 0.432446 18.2264 0.416238 18.2296 0.414066L18.2328 0.409204L18.2491 0.401099L18.2653 0.392995L18.2815 0.384891L18.2978 0.376787L18.301 0.371924L18.3059 0.368683L18.3108 0.365441L18.314 0.360578L18.3302 0.355716L18.3465 0.352474L18.3432 0.376787L18.3383 0.401099L18.3302 0.425412L18.3221 0.449725L18.314 0.465933L18.3059 0.482141L18.2978 0.506454C18.2924 0.522662 18.287 0.544268 18.2815 0.571288C18.2761 0.598307 18.2247 0.706352 18.1273 0.895456C18.03 1.08456 17.9082 1.27635 17.7621 1.47085C17.6161 1.66536 17.4851 1.8123 17.3694 1.91172C17.2525 2.01222 17.1751 2.08245 17.1373 2.12243C17.0994 2.16349 17.0534 2.2013 16.9993 2.23589L16.9181 2.28938L16.9019 2.29748L16.8857 2.30559L16.8824 2.31045L16.8776 2.31369L16.8727 2.31693L16.8694 2.3218L16.8532 2.3299L16.837 2.338L16.8338 2.34287L16.8289 2.34611L16.824 2.34935L16.8208 2.35421L16.8175 2.35908L16.8126 2.36232L16.8078 2.36556L16.8045 2.37042H16.8857L17.3401 2.27317C17.6431 2.20834 17.9326 2.13 18.2085 2.03815L18.6467 1.89227L18.6954 1.87606L18.7198 1.86796L18.736 1.85986L18.7522 1.85175L18.7685 1.84365L18.7847 1.83554L18.8171 1.83068L18.8496 1.82744V1.85986L18.8415 1.8631L18.8334 1.86796L18.8301 1.87282L18.8253 1.87606L18.8204 1.87931L18.8171 1.88417L18.8139 1.88903L18.809 1.89227L18.8042 1.89551L18.8009 1.90038L18.7977 1.90524L18.7928 1.90848L18.7847 1.92469L18.7766 1.9409L18.7717 1.94414C18.7695 1.94738 18.7008 2.03922 18.5656 2.21968C18.4303 2.40122 18.3573 2.49305 18.3465 2.49523C18.3356 2.49847 18.3205 2.51468 18.301 2.54385C18.2826 2.5741 18.1679 2.69459 17.9569 2.9053C17.7459 3.11601 17.5393 3.30347 17.3369 3.46773C17.1335 3.63306 17.0307 3.8362 17.0285 4.07717C17.0253 4.31705 17.0128 4.58828 16.9912 4.89083C16.9695 5.19339 16.929 5.52025 16.8694 5.87144C16.8099 6.22262 16.718 6.61973 16.5935 7.06276C16.4691 7.50578 16.3176 7.93801 16.1391 8.35943C15.9605 8.78085 15.7739 9.15904 15.5791 9.49402C15.3843 9.829 15.2058 10.1126 15.0435 10.345C14.8812 10.5773 14.7162 10.7961 14.5484 11.0014C14.3807 11.2067 14.1687 11.438 13.9122 11.6951C13.6547 11.9512 13.514 12.0917 13.4902 12.1165C13.4653 12.1403 13.3593 12.2289 13.1721 12.3824C12.986 12.5369 12.7858 12.6914 12.5715 12.8459C12.3584 12.9994 12.1625 13.1274 11.984 13.2301C11.8054 13.3327 11.5901 13.4499 11.338 13.5818C11.087 13.7147 10.8153 13.8379 10.5232 13.9513C10.231 14.0648 9.92265 14.1701 9.59803 14.2674C9.27341 14.3646 8.95962 14.4403 8.65664 14.4943C8.35368 14.5483 8.01012 14.5943 7.62598 14.6321L7.04979 14.6888V14.6969H5.99479V14.6888L5.85682 14.6807C5.76486 14.6753 5.68911 14.6699 5.62959 14.6645C5.57009 14.6591 5.34555 14.6294 4.95601 14.5754C4.56647 14.5213 4.2608 14.4673 4.03897 14.4133C3.81716 14.3592 3.48712 14.2566 3.04889 14.1053C2.61066 13.954 2.23572 13.8011 1.92409 13.6466C1.61355 13.4932 1.41878 13.3959 1.33978 13.3549C1.26187 13.3149 1.17423 13.2652 1.07684 13.2057L0.930764 13.1166L0.927534 13.1117L0.922648 13.1085L0.917779 13.1052L0.914533 13.1004L0.898302 13.0923L0.882071 13.0842L0.878841 13.0793L0.873956 13.0761L0.869086 13.0728L0.86584 13.068L0.86261 13.0631L0.857725 13.0599H0.849609V13.0274L0.86584 13.0307L0.882071 13.0356L0.95511 13.0437C1.0038 13.0491 1.13636 13.0572 1.35277 13.068C1.56919 13.0788 1.79911 13.0788 2.04258 13.068C2.28604 13.0572 2.53492 13.0328 2.78919 12.995C3.04348 12.9572 3.34375 12.8924 3.69001 12.8005C4.03627 12.7087 4.3544 12.5995 4.6444 12.4731C4.9333 12.3456 5.13888 12.2505 5.26117 12.1879C5.38235 12.1263 5.56738 12.0117 5.81625 11.8442L6.18956 11.593L6.1928 11.5881L6.19767 11.5849L6.20256 11.5817L6.20579 11.5768L6.20903 11.5719L6.2139 11.5687L6.21879 11.5655L6.22202 11.5606L6.23825 11.5557L6.25448 11.5525L6.25772 11.5363L6.26259 11.5201L6.26748 11.5168L6.27071 11.512L6.14086 11.5039C6.0543 11.4985 5.97044 11.493 5.88928 11.4877C5.80813 11.4823 5.68099 11.4579 5.50786 11.4147C5.33474 11.3715 5.14809 11.3067 4.9479 11.2202C4.74772 11.1338 4.55295 11.0311 4.36359 10.9123C4.17424 10.7934 4.03735 10.6945 3.95295 10.6156C3.86963 10.5378 3.76142 10.4276 3.62833 10.285C3.49632 10.1413 3.38162 9.99377 3.28424 9.8425C3.18685 9.69122 3.0938 9.51669 3.00508 9.31897L2.87035 9.02397L2.86223 8.99966L2.85412 8.97535L2.84925 8.95914L2.846 8.94293L2.87035 8.94617L2.8947 8.95103L3.07323 8.97535C3.19227 8.99156 3.37893 8.99695 3.6332 8.99156C3.88749 8.98616 4.06332 8.97535 4.1607 8.95914C4.25809 8.94293 4.3176 8.93212 4.33924 8.92672L4.3717 8.91862L4.41228 8.91051L4.45286 8.90241L4.4561 8.89755L4.46097 8.89431L4.46586 8.89106L4.46909 8.8862L4.43662 8.8781L4.40416 8.86999L4.3717 8.86189L4.33924 8.85378L4.30678 8.84568C4.28514 8.84028 4.24728 8.82947 4.19316 8.81326C4.13906 8.79706 3.99299 8.73762 3.75493 8.63497C3.51689 8.53232 3.32752 8.43237 3.18685 8.33512C3.04583 8.23758 2.91137 8.13092 2.78433 8.01581C2.65772 7.89911 2.51869 7.74891 2.36719 7.56522C2.21571 7.38153 2.08046 7.16811 1.96142 6.92498C1.8424 6.68186 1.75313 6.44954 1.69361 6.22802C1.63433 6.0078 1.59522 5.78266 1.57677 5.55537L1.54754 5.215L1.56377 5.21824L1.58 5.2231L1.59623 5.2312L1.61246 5.23931L1.62869 5.24741L1.64492 5.25552L1.8965 5.36898C2.06423 5.44462 2.27252 5.50945 2.52139 5.56348C2.77027 5.6175 2.91904 5.64723 2.96773 5.65262L3.04077 5.66073H3.18685L3.18362 5.65587L3.17873 5.65262L3.17387 5.64938L3.17062 5.64452L3.16739 5.63966L3.1625 5.63642L3.15763 5.63317L3.15439 5.62831L3.13816 5.62021L3.12193 5.6121L3.1187 5.60724L3.11381 5.604L3.10894 5.60076L3.1057 5.59589L3.08947 5.58779L3.07323 5.57969L3.07 5.57482C3.06676 5.57265 3.02022 5.53808 2.9304 5.47109C2.84167 5.40301 2.74862 5.31495 2.65123 5.20689C2.55385 5.09883 2.45646 4.98537 2.35908 4.86652C2.26151 4.74739 2.17461 4.61993 2.09938 4.48562C2.02365 4.35055 1.94357 4.17873 1.85917 3.97019C1.77585 3.76272 1.71255 3.55363 1.66927 3.34293C1.626 3.13222 1.60165 2.92421 1.59623 2.7189C1.59082 2.51359 1.59623 2.338 1.61246 2.19213C1.62869 2.04625 1.66115 1.88146 1.70984 1.69777C1.75854 1.51408 1.82888 1.31958 1.92084 1.11427L2.05881 0.80631L2.06692 0.781997L2.07504 0.757684L2.07992 0.754443L2.08315 0.74958L2.0864 0.744718L2.09127 0.741476L2.09615 0.744718L2.09938 0.74958L2.10263 0.754443L2.1075 0.757684L2.11238 0.760926L2.11561 0.765789L2.11886 0.770651L2.12373 0.773893L2.13185 0.790101L2.13996 0.80631L2.14485 0.809551L2.14808 0.814414L2.36719 1.05754C2.51327 1.21962 2.6864 1.40062 2.88658 1.60052C3.08677 1.80042 3.19768 1.90415 3.21931 1.91172C3.24096 1.92036 3.268 1.94521 3.30047 1.98628C3.33293 2.02627 3.44114 2.1219 3.62508 2.27317C3.80904 2.42444 4.0498 2.60005 4.34736 2.79994C4.64493 2.99984 4.97495 3.19705 5.33744 3.39155C5.69994 3.58605 6.08948 3.76164 6.50606 3.91832C6.92265 4.07501 7.21481 4.17766 7.38252 4.22628C7.55025 4.27491 7.83699 4.33704 8.24276 4.41268C8.64853 4.48833 8.95422 4.53695 9.1598 4.55856C9.36539 4.58016 9.50607 4.59259 9.5818 4.59584L9.69542 4.59908L9.69219 4.57476L9.6873 4.55045L9.65484 4.34785C9.6332 4.21278 9.62238 4.02368 9.62238 3.78055C9.62238 3.53743 9.64132 3.31322 9.67919 3.1079C9.71707 2.90259 9.77388 2.69459 9.84961 2.48388C9.92536 2.27317 9.99949 2.10405 10.072 1.97656C10.1456 1.85013 10.2419 1.70588 10.3609 1.54379C10.4799 1.38171 10.6341 1.21423 10.8235 1.04133C11.0128 0.868436 11.2292 0.714457 11.4727 0.579392C11.7162 0.444327 11.9407 0.341663 12.1463 0.271432C12.3519 0.201201 12.525 0.155266 12.6657 0.133661C12.8063 0.112055 12.8767 0.099623 12.8767 0.0963813Z"></path></svg></a>`;
+          } else {
+            $$payload3.out += "<!--[!-->";
+          }
+          $$payload3.out += `<!--]--> `;
+          if (selectedProject.github) {
+            $$payload3.out += "<!--[-->";
+            $$payload3.out += `<a${attr("href", selectedProject.github)} target="_blank" rel="noopener noreferrer" class="block transition hover:opacity-80 relative z-[2]"><svg class="w-6 h-6 pointer-events-auto" width="24" height="24"${attr("fill", selectedProject.backgroundColor)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 0C4.5305 0 0.5 4.02975 0.5 9C0.5 12.9765 3.0785 16.35 6.65525 17.5402C7.1045 17.6235 7.25 17.3445 7.25 17.1075V15.432C4.7465 15.9765 4.22525 14.37 4.22525 14.37C3.81575 13.3298 3.2255 13.053 3.2255 13.053C2.40875 12.4942 3.28775 12.5062 3.28775 12.5062C4.1915 12.5692 4.667 13.434 4.667 13.434C5.4695 14.8095 6.77225 14.412 7.286 14.1818C7.36625 13.6005 7.5995 13.203 7.8575 12.9788C5.85875 12.75 3.75725 11.9782 3.75725 8.5305C3.75725 7.54725 4.109 6.74475 4.68425 6.11475C4.59125 5.8875 4.283 4.97175 4.772 3.73275C4.772 3.73275 5.528 3.49125 7.24775 4.65525C7.9655 4.45575 8.735 4.356 9.5 4.35225C10.265 4.356 11.0352 4.45575 11.7545 4.65525C13.4727 3.49125 14.2272 3.73275 14.2272 3.73275C14.717 4.9725 14.4087 5.88825 14.3158 6.11475C14.8932 6.74475 15.242 7.548 15.242 8.5305C15.242 11.9872 13.1368 12.7485 11.1327 12.9713C11.4552 13.2502 11.75 13.7978 11.75 14.6378V17.1075C11.75 17.3468 11.894 17.628 12.3507 17.5395C15.9245 16.3477 18.5 12.975 18.5 9C18.5 4.02975 14.4703 0 9.5 0Z"></path></svg></a>`;
+          } else {
+            $$payload3.out += "<!--[!-->";
+          }
+          $$payload3.out += `<!--]--></div></div>`;
+        } else {
+          $$payload3.out += "<!--[!-->";
+        }
+        $$payload3.out += `<!--]--></main> `;
+        Icons_row($$payload3, { projects, selectProject, isMenuOpen });
+        $$payload3.out += `<!---->`;
+      },
+      $$slots: { default: true }
+    });
+  }
+  do {
+    $$settled = true;
+    $$inner_payload = copy_payload($$payload);
+    $$render_inner($$inner_payload);
+  } while (!$$settled);
+  assign_payload($$payload, $$inner_payload);
+  bind_props($$props, { isMenuOpen });
+  pop();
+}
+function _page$4($$payload, $$props) {
+  let missionText = fallback($$props["missionText"], "At Waterway Labs, we are committed to pioneering the next generation of decentralized solutions. Our mission is to create secure, innovative, and user-friendly blockchain products that empower individuals and businesses. We believe in a future where technology fosters transparency, freedom, and collaboration, allowing everyone to participate in the decentralized economy.");
+  let visionText = fallback($$props["visionText"], "To become a global leader in decentralized technology, enabling a more transparent, secure, and open digital ecosystem. We envision a world where individuals have complete control over their digital assets, identities, and privacy.");
+  let valuesText = fallback(
+    $$props["valuesText"],
+    () => `
+    <strong style="font-weight: 700;">Innovation:</strong> Constantly pushing the boundaries of what’s possible in decentralized technology.<br>
+    <strong style="font-weight: 700;">Transparency:</strong> Upholding openness in our processes, products, and communication.<br>
+    <strong style="font-weight: 700;">Empowerment:</strong> Giving users the tools and freedom to control their digital presence.<br>
+    <strong style="font-weight: 700;">Security:</strong> Prioritizing the highest standards of safety and reliability in every solution we build.
+    `,
+    true
+  );
+  let journeyText = fallback($$props["journeyText"], "Founded with a vision to challenge centralized norms, Waterway Labs started with a small team passionate about decentralization. Over the years, we have grown into a trusted name in blockchain innovation, known for our contributions to various web3 products and decentralized applications.");
+  let goalsText = fallback($$props["goalsText"], "Looking ahead, Waterway Labs aims to broaden the accessibility of decentralized technologies, fostering an inclusive ecosystem for developers, businesses, and end-users alike. We are focused on pushing innovation further, partnering with like-minded communities to build the foundation of the next digital era.");
+  Layout($$payload, {
+    overrideBackground: true,
+    children: ($$payload2) => {
+      const each_array = ensure_array_like([
+        { title: "VISION", text: visionText },
+        {
+          title: "VALUES",
+          text: valuesText,
+          isHTML: true
+        },
+        { title: "OUR JOURNEY", text: journeyText },
+        { title: "FUTURE GOALS", text: goalsText }
+      ]);
+      $$payload2.out += `<div class="bg-[#272727] text-white"><div class="container flex flex-col px-4 py-8 lg:py-0 lg:flex-row lg:px-20 lg:justify-between svelte-1oa4syj"><div class="pt-12 text-left lg:w-1/2 lg:pt-24"><span class="inline-block px-3 py-1 text-xs text-[#272727] bg-white rounded-full mb-4">OUR MISSION</span> <h1 class="text-4xl leading-tight lg:text-h2 font-med font-mona svelte-1oa4syj">EMPOWERING <br> DECENTRALIZED <br> INNOVATION</h1></div> <div class="lg:w-1/2 lg:mt-0 lg:pl-12 lg:pt-24"><p class="font-light mt-28 font-body font-inter svelte-1oa4syj">${escape_html(missionText)}</p></div></div> <hr class="mx-4 lg:mx-auto my-6 lg:my-12 border-t-2 border-[#4E4E4E] lg:w-[1375px]"> <div class="px-4 mx-auto lg:px-0 lg:w-4/5"><img src="about-mobile-page.png" alt="Waterway Labs Mission Image" class="block lg:hidden object-contain w-full h-[500px] rounded-lg"> <img src="about-page.png" alt="Waterway Labs Mission Image" class="hidden object-contain w-full h-auto rounded-lg lg:block"></div> <hr class="mx-4 lg:mx-auto my-6 lg:my-12 border-t-2 border-[#4E4E4E] lg:w-[1375px]"> <!--[-->`;
+      for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+        let section = each_array[$$index];
+        $$payload2.out += `<div class="container flex flex-col px-4 py-4 lg:py-8 lg:flex-row lg:px-20 lg:justify-between svelte-1oa4syj"><div class="mb-6 text-left lg:w-1/2 lg:mb-0"><h2 class="text-3xl font-semi font-mona svelte-1oa4syj">${escape_html(section.title)}</h2></div> <div class="lg:w-1/2 lg:pl-12">`;
+        if (section.isHTML) {
+          $$payload2.out += "<!--[-->";
+          $$payload2.out += `<p class="font-light font-body font-inter svelte-1oa4syj">${html(section.text)}</p>`;
+        } else {
+          $$payload2.out += "<!--[!-->";
+          $$payload2.out += `<p class="font-light font-body font-inter svelte-1oa4syj">${escape_html(section.text)}</p>`;
+        }
+        $$payload2.out += `<!--]--></div></div> <hr class="mx-4 lg:mx-auto my-8 lg:my-12 border-t-2 border-[#4E4E4E] lg:w-[1375px]">`;
+      }
+      $$payload2.out += `<!--]--></div>`;
+    },
+    $$slots: { default: true }
+  });
+  bind_props($$props, {
+    missionText,
+    visionText,
+    valuesText,
+    journeyText,
+    goalsText
+  });
+}
 const idlFactory = ({ IDL }) => {
   const ProjectStatus = IDL.Variant({
     "OnHold": IDL.Null,
@@ -4953,6 +5365,7 @@ const idlFactory = ({ IDL }) => {
     "submitForm": IDL.Func([SubmitContactFormDTO], [Result], [])
   });
 };
+const canisterId = "rbqtt-7yaaa-aaaal-qcndq-cai";
 const createActor = (canisterId2, options2 = {}) => {
   const agent = options2.agent || new HttpAgent({ ...options2.agentOptions });
   if (options2.agent && options2.agentOptions) {
@@ -4970,6 +5383,83 @@ createActor(canisterId);
 BigInt(
   60 * 60 * 1e3 * 1e3 * 1e3 * 24 * 14
 );
+function Canisters($$payload, $$props) {
+  push();
+  {
+    $$payload.out += "<!--[-->";
+    Local_spinner($$payload);
+  }
+  $$payload.out += `<!--]-->`;
+  pop();
+}
+function _page$3($$payload) {
+  Canisters($$payload);
+}
+function _page$2($$payload) {
+  let name = "";
+  let email = "";
+  let message = "";
+  Layout($$payload, {
+    overrideBackground: true,
+    children: ($$payload2) => {
+      $$payload2.out += `<main class="min-h-screen px-4 py-12 text-white bg-[#272727] sm:px-6 lg:px-8"><div class="max-w-6xl mx-auto"><div class="flex flex-col items-center mb-20 translate-y-12 md:flex-row md:items-start"><div class="md:w-1/2"><span class="px-3 py-1 text-xs text-[#272727] bg-white rounded-full">CONTACT US</span> <h1 class="mt-2 mb-0 text-5xl leading-tight font-med font-mona lg:text-5xl">WE'D LOVE TO <br> HEAR FROM YOU!</h1></div> <div class="md:w-1/2"><p class="font-light font-body font-inter" style="margin-top: 30px;">At Waterway Labs, your feedback is important to us! Whether you have a question, a suggestion, or simply want to share your experience, we're all ears. Our goal is to make sure you have the best possible experience, and your input helps us get there.
+
+                        Feel free to send us a message, and we'll get back to you as soon as possible.</p></div></div> <div class="mb-12 border-t-2 border-[#4E4E4E] mx-auto"></div> <div class="flex flex-col items-start gap-8 md:flex-row"><div class="w-full md:w-1/2"><h2 class="mb-6 text-2xl font-med font-mona">Send us a message</h2> <form method="POST" class="space-y-6"><div><label for="name" class="block mb-2 text-sm font-medium text-gray-300">Name</label> <input type="text" id="name" name="name"${attr("value", name)} required class="w-full p-3 text-gray-900 transition bg-gray-100 rounded-md font-inter focus:ring-2 focus:ring-blue-500 focus:outline-none"></div> <div><label for="email" class="block mb-2 text-sm font-medium text-gray-300">Email</label> <input type="email" id="email" name="email"${attr("value", email)} required class="w-full p-3 text-gray-900 transition bg-gray-100 rounded-md font-inter focus:ring-2 focus:ring-blue-500 focus:outline-none"></div> <div><label for="message" class="block mb-2 text-sm font-medium text-gray-300">Message</label> <textarea id="message" name="message" required class="w-full p-3 text-gray-900 transition bg-gray-100 rounded-md font-inter focus:ring-2 focus:ring-blue-500 focus:outline-none" rows="5">`;
+      const $$body = escape_html(message);
+      if ($$body) {
+        $$payload2.out += `${$$body}`;
+      }
+      $$payload2.out += `</textarea></div> <button type="submit" class="w-full px-4 py-3 font-medium text-white transition duration-150 ease-in-out bg-blue-600 rounded-md font-inter hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Send Message</button></form> `;
+      {
+        $$payload2.out += "<!--[!-->";
+      }
+      $$payload2.out += `<!--]--></div> <div class="w-full md:w-1/2"><h2 class="mb-6 text-2xl font-med font-mona">Contact Information</h2> <div class="relative bg-[#272727] rounded-lg p-6 overflow-hidden mt-6"><div class="absolute w-64 h-64 bg-[rgba(79,168,246,0.2)] filter blur-[240px] top-[10%] left-[25%]"></div> <div class="absolute w-60 h-60 bg-[rgba(244,223,253,0.2)] filter blur-[320px] bottom-[20%] right-[30%]"></div> <div class="relative z-10"><p class="mb-2 text-lg font-inter">Email:</p> <a href="mailto:hello@waterwaylabs.xyz" class="text-blue-400 transition hover:text-blue-300 font-inter">hello@waterwaylabs.xyz</a></div></div></div></div></div></main>`;
+    },
+    $$slots: { default: true }
+  });
+}
+var define_process_env_default = { BACKEND_CANISTER_ID: "rbqtt-7yaaa-aaaal-qcndq-cai", FRONTEND_CANISTER_ID: "qm6x5-qqaaa-aaaal-qcnea-cai", DFX_NETWORK: "ic" };
+const CANISTER_ID = define_process_env_default.BACKEND_CANISTER_ID;
+const actions = {
+  default: async ({ request }) => {
+    const formData = await request.formData();
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const message = formData.get("message");
+    if (!name || !email || !message) {
+      return fail(400, { error: "All fields are required" });
+    }
+    try {
+      console.log("Creating HttpAgent");
+      const agent = new HttpAgent({ host: "http://localhost:8080" });
+      console.log("Fetching root key");
+      await agent.fetchRootKey();
+      console.log("Creating actor");
+      const actor = Actor.createActor(idlFactory, {
+        agent,
+        canisterId: CANISTER_ID
+      });
+      console.log("Calling submitForm");
+      const result = await actor.submitForm({
+        name: String(name),
+        email: String(email),
+        message: String(message)
+      });
+      console.log("Form submitted to canister:", result);
+      return { success: true, message: result };
+    } catch (error) {
+      console.error("Detailed error:", error);
+      if (error instanceof Error) {
+        console.error("Stack:", error.stack);
+      }
+      return fail(500, { error: "Failed to submit form" });
+    }
+  }
+};
+function _page$1($$payload) {
+}
+function _page($$payload, $$props) {
+  push();
   const teamMembers = [
     {
       name: "Zoe Duffy",
@@ -5020,6 +5510,21 @@ BigInt(
       bio: "Ashutosh delivers high-quality rendered content at lightning speed. When we need to take our message to the next level, he is always required."
     }
   ];
+  Layout($$payload, {
+    overrideBackground: true,
+    children: ($$payload2) => {
+      const each_array = ensure_array_like(teamMembers);
+      $$payload2.out += `<section class="bg-[#272727] text-white py-16 px-4 lg:px-8"><div class="max-w-screen-xl mx-auto"><div class="container flex flex-col lg:flex-row lg:px-10 lg:justify-between svelte-u1j2o1"><div class="pt-12 text-left lg:w-1/2 lg:pt-10"><span class="px-3 py-1 text-xs text-[#272727] bg-white rounded-full">THE TEAM</span> <h1 class="mt-2 text-6xl leading-tight lg:text-6xl font-med font-mona">A TEAM OF <br> WEB3 EXPERTS</h1></div> <div class="mt-6 lg:w-3/5 lg:mt-4 lg:pl-12" style="margin-top: 75px;"><p class="font-light font-body font-inter lg:transform lg:translate-x-[10%] svelte-u1j2o1">At Waterway Labs, we are passionate about building innovative Web3 products that champion decentralization. Our team is dedicated to developing cutting-edge solutions that empower users, offering transparency, security, and freedom. With a shared belief in the transformative potential of blockchain technology, we are committed to pushing the boundaries of what's possible in decentralized applications, fostering an open and collaborative ecosystem.</p></div></div> <hr class="my-8 border-t-2 border-[#4E4E4E] mx-auto lg:w-[1360px]"> <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-16 svelte-u1j2o1"><!--[-->`;
+      for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+        let member = each_array[$$index];
+        $$payload2.out += `<div class="p-4 lg:p-6"><div class="w-full mb-6 overflow-hidden aspect-square"><img${attr("src", `team/${member.image}`)}${attr("alt", member.name)} class="object-cover w-full h-full !aspect-square svelte-u1j2o1" style="min-height: 100%; object-fit: cover;"></div> <div class="space-y-4"><span class="inline-block px-3 py-1 text-xs text-[#272727] bg-white rounded-full">${escape_html(member.title)}</span> <h3 class="text-2xl font-mona font-med">${escape_html(member.name)}</h3> <p class="text-sm font-light font-inter svelte-u1j2o1">${escape_html(member.bio)}</p></div></div>`;
+      }
+      $$payload2.out += `<!--]--></div></div></section>`;
+    },
+    $$slots: { default: true }
+  });
+  pop();
+}
 export {
   Error$1 as E,
   Layout$1 as L,
