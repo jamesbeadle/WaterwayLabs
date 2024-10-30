@@ -1,15 +1,14 @@
 <script lang="ts">
-    import { Modal } from "@dfinity/gix-components";
     import type { Project } from "../../../types";
 
-import OpenBookIcon from "$lib/icons/svgs/openbook.svelte";
-import GolfPadIcon from "$lib/icons/svgs/golfpad.svelte";
-import TransferKingsIcon from "$lib/icons/svgs/transferkings.svelte";
-import OpenChefIcon from "$lib/icons/svgs/openchef.svelte";
-import OpenCareIcon from "$lib/icons/svgs/opencare.svelte";
-import FootballGodIcon from "$lib/icons/svgs/footballgod.svelte";
-import OpenFPLIcon from "$lib/icons/svgs/openfpl.svelte";
-import ICPFAIcon from "$lib/icons/svgs/icpfa.svelte";
+    import OpenBookIcon from "$lib/icons/svgs/openbook.svelte";
+    import GolfPadIcon from "$lib/icons/svgs/golfpad.svelte";
+    import TransferKingsIcon from "$lib/icons/svgs/transferkings.svelte";
+    import OpenChefIcon from "$lib/icons/svgs/openchef.svelte";
+    import OpenCareIcon from "$lib/icons/svgs/opencare.svelte";
+    import FootballGodIcon from "$lib/icons/svgs/footballgod.svelte";
+    import OpenFPLIcon from "$lib/icons/svgs/openfpl.svelte";
+    import ICPFAIcon from "$lib/icons/svgs/icpfa.svelte";
 
     export let closeModal: () => void;
     export let visible: boolean;
@@ -29,7 +28,7 @@ import ICPFAIcon from "$lib/icons/svgs/icpfa.svelte";
 </script>
 
 {#if visible && selectedProject}
-    <Modal {visible} on:nnsClose={closeModal}>
+   <!-- <Modal {visible} on:nnsClose={closeModal}>
         <div class="p-6 text-xs" >
             <div class="flex items-center justify-between mb-2 text-2xl">
                 <h3 class="default-header">{selectedProject?.title}</h3>
@@ -59,5 +58,5 @@ import ICPFAIcon from "$lib/icons/svgs/icpfa.svelte";
                 </div>
             </div>
         </div>      
-    </Modal>
+    </Modal> -->
 {/if}

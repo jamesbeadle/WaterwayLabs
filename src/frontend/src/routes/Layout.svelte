@@ -5,8 +5,8 @@
   import Header from "$lib/shared/Header.svelte";
   import "../app.css";
   import { page } from "$app/stores";
-  import { BusyScreen, Spinner, Toasts } from "@dfinity/gix-components";
   import Footer from "$lib/shared/Footer.svelte";
+    import LocalSpinner from "$lib/components/local-spinner.svelte";
   export let overrideBackground = false;
 
   const init = async () => await Promise.all([syncAuthStore()]);
@@ -39,7 +39,7 @@
 <svelte:window on:storage={syncAuthStore} />
 {#await init()}
   <div in:fade>
-    <Spinner />
+    <LocalSpinner />
   </div>
 {:then _}
   <div class="flex flex-col min-h-screen" class:override-bg={overrideBackground}>
@@ -52,8 +52,6 @@
     {/if}
   </div>
 {/await}
-
-<BusyScreen />
 
 <style>
   :global(body) {
