@@ -2,7 +2,7 @@ import OpenfplIcon from "$lib/icons/svgs/openfpl.svelte";
 
 export type Project = {
   component: typeof OpenfplIcon;
-  id: number
+  id: number;
   buttonText: string;
   backgroundImage: string;
   previewImage: string;

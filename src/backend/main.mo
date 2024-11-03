@@ -7,6 +7,7 @@ import Principal "mo:base/Principal";
 import T "types/app_types";
 import Base "types/base_types";
 import DTOs "dtos/app_dtos";
+import Environment "environment";
 
 actor {
 
@@ -215,6 +216,10 @@ actor {
         return #ok(projects);
     };
 
+    public shared query func getLogs() : async Result.Result<[Base.SystemLog], T.Error>{
+        return #ok(logs);
+    };
+
     public shared ({ caller }) func submitForm(dto: DTOs.SubmitContactFormDTO) : async Result.Result<(), T.Error> {
         assert not Principal.isAnonymous(caller);
         
@@ -241,9 +246,26 @@ actor {
         return #ok();
     };
 
-    /*public shared ({ caller }) func logSystemEvent(dto: DTOs.SystemEventDTO) : async Result.Result<(), T.Error> {
+    public shared ({ caller }) func logSystemEvent(dto: DTOs.SystemEventDTO) : async () {
+        assert isCallerApproved(Principal.toText(caller));
+        
+        let logsBuffer = Buffer.fromArray<Base.SystemLog>(logs);
+        logsBuffer.add({
+            eventDetail = dto.eventDetail;
+            eventId = dto.eventId;
+            eventTime = dto.eventTime;
+            eventTitle = dto.eventTitle;
+            eventType = dto.eventType;
+        });
+        logs := Buffer.toArray(logsBuffer);
+    };
 
-    };*/
+    private func isCallerApproved(callerPrincipalId: Base.CanisterId) : Bool {
+        return true; //REMOVE ALLOW ANY LOG
+        let approvedCaller = Array.find<Base.CanisterId>(Environment.APPROVED_CANISTERS, func(canisterId: Base.CanisterId) : Bool {
+            canisterId == callerPrincipalId;
+        });
 
-    //Record a system log if from approved canister of app
+        return Option.isSome(approvedCaller);
+    };
 }
