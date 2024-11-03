@@ -1,5 +1,13 @@
 import Base "../types/base_types";
+import T "../types/app_types";
+
 module AppDTOs {
+
+    public type DataHashDTO = {
+        category : Text;
+        hash : Text;
+    };
+
     public type SubmitContactFormDTO = {
         contact : Text;
         message : Text;
@@ -12,5 +20,22 @@ module AppDTOs {
         eventType: Base.LogEntryType;
         eventTitle: Text;
         eventDetail: Text;
+    };
+
+
+    public type ProjectDTO = {
+        id: T.ProjectId;
+        name: Text;
+        backendCanisterId: Base.CanisterId;
+        frontendCanisterId: Base.CanisterId;
+        websiteURL: Text;
+        githubLink: Text;
+        socialLinks: [(Text,Text)];
+        status: T.ProjectStatus;
+        description: Text;
+        summary: Text;
+        mainColour: Text;
+        secondaryColour: Text;
+        thirdColour: Text;
     };
 }

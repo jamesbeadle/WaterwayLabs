@@ -1,14 +1,13 @@
 import { DataHashService } from "$lib/services/data-hash-service";
-
-import { isError, replacer } from "$lib/utils/helpers";
+import { ProjectService } from "$lib/services/project-service";
+import { projectStore } from "$lib/stores/project-store";
+import { isError, replacer } from "$lib/utils/Helpers";
 
 class StoreManager {
   private dataHashService: DataHashService;
   private projectService: ProjectService;
-  
-  private categories: string[] = [
-    "projects"
-  ];
+
+  private categories: string[] = ["projects"];
 
   constructor() {
     this.dataHashService = new DataHashService();
@@ -38,7 +37,7 @@ class StoreManager {
 
   private async syncCategory(category: string): Promise<void> {
     switch (category) {
-      case "countries":
+      case "projects":
         const updatedProjects = await this.projectService.getProjects();
         projectStore.setProjects(updatedProjects);
         localStorage.setItem(
@@ -55,7 +54,7 @@ class StoreManager {
     switch (category) {
       case "projects":
         const cachedProjects = JSON.parse(cachedData || "[]");
-        countryStore.setCountries(cachedProjects);
+        projectStore.setProjects(cachedProjects);
         break;
     }
   }

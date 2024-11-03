@@ -25,7 +25,10 @@ actor {
         "", //Josh Wray
         "", //Thilly T
     ];
-
+     
+    private var dataHashes : [Base.DataHash] = [
+      { category = "projects"; hash = "DEFAULT" }
+    ];
 
     private stable var projects: [T.Project] = [
         { 
@@ -192,27 +195,12 @@ actor {
             thirdColour="";
         },
     ];
-/*
-     
-      description: "Decentralized fantasy football.",
-      summary: "OpenFPL is a decentralized fantasy football game for the Premier League hosted through the Internet Computer's Network Nervous System. OpenFPL token holders reach community consensus for player valuations, data validation, and more to ensure the entire platform operates entirely on the blockchain with zero dependencies.",
-      mainColour
-      secondaryColour
-      thirdColour
-      status: "Decentralized",
-      
-      
-      buttonText: "Visit Site",
-      buttonLink: "https://openfpl.xyz",
-      backgroundColor: "#2CE3A6",
-      backgroundImage: "openFPL-background.png",
-      previewImage: "openFPL-preview.png",
-      mobilePreviewImage: "openFPL-mobile-preview.png",
-      translateX: "-214px",
-      twitter: "https://x.com/OpenFPL_DAO",
-      github: "https://github.com/jamesbeadle/OpenFPL"
-      */
-    public shared query func getProjects() : async Result.Result<[T.Project], T.Error>{
+
+    public shared composite query func getDataHashes() : async Result.Result<[DTOs.DataHashDTO], T.Error> {
+      return #ok(dataHashes);
+    };
+    
+    public shared query func getProjects() : async Result.Result<[DTOs.ProjectDTO], T.Error>{
         return #ok(projects);
     };
 

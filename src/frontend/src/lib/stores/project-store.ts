@@ -7,7 +7,7 @@ function createProjectStore() {
 
   return {
     subscribe,
-    setProjects: (projects: ProjectDTO[]) => set(projects)
+    setProjects: (projects: ProjectDTO[]) => set(projects),
   };
 }
 

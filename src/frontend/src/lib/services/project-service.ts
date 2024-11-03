@@ -1,7 +1,7 @@
+import { isError } from "$lib/utils/Helpers";
 import { idlFactory } from "../../../../declarations/backend";
 import type { ProjectDTO } from "../../../../declarations/backend/backend.did";
 import { ActorFactory } from "../../utils/ActorFactory";
-import { isError } from "../utils/helpers";
 
 export class ProjectService {
   private actor: any;
