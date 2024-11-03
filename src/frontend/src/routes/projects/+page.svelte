@@ -5,7 +5,6 @@
     import { storeManager } from "$lib/manager/store-manager";
     import { projectStore } from "$lib/stores/project-store";
     
-    let projects: ProjectDTO[] = [];
     let isLoading = true;
     
     onMount(() => {
