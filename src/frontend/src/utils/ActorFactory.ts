@@ -3,62 +3,102 @@ import type { AuthStore } from "$lib/stores/auth-store";
 import type { OptionIdentity } from "$lib/types/identity";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import type { Unsubscriber } from "svelte/store";
-import { idlFactory } from "../../../declarations/backend";
+import { idlFactory as canister } from "../../../declarations/backend";
 
 export class ActorFactory {
-  static async createActor(
+  static createActor(
     idlFactory: any,
-    canisterId: string,
-    identity: any = null,
-    options: any = {},
+    canisterId: string = "",
+    identity: OptionIdentity = null,
+    options: any = null,
   ) {
-    const agentOptions = {
-      host: "http://localhost:4943",
-      identity,
-      ...options.agentOptions,
+    const hostOptions = {
+      host:
+        process.env.DFX_NETWORK === "ic"
+          ? `https://${canisterId}.icp-api.io`
+          : `http://localhost:8080/?canisterId=qhbym-qaaaa-aaaaa-aaafq-cai`,
+      identity: identity,
     };
 
-    const agent = new HttpAgent(agentOptions);
-
-    // Fetch root key in development
-    if (import.meta.env.DEV) {
-      try {
-        await agent.fetchRootKey();
-      } catch (err) {
-        console.error("Error fetching root key:", err);
-        throw err;
-      }
+    if (!options) {
+      options = {
+        agentOptions: hostOptions,
+      };
+    } else if (!options.agentOptions) {
+      options.agentOptions = hostOptions;
+    } else {
+      options.agentOptions.host = hostOptions.host;
     }
 
-    try {
-      return Actor.createActor(idlFactory, {
-        agent,
-        canisterId,
+    const agent = new HttpAgent({ ...options.agentOptions });
+
+    if (process.env.DFX_NETWORK !== "ic") {
+      agent.fetchRootKey().catch((err) => {
+        console.warn(
+          "Unable to fetch root key. Ensure your local replica is running",
+        );
+        console.error(err);
       });
-    } catch (error) {
-      console.error("Error creating actor:", error);
-      throw error;
     }
+
+    return Actor.createActor(idlFactory, {
+      agent,
+      canisterId: canisterId,
+      ...options?.actorOptions,
+    });
+  }
+
+  static getAgent(
+    canisterId: string = "",
+    identity: OptionIdentity = null,
+    options: any = null,
+  ): HttpAgent {
+    const hostOptions = {
+      host:
+        process.env.DFX_NETWORK === "ic"
+          ? `https://${canisterId}.icp-api.io`
+          : `http://localhost:8080/?canisterId=qhbym-qaaaa-aaaaa-aaafq-cai`,
+      identity: identity,
+    };
+
+    if (!options) {
+      options = {
+        agentOptions: hostOptions,
+      };
+    } else if (!options.agentOptions) {
+      options.agentOptions = hostOptions;
+    } else {
+      options.agentOptions.host = hostOptions.host;
+    }
+
+    return new HttpAgent({ ...options.agentOptions });
   }
 
   static createIdentityActor(authStore: AuthStore, canisterId: string) {
     let unsubscribe: Unsubscriber;
-
     return new Promise<OptionIdentity>((resolve, reject) => {
-      unsubscribe = authStore.subscribe((store) => {});
-
-      setTimeout(() => {
-        unsubscribe?.();
-        reject(new Error("Identity not set in authStore after timeout"));
-      }, 5000);
-    })
-      .then((identity) => {
-        unsubscribe?.();
-        return ActorFactory.createActor(idlFactory, canisterId, identity);
-      })
-      .catch((error) => {
-        unsubscribe?.();
-        throw error;
+      unsubscribe = authStore.subscribe((store) => {
+        if (store.identity) {
+          resolve(store.identity);
+        }
       });
+    }).then((identity) => {
+      unsubscribe();
+      return ActorFactory.createActor(canister, canisterId, identity);
+    });
+  }
+
+  static createGovernanceAgent(authStore: AuthStore, canisterId: string) {
+    let unsubscribe: Unsubscriber;
+    return new Promise<OptionIdentity>((resolve, reject) => {
+      unsubscribe = authStore.subscribe((store) => {
+        if (store.identity) {
+          resolve(store.identity);
+        }
+      });
+    }).then((identity) => {
+      unsubscribe();
+      return ActorFactory.createActor(canister, canisterId, identity);
+    });
   }
 }
