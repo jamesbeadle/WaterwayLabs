@@ -48,7 +48,7 @@ export default {
       },
       fontSize: {
         h1: ["90px", { lineHeight: "81px" }],
-        h2: ["72px", { lineHeight: "64.8px" }],
+        h2: ["72px", { lineHeight: "75px" }],
         h3: ["40px", { lineHeight: "36px" }],
         h4: ["20px", { lineHeight: "18px" }],
         h4small: ["18px", { lineHeight: "16.2px" }],

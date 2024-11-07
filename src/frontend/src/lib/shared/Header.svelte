@@ -29,13 +29,11 @@
           <span class="text-white font-exlight">LABS</span>
         </span>
       </a>
-      <!-- Desktop Menu -->
       <div class="hidden space-x-8 text-sm md:flex font-mona">
         <a href="/about" class="hover:text-blue-400">ABOUT</a>
         <a href="/team" class="hover:text-blue-400">TEAM</a>
         <a href="/contact" class="hover:text-blue-400">CONTACT</a>
       </div>
-      <!-- Mobile Menu Button -->
       <button 
         class="p-2 md:hidden" 
         on:click={toggleMenu}
@@ -54,12 +52,10 @@
     </div>
   </nav>
 
-  <!-- Mobile Menu Overlay -->
   {#if isMenuOpen}
     <div class="fixed inset-0 bg-[#272727] z-50 transition-opacity duration-300"
          class:opacity-100={isMenuOpen}
          class:opacity-0={!isMenuOpen}>
-      <!-- Header in overlay -->
       <div class="flex items-center justify-between h-16 px-4 border-b border-[#4E4E4E]"
            class:lg:px-20={!isHomePage}>
         <a href="/" class="flex items-center">
@@ -69,7 +65,6 @@
             <span class="text-white font-exlight">LABS</span>
           </span>
         </a>
-        <!-- Close button -->
         <button 
           class="p-2" 
           on:click={toggleMenu}
@@ -79,8 +74,6 @@
           </svg>
         </button>
       </div>
-
-      <!-- Menu Items -->
       <div class="flex flex-col items-start px-8 pt-16">
         <div class="flex items-center justify-between w-full">
           <a href="/about" 

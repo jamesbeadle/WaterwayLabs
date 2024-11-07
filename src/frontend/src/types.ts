@@ -1,4 +1,4 @@
-import OpenfplIcon from "$lib/icons/svgs/openfpl.svelte";
+import OpenfplIcon from "$lib/icons/svgs/4.svelte";
 
 export type Project = {
   component: typeof OpenfplIcon;

@@ -2,7 +2,6 @@ import type { ProjectId } from "../../../../declarations/backend/backend.did";
 import type { ComponentType } from "svelte";
 
 export interface Project {
-  // Backend DTO properties
   id: ProjectId;
   name: string;
   backendCanisterId: string;
@@ -17,7 +16,6 @@ export interface Project {
   secondaryColour: string;
   thirdColour: string;
 
-  // Frontend-specific properties
   component: ComponentType;
   buttonText: string;
   backgroundImage: string;

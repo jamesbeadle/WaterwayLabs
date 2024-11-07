@@ -2,9 +2,8 @@
   <div class="absolute ellipse-1"></div>
   <div class="absolute ellipse-2"></div>
   <div class="relative z-10">
-    <!-- First Row (Logo and Links) -->
+
     <div class="flex flex-col px-6 lg:px-12 lg:flex-row lg:items-center lg:justify-between">
-      <!-- Logo Section -->
       <div class="flex items-center mb-6 lg:mb-0">
         <a href="/" class="flex items-center">
           <img src="logo.png" class="h-6" alt="Waterway Labs Logo" />
@@ -14,8 +13,7 @@
           </span>
         </a>
       </div>
-      
-      <!-- Navigation Links -->
+
       <div class="flex flex-col text-sm font-light lg:flex-row font-inter font-body">
         <a href="/" class="mb-4 lg:mb-0 lg:mx-4 hover:text-blue-400">Products</a>
         <a href="/about" class="mb-4 lg:mb-0 lg:mx-4 hover:text-blue-400">About Us</a>
@@ -23,10 +21,8 @@
       </div>
     </div>
 
-    <!-- Divider -->
     <hr class="my-6 border-t-2 border-[#4E4E4E] mx-6 lg:mx-auto lg:w-[1450px]" />
     
-    <!-- Second Row (Let's Connect and Social Links) -->
     <div class="flex flex-col px-6 lg:px-12 lg:flex-row lg:items-center lg:justify-between">
       <div class="mb-4 lg:mb-0">
         <h4 class="font-mona font-h4">LET'S CONNECT</h4>

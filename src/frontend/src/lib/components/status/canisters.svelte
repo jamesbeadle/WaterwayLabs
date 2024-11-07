@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import LocalSpinner from "$lib/components/local-spinner.svelte";
+    import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
     import { getCanisters } from "$lib/stores/system-store";
     import { formatCycles, formatUnixDateTimeToReadable } from "./helpers";
     import type { Canister, CanisterType } from "../../../types";
