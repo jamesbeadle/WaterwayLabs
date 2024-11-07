@@ -38,4 +38,11 @@ module AppDTOs {
         secondaryColour: Text;
         thirdColour: Text;
     };
+
+    public type TeamMemberDTO = {
+        name: Text;
+        title: Text;
+        image: Text;
+        bio: Text;
+    };
 }

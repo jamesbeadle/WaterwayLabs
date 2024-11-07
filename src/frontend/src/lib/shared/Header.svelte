@@ -29,14 +29,15 @@
           <span class="text-white font-exlight">LABS</span>
         </span>
       </a>
-      <!-- Desktop Menu -->
       <div class="hidden space-x-8 text-sm md:flex font-mona">
         <a href="/about" class="hover:text-blue-400">ABOUT</a>
         <a href="/team" class="hover:text-blue-400">TEAM</a>
         <a href="/contact" class="hover:text-blue-400">CONTACT</a>
       </div>
-      <!-- Mobile Menu Button -->
-      <button class="p-2 md:hidden" on:click={toggleMenu}>
+      <button 
+        class="p-2 md:hidden" 
+        on:click={toggleMenu}
+        aria-label="Toggle menu">
         <div class="flex flex-col space-y-1.5">
           <span class="block w-6 h-0.5 bg-white transition-transform duration-300" 
                 class:rotate-45={isMenuOpen} 
@@ -51,12 +52,10 @@
     </div>
   </nav>
 
-  <!-- Mobile Menu Overlay -->
   {#if isMenuOpen}
     <div class="fixed inset-0 bg-[#272727] z-50 transition-opacity duration-300"
          class:opacity-100={isMenuOpen}
          class:opacity-0={!isMenuOpen}>
-      <!-- Header in overlay -->
       <div class="flex items-center justify-between h-16 px-4 border-b border-[#4E4E4E]"
            class:lg:px-20={!isHomePage}>
         <a href="/" class="flex items-center">
@@ -66,15 +65,15 @@
             <span class="text-white font-exlight">LABS</span>
           </span>
         </a>
-        <!-- Close button -->
-        <button class="p-2" on:click={toggleMenu}>
+        <button 
+          class="p-2" 
+          on:click={toggleMenu}
+          aria-label="Close menu">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
-
-      <!-- Menu Items -->
       <div class="flex flex-col items-start px-8 pt-16">
         <div class="flex items-center justify-between w-full">
           <a href="/about" 

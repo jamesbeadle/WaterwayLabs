@@ -6,7 +6,7 @@
   import "../app.css";
   import { page } from "$app/stores";
   import Footer from "$lib/shared/Footer.svelte";
-  import LocalSpinner from "$lib/components/local-spinner.svelte";
+  import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
   
   interface $$Slots {
     default: {

@@ -30,6 +30,57 @@ actor {
       { category = "projects"; hash = "DEFAULT" }
     ];
 
+    private stable var teamMembers: [T.TeamMember] = [
+        { 
+            name = "Zoe Duffy";
+            title = "Managing Director"; 
+            image = "zoe.jpg"; 
+            bio = "Zoe runs many tech companies through her management consultancy, providing expert advice to ensure compliance with various legal frameworks.";
+        },
+        { 
+            name = "Kelly Howlett";
+            title = "Head of Operations"; 
+            image = "kelly.jpeg"; 
+            bio = "Kelly ensures the day-to-day operation of Waterway Labs on all things water. Kelly has the experience required to ensure anything can be done in a safe and secure manner."; 
+        },
+        { 
+            name = "James Beadle"; 
+            title = "Development Manager"; 
+            image = "james.jpg"; 
+            bio = "James ensures the delivery of all Waterway Labs Projects."; 
+        },
+        { 
+            name = "Dfinity Designer"; 
+            title = "Head of Design"; 
+            image = "dfd.jpg"; 
+            bio = "DfinityDesigner is a talented UI/UX designer that has put his stamp on various blockchain projects. He is known for high-quality, brilliant branding.";
+        },
+        { 
+            name = "Thilly Thana"; 
+            title = "Lead Developer"; 
+            image = "thilly.jpg"; 
+            bio = "Thilly is a computer science graduate with a passion for frontend development. Thilly brings DfinityDesigner’s designs to life using his expert Svelte skills.";
+        },
+        { 
+            name = "George Robinson"; 
+            title = "Community Manager"; 
+            image = "george.jpg"; 
+            bio = "George builds relationships with community members through any channel with users receptive to the Internet Computer’s message.";
+        },
+        { 
+            name = "Josh Wray"; 
+            title = "Head of Promotion"; 
+            image = "josh.jpg"; 
+            bio = "Josh ensures our team has the relationships in place to foster a co-operative, results-driven ecosystem.";
+        },
+        { 
+            name = "Ashutosh Yadav"; 
+            title = "Media Production Manager"; 
+            image = "ashutosh.jpg"; 
+            bio = "Ashutosh delivers high-quality rendered content at lightning speed. When we need to take our message to the next level, he is always required.";
+        },
+    ];
+
     private stable var projects: [T.Project] = [
         { 
             id = 1; 
@@ -48,7 +99,7 @@ actor {
         },
         { 
             id = 2; 
-            name = "FootballGod"; 
+            name = "Football God"; 
             backendCanisterId = "44kin-waaaa-aaaal-qbxra-cai"; 
             frontendCanisterId="43loz-3yaaa-aaaal-qbxrq-cai"; 
             websiteURL="footballgod.xyz"; 
@@ -66,7 +117,7 @@ actor {
             name = "OpenFPL"; 
             backendCanisterId = "y22zx-giaaa-aaaal-qmzpq-cai"; 
             frontendCanisterId="5gbds-naaaa-aaaal-qmzqa-cai"; 
-            websiteURL="openfpl.xyz"; 
+            websiteURL="openfpl.xyz/"; 
             githubLink="https://github.com/jamesbeadle/OpenFPL"; 
             socialLinks=[("X", "https://x.com/OpenFPL_DAO")];
              status=#Decentralised;
@@ -82,8 +133,8 @@ actor {
             backendCanisterId = "5bafg-ayaaa-aaaal-qmzqq-cai"; 
             frontendCanisterId="5ido2-wqaaa-aaaal-qmzra-cai"; 
             websiteURL="openwsl.xyz"; 
-            githubLink=""; 
-            socialLinks=[]; 
+            githubLink="https://github.com/jamesbeadle/OpenWSL"; 
+            socialLinks=[("X", "https://x.com/OpenFPL_DAO")];
             status=#Development;
             description="Decentralised fantasy football.";
             summary="OpenWSL is a Decentralised fantasy football game for the Women's Super League, hosted through the Internet Computer's Network Nervous System. OpenWSL operates alongside OpenFPL with the aim of increasing WSL popularity along with introducing more women to  blockchain technology.";
@@ -111,7 +162,7 @@ actor {
             name = "GolfPad"; 
             backendCanisterId = "elbip-aiaaa-aaaal-qjfhq-cai"; 
             frontendCanisterId="gw4gh-taaaa-aaaal-qjfia-cai"; 
-            websiteURL="golfpad.xyz"; 
+            websiteURL="golfpad.xyz/"; 
             githubLink="https://github.com/jamesbeadle/GolfPad"; 
             socialLinks=[("X", "https://x.com/GolfPadDAO")]; 
             status=#Development;
@@ -169,7 +220,7 @@ actor {
             name = "ICPFA"; 
             backendCanisterId = "qxz7x-niaaa-aaaal-qdidq-cai"; 
             frontendCanisterId="r2x3z-caaaa-aaaal-qdiea-cai"; 
-            websiteURL="icpfa.org"; 
+            websiteURL="https://icpfa.org"; 
             githubLink=""; 
             socialLinks=[]; 
             status=#Development;
@@ -202,6 +253,10 @@ actor {
     
     public shared query func getProjects() : async Result.Result<[DTOs.ProjectDTO], T.Error>{
         return #ok(projects);
+    };
+
+    public shared query func getTeamMembers() : async Result.Result<[DTOs.TeamMemberDTO], T.Error>{
+        return #ok(teamMembers);
     };
 
     public shared query func getLogs() : async Result.Result<[Base.SystemLog], T.Error>{

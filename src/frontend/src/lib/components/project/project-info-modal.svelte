@@ -1,14 +1,14 @@
 <script lang="ts">
     import type { Project } from "../../../types";
 
-    import OpenBookIcon from "$lib/icons/svgs/openbook.svelte";
-    import GolfPadIcon from "$lib/icons/svgs/golfpad.svelte";
-    import TransferKingsIcon from "$lib/icons/svgs/transferkings.svelte";
-    import OpenChefIcon from "$lib/icons/svgs/openchef.svelte";
-    import OpenCareIcon from "$lib/icons/svgs/opencare.svelte";
-    import FootballGodIcon from "$lib/icons/svgs/footballgod.svelte";
-    import OpenFPLIcon from "$lib/icons/svgs/openfpl.svelte";
-    import ICPFAIcon from "$lib/icons/svgs/icpfa.svelte";
+    import OpenBookIcon from "$lib/icons/svgs/7.svelte";
+    import GolfPadIcon from "$lib/icons/svgs/6.svelte";
+    import TransferKingsIcon from "$lib/icons/svgs/5.svelte";
+    import OpenChefIcon from "$lib/icons/svgs/9.svelte";
+    import OpenCareIcon from "$lib/icons/svgs/11.svelte";
+    import FootballGodIcon from "$lib/icons/svgs/2.svelte";
+    import OpenFPLIcon from "$lib/icons/svgs/4.svelte";
+    import ICPFAIcon from "$lib/icons/svgs/10.svelte";
 
     export let closeModal: () => void;
     export let visible: boolean;

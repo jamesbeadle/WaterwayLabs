@@ -8,14 +8,10 @@ export async function getCanisters(
   filter: CanisterType,
 ): Promise<GetCanistersDTO | undefined> {
   try {
-    console.log("Identity Actor being Created in system store");
-    console.log(process.env);
-    console.log(process.env.BACKEND_CANISTER_ID);
     const identityActor: any = await ActorFactory.createIdentityActor(
       authStore,
       process.env.BACKEND_CANISTER_ID ?? "",
     );
-    console.log("Identity Actor Created in system store");
 
     const limit = itemsPerPage;
     const offset = (currentPage - 1) * limit;
@@ -29,8 +25,6 @@ export async function getCanisters(
     };
 
     let result = await identityActor.getCanisters(dto);
-
-    console.log("Actor gets canisters ");
 
     if (isError(result)) {
       console.error("Error getting canisters:", result);

@@ -51,4 +51,10 @@ module AppTypes {
         #Flagged;
     };
     
+    public type TeamMember = {
+        name: Text;
+        title: Text;
+        image: Text;
+        bio: Text;
+    };
 };

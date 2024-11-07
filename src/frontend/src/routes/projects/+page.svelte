@@ -10,7 +10,7 @@
     onMount(() => {
         storeManager.syncStores();
         isLoading = false;
-    });
+    }); 
  </script>
 
 <Layout>
