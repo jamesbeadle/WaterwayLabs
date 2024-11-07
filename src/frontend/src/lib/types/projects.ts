@@ -1,0 +1,30 @@
+import type { ProjectId } from "../../../../declarations/backend/backend.did";
+import type { ComponentType } from "svelte";
+
+export interface Project {
+  // Backend DTO properties
+  id: ProjectId;
+  name: string;
+  backendCanisterId: string;
+  frontendCanisterId: string;
+  websiteURL: string;
+  githubLink: string;
+  socialLinks: Array<[string, string]>;
+  status: string;
+  description: string;
+  summary: string;
+  mainColour: string;
+  secondaryColour: string;
+  thirdColour: string;
+
+  // Frontend-specific properties
+  component: ComponentType;
+  buttonText: string;
+  backgroundImage: string;
+  previewImage: string;
+  mobilePreviewImage: string;
+  translateX: string;
+  twitter?: string;
+  selected?: boolean;
+  backgroundColor?: string;
+}

@@ -36,7 +36,10 @@
         <a href="/contact" class="hover:text-blue-400">CONTACT</a>
       </div>
       <!-- Mobile Menu Button -->
-      <button class="p-2 md:hidden" on:click={toggleMenu}>
+      <button 
+        class="p-2 md:hidden" 
+        on:click={toggleMenu}
+        aria-label="Toggle menu">
         <div class="flex flex-col space-y-1.5">
           <span class="block w-6 h-0.5 bg-white transition-transform duration-300" 
                 class:rotate-45={isMenuOpen} 
@@ -67,7 +70,10 @@
           </span>
         </a>
         <!-- Close button -->
-        <button class="p-2" on:click={toggleMenu}>
+        <button 
+          class="p-2" 
+          on:click={toggleMenu}
+          aria-label="Close menu">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>

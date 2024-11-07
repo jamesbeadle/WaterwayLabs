@@ -1,4 +1,4 @@
-<div class="local-spinner" />
+<div class="local-spinner"></div>
 
 <style>
   .local-spinner {

@@ -5,8 +5,8 @@ import { ActorFactory } from "../../utils/ActorFactory";
 
 export class ProjectService {
   private actor: any;
-
   constructor() {
+    console.log("Backend canister ID:", process.env.BACKEND_CANISTER_ID);
     this.actor = ActorFactory.createActor(
       idlFactory,
       process.env.BACKEND_CANISTER_ID,
