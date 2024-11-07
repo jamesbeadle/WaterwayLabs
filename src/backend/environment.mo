@@ -1,4 +1,6 @@
 module Environment {
+    
+    public let Default = "aaaaa-aa";
 
     //IC
     public let OPENFPL_BACKEND_CANISTER_ID = "y22zx-giaaa-aaaal-qmzpq-cai";

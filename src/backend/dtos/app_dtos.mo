@@ -45,4 +45,11 @@ module AppDTOs {
         image: Text;
         bio: Text;
     };
+
+    public type CanisterDTO = {
+        canisterId: Base.CanisterId;
+        canisterName: Text;
+        cycles: Nat;
+        computeAllocation: Nat;
+    }
 }

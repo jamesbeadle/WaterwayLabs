@@ -8,8 +8,11 @@ import T "types/app_types";
 import Base "types/base_types";
 import DTOs "dtos/app_dtos";
 import Environment "environment";
+import Cycles "mo:base/ExperimentalCycles";
+import Utilities "utilities";
+import Management "management";
 
-actor {
+actor Self {
 
     var logs: [Base.SystemLog] = [];
     var formSubmissions: [T.FormSubmission] = [];
@@ -311,4 +314,71 @@ actor {
 
         return Option.isSome(approvedCaller);
     };
+
+    private func isCallerAdmin(callerPrincipalId: Base.CanisterId) : Bool {
+        return true; //REMOVE ALLOW ANY LOG
+        let approvedCaller = Array.find<Base.CanisterId>(admins, func(principalId: Base.CanisterId) : Bool {
+            principalId == callerPrincipalId;
+        });
+
+        return Option.isSome(approvedCaller);
+    };
+
+    public shared ({ caller }) func getProjectCanisterInfo(projectId: T.ProjectId) : async Result.Result<[DTOs.CanisterDTO], T.Error> {
+        assert isCallerAdmin(Principal.toText(caller));
+        
+        let projectResult = Array.find<T.Project>(projects, func(foundProject: T.Project) : Bool {
+            foundProject.id == projectId;
+        });
+
+        switch(projectResult){
+            case (?project){
+                let canisterBuffer = Buffer.fromArray<DTOs.CanisterDTO>([]);
+                
+                let IC : Management.Management = actor (Environment.Default);
+                let backend_canister_actor = actor (project.backendCanisterId) : actor {};
+                let frontend_canister_actor = actor (project.frontendCanisterId) : actor {};
+
+                let backendCanisterStatusResult = await Utilities.getCanisterStatus_(backend_canister_actor, IC);
+                switch(backendCanisterStatusResult){
+                    case(?backendCanisterStatus){
+                        canisterBuffer.add({
+                            canisterId = project.backendCanisterId;
+                            canisterName = "Backend";
+                            computeAllocation = backendCanisterStatus.settings.compute_allocation;
+                            cycles = backendCanisterStatus.cycles;
+                        })
+                    };
+                    case (null){}
+                };
+                
+                let frontendCanisterStatusResult = await Utilities.getCanisterStatus_(frontend_canister_actor, IC);
+                switch(frontendCanisterStatusResult){
+                    case(?frontendCanisterStatus){
+                        canisterBuffer.add({
+                            canisterId = project.backendCanisterId;
+                            canisterName = "Frontend";
+                            computeAllocation = frontendCanisterStatus.settings.compute_allocation;
+                            cycles = frontendCanisterStatus.cycles;
+                        })
+                    };
+                    case (null){}
+                };
+
+                return #ok(Buffer.toArray(canisterBuffer));      
+            };
+            case (null){}
+        };        
+        return #err(#NotFound);
+    };
+
+    public shared ({ caller }) func topupCanister(canisterId: Base.CanisterId, cycles: Nat) : async Result.Result<(), T.Error> {
+        assert isCallerAdmin(Principal.toText(caller));
+        let canister_actor = actor (canisterId) : actor {};
+             
+        let IC : Management.Management = actor (Environment.Default);
+        let _ = await Utilities.topup_canister_(canister_actor, IC, cycles);
+        return #ok();
+    };
+
 }
