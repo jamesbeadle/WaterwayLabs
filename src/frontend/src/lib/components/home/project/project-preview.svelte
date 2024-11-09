@@ -1,4 +1,3 @@
-<!-- project-preview.svelte -->
 <script lang="ts">
     export let title: string;
     export let backgroundColor: string;
@@ -48,21 +47,18 @@
 
     .preview-wrapper {
         @apply relative;
-        /* Mobile styling */
         @apply w-[361px] mx-auto rounded-lg border-[5px] border-[#272727];
-        
-        /* Desktop styling */
         @apply lg:absolute lg:w-[600px] lg:border-0 lg:z-10;
-        @apply lg:right-[-20%] lg:top-[35%] lg:transform lg:-translate-y-1/2; /* Adjusted top position */
+        @apply lg:right-[-20%] lg:top-[35%] lg:transform lg:-translate-y-1/2; 
     }
     
 
     .image-container {
         @apply relative w-full;
-        height: 450px; /* Fixed height */
-        width: 544px; /* Fixed width */
+        height: 450px; 
+        width: 544px; 
         @apply rounded-lg overflow-hidden;
-        border: 10px solid #272727; /* Added black border */
+        border: 10px solid #272727; 
     }
 
     
@@ -70,8 +66,8 @@
     .preview-image {
         @apply absolute inset-0;
         @apply w-full h-full;
-        object-fit: cover; /* Ensures image covers the container */
-        object-position: left; /* Aligns the leftmost part of the image with the left edge */
+        object-fit: cover; 
+        object-position: left; 
         @apply m-auto;
         filter: blur(0.5px);
         transition: all 0.3s ease;
@@ -84,7 +80,6 @@
         border-radius: 8px;
         pointer-events: none;
         
-        /* Mobile shadows */
         @apply lg:hidden;
         box-shadow: 
             4px 3px 12px rgba(0, 0, 0, 0.21),
@@ -93,8 +88,6 @@
             71px 46px 34px rgba(0, 0, 0, 0.03),
             111px 72px 37px rgba(0, 0, 0, 0);
     }
-
-    /* Desktop shadows */
     @media (min-width: 1024px) {
         .preview-wrapper::after {
             @apply block;
@@ -109,14 +102,12 @@
             @apply lg:w-[600px] lg:right-[-20%];
             @apply border-0 bg-[#272727] rounded-xl;
         }
-        /* Desktop app specific container */
         .image-container.desktop-app {
-            height: 450px; /* Fixed height */
-            width: 544px; /* Fixed width */
+            height: 450px; 
+            width: 544px; 
             @apply rounded-xl overflow-hidden;
-            border: 10px solid #272727; /* Added black border */
+            border: 10px solid #272727; 
         }
-        /* Desktop app specific image */
         .preview-image.desktop-app {
             @apply object-cover;
             @apply rounded-xl;
@@ -140,7 +131,7 @@
             width: 100%;
             overflow: hidden;
             padding-top: 10rem;
-            height: 33vh; /* 1/3 of viewport height */
+            height: 33vh; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -152,12 +143,12 @@
         }
 
         .image-container {
-            height: 100%; /* Take full height of parent */
+            height: 100%; 
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 10px solid #272727; /* Purple border */
+            border: 10px solid #272727; 
             border-radius: 1rem;
             overflow: hidden; 
             }
@@ -166,7 +157,7 @@
             position: relative; 
             width: 100%;
             display: block;
-            object-fit: contain; /* Change to contain */
+            object-fit: contain; 
             transform: none;
             object-position: center;
             max-height: 250px;
