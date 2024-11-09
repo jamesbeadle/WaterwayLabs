@@ -1,17 +1,21 @@
 //import { DataHashService } from "$lib/services/data-hash-service";
 import { ProjectService } from "$lib/services/project-service";
+import { TeamService } from "$lib/services/team-service";
 import { projectStore } from "$lib/stores/project-store";
+import { teamStore } from "$lib/stores/team-store";
 import { isError, replacer } from "$lib/utils/Helpers";
 
 class StoreManager {
   //private dataHashService: DataHashService;
   private projectService: ProjectService;
+  private teamService: TeamService;
 
   private categories: string[] = ["projects"];
 
   constructor() {
     //this.dataHashService = new DataHashService();
     this.projectService = new ProjectService();
+    this.teamService = new TeamService();
   }
 
   async syncStores(): Promise<void> {
@@ -41,6 +45,11 @@ class StoreManager {
         );
         break;
     }
+  }
+
+  private async syncTeams(): Promise<void> {
+    const updatedTeams = await this.teamService.getTeamMembers();
+    teamStore.setTeamMembers(updatedTeams);
   }
 
   private loadFromCache(category: string): void {

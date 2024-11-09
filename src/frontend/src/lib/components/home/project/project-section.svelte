@@ -16,7 +16,6 @@
     export let backgroundImage: string;
     export let previewImage: string;
     export let translateX: string = "0px";
-    export let mobilePreviewImage: string;
 </script>
 
 <div class="desktop-layout">
@@ -41,7 +40,7 @@
         {backgroundImage}
         {previewImage}
         {translateX}
-        {mobilePreviewImage}
+        isDesktopApp={isFootballGod}
     />
 </div>
 
@@ -54,7 +53,7 @@
                 {backgroundImage}
                 {previewImage}
                 {translateX}
-                {mobilePreviewImage}
+                isDesktopApp={isFootballGod}
             />
         </div>
 
@@ -82,6 +81,8 @@
 
     .content-section {
         @apply hidden w-1/2 space-y-6 lg:p-8 lg:block -mt-[35px];
+        min-height: 500px;
+        min-width: 583px;
     }
 
     .mobile-container {
@@ -102,10 +103,11 @@
 
     .mobile-preview {
         @apply w-full;
+        height: 25vh;
     }
 
     .mobile-content {
-        @apply w-full px-4 pb-60;
+        @apply w-full px-4 pt-20 pb-60;
     }
 
     .status-badge {

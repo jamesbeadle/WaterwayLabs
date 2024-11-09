@@ -1,0 +1,14069 @@
+import { c as _r, g as hc, _ as dc } from "./index.Cm4qnxSY.js";
+const pl = !0,
+  yl = !1;
+var Zs = {},
+  Vr = {};
+Vr.byteLength = wc;
+Vr.toByteArray = bc;
+Vr.fromByteArray = _c;
+var Nt = [],
+  ut = [],
+  pc = typeof Uint8Array < "u" ? Uint8Array : Array,
+  Wn = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+for (var dr = 0, yc = Wn.length; dr < yc; ++dr)
+  (Nt[dr] = Wn[dr]), (ut[Wn.charCodeAt(dr)] = dr);
+ut[45] = 62;
+ut[95] = 63;
+function Ws(t) {
+  var e = t.length;
+  if (e % 4 > 0)
+    throw new Error("Invalid string. Length must be a multiple of 4");
+  var r = t.indexOf("=");
+  r === -1 && (r = e);
+  var n = r === e ? 0 : 4 - (r % 4);
+  return [r, n];
+}
+function wc(t) {
+  var e = Ws(t),
+    r = e[0],
+    n = e[1];
+  return ((r + n) * 3) / 4 - n;
+}
+function gc(t, e, r) {
+  return ((e + r) * 3) / 4 - r;
+}
+function bc(t) {
+  var e,
+    r = Ws(t),
+    n = r[0],
+    i = r[1],
+    c = new pc(gc(t, n, i)),
+    l = 0,
+    f = i > 0 ? n - 4 : n,
+    y;
+  for (y = 0; y < f; y += 4)
+    (e =
+      (ut[t.charCodeAt(y)] << 18) |
+      (ut[t.charCodeAt(y + 1)] << 12) |
+      (ut[t.charCodeAt(y + 2)] << 6) |
+      ut[t.charCodeAt(y + 3)]),
+      (c[l++] = (e >> 16) & 255),
+      (c[l++] = (e >> 8) & 255),
+      (c[l++] = e & 255);
+  return (
+    i === 2 &&
+      ((e = (ut[t.charCodeAt(y)] << 2) | (ut[t.charCodeAt(y + 1)] >> 4)),
+      (c[l++] = e & 255)),
+    i === 1 &&
+      ((e =
+        (ut[t.charCodeAt(y)] << 10) |
+        (ut[t.charCodeAt(y + 1)] << 4) |
+        (ut[t.charCodeAt(y + 2)] >> 2)),
+      (c[l++] = (e >> 8) & 255),
+      (c[l++] = e & 255)),
+    c
+  );
+}
+function mc(t) {
+  return (
+    Nt[(t >> 18) & 63] + Nt[(t >> 12) & 63] + Nt[(t >> 6) & 63] + Nt[t & 63]
+  );
+}
+function xc(t, e, r) {
+  for (var n, i = [], c = e; c < r; c += 3)
+    (n =
+      ((t[c] << 16) & 16711680) + ((t[c + 1] << 8) & 65280) + (t[c + 2] & 255)),
+      i.push(mc(n));
+  return i.join("");
+}
+function _c(t) {
+  for (
+    var e, r = t.length, n = r % 3, i = [], c = 16383, l = 0, f = r - n;
+    l < f;
+    l += c
+  )
+    i.push(xc(t, l, l + c > f ? f : l + c));
+  return (
+    n === 1
+      ? ((e = t[r - 1]), i.push(Nt[e >> 2] + Nt[(e << 4) & 63] + "=="))
+      : n === 2 &&
+        ((e = (t[r - 2] << 8) + t[r - 1]),
+        i.push(Nt[e >> 10] + Nt[(e >> 4) & 63] + Nt[(e << 2) & 63] + "=")),
+    i.join("")
+  );
+}
+var Gr = {};
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */ Gr.read =
+  function (t, e, r, n, i) {
+    var c,
+      l,
+      f = i * 8 - n - 1,
+      y = (1 << f) - 1,
+      m = y >> 1,
+      E = -7,
+      B = r ? i - 1 : 0,
+      M = r ? -1 : 1,
+      v = t[e + B];
+    for (
+      B += M, c = v & ((1 << -E) - 1), v >>= -E, E += f;
+      E > 0;
+      c = c * 256 + t[e + B], B += M, E -= 8
+    );
+    for (
+      l = c & ((1 << -E) - 1), c >>= -E, E += n;
+      E > 0;
+      l = l * 256 + t[e + B], B += M, E -= 8
+    );
+    if (c === 0) c = 1 - m;
+    else {
+      if (c === y) return l ? NaN : (v ? -1 : 1) * (1 / 0);
+      (l = l + Math.pow(2, n)), (c = c - m);
+    }
+    return (v ? -1 : 1) * l * Math.pow(2, c - n);
+  };
+Gr.write = function (t, e, r, n, i, c) {
+  var l,
+    f,
+    y,
+    m = c * 8 - i - 1,
+    E = (1 << m) - 1,
+    B = E >> 1,
+    M = i === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0,
+    v = n ? 0 : c - 1,
+    U = n ? 1 : -1,
+    N = e < 0 || (e === 0 && 1 / e < 0) ? 1 : 0;
+  for (
+    e = Math.abs(e),
+      isNaN(e) || e === 1 / 0
+        ? ((f = isNaN(e) ? 1 : 0), (l = E))
+        : ((l = Math.floor(Math.log(e) / Math.LN2)),
+          e * (y = Math.pow(2, -l)) < 1 && (l--, (y *= 2)),
+          l + B >= 1 ? (e += M / y) : (e += M * Math.pow(2, 1 - B)),
+          e * y >= 2 && (l++, (y /= 2)),
+          l + B >= E
+            ? ((f = 0), (l = E))
+            : l + B >= 1
+              ? ((f = (e * y - 1) * Math.pow(2, i)), (l = l + B))
+              : ((f = e * Math.pow(2, B - 1) * Math.pow(2, i)), (l = 0)));
+    i >= 8;
+    t[r + v] = f & 255, v += U, f /= 256, i -= 8
+  );
+  for (
+    l = (l << i) | f, m += i;
+    m > 0;
+    t[r + v] = l & 255, v += U, l /= 256, m -= 8
+  );
+  t[r + v - U] |= N * 128;
+};
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */ (function (t) {
+  const e = Vr,
+    r = Gr,
+    n =
+      typeof Symbol == "function" && typeof Symbol.for == "function"
+        ? Symbol.for("nodejs.util.inspect.custom")
+        : null;
+  (t.Buffer = f), (t.SlowBuffer = V), (t.INSPECT_MAX_BYTES = 50);
+  const i = 2147483647;
+  (t.kMaxLength = i),
+    (f.TYPED_ARRAY_SUPPORT = c()),
+    !f.TYPED_ARRAY_SUPPORT &&
+      typeof console < "u" &&
+      typeof console.error == "function" &&
+      console.error(
+        "This browser lacks typed array (Uint8Array) support which is required by `buffer` v5.x. Use `buffer` v4.x if you require old browser support.",
+      );
+  function c() {
+    try {
+      const d = new Uint8Array(1),
+        o = {
+          foo: function () {
+            return 42;
+          },
+        };
+      return (
+        Object.setPrototypeOf(o, Uint8Array.prototype),
+        Object.setPrototypeOf(d, o),
+        d.foo() === 42
+      );
+    } catch {
+      return !1;
+    }
+  }
+  Object.defineProperty(f.prototype, "parent", {
+    enumerable: !0,
+    get: function () {
+      if (f.isBuffer(this)) return this.buffer;
+    },
+  }),
+    Object.defineProperty(f.prototype, "offset", {
+      enumerable: !0,
+      get: function () {
+        if (f.isBuffer(this)) return this.byteOffset;
+      },
+    });
+  function l(d) {
+    if (d > i)
+      throw new RangeError(
+        'The value "' + d + '" is invalid for option "size"',
+      );
+    const o = new Uint8Array(d);
+    return Object.setPrototypeOf(o, f.prototype), o;
+  }
+  function f(d, o, u) {
+    if (typeof d == "number") {
+      if (typeof o == "string")
+        throw new TypeError(
+          'The "string" argument must be of type string. Received type number',
+        );
+      return B(d);
+    }
+    return y(d, o, u);
+  }
+  f.poolSize = 8192;
+  function y(d, o, u) {
+    if (typeof d == "string") return M(d, o);
+    if (ArrayBuffer.isView(d)) return U(d);
+    if (d == null)
+      throw new TypeError(
+        "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received type " +
+          typeof d,
+      );
+    if (
+      k(d, ArrayBuffer) ||
+      (d && k(d.buffer, ArrayBuffer)) ||
+      (typeof SharedArrayBuffer < "u" &&
+        (k(d, SharedArrayBuffer) || (d && k(d.buffer, SharedArrayBuffer))))
+    )
+      return N(d, o, u);
+    if (typeof d == "number")
+      throw new TypeError(
+        'The "value" argument must not be of type number. Received type number',
+      );
+    const _ = d.valueOf && d.valueOf();
+    if (_ != null && _ !== d) return f.from(_, o, u);
+    const O = q(d);
+    if (O) return O;
+    if (
+      typeof Symbol < "u" &&
+      Symbol.toPrimitive != null &&
+      typeof d[Symbol.toPrimitive] == "function"
+    )
+      return f.from(d[Symbol.toPrimitive]("string"), o, u);
+    throw new TypeError(
+      "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received type " +
+        typeof d,
+    );
+  }
+  (f.from = function (d, o, u) {
+    return y(d, o, u);
+  }),
+    Object.setPrototypeOf(f.prototype, Uint8Array.prototype),
+    Object.setPrototypeOf(f, Uint8Array);
+  function m(d) {
+    if (typeof d != "number")
+      throw new TypeError('"size" argument must be of type number');
+    if (d < 0)
+      throw new RangeError(
+        'The value "' + d + '" is invalid for option "size"',
+      );
+  }
+  function E(d, o, u) {
+    return (
+      m(d),
+      d <= 0
+        ? l(d)
+        : o !== void 0
+          ? typeof u == "string"
+            ? l(d).fill(o, u)
+            : l(d).fill(o)
+          : l(d)
+    );
+  }
+  f.alloc = function (d, o, u) {
+    return E(d, o, u);
+  };
+  function B(d) {
+    return m(d), l(d < 0 ? 0 : G(d) | 0);
+  }
+  (f.allocUnsafe = function (d) {
+    return B(d);
+  }),
+    (f.allocUnsafeSlow = function (d) {
+      return B(d);
+    });
+  function M(d, o) {
+    if (((typeof o != "string" || o === "") && (o = "utf8"), !f.isEncoding(o)))
+      throw new TypeError("Unknown encoding: " + o);
+    const u = W(d, o) | 0;
+    let _ = l(u);
+    const O = _.write(d, o);
+    return O !== u && (_ = _.slice(0, O)), _;
+  }
+  function v(d) {
+    const o = d.length < 0 ? 0 : G(d.length) | 0,
+      u = l(o);
+    for (let _ = 0; _ < o; _ += 1) u[_] = d[_] & 255;
+    return u;
+  }
+  function U(d) {
+    if (k(d, Uint8Array)) {
+      const o = new Uint8Array(d);
+      return N(o.buffer, o.byteOffset, o.byteLength);
+    }
+    return v(d);
+  }
+  function N(d, o, u) {
+    if (o < 0 || d.byteLength < o)
+      throw new RangeError('"offset" is outside of buffer bounds');
+    if (d.byteLength < o + (u || 0))
+      throw new RangeError('"length" is outside of buffer bounds');
+    let _;
+    return (
+      o === void 0 && u === void 0
+        ? (_ = new Uint8Array(d))
+        : u === void 0
+          ? (_ = new Uint8Array(d, o))
+          : (_ = new Uint8Array(d, o, u)),
+      Object.setPrototypeOf(_, f.prototype),
+      _
+    );
+  }
+  function q(d) {
+    if (f.isBuffer(d)) {
+      const o = G(d.length) | 0,
+        u = l(o);
+      return u.length === 0 || d.copy(u, 0, 0, o), u;
+    }
+    if (d.length !== void 0)
+      return typeof d.length != "number" || Q(d.length) ? l(0) : v(d);
+    if (d.type === "Buffer" && Array.isArray(d.data)) return v(d.data);
+  }
+  function G(d) {
+    if (d >= i)
+      throw new RangeError(
+        "Attempt to allocate Buffer larger than maximum size: 0x" +
+          i.toString(16) +
+          " bytes",
+      );
+    return d | 0;
+  }
+  function V(d) {
+    return +d != d && (d = 0), f.alloc(+d);
+  }
+  (f.isBuffer = function (o) {
+    return o != null && o._isBuffer === !0 && o !== f.prototype;
+  }),
+    (f.compare = function (o, u) {
+      if (
+        (k(o, Uint8Array) && (o = f.from(o, o.offset, o.byteLength)),
+        k(u, Uint8Array) && (u = f.from(u, u.offset, u.byteLength)),
+        !f.isBuffer(o) || !f.isBuffer(u))
+      )
+        throw new TypeError(
+          'The "buf1", "buf2" arguments must be one of type Buffer or Uint8Array',
+        );
+      if (o === u) return 0;
+      let _ = o.length,
+        O = u.length;
+      for (let $ = 0, C = Math.min(_, O); $ < C; ++$)
+        if (o[$] !== u[$]) {
+          (_ = o[$]), (O = u[$]);
+          break;
+        }
+      return _ < O ? -1 : O < _ ? 1 : 0;
+    }),
+    (f.isEncoding = function (o) {
+      switch (String(o).toLowerCase()) {
+        case "hex":
+        case "utf8":
+        case "utf-8":
+        case "ascii":
+        case "latin1":
+        case "binary":
+        case "base64":
+        case "ucs2":
+        case "ucs-2":
+        case "utf16le":
+        case "utf-16le":
+          return !0;
+        default:
+          return !1;
+      }
+    }),
+    (f.concat = function (o, u) {
+      if (!Array.isArray(o))
+        throw new TypeError('"list" argument must be an Array of Buffers');
+      if (o.length === 0) return f.alloc(0);
+      let _;
+      if (u === void 0) for (u = 0, _ = 0; _ < o.length; ++_) u += o[_].length;
+      const O = f.allocUnsafe(u);
+      let $ = 0;
+      for (_ = 0; _ < o.length; ++_) {
+        let C = o[_];
+        if (k(C, Uint8Array))
+          $ + C.length > O.length
+            ? (f.isBuffer(C) || (C = f.from(C)), C.copy(O, $))
+            : Uint8Array.prototype.set.call(O, C, $);
+        else if (f.isBuffer(C)) C.copy(O, $);
+        else throw new TypeError('"list" argument must be an Array of Buffers');
+        $ += C.length;
+      }
+      return O;
+    });
+  function W(d, o) {
+    if (f.isBuffer(d)) return d.length;
+    if (ArrayBuffer.isView(d) || k(d, ArrayBuffer)) return d.byteLength;
+    if (typeof d != "string")
+      throw new TypeError(
+        'The "string" argument must be one of type string, Buffer, or ArrayBuffer. Received type ' +
+          typeof d,
+      );
+    const u = d.length,
+      _ = arguments.length > 2 && arguments[2] === !0;
+    if (!_ && u === 0) return 0;
+    let O = !1;
+    for (;;)
+      switch (o) {
+        case "ascii":
+        case "latin1":
+        case "binary":
+          return u;
+        case "utf8":
+        case "utf-8":
+          return s(d).length;
+        case "ucs2":
+        case "ucs-2":
+        case "utf16le":
+        case "utf-16le":
+          return u * 2;
+        case "hex":
+          return u >>> 1;
+        case "base64":
+          return g(d).length;
+        default:
+          if (O) return _ ? -1 : s(d).length;
+          (o = ("" + o).toLowerCase()), (O = !0);
+      }
+  }
+  f.byteLength = W;
+  function J(d, o, u) {
+    let _ = !1;
+    if (
+      ((o === void 0 || o < 0) && (o = 0),
+      o > this.length ||
+        ((u === void 0 || u > this.length) && (u = this.length), u <= 0) ||
+        ((u >>>= 0), (o >>>= 0), u <= o))
+    )
+      return "";
+    for (d || (d = "utf8"); ; )
+      switch (d) {
+        case "hex":
+          return Y(this, o, u);
+        case "utf8":
+        case "utf-8":
+          return Te(this, o, u);
+        case "ascii":
+          return pe(this, o, u);
+        case "latin1":
+        case "binary":
+          return K(this, o, u);
+        case "base64":
+          return he(this, o, u);
+        case "ucs2":
+        case "ucs-2":
+        case "utf16le":
+        case "utf-16le":
+          return te(this, o, u);
+        default:
+          if (_) throw new TypeError("Unknown encoding: " + d);
+          (d = (d + "").toLowerCase()), (_ = !0);
+      }
+  }
+  f.prototype._isBuffer = !0;
+  function z(d, o, u) {
+    const _ = d[o];
+    (d[o] = d[u]), (d[u] = _);
+  }
+  (f.prototype.swap16 = function () {
+    const o = this.length;
+    if (o % 2 !== 0)
+      throw new RangeError("Buffer size must be a multiple of 16-bits");
+    for (let u = 0; u < o; u += 2) z(this, u, u + 1);
+    return this;
+  }),
+    (f.prototype.swap32 = function () {
+      const o = this.length;
+      if (o % 4 !== 0)
+        throw new RangeError("Buffer size must be a multiple of 32-bits");
+      for (let u = 0; u < o; u += 4) z(this, u, u + 3), z(this, u + 1, u + 2);
+      return this;
+    }),
+    (f.prototype.swap64 = function () {
+      const o = this.length;
+      if (o % 8 !== 0)
+        throw new RangeError("Buffer size must be a multiple of 64-bits");
+      for (let u = 0; u < o; u += 8)
+        z(this, u, u + 7),
+          z(this, u + 1, u + 6),
+          z(this, u + 2, u + 5),
+          z(this, u + 3, u + 4);
+      return this;
+    }),
+    (f.prototype.toString = function () {
+      const o = this.length;
+      return o === 0
+        ? ""
+        : arguments.length === 0
+          ? Te(this, 0, o)
+          : J.apply(this, arguments);
+    }),
+    (f.prototype.toLocaleString = f.prototype.toString),
+    (f.prototype.equals = function (o) {
+      if (!f.isBuffer(o)) throw new TypeError("Argument must be a Buffer");
+      return this === o ? !0 : f.compare(this, o) === 0;
+    }),
+    (f.prototype.inspect = function () {
+      let o = "";
+      const u = t.INSPECT_MAX_BYTES;
+      return (
+        (o = this.toString("hex", 0, u)
+          .replace(/(.{2})/g, "$1 ")
+          .trim()),
+        this.length > u && (o += " ... "),
+        "<Buffer " + o + ">"
+      );
+    }),
+    n && (f.prototype[n] = f.prototype.inspect),
+    (f.prototype.compare = function (o, u, _, O, $) {
+      if (
+        (k(o, Uint8Array) && (o = f.from(o, o.offset, o.byteLength)),
+        !f.isBuffer(o))
+      )
+        throw new TypeError(
+          'The "target" argument must be one of type Buffer or Uint8Array. Received type ' +
+            typeof o,
+        );
+      if (
+        (u === void 0 && (u = 0),
+        _ === void 0 && (_ = o ? o.length : 0),
+        O === void 0 && (O = 0),
+        $ === void 0 && ($ = this.length),
+        u < 0 || _ > o.length || O < 0 || $ > this.length)
+      )
+        throw new RangeError("out of range index");
+      if (O >= $ && u >= _) return 0;
+      if (O >= $) return -1;
+      if (u >= _) return 1;
+      if (((u >>>= 0), (_ >>>= 0), (O >>>= 0), ($ >>>= 0), this === o))
+        return 0;
+      let C = $ - O,
+        Ee = _ - u;
+      const Se = Math.min(C, Ee),
+        Be = this.slice(O, $),
+        me = o.slice(u, _);
+      for (let Re = 0; Re < Se; ++Re)
+        if (Be[Re] !== me[Re]) {
+          (C = Be[Re]), (Ee = me[Re]);
+          break;
+        }
+      return C < Ee ? -1 : Ee < C ? 1 : 0;
+    });
+  function H(d, o, u, _, O) {
+    if (d.length === 0) return -1;
+    if (
+      (typeof u == "string"
+        ? ((_ = u), (u = 0))
+        : u > 2147483647
+          ? (u = 2147483647)
+          : u < -2147483648 && (u = -2147483648),
+      (u = +u),
+      Q(u) && (u = O ? 0 : d.length - 1),
+      u < 0 && (u = d.length + u),
+      u >= d.length)
+    ) {
+      if (O) return -1;
+      u = d.length - 1;
+    } else if (u < 0)
+      if (O) u = 0;
+      else return -1;
+    if ((typeof o == "string" && (o = f.from(o, _)), f.isBuffer(o)))
+      return o.length === 0 ? -1 : j(d, o, u, _, O);
+    if (typeof o == "number")
+      return (
+        (o = o & 255),
+        typeof Uint8Array.prototype.indexOf == "function"
+          ? O
+            ? Uint8Array.prototype.indexOf.call(d, o, u)
+            : Uint8Array.prototype.lastIndexOf.call(d, o, u)
+          : j(d, [o], u, _, O)
+      );
+    throw new TypeError("val must be string, number or Buffer");
+  }
+  function j(d, o, u, _, O) {
+    let $ = 1,
+      C = d.length,
+      Ee = o.length;
+    if (
+      _ !== void 0 &&
+      ((_ = String(_).toLowerCase()),
+      _ === "ucs2" || _ === "ucs-2" || _ === "utf16le" || _ === "utf-16le")
+    ) {
+      if (d.length < 2 || o.length < 2) return -1;
+      ($ = 2), (C /= 2), (Ee /= 2), (u /= 2);
+    }
+    function Se(me, Re) {
+      return $ === 1 ? me[Re] : me.readUInt16BE(Re * $);
+    }
+    let Be;
+    if (O) {
+      let me = -1;
+      for (Be = u; Be < C; Be++)
+        if (Se(d, Be) === Se(o, me === -1 ? 0 : Be - me)) {
+          if ((me === -1 && (me = Be), Be - me + 1 === Ee)) return me * $;
+        } else me !== -1 && (Be -= Be - me), (me = -1);
+    } else
+      for (u + Ee > C && (u = C - Ee), Be = u; Be >= 0; Be--) {
+        let me = !0;
+        for (let Re = 0; Re < Ee; Re++)
+          if (Se(d, Be + Re) !== Se(o, Re)) {
+            me = !1;
+            break;
+          }
+        if (me) return Be;
+      }
+    return -1;
+  }
+  (f.prototype.includes = function (o, u, _) {
+    return this.indexOf(o, u, _) !== -1;
+  }),
+    (f.prototype.indexOf = function (o, u, _) {
+      return H(this, o, u, _, !0);
+    }),
+    (f.prototype.lastIndexOf = function (o, u, _) {
+      return H(this, o, u, _, !1);
+    });
+  function X(d, o, u, _) {
+    u = Number(u) || 0;
+    const O = d.length - u;
+    _ ? ((_ = Number(_)), _ > O && (_ = O)) : (_ = O);
+    const $ = o.length;
+    _ > $ / 2 && (_ = $ / 2);
+    let C;
+    for (C = 0; C < _; ++C) {
+      const Ee = parseInt(o.substr(C * 2, 2), 16);
+      if (Q(Ee)) return C;
+      d[u + C] = Ee;
+    }
+    return C;
+  }
+  function ue(d, o, u, _) {
+    return T(s(o, d.length - u), d, u, _);
+  }
+  function L(d, o, u, _) {
+    return T(a(o), d, u, _);
+  }
+  function oe(d, o, u, _) {
+    return T(g(o), d, u, _);
+  }
+  function we(d, o, u, _) {
+    return T(p(o, d.length - u), d, u, _);
+  }
+  (f.prototype.write = function (o, u, _, O) {
+    if (u === void 0) (O = "utf8"), (_ = this.length), (u = 0);
+    else if (_ === void 0 && typeof u == "string")
+      (O = u), (_ = this.length), (u = 0);
+    else if (isFinite(u))
+      (u = u >>> 0),
+        isFinite(_)
+          ? ((_ = _ >>> 0), O === void 0 && (O = "utf8"))
+          : ((O = _), (_ = void 0));
+    else
+      throw new Error(
+        "Buffer.write(string, encoding, offset[, length]) is no longer supported",
+      );
+    const $ = this.length - u;
+    if (
+      ((_ === void 0 || _ > $) && (_ = $),
+      (o.length > 0 && (_ < 0 || u < 0)) || u > this.length)
+    )
+      throw new RangeError("Attempt to write outside buffer bounds");
+    O || (O = "utf8");
+    let C = !1;
+    for (;;)
+      switch (O) {
+        case "hex":
+          return X(this, o, u, _);
+        case "utf8":
+        case "utf-8":
+          return ue(this, o, u, _);
+        case "ascii":
+        case "latin1":
+        case "binary":
+          return L(this, o, u, _);
+        case "base64":
+          return oe(this, o, u, _);
+        case "ucs2":
+        case "ucs-2":
+        case "utf16le":
+        case "utf-16le":
+          return we(this, o, u, _);
+        default:
+          if (C) throw new TypeError("Unknown encoding: " + O);
+          (O = ("" + O).toLowerCase()), (C = !0);
+      }
+  }),
+    (f.prototype.toJSON = function () {
+      return {
+        type: "Buffer",
+        data: Array.prototype.slice.call(this._arr || this, 0),
+      };
+    });
+  function he(d, o, u) {
+    return o === 0 && u === d.length
+      ? e.fromByteArray(d)
+      : e.fromByteArray(d.slice(o, u));
+  }
+  function Te(d, o, u) {
+    u = Math.min(d.length, u);
+    const _ = [];
+    let O = o;
+    for (; O < u; ) {
+      const $ = d[O];
+      let C = null,
+        Ee = $ > 239 ? 4 : $ > 223 ? 3 : $ > 191 ? 2 : 1;
+      if (O + Ee <= u) {
+        let Se, Be, me, Re;
+        switch (Ee) {
+          case 1:
+            $ < 128 && (C = $);
+            break;
+          case 2:
+            (Se = d[O + 1]),
+              (Se & 192) === 128 &&
+                ((Re = (($ & 31) << 6) | (Se & 63)), Re > 127 && (C = Re));
+            break;
+          case 3:
+            (Se = d[O + 1]),
+              (Be = d[O + 2]),
+              (Se & 192) === 128 &&
+                (Be & 192) === 128 &&
+                ((Re = (($ & 15) << 12) | ((Se & 63) << 6) | (Be & 63)),
+                Re > 2047 && (Re < 55296 || Re > 57343) && (C = Re));
+            break;
+          case 4:
+            (Se = d[O + 1]),
+              (Be = d[O + 2]),
+              (me = d[O + 3]),
+              (Se & 192) === 128 &&
+                (Be & 192) === 128 &&
+                (me & 192) === 128 &&
+                ((Re =
+                  (($ & 15) << 18) |
+                  ((Se & 63) << 12) |
+                  ((Be & 63) << 6) |
+                  (me & 63)),
+                Re > 65535 && Re < 1114112 && (C = Re));
+        }
+      }
+      C === null
+        ? ((C = 65533), (Ee = 1))
+        : C > 65535 &&
+          ((C -= 65536),
+          _.push(((C >>> 10) & 1023) | 55296),
+          (C = 56320 | (C & 1023))),
+        _.push(C),
+        (O += Ee);
+    }
+    return ne(_);
+  }
+  const ge = 4096;
+  function ne(d) {
+    const o = d.length;
+    if (o <= ge) return String.fromCharCode.apply(String, d);
+    let u = "",
+      _ = 0;
+    for (; _ < o; )
+      u += String.fromCharCode.apply(String, d.slice(_, (_ += ge)));
+    return u;
+  }
+  function pe(d, o, u) {
+    let _ = "";
+    u = Math.min(d.length, u);
+    for (let O = o; O < u; ++O) _ += String.fromCharCode(d[O] & 127);
+    return _;
+  }
+  function K(d, o, u) {
+    let _ = "";
+    u = Math.min(d.length, u);
+    for (let O = o; O < u; ++O) _ += String.fromCharCode(d[O]);
+    return _;
+  }
+  function Y(d, o, u) {
+    const _ = d.length;
+    (!o || o < 0) && (o = 0), (!u || u < 0 || u > _) && (u = _);
+    let O = "";
+    for (let $ = o; $ < u; ++$) O += ae[d[$]];
+    return O;
+  }
+  function te(d, o, u) {
+    const _ = d.slice(o, u);
+    let O = "";
+    for (let $ = 0; $ < _.length - 1; $ += 2)
+      O += String.fromCharCode(_[$] + _[$ + 1] * 256);
+    return O;
+  }
+  f.prototype.slice = function (o, u) {
+    const _ = this.length;
+    (o = ~~o),
+      (u = u === void 0 ? _ : ~~u),
+      o < 0 ? ((o += _), o < 0 && (o = 0)) : o > _ && (o = _),
+      u < 0 ? ((u += _), u < 0 && (u = 0)) : u > _ && (u = _),
+      u < o && (u = o);
+    const O = this.subarray(o, u);
+    return Object.setPrototypeOf(O, f.prototype), O;
+  };
+  function D(d, o, u) {
+    if (d % 1 !== 0 || d < 0) throw new RangeError("offset is not uint");
+    if (d + o > u)
+      throw new RangeError("Trying to access beyond buffer length");
+  }
+  (f.prototype.readUintLE = f.prototype.readUIntLE =
+    function (o, u, _) {
+      (o = o >>> 0), (u = u >>> 0), _ || D(o, u, this.length);
+      let O = this[o],
+        $ = 1,
+        C = 0;
+      for (; ++C < u && ($ *= 256); ) O += this[o + C] * $;
+      return O;
+    }),
+    (f.prototype.readUintBE = f.prototype.readUIntBE =
+      function (o, u, _) {
+        (o = o >>> 0), (u = u >>> 0), _ || D(o, u, this.length);
+        let O = this[o + --u],
+          $ = 1;
+        for (; u > 0 && ($ *= 256); ) O += this[o + --u] * $;
+        return O;
+      }),
+    (f.prototype.readUint8 = f.prototype.readUInt8 =
+      function (o, u) {
+        return (o = o >>> 0), u || D(o, 1, this.length), this[o];
+      }),
+    (f.prototype.readUint16LE = f.prototype.readUInt16LE =
+      function (o, u) {
+        return (
+          (o = o >>> 0), u || D(o, 2, this.length), this[o] | (this[o + 1] << 8)
+        );
+      }),
+    (f.prototype.readUint16BE = f.prototype.readUInt16BE =
+      function (o, u) {
+        return (
+          (o = o >>> 0), u || D(o, 2, this.length), (this[o] << 8) | this[o + 1]
+        );
+      }),
+    (f.prototype.readUint32LE = f.prototype.readUInt32LE =
+      function (o, u) {
+        return (
+          (o = o >>> 0),
+          u || D(o, 4, this.length),
+          (this[o] | (this[o + 1] << 8) | (this[o + 2] << 16)) +
+            this[o + 3] * 16777216
+        );
+      }),
+    (f.prototype.readUint32BE = f.prototype.readUInt32BE =
+      function (o, u) {
+        return (
+          (o = o >>> 0),
+          u || D(o, 4, this.length),
+          this[o] * 16777216 +
+            ((this[o + 1] << 16) | (this[o + 2] << 8) | this[o + 3])
+        );
+      }),
+    (f.prototype.readBigUInt64LE = le(function (o) {
+      (o = o >>> 0), F(o, "offset");
+      const u = this[o],
+        _ = this[o + 7];
+      (u === void 0 || _ === void 0) && R(o, this.length - 8);
+      const O =
+          u + this[++o] * 2 ** 8 + this[++o] * 2 ** 16 + this[++o] * 2 ** 24,
+        $ = this[++o] + this[++o] * 2 ** 8 + this[++o] * 2 ** 16 + _ * 2 ** 24;
+      return BigInt(O) + (BigInt($) << BigInt(32));
+    })),
+    (f.prototype.readBigUInt64BE = le(function (o) {
+      (o = o >>> 0), F(o, "offset");
+      const u = this[o],
+        _ = this[o + 7];
+      (u === void 0 || _ === void 0) && R(o, this.length - 8);
+      const O =
+          u * 2 ** 24 + this[++o] * 2 ** 16 + this[++o] * 2 ** 8 + this[++o],
+        $ = this[++o] * 2 ** 24 + this[++o] * 2 ** 16 + this[++o] * 2 ** 8 + _;
+      return (BigInt(O) << BigInt(32)) + BigInt($);
+    })),
+    (f.prototype.readIntLE = function (o, u, _) {
+      (o = o >>> 0), (u = u >>> 0), _ || D(o, u, this.length);
+      let O = this[o],
+        $ = 1,
+        C = 0;
+      for (; ++C < u && ($ *= 256); ) O += this[o + C] * $;
+      return ($ *= 128), O >= $ && (O -= Math.pow(2, 8 * u)), O;
+    }),
+    (f.prototype.readIntBE = function (o, u, _) {
+      (o = o >>> 0), (u = u >>> 0), _ || D(o, u, this.length);
+      let O = u,
+        $ = 1,
+        C = this[o + --O];
+      for (; O > 0 && ($ *= 256); ) C += this[o + --O] * $;
+      return ($ *= 128), C >= $ && (C -= Math.pow(2, 8 * u)), C;
+    }),
+    (f.prototype.readInt8 = function (o, u) {
+      return (
+        (o = o >>> 0),
+        u || D(o, 1, this.length),
+        this[o] & 128 ? (255 - this[o] + 1) * -1 : this[o]
+      );
+    }),
+    (f.prototype.readInt16LE = function (o, u) {
+      (o = o >>> 0), u || D(o, 2, this.length);
+      const _ = this[o] | (this[o + 1] << 8);
+      return _ & 32768 ? _ | 4294901760 : _;
+    }),
+    (f.prototype.readInt16BE = function (o, u) {
+      (o = o >>> 0), u || D(o, 2, this.length);
+      const _ = this[o + 1] | (this[o] << 8);
+      return _ & 32768 ? _ | 4294901760 : _;
+    }),
+    (f.prototype.readInt32LE = function (o, u) {
+      return (
+        (o = o >>> 0),
+        u || D(o, 4, this.length),
+        this[o] | (this[o + 1] << 8) | (this[o + 2] << 16) | (this[o + 3] << 24)
+      );
+    }),
+    (f.prototype.readInt32BE = function (o, u) {
+      return (
+        (o = o >>> 0),
+        u || D(o, 4, this.length),
+        (this[o] << 24) | (this[o + 1] << 16) | (this[o + 2] << 8) | this[o + 3]
+      );
+    }),
+    (f.prototype.readBigInt64LE = le(function (o) {
+      (o = o >>> 0), F(o, "offset");
+      const u = this[o],
+        _ = this[o + 7];
+      (u === void 0 || _ === void 0) && R(o, this.length - 8);
+      const O =
+        this[o + 4] + this[o + 5] * 2 ** 8 + this[o + 6] * 2 ** 16 + (_ << 24);
+      return (
+        (BigInt(O) << BigInt(32)) +
+        BigInt(
+          u + this[++o] * 2 ** 8 + this[++o] * 2 ** 16 + this[++o] * 2 ** 24,
+        )
+      );
+    })),
+    (f.prototype.readBigInt64BE = le(function (o) {
+      (o = o >>> 0), F(o, "offset");
+      const u = this[o],
+        _ = this[o + 7];
+      (u === void 0 || _ === void 0) && R(o, this.length - 8);
+      const O =
+        (u << 24) + this[++o] * 2 ** 16 + this[++o] * 2 ** 8 + this[++o];
+      return (
+        (BigInt(O) << BigInt(32)) +
+        BigInt(
+          this[++o] * 2 ** 24 + this[++o] * 2 ** 16 + this[++o] * 2 ** 8 + _,
+        )
+      );
+    })),
+    (f.prototype.readFloatLE = function (o, u) {
+      return (
+        (o = o >>> 0), u || D(o, 4, this.length), r.read(this, o, !0, 23, 4)
+      );
+    }),
+    (f.prototype.readFloatBE = function (o, u) {
+      return (
+        (o = o >>> 0), u || D(o, 4, this.length), r.read(this, o, !1, 23, 4)
+      );
+    }),
+    (f.prototype.readDoubleLE = function (o, u) {
+      return (
+        (o = o >>> 0), u || D(o, 8, this.length), r.read(this, o, !0, 52, 8)
+      );
+    }),
+    (f.prototype.readDoubleBE = function (o, u) {
+      return (
+        (o = o >>> 0), u || D(o, 8, this.length), r.read(this, o, !1, 52, 8)
+      );
+    });
+  function ee(d, o, u, _, O, $) {
+    if (!f.isBuffer(d))
+      throw new TypeError('"buffer" argument must be a Buffer instance');
+    if (o > O || o < $)
+      throw new RangeError('"value" argument is out of bounds');
+    if (u + _ > d.length) throw new RangeError("Index out of range");
+  }
+  (f.prototype.writeUintLE = f.prototype.writeUIntLE =
+    function (o, u, _, O) {
+      if (((o = +o), (u = u >>> 0), (_ = _ >>> 0), !O)) {
+        const Ee = Math.pow(2, 8 * _) - 1;
+        ee(this, o, u, _, Ee, 0);
+      }
+      let $ = 1,
+        C = 0;
+      for (this[u] = o & 255; ++C < _ && ($ *= 256); )
+        this[u + C] = (o / $) & 255;
+      return u + _;
+    }),
+    (f.prototype.writeUintBE = f.prototype.writeUIntBE =
+      function (o, u, _, O) {
+        if (((o = +o), (u = u >>> 0), (_ = _ >>> 0), !O)) {
+          const Ee = Math.pow(2, 8 * _) - 1;
+          ee(this, o, u, _, Ee, 0);
+        }
+        let $ = _ - 1,
+          C = 1;
+        for (this[u + $] = o & 255; --$ >= 0 && (C *= 256); )
+          this[u + $] = (o / C) & 255;
+        return u + _;
+      }),
+    (f.prototype.writeUint8 = f.prototype.writeUInt8 =
+      function (o, u, _) {
+        return (
+          (o = +o),
+          (u = u >>> 0),
+          _ || ee(this, o, u, 1, 255, 0),
+          (this[u] = o & 255),
+          u + 1
+        );
+      }),
+    (f.prototype.writeUint16LE = f.prototype.writeUInt16LE =
+      function (o, u, _) {
+        return (
+          (o = +o),
+          (u = u >>> 0),
+          _ || ee(this, o, u, 2, 65535, 0),
+          (this[u] = o & 255),
+          (this[u + 1] = o >>> 8),
+          u + 2
+        );
+      }),
+    (f.prototype.writeUint16BE = f.prototype.writeUInt16BE =
+      function (o, u, _) {
+        return (
+          (o = +o),
+          (u = u >>> 0),
+          _ || ee(this, o, u, 2, 65535, 0),
+          (this[u] = o >>> 8),
+          (this[u + 1] = o & 255),
+          u + 2
+        );
+      }),
+    (f.prototype.writeUint32LE = f.prototype.writeUInt32LE =
+      function (o, u, _) {
+        return (
+          (o = +o),
+          (u = u >>> 0),
+          _ || ee(this, o, u, 4, 4294967295, 0),
+          (this[u + 3] = o >>> 24),
+          (this[u + 2] = o >>> 16),
+          (this[u + 1] = o >>> 8),
+          (this[u] = o & 255),
+          u + 4
+        );
+      }),
+    (f.prototype.writeUint32BE = f.prototype.writeUInt32BE =
+      function (o, u, _) {
+        return (
+          (o = +o),
+          (u = u >>> 0),
+          _ || ee(this, o, u, 4, 4294967295, 0),
+          (this[u] = o >>> 24),
+          (this[u + 1] = o >>> 16),
+          (this[u + 2] = o >>> 8),
+          (this[u + 3] = o & 255),
+          u + 4
+        );
+      });
+  function ce(d, o, u, _, O) {
+    A(o, _, O, d, u, 7);
+    let $ = Number(o & BigInt(4294967295));
+    (d[u++] = $),
+      ($ = $ >> 8),
+      (d[u++] = $),
+      ($ = $ >> 8),
+      (d[u++] = $),
+      ($ = $ >> 8),
+      (d[u++] = $);
+    let C = Number((o >> BigInt(32)) & BigInt(4294967295));
+    return (
+      (d[u++] = C),
+      (C = C >> 8),
+      (d[u++] = C),
+      (C = C >> 8),
+      (d[u++] = C),
+      (C = C >> 8),
+      (d[u++] = C),
+      u
+    );
+  }
+  function w(d, o, u, _, O) {
+    A(o, _, O, d, u, 7);
+    let $ = Number(o & BigInt(4294967295));
+    (d[u + 7] = $),
+      ($ = $ >> 8),
+      (d[u + 6] = $),
+      ($ = $ >> 8),
+      (d[u + 5] = $),
+      ($ = $ >> 8),
+      (d[u + 4] = $);
+    let C = Number((o >> BigInt(32)) & BigInt(4294967295));
+    return (
+      (d[u + 3] = C),
+      (C = C >> 8),
+      (d[u + 2] = C),
+      (C = C >> 8),
+      (d[u + 1] = C),
+      (C = C >> 8),
+      (d[u] = C),
+      u + 8
+    );
+  }
+  (f.prototype.writeBigUInt64LE = le(function (o, u = 0) {
+    return ce(this, o, u, BigInt(0), BigInt("0xffffffffffffffff"));
+  })),
+    (f.prototype.writeBigUInt64BE = le(function (o, u = 0) {
+      return w(this, o, u, BigInt(0), BigInt("0xffffffffffffffff"));
+    })),
+    (f.prototype.writeIntLE = function (o, u, _, O) {
+      if (((o = +o), (u = u >>> 0), !O)) {
+        const Se = Math.pow(2, 8 * _ - 1);
+        ee(this, o, u, _, Se - 1, -Se);
+      }
+      let $ = 0,
+        C = 1,
+        Ee = 0;
+      for (this[u] = o & 255; ++$ < _ && (C *= 256); )
+        o < 0 && Ee === 0 && this[u + $ - 1] !== 0 && (Ee = 1),
+          (this[u + $] = (((o / C) >> 0) - Ee) & 255);
+      return u + _;
+    }),
+    (f.prototype.writeIntBE = function (o, u, _, O) {
+      if (((o = +o), (u = u >>> 0), !O)) {
+        const Se = Math.pow(2, 8 * _ - 1);
+        ee(this, o, u, _, Se - 1, -Se);
+      }
+      let $ = _ - 1,
+        C = 1,
+        Ee = 0;
+      for (this[u + $] = o & 255; --$ >= 0 && (C *= 256); )
+        o < 0 && Ee === 0 && this[u + $ + 1] !== 0 && (Ee = 1),
+          (this[u + $] = (((o / C) >> 0) - Ee) & 255);
+      return u + _;
+    }),
+    (f.prototype.writeInt8 = function (o, u, _) {
+      return (
+        (o = +o),
+        (u = u >>> 0),
+        _ || ee(this, o, u, 1, 127, -128),
+        o < 0 && (o = 255 + o + 1),
+        (this[u] = o & 255),
+        u + 1
+      );
+    }),
+    (f.prototype.writeInt16LE = function (o, u, _) {
+      return (
+        (o = +o),
+        (u = u >>> 0),
+        _ || ee(this, o, u, 2, 32767, -32768),
+        (this[u] = o & 255),
+        (this[u + 1] = o >>> 8),
+        u + 2
+      );
+    }),
+    (f.prototype.writeInt16BE = function (o, u, _) {
+      return (
+        (o = +o),
+        (u = u >>> 0),
+        _ || ee(this, o, u, 2, 32767, -32768),
+        (this[u] = o >>> 8),
+        (this[u + 1] = o & 255),
+        u + 2
+      );
+    }),
+    (f.prototype.writeInt32LE = function (o, u, _) {
+      return (
+        (o = +o),
+        (u = u >>> 0),
+        _ || ee(this, o, u, 4, 2147483647, -2147483648),
+        (this[u] = o & 255),
+        (this[u + 1] = o >>> 8),
+        (this[u + 2] = o >>> 16),
+        (this[u + 3] = o >>> 24),
+        u + 4
+      );
+    }),
+    (f.prototype.writeInt32BE = function (o, u, _) {
+      return (
+        (o = +o),
+        (u = u >>> 0),
+        _ || ee(this, o, u, 4, 2147483647, -2147483648),
+        o < 0 && (o = 4294967295 + o + 1),
+        (this[u] = o >>> 24),
+        (this[u + 1] = o >>> 16),
+        (this[u + 2] = o >>> 8),
+        (this[u + 3] = o & 255),
+        u + 4
+      );
+    }),
+    (f.prototype.writeBigInt64LE = le(function (o, u = 0) {
+      return ce(
+        this,
+        o,
+        u,
+        -BigInt("0x8000000000000000"),
+        BigInt("0x7fffffffffffffff"),
+      );
+    })),
+    (f.prototype.writeBigInt64BE = le(function (o, u = 0) {
+      return w(
+        this,
+        o,
+        u,
+        -BigInt("0x8000000000000000"),
+        BigInt("0x7fffffffffffffff"),
+      );
+    }));
+  function ye(d, o, u, _, O, $) {
+    if (u + _ > d.length) throw new RangeError("Index out of range");
+    if (u < 0) throw new RangeError("Index out of range");
+  }
+  function de(d, o, u, _, O) {
+    return (
+      (o = +o),
+      (u = u >>> 0),
+      O || ye(d, o, u, 4),
+      r.write(d, o, u, _, 23, 4),
+      u + 4
+    );
+  }
+  (f.prototype.writeFloatLE = function (o, u, _) {
+    return de(this, o, u, !0, _);
+  }),
+    (f.prototype.writeFloatBE = function (o, u, _) {
+      return de(this, o, u, !1, _);
+    });
+  function xe(d, o, u, _, O) {
+    return (
+      (o = +o),
+      (u = u >>> 0),
+      O || ye(d, o, u, 8),
+      r.write(d, o, u, _, 52, 8),
+      u + 8
+    );
+  }
+  (f.prototype.writeDoubleLE = function (o, u, _) {
+    return xe(this, o, u, !0, _);
+  }),
+    (f.prototype.writeDoubleBE = function (o, u, _) {
+      return xe(this, o, u, !1, _);
+    }),
+    (f.prototype.copy = function (o, u, _, O) {
+      if (!f.isBuffer(o)) throw new TypeError("argument should be a Buffer");
+      if (
+        (_ || (_ = 0),
+        !O && O !== 0 && (O = this.length),
+        u >= o.length && (u = o.length),
+        u || (u = 0),
+        O > 0 && O < _ && (O = _),
+        O === _ || o.length === 0 || this.length === 0)
+      )
+        return 0;
+      if (u < 0) throw new RangeError("targetStart out of bounds");
+      if (_ < 0 || _ >= this.length) throw new RangeError("Index out of range");
+      if (O < 0) throw new RangeError("sourceEnd out of bounds");
+      O > this.length && (O = this.length),
+        o.length - u < O - _ && (O = o.length - u + _);
+      const $ = O - _;
+      return (
+        this === o && typeof Uint8Array.prototype.copyWithin == "function"
+          ? this.copyWithin(u, _, O)
+          : Uint8Array.prototype.set.call(o, this.subarray(_, O), u),
+        $
+      );
+    }),
+    (f.prototype.fill = function (o, u, _, O) {
+      if (typeof o == "string") {
+        if (
+          (typeof u == "string"
+            ? ((O = u), (u = 0), (_ = this.length))
+            : typeof _ == "string" && ((O = _), (_ = this.length)),
+          O !== void 0 && typeof O != "string")
+        )
+          throw new TypeError("encoding must be a string");
+        if (typeof O == "string" && !f.isEncoding(O))
+          throw new TypeError("Unknown encoding: " + O);
+        if (o.length === 1) {
+          const C = o.charCodeAt(0);
+          ((O === "utf8" && C < 128) || O === "latin1") && (o = C);
+        }
+      } else
+        typeof o == "number"
+          ? (o = o & 255)
+          : typeof o == "boolean" && (o = Number(o));
+      if (u < 0 || this.length < u || this.length < _)
+        throw new RangeError("Out of range index");
+      if (_ <= u) return this;
+      (u = u >>> 0), (_ = _ === void 0 ? this.length : _ >>> 0), o || (o = 0);
+      let $;
+      if (typeof o == "number") for ($ = u; $ < _; ++$) this[$] = o;
+      else {
+        const C = f.isBuffer(o) ? o : f.from(o, O),
+          Ee = C.length;
+        if (Ee === 0)
+          throw new TypeError(
+            'The value "' + o + '" is invalid for argument "value"',
+          );
+        for ($ = 0; $ < _ - u; ++$) this[$ + u] = C[$ % Ee];
+      }
+      return this;
+    });
+  const re = {};
+  function se(d, o, u) {
+    re[d] = class extends u {
+      constructor() {
+        super(),
+          Object.defineProperty(this, "message", {
+            value: o.apply(this, arguments),
+            writable: !0,
+            configurable: !0,
+          }),
+          (this.name = `${this.name} [${d}]`),
+          this.stack,
+          delete this.name;
+      }
+      get code() {
+        return d;
+      }
+      set code(O) {
+        Object.defineProperty(this, "code", {
+          configurable: !0,
+          enumerable: !0,
+          value: O,
+          writable: !0,
+        });
+      }
+      toString() {
+        return `${this.name} [${d}]: ${this.message}`;
+      }
+    };
+  }
+  se(
+    "ERR_BUFFER_OUT_OF_BOUNDS",
+    function (d) {
+      return d
+        ? `${d} is outside of buffer bounds`
+        : "Attempt to access memory outside buffer bounds";
+    },
+    RangeError,
+  ),
+    se(
+      "ERR_INVALID_ARG_TYPE",
+      function (d, o) {
+        return `The "${d}" argument must be of type number. Received type ${typeof o}`;
+      },
+      TypeError,
+    ),
+    se(
+      "ERR_OUT_OF_RANGE",
+      function (d, o, u) {
+        let _ = `The value of "${d}" is out of range.`,
+          O = u;
+        return (
+          Number.isInteger(u) && Math.abs(u) > 2 ** 32
+            ? (O = b(String(u)))
+            : typeof u == "bigint" &&
+              ((O = String(u)),
+              (u > BigInt(2) ** BigInt(32) || u < -(BigInt(2) ** BigInt(32))) &&
+                (O = b(O)),
+              (O += "n")),
+          (_ += ` It must be ${o}. Received ${O}`),
+          _
+        );
+      },
+      RangeError,
+    );
+  function b(d) {
+    let o = "",
+      u = d.length;
+    const _ = d[0] === "-" ? 1 : 0;
+    for (; u >= _ + 4; u -= 3) o = `_${d.slice(u - 3, u)}${o}`;
+    return `${d.slice(0, u)}${o}`;
+  }
+  function x(d, o, u) {
+    F(o, "offset"),
+      (d[o] === void 0 || d[o + u] === void 0) && R(o, d.length - (u + 1));
+  }
+  function A(d, o, u, _, O, $) {
+    if (d > u || d < o) {
+      const C = typeof o == "bigint" ? "n" : "";
+      let Ee;
+      throw (
+        (o === 0 || o === BigInt(0)
+          ? (Ee = `>= 0${C} and < 2${C} ** ${($ + 1) * 8}${C}`)
+          : (Ee = `>= -(2${C} ** ${($ + 1) * 8 - 1}${C}) and < 2 ** ${($ + 1) * 8 - 1}${C}`),
+        new re.ERR_OUT_OF_RANGE("value", Ee, d))
+      );
+    }
+    x(_, O, $);
+  }
+  function F(d, o) {
+    if (typeof d != "number") throw new re.ERR_INVALID_ARG_TYPE(o, "number", d);
+  }
+  function R(d, o, u) {
+    throw Math.floor(d) !== d
+      ? (F(d, u), new re.ERR_OUT_OF_RANGE("offset", "an integer", d))
+      : o < 0
+        ? new re.ERR_BUFFER_OUT_OF_BOUNDS()
+        : new re.ERR_OUT_OF_RANGE("offset", `>= 0 and <= ${o}`, d);
+  }
+  const P = /[^+/0-9A-Za-z-_]/g;
+  function h(d) {
+    if (((d = d.split("=")[0]), (d = d.trim().replace(P, "")), d.length < 2))
+      return "";
+    for (; d.length % 4 !== 0; ) d = d + "=";
+    return d;
+  }
+  function s(d, o) {
+    o = o || 1 / 0;
+    let u;
+    const _ = d.length;
+    let O = null;
+    const $ = [];
+    for (let C = 0; C < _; ++C) {
+      if (((u = d.charCodeAt(C)), u > 55295 && u < 57344)) {
+        if (!O) {
+          if (u > 56319) {
+            (o -= 3) > -1 && $.push(239, 191, 189);
+            continue;
+          } else if (C + 1 === _) {
+            (o -= 3) > -1 && $.push(239, 191, 189);
+            continue;
+          }
+          O = u;
+          continue;
+        }
+        if (u < 56320) {
+          (o -= 3) > -1 && $.push(239, 191, 189), (O = u);
+          continue;
+        }
+        u = (((O - 55296) << 10) | (u - 56320)) + 65536;
+      } else O && (o -= 3) > -1 && $.push(239, 191, 189);
+      if (((O = null), u < 128)) {
+        if ((o -= 1) < 0) break;
+        $.push(u);
+      } else if (u < 2048) {
+        if ((o -= 2) < 0) break;
+        $.push((u >> 6) | 192, (u & 63) | 128);
+      } else if (u < 65536) {
+        if ((o -= 3) < 0) break;
+        $.push((u >> 12) | 224, ((u >> 6) & 63) | 128, (u & 63) | 128);
+      } else if (u < 1114112) {
+        if ((o -= 4) < 0) break;
+        $.push(
+          (u >> 18) | 240,
+          ((u >> 12) & 63) | 128,
+          ((u >> 6) & 63) | 128,
+          (u & 63) | 128,
+        );
+      } else throw new Error("Invalid code point");
+    }
+    return $;
+  }
+  function a(d) {
+    const o = [];
+    for (let u = 0; u < d.length; ++u) o.push(d.charCodeAt(u) & 255);
+    return o;
+  }
+  function p(d, o) {
+    let u, _, O;
+    const $ = [];
+    for (let C = 0; C < d.length && !((o -= 2) < 0); ++C)
+      (u = d.charCodeAt(C)), (_ = u >> 8), (O = u % 256), $.push(O), $.push(_);
+    return $;
+  }
+  function g(d) {
+    return e.toByteArray(h(d));
+  }
+  function T(d, o, u, _) {
+    let O;
+    for (O = 0; O < _ && !(O + u >= o.length || O >= d.length); ++O)
+      o[O + u] = d[O];
+    return O;
+  }
+  function k(d, o) {
+    return (
+      d instanceof o ||
+      (d != null &&
+        d.constructor != null &&
+        d.constructor.name != null &&
+        d.constructor.name === o.name)
+    );
+  }
+  function Q(d) {
+    return d !== d;
+  }
+  const ae = (function () {
+    const d = "0123456789abcdef",
+      o = new Array(256);
+    for (let u = 0; u < 16; ++u) {
+      const _ = u * 16;
+      for (let O = 0; O < 16; ++O) o[_ + O] = d[u] + d[O];
+    }
+    return o;
+  })();
+  function le(d) {
+    return typeof BigInt > "u" ? _e : d;
+  }
+  function _e() {
+    throw new Error("BigInt not supported");
+  }
+})(Zs);
+function Di(t) {
+  const e = Bc(t),
+    r = new ArrayBuffer(e.length),
+    n = new DataView(r);
+  for (let i = 0; i < r.byteLength; i++) n.setUint8(i, e.charCodeAt(i));
+  return r;
+}
+const Ec = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+function Bc(t) {
+  t.length % 4 === 0 && (t = t.replace(/==?$/, ""));
+  let e = "",
+    r = 0,
+    n = 0;
+  for (let i = 0; i < t.length; i++)
+    (r <<= 6),
+      (r |= Ec.indexOf(t[i])),
+      (n += 6),
+      n === 24 &&
+        ((e += String.fromCharCode((r & 16711680) >> 16)),
+        (e += String.fromCharCode((r & 65280) >> 8)),
+        (e += String.fromCharCode(r & 255)),
+        (r = n = 0));
+  return (
+    n === 12
+      ? ((r >>= 4), (e += String.fromCharCode(r)))
+      : n === 18 &&
+        ((r >>= 2),
+        (e += String.fromCharCode((r & 65280) >> 8)),
+        (e += String.fromCharCode(r & 255))),
+    e
+  );
+}
+const Ac = -1,
+  Tc = -2,
+  Sc = -3,
+  vc = -4,
+  Ic = -5,
+  Nc = -6;
+function gl(t, e) {
+  if (typeof t == "number") return i(t, !0);
+  if (!Array.isArray(t) || t.length === 0) throw new Error("Invalid input");
+  const r = t,
+    n = Array(r.length);
+  function i(c, l = !1) {
+    if (c === Ac) return;
+    if (c === Sc) return NaN;
+    if (c === vc) return 1 / 0;
+    if (c === Ic) return -1 / 0;
+    if (c === Nc) return -0;
+    if (l) throw new Error("Invalid input");
+    if (c in n) return n[c];
+    const f = r[c];
+    if (!f || typeof f != "object") n[c] = f;
+    else if (Array.isArray(f))
+      if (typeof f[0] == "string") {
+        const y = f[0],
+          m = e?.[y];
+        if (m) return (n[c] = m(i(f[1])));
+        switch (y) {
+          case "Date":
+            n[c] = new Date(f[1]);
+            break;
+          case "Set":
+            const E = new Set();
+            n[c] = E;
+            for (let v = 1; v < f.length; v += 1) E.add(i(f[v]));
+            break;
+          case "Map":
+            const B = new Map();
+            n[c] = B;
+            for (let v = 1; v < f.length; v += 2) B.set(i(f[v]), i(f[v + 1]));
+            break;
+          case "RegExp":
+            n[c] = new RegExp(f[1], f[2]);
+            break;
+          case "Object":
+            n[c] = Object(f[1]);
+            break;
+          case "BigInt":
+            n[c] = BigInt(f[1]);
+            break;
+          case "null":
+            const M = Object.create(null);
+            n[c] = M;
+            for (let v = 1; v < f.length; v += 2) M[f[v]] = i(f[v + 1]);
+            break;
+          case "Int8Array":
+          case "Uint8Array":
+          case "Uint8ClampedArray":
+          case "Int16Array":
+          case "Uint16Array":
+          case "Int32Array":
+          case "Uint32Array":
+          case "Float32Array":
+          case "Float64Array":
+          case "BigInt64Array":
+          case "BigUint64Array": {
+            const v = globalThis[y],
+              U = f[1],
+              N = Di(U),
+              q = new v(N);
+            n[c] = q;
+            break;
+          }
+          case "ArrayBuffer": {
+            const v = f[1],
+              U = Di(v);
+            n[c] = U;
+            break;
+          }
+          default:
+            throw new Error(`Unknown type ${y}`);
+        }
+      } else {
+        const y = new Array(f.length);
+        n[c] = y;
+        for (let m = 0; m < f.length; m += 1) {
+          const E = f[m];
+          E !== Tc && (y[m] = i(E));
+        }
+      }
+    else {
+      const y = {};
+      n[c] = y;
+      for (const m in f) {
+        const E = f[m];
+        y[m] = i(E);
+      }
+    }
+    return n[c];
+  }
+  return i(0);
+}
+var ci;
+(function (t) {
+  (t[(t.SysFatal = 1)] = "SysFatal"),
+    (t[(t.SysTransient = 2)] = "SysTransient"),
+    (t[(t.DestinationInvalid = 3)] = "DestinationInvalid"),
+    (t[(t.CanisterReject = 4)] = "CanisterReject"),
+    (t[(t.CanisterError = 5)] = "CanisterError");
+})(ci || (ci = {}));
+const Sn = "abcdefghijklmnopqrstuvwxyz234567",
+  Er = Object.create(null);
+for (let t = 0; t < Sn.length; t++) Er[Sn[t]] = t;
+Er[0] = Er.o;
+Er[1] = Er.i;
+function Uc(t) {
+  let e = 0,
+    r = 0,
+    n = "";
+  function i(c) {
+    return (
+      e < 0 ? (r |= c >> -e) : (r = (c << e) & 248),
+      e > 3 ? ((e -= 8), 1) : (e < 4 && ((n += Sn[r >> 3]), (e += 5)), 0)
+    );
+  }
+  for (let c = 0; c < t.length; ) c += i(t[c]);
+  return n + (e < 0 ? Sn[r >> 3] : "");
+}
+function Rc(t) {
+  let e = 0,
+    r = 0;
+  const n = new Uint8Array(((t.length * 4) / 3) | 0);
+  let i = 0;
+  function c(l) {
+    let f = Er[l.toLowerCase()];
+    if (f === void 0)
+      throw new Error(`Invalid character: ${JSON.stringify(l)}`);
+    (f <<= 3),
+      (r |= f >>> e),
+      (e += 5),
+      e >= 8 &&
+        ((n[i++] = r), (e -= 8), e > 0 ? (r = (f << (5 - e)) & 255) : (r = 0));
+  }
+  for (const l of t) c(l);
+  return n.slice(0, i);
+}
+const Oc = new Uint32Array([
+  0, 1996959894, 3993919788, 2567524794, 124634137, 1886057615, 3915621685,
+  2657392035, 249268274, 2044508324, 3772115230, 2547177864, 162941995,
+  2125561021, 3887607047, 2428444049, 498536548, 1789927666, 4089016648,
+  2227061214, 450548861, 1843258603, 4107580753, 2211677639, 325883990,
+  1684777152, 4251122042, 2321926636, 335633487, 1661365465, 4195302755,
+  2366115317, 997073096, 1281953886, 3579855332, 2724688242, 1006888145,
+  1258607687, 3524101629, 2768942443, 901097722, 1119000684, 3686517206,
+  2898065728, 853044451, 1172266101, 3705015759, 2882616665, 651767980,
+  1373503546, 3369554304, 3218104598, 565507253, 1454621731, 3485111705,
+  3099436303, 671266974, 1594198024, 3322730930, 2970347812, 795835527,
+  1483230225, 3244367275, 3060149565, 1994146192, 31158534, 2563907772,
+  4023717930, 1907459465, 112637215, 2680153253, 3904427059, 2013776290,
+  251722036, 2517215374, 3775830040, 2137656763, 141376813, 2439277719,
+  3865271297, 1802195444, 476864866, 2238001368, 4066508878, 1812370925,
+  453092731, 2181625025, 4111451223, 1706088902, 314042704, 2344532202,
+  4240017532, 1658658271, 366619977, 2362670323, 4224994405, 1303535960,
+  984961486, 2747007092, 3569037538, 1256170817, 1037604311, 2765210733,
+  3554079995, 1131014506, 879679996, 2909243462, 3663771856, 1141124467,
+  855842277, 2852801631, 3708648649, 1342533948, 654459306, 3188396048,
+  3373015174, 1466479909, 544179635, 3110523913, 3462522015, 1591671054,
+  702138776, 2966460450, 3352799412, 1504918807, 783551873, 3082640443,
+  3233442989, 3988292384, 2596254646, 62317068, 1957810842, 3939845945,
+  2647816111, 81470997, 1943803523, 3814918930, 2489596804, 225274430,
+  2053790376, 3826175755, 2466906013, 167816743, 2097651377, 4027552580,
+  2265490386, 503444072, 1762050814, 4150417245, 2154129355, 426522225,
+  1852507879, 4275313526, 2312317920, 282753626, 1742555852, 4189708143,
+  2394877945, 397917763, 1622183637, 3604390888, 2714866558, 953729732,
+  1340076626, 3518719985, 2797360999, 1068828381, 1219638859, 3624741850,
+  2936675148, 906185462, 1090812512, 3747672003, 2825379669, 829329135,
+  1181335161, 3412177804, 3160834842, 628085408, 1382605366, 3423369109,
+  3138078467, 570562233, 1426400815, 3317316542, 2998733608, 733239954,
+  1555261956, 3268935591, 3050360625, 752459403, 1541320221, 2607071920,
+  3965973030, 1969922972, 40735498, 2617837225, 3943577151, 1913087877,
+  83908371, 2512341634, 3803740692, 2075208622, 213261112, 2463272603,
+  3855990285, 2094854071, 198958881, 2262029012, 4057260610, 1759359992,
+  534414190, 2176718541, 4139329115, 1873836001, 414664567, 2282248934,
+  4279200368, 1711684554, 285281116, 2405801727, 4167216745, 1634467795,
+  376229701, 2685067896, 3608007406, 1308918612, 956543938, 2808555105,
+  3495958263, 1231636301, 1047427035, 2932959818, 3654703836, 1088359270,
+  936918e3, 2847714899, 3736837829, 1202900863, 817233897, 3183342108,
+  3401237130, 1404277552, 615818150, 3134207493, 3453421203, 1423857449,
+  601450431, 3009837614, 3294710456, 1567103746, 711928724, 3020668471,
+  3272380065, 1510334235, 755167117,
+]);
+function Fc(t) {
+  const e = new Uint8Array(t);
+  let r = -1;
+  for (let n = 0; n < e.length; n++) {
+    const c = (e[n] ^ r) & 255;
+    r = Oc[c] ^ (r >>> 8);
+  }
+  return (r ^ -1) >>> 0;
+}
+function Pc(t) {
+  return (
+    t instanceof Uint8Array ||
+    (t != null && typeof t == "object" && t.constructor.name === "Uint8Array")
+  );
+}
+function Ni(t, ...e) {
+  if (!Pc(t)) throw new Error("Uint8Array expected");
+  if (e.length > 0 && !e.includes(t.length))
+    throw new Error(
+      `Uint8Array expected of length ${e}, not of length=${t.length}`,
+    );
+}
+function Ji(t, e = !0) {
+  if (t.destroyed) throw new Error("Hash instance has been destroyed");
+  if (e && t.finished) throw new Error("Hash#digest() has already been called");
+}
+function Mc(t, e) {
+  Ni(t);
+  const r = e.outputLen;
+  if (t.length < r)
+    throw new Error(
+      `digestInto() expects output buffer of length at least ${r}`,
+    );
+}
+const Kn =
+  typeof globalThis == "object" && "crypto" in globalThis
+    ? globalThis.crypto
+    : void 0;
+/*! noble-hashes - MIT License (c) 2022 Paul Miller (paulmillr.com) */ const Xn =
+    (t) => new DataView(t.buffer, t.byteOffset, t.byteLength),
+  Et = (t, e) => (t << (32 - e)) | (t >>> e);
+new Uint8Array(new Uint32Array([287454020]).buffer)[0];
+function Ks(t) {
+  if (typeof t != "string")
+    throw new Error(`utf8ToBytes expected string, got ${typeof t}`);
+  return new Uint8Array(new TextEncoder().encode(t));
+}
+function Xs(t) {
+  return typeof t == "string" && (t = Ks(t)), Ni(t), t;
+}
+function kc(...t) {
+  let e = 0;
+  for (let n = 0; n < t.length; n++) {
+    const i = t[n];
+    Ni(i), (e += i.length);
+  }
+  const r = new Uint8Array(e);
+  for (let n = 0, i = 0; n < t.length; n++) {
+    const c = t[n];
+    r.set(c, i), (i += c.length);
+  }
+  return r;
+}
+class Cc {
+  clone() {
+    return this._cloneInto();
+  }
+}
+function Ui(t) {
+  const e = (n) => t().update(Xs(n)).digest(),
+    r = t();
+  return (
+    (e.outputLen = r.outputLen),
+    (e.blockLen = r.blockLen),
+    (e.create = () => t()),
+    e
+  );
+}
+function Ds(t = 32) {
+  if (Kn && typeof Kn.getRandomValues == "function")
+    return Kn.getRandomValues(new Uint8Array(t));
+  throw new Error("crypto.getRandomValues must be defined");
+}
+function $c(t, e, r, n) {
+  if (typeof t.setBigUint64 == "function") return t.setBigUint64(e, r, n);
+  const i = BigInt(32),
+    c = BigInt(4294967295),
+    l = Number((r >> i) & c),
+    f = Number(r & c),
+    y = n ? 4 : 0,
+    m = n ? 0 : 4;
+  t.setUint32(e + y, l, n), t.setUint32(e + m, f, n);
+}
+const qc = (t, e, r) => (t & e) ^ (~t & r),
+  Vc = (t, e, r) => (t & e) ^ (t & r) ^ (e & r);
+class Js extends Cc {
+  constructor(e, r, n, i) {
+    super(),
+      (this.blockLen = e),
+      (this.outputLen = r),
+      (this.padOffset = n),
+      (this.isLE = i),
+      (this.finished = !1),
+      (this.length = 0),
+      (this.pos = 0),
+      (this.destroyed = !1),
+      (this.buffer = new Uint8Array(e)),
+      (this.view = Xn(this.buffer));
+  }
+  update(e) {
+    Ji(this);
+    const { view: r, buffer: n, blockLen: i } = this;
+    e = Xs(e);
+    const c = e.length;
+    for (let l = 0; l < c; ) {
+      const f = Math.min(i - this.pos, c - l);
+      if (f === i) {
+        const y = Xn(e);
+        for (; i <= c - l; l += i) this.process(y, l);
+        continue;
+      }
+      n.set(e.subarray(l, l + f), this.pos),
+        (this.pos += f),
+        (l += f),
+        this.pos === i && (this.process(r, 0), (this.pos = 0));
+    }
+    return (this.length += e.length), this.roundClean(), this;
+  }
+  digestInto(e) {
+    Ji(this), Mc(e, this), (this.finished = !0);
+    const { buffer: r, view: n, blockLen: i, isLE: c } = this;
+    let { pos: l } = this;
+    (r[l++] = 128),
+      this.buffer.subarray(l).fill(0),
+      this.padOffset > i - l && (this.process(n, 0), (l = 0));
+    for (let B = l; B < i; B++) r[B] = 0;
+    $c(n, i - 8, BigInt(this.length * 8), c), this.process(n, 0);
+    const f = Xn(e),
+      y = this.outputLen;
+    if (y % 4) throw new Error("_sha2: outputLen should be aligned to 32bit");
+    const m = y / 4,
+      E = this.get();
+    if (m > E.length) throw new Error("_sha2: outputLen bigger than state");
+    for (let B = 0; B < m; B++) f.setUint32(4 * B, E[B], c);
+  }
+  digest() {
+    const { buffer: e, outputLen: r } = this;
+    this.digestInto(e);
+    const n = e.slice(0, r);
+    return this.destroy(), n;
+  }
+  _cloneInto(e) {
+    e || (e = new this.constructor()), e.set(...this.get());
+    const {
+      blockLen: r,
+      buffer: n,
+      length: i,
+      finished: c,
+      destroyed: l,
+      pos: f,
+    } = this;
+    return (
+      (e.length = i),
+      (e.pos = f),
+      (e.finished = c),
+      (e.destroyed = l),
+      i % r && e.buffer.set(n),
+      e
+    );
+  }
+}
+const Gc = new Uint32Array([
+    1116352408, 1899447441, 3049323471, 3921009573, 961987163, 1508970993,
+    2453635748, 2870763221, 3624381080, 310598401, 607225278, 1426881987,
+    1925078388, 2162078206, 2614888103, 3248222580, 3835390401, 4022224774,
+    264347078, 604807628, 770255983, 1249150122, 1555081692, 1996064986,
+    2554220882, 2821834349, 2952996808, 3210313671, 3336571891, 3584528711,
+    113926993, 338241895, 666307205, 773529912, 1294757372, 1396182291,
+    1695183700, 1986661051, 2177026350, 2456956037, 2730485921, 2820302411,
+    3259730800, 3345764771, 3516065817, 3600352804, 4094571909, 275423344,
+    430227734, 506948616, 659060556, 883997877, 958139571, 1322822218,
+    1537002063, 1747873779, 1955562222, 2024104815, 2227730452, 2361852424,
+    2428436474, 2756734187, 3204031479, 3329325298,
+  ]),
+  Gt = new Uint32Array([
+    1779033703, 3144134277, 1013904242, 2773480762, 1359893119, 2600822924,
+    528734635, 1541459225,
+  ]),
+  Ht = new Uint32Array(64);
+class Qs extends Js {
+  constructor() {
+    super(64, 32, 8, !1),
+      (this.A = Gt[0] | 0),
+      (this.B = Gt[1] | 0),
+      (this.C = Gt[2] | 0),
+      (this.D = Gt[3] | 0),
+      (this.E = Gt[4] | 0),
+      (this.F = Gt[5] | 0),
+      (this.G = Gt[6] | 0),
+      (this.H = Gt[7] | 0);
+  }
+  get() {
+    const { A: e, B: r, C: n, D: i, E: c, F: l, G: f, H: y } = this;
+    return [e, r, n, i, c, l, f, y];
+  }
+  set(e, r, n, i, c, l, f, y) {
+    (this.A = e | 0),
+      (this.B = r | 0),
+      (this.C = n | 0),
+      (this.D = i | 0),
+      (this.E = c | 0),
+      (this.F = l | 0),
+      (this.G = f | 0),
+      (this.H = y | 0);
+  }
+  process(e, r) {
+    for (let B = 0; B < 16; B++, r += 4) Ht[B] = e.getUint32(r, !1);
+    for (let B = 16; B < 64; B++) {
+      const M = Ht[B - 15],
+        v = Ht[B - 2],
+        U = Et(M, 7) ^ Et(M, 18) ^ (M >>> 3),
+        N = Et(v, 17) ^ Et(v, 19) ^ (v >>> 10);
+      Ht[B] = (N + Ht[B - 7] + U + Ht[B - 16]) | 0;
+    }
+    let { A: n, B: i, C: c, D: l, E: f, F: y, G: m, H: E } = this;
+    for (let B = 0; B < 64; B++) {
+      const M = Et(f, 6) ^ Et(f, 11) ^ Et(f, 25),
+        v = (E + M + qc(f, y, m) + Gc[B] + Ht[B]) | 0,
+        N = ((Et(n, 2) ^ Et(n, 13) ^ Et(n, 22)) + Vc(n, i, c)) | 0;
+      (E = m),
+        (m = y),
+        (y = f),
+        (f = (l + v) | 0),
+        (l = c),
+        (c = i),
+        (i = n),
+        (n = (v + N) | 0);
+    }
+    (n = (n + this.A) | 0),
+      (i = (i + this.B) | 0),
+      (c = (c + this.C) | 0),
+      (l = (l + this.D) | 0),
+      (f = (f + this.E) | 0),
+      (y = (y + this.F) | 0),
+      (m = (m + this.G) | 0),
+      (E = (E + this.H) | 0),
+      this.set(n, i, c, l, f, y, m, E);
+  }
+  roundClean() {
+    Ht.fill(0);
+  }
+  destroy() {
+    this.set(0, 0, 0, 0, 0, 0, 0, 0), this.buffer.fill(0);
+  }
+}
+class Hc extends Qs {
+  constructor() {
+    super(),
+      (this.A = -1056596264),
+      (this.B = 914150663),
+      (this.C = 812702999),
+      (this.D = -150054599),
+      (this.E = -4191439),
+      (this.F = 1750603025),
+      (this.G = 1694076839),
+      (this.H = -1090891868),
+      (this.outputLen = 28);
+  }
+}
+const Ri = Ui(() => new Qs()),
+  jc = Ui(() => new Hc());
+function zc(t) {
+  return jc.create().update(new Uint8Array(t)).digest();
+}
+const Zr = "__principal__",
+  Lc = 2,
+  Qi = 4,
+  Yc = "aaaaa-aa",
+  Zc = (t) => {
+    var e;
+    return new Uint8Array(
+      ((e = t.match(/.{1,2}/g)) !== null && e !== void 0 ? e : []).map((r) =>
+        parseInt(r, 16),
+      ),
+    );
+  },
+  Wc = (t) => t.reduce((e, r) => e + r.toString(16).padStart(2, "0"), "");
+let Ie = class on {
+  constructor(e) {
+    (this._arr = e), (this._isPrincipal = !0);
+  }
+  static anonymous() {
+    return new this(new Uint8Array([Qi]));
+  }
+  static managementCanister() {
+    return this.fromHex(Yc);
+  }
+  static selfAuthenticating(e) {
+    const r = zc(e);
+    return new this(new Uint8Array([...r, Lc]));
+  }
+  static from(e) {
+    if (typeof e == "string") return on.fromText(e);
+    if (Object.getPrototypeOf(e) === Uint8Array.prototype) return new on(e);
+    if (typeof e == "object" && e !== null && e._isPrincipal === !0)
+      return new on(e._arr);
+    throw new Error(`Impossible to convert ${JSON.stringify(e)} to Principal.`);
+  }
+  static fromHex(e) {
+    return new this(Zc(e));
+  }
+  static fromText(e) {
+    let r = e;
+    if (e.includes(Zr)) {
+      const l = JSON.parse(e);
+      Zr in l && (r = l[Zr]);
+    }
+    const n = r.toLowerCase().replace(/-/g, "");
+    let i = Rc(n);
+    i = i.slice(4, i.length);
+    const c = new this(i);
+    if (c.toText() !== r)
+      throw new Error(
+        `Principal "${c.toText()}" does not have a valid checksum (original value "${r}" may not be a valid Principal ID).`,
+      );
+    return c;
+  }
+  static fromUint8Array(e) {
+    return new this(e);
+  }
+  isAnonymous() {
+    return this._arr.byteLength === 1 && this._arr[0] === Qi;
+  }
+  toUint8Array() {
+    return this._arr;
+  }
+  toHex() {
+    return Wc(this._arr).toUpperCase();
+  }
+  toText() {
+    const e = new ArrayBuffer(4);
+    new DataView(e).setUint32(0, Fc(this._arr));
+    const n = new Uint8Array(e),
+      i = Uint8Array.from(this._arr),
+      c = new Uint8Array([...n, ...i]),
+      f = Uc(c).match(/.{1,5}/g);
+    if (!f) throw new Error();
+    return f.join("-");
+  }
+  toString() {
+    return this.toText();
+  }
+  toJSON() {
+    return { [Zr]: this.toText() };
+  }
+  compareTo(e) {
+    for (let r = 0; r < Math.min(this._arr.length, e._arr.length); r++) {
+      if (this._arr[r] < e._arr[r]) return "lt";
+      if (this._arr[r] > e._arr[r]) return "gt";
+    }
+    return this._arr.length < e._arr.length
+      ? "lt"
+      : this._arr.length > e._arr.length
+        ? "gt"
+        : "eq";
+  }
+  ltEq(e) {
+    const r = this.compareTo(e);
+    return r == "lt" || r == "eq";
+  }
+  gtEq(e) {
+    const r = this.compareTo(e);
+    return r == "gt" || r == "eq";
+  }
+};
+class rt extends Error {
+  constructor(e) {
+    super(e), (this.message = e), Object.setPrototypeOf(this, rt.prototype);
+  }
+}
+function Oe(...t) {
+  const e = new Uint8Array(t.reduce((n, i) => n + i.byteLength, 0));
+  let r = 0;
+  for (const n of t) e.set(new Uint8Array(n), r), (r += n.byteLength);
+  return e;
+}
+class Tr {
+  constructor(e, r = e?.byteLength || 0) {
+    (this._buffer = vn(e || new ArrayBuffer(0))),
+      (this._view = new Uint8Array(this._buffer, 0, r));
+  }
+  get buffer() {
+    return vn(this._view.slice());
+  }
+  get byteLength() {
+    return this._view.byteLength;
+  }
+  read(e) {
+    const r = this._view.subarray(0, e);
+    return (this._view = this._view.subarray(e)), r.slice().buffer;
+  }
+  readUint8() {
+    const e = this._view[0];
+    return (this._view = this._view.subarray(1)), e;
+  }
+  write(e) {
+    const r = new Uint8Array(e),
+      n = this._view.byteLength;
+    this._view.byteOffset + this._view.byteLength + r.byteLength >=
+    this._buffer.byteLength
+      ? this.alloc(r.byteLength)
+      : (this._view = new Uint8Array(
+          this._buffer,
+          this._view.byteOffset,
+          this._view.byteLength + r.byteLength,
+        )),
+      this._view.set(r, n);
+  }
+  get end() {
+    return this._view.byteLength === 0;
+  }
+  alloc(e) {
+    const r = new ArrayBuffer(((this._buffer.byteLength + e) * 1.2) | 0),
+      n = new Uint8Array(r, 0, this._view.byteLength + e);
+    n.set(this._view), (this._buffer = r), (this._view = n);
+  }
+}
+function Dn(t) {
+  return new DataView(t.buffer, t.byteOffset, t.byteLength).buffer;
+}
+function vn(t) {
+  return t instanceof Uint8Array
+    ? Dn(t)
+    : t instanceof ArrayBuffer
+      ? t
+      : Array.isArray(t)
+        ? Dn(new Uint8Array(t))
+        : "buffer" in t
+          ? vn(t.buffer)
+          : Dn(new Uint8Array(t));
+}
+function Kc(t) {
+  const r = new TextEncoder().encode(t);
+  let n = 0;
+  for (const i of r) n = (n * 223 + i) % 2 ** 32;
+  return n;
+}
+function Ut(t) {
+  if (/^_\d+_$/.test(t) || /^_0x[0-9a-fA-F]+_$/.test(t)) {
+    const e = +t.slice(1, -1);
+    if (Number.isSafeInteger(e) && e >= 0 && e < 2 ** 32) return e;
+  }
+  return Kc(t);
+}
+function ea() {
+  throw new Error("unexpected end of buffer");
+}
+function cr(t, e) {
+  return t.byteLength < e && ea(), t.read(e);
+}
+function fr(t) {
+  const e = t.readUint8();
+  return e === void 0 && ea(), e;
+}
+function Ve(t) {
+  if ((typeof t == "number" && (t = BigInt(t)), t < BigInt(0)))
+    throw new Error("Cannot leb encode negative values.");
+  const e = (t === BigInt(0) ? 0 : Math.ceil(Math.log2(Number(t)))) + 1,
+    r = new Tr(new ArrayBuffer(e), 0);
+  for (;;) {
+    const n = Number(t & BigInt(127));
+    if (((t /= BigInt(128)), t === BigInt(0))) {
+      r.write(new Uint8Array([n]));
+      break;
+    } else r.write(new Uint8Array([n | 128]));
+  }
+  return r.buffer;
+}
+function Ke(t) {
+  let e = BigInt(1),
+    r = BigInt(0),
+    n;
+  do (n = fr(t)), (r += BigInt(n & 127).valueOf() * e), (e *= BigInt(128));
+  while (n >= 128);
+  return r;
+}
+function Ye(t) {
+  typeof t == "number" && (t = BigInt(t));
+  const e = t < BigInt(0);
+  e && (t = -t - BigInt(1));
+  const r = (t === BigInt(0) ? 0 : Math.ceil(Math.log2(Number(t)))) + 1,
+    n = new Tr(new ArrayBuffer(r), 0);
+  for (;;) {
+    const c = i(t);
+    if (
+      ((t /= BigInt(128)),
+      (e && t === BigInt(0) && c & 64) || (!e && t === BigInt(0) && !(c & 64)))
+    ) {
+      n.write(new Uint8Array([c]));
+      break;
+    } else n.write(new Uint8Array([c | 128]));
+  }
+  function i(c) {
+    const l = c % BigInt(128);
+    return Number(e ? BigInt(128) - l - BigInt(1) : l);
+  }
+  return n.buffer;
+}
+function Zt(t) {
+  const e = new Uint8Array(t.buffer);
+  let r = 0;
+  for (; r < e.byteLength; r++)
+    if (e[r] < 128) {
+      if (!(e[r] & 64)) return Ke(t);
+      break;
+    }
+  const n = new Uint8Array(cr(t, r + 1));
+  let i = BigInt(0);
+  for (let c = n.byteLength - 1; c >= 0; c--)
+    i = i * BigInt(128) + BigInt(128 - (n[c] & 127) - 1);
+  return -i - BigInt(1);
+}
+function Xc(t, e) {
+  if (BigInt(t) < BigInt(0)) throw new Error("Cannot write negative values.");
+  return ta(t, e);
+}
+function ta(t, e) {
+  t = BigInt(t);
+  const r = new Tr(new ArrayBuffer(Math.min(1, e)), 0);
+  let n = 0,
+    i = BigInt(256),
+    c = BigInt(0),
+    l = Number(t % i);
+  for (r.write(new Uint8Array([l])); ++n < e; )
+    t < 0 && c === BigInt(0) && l !== 0 && (c = BigInt(1)),
+      (l = Number((t / i - c) % BigInt(256))),
+      r.write(new Uint8Array([l])),
+      (i *= BigInt(256));
+  return r.buffer;
+}
+function ra(t, e) {
+  let r = BigInt(fr(t)),
+    n = BigInt(1),
+    i = 0;
+  for (; ++i < e; ) {
+    n *= BigInt(256);
+    const c = BigInt(fr(t));
+    r = r + n * c;
+  }
+  return r;
+}
+function Dc(t, e) {
+  let r = ra(t, e);
+  const n = BigInt(2) ** (BigInt(8) * BigInt(e - 1) + BigInt(7));
+  return r >= n && (r -= n * BigInt(2)), r;
+}
+function fi(t) {
+  const e = BigInt(t);
+  if (t < 0) throw new RangeError("Input must be non-negative");
+  return BigInt(1) << e;
+}
+const cn = "DIDL",
+  es = 400;
+function $r(t, e, r) {
+  return t.map((n, i) => r(n, e[i]));
+}
+class Jc {
+  constructor() {
+    (this._typs = []), (this._idx = new Map());
+  }
+  has(e) {
+    return this._idx.has(e.name);
+  }
+  add(e, r) {
+    const n = this._typs.length;
+    this._idx.set(e.name, n), this._typs.push(r);
+  }
+  merge(e, r) {
+    const n = this._idx.get(e.name),
+      i = this._idx.get(r);
+    if (n === void 0) throw new Error("Missing type index for " + e);
+    if (i === void 0) throw new Error("Missing type index for " + r);
+    (this._typs[n] = this._typs[i]),
+      this._typs.splice(i, 1),
+      this._idx.delete(r);
+  }
+  encode() {
+    const e = Ve(this._typs.length),
+      r = Oe(...this._typs);
+    return Oe(e, r);
+  }
+  indexOf(e) {
+    if (!this._idx.has(e)) throw new Error("Missing type index for " + e);
+    return Ye(this._idx.get(e) || 0);
+  }
+}
+class Qc {
+  visitType(e, r) {
+    throw new Error("Not implemented");
+  }
+  visitPrimitive(e, r) {
+    return this.visitType(e, r);
+  }
+  visitEmpty(e, r) {
+    return this.visitPrimitive(e, r);
+  }
+  visitBool(e, r) {
+    return this.visitPrimitive(e, r);
+  }
+  visitNull(e, r) {
+    return this.visitPrimitive(e, r);
+  }
+  visitReserved(e, r) {
+    return this.visitPrimitive(e, r);
+  }
+  visitText(e, r) {
+    return this.visitPrimitive(e, r);
+  }
+  visitNumber(e, r) {
+    return this.visitPrimitive(e, r);
+  }
+  visitInt(e, r) {
+    return this.visitNumber(e, r);
+  }
+  visitNat(e, r) {
+    return this.visitNumber(e, r);
+  }
+  visitFloat(e, r) {
+    return this.visitPrimitive(e, r);
+  }
+  visitFixedInt(e, r) {
+    return this.visitNumber(e, r);
+  }
+  visitFixedNat(e, r) {
+    return this.visitNumber(e, r);
+  }
+  visitPrincipal(e, r) {
+    return this.visitPrimitive(e, r);
+  }
+  visitConstruct(e, r) {
+    return this.visitType(e, r);
+  }
+  visitVec(e, r, n) {
+    return this.visitConstruct(e, n);
+  }
+  visitOpt(e, r, n) {
+    return this.visitConstruct(e, n);
+  }
+  visitRecord(e, r, n) {
+    return this.visitConstruct(e, n);
+  }
+  visitTuple(e, r, n) {
+    const i = r.map((c, l) => [`_${l}_`, c]);
+    return this.visitRecord(e, i, n);
+  }
+  visitVariant(e, r, n) {
+    return this.visitConstruct(e, n);
+  }
+  visitRec(e, r, n) {
+    return this.visitConstruct(r, n);
+  }
+  visitFunc(e, r) {
+    return this.visitConstruct(e, r);
+  }
+  visitService(e, r) {
+    return this.visitConstruct(e, r);
+  }
+}
+class Mn {
+  display() {
+    return this.name;
+  }
+  valueToString(e) {
+    return Ge(e);
+  }
+  buildTypeTable(e) {
+    e.has(this) || this._buildTypeTableImpl(e);
+  }
+}
+class ht extends Mn {
+  checkType(e) {
+    if (this.name !== e.name)
+      throw new Error(
+        `type mismatch: type on the wire ${e.name}, expect type ${this.name}`,
+      );
+    return e;
+  }
+  _buildTypeTableImpl(e) {}
+}
+class Jt extends Mn {
+  checkType(e) {
+    if (e instanceof Qt) {
+      const r = e.getType();
+      if (typeof r > "u")
+        throw new Error("type mismatch with uninitialized type");
+      return r;
+    }
+    throw new Error(
+      `type mismatch: type on the wire ${e.name}, expect type ${this.name}`,
+    );
+  }
+  encodeType(e) {
+    return e.indexOf(this.name);
+  }
+}
+class na extends ht {
+  accept(e, r) {
+    return e.visitEmpty(this, r);
+  }
+  covariant(e) {
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue() {
+    throw new Error("Empty cannot appear as a function argument");
+  }
+  valueToString() {
+    throw new Error("Empty cannot appear as a value");
+  }
+  encodeType() {
+    return Ye(-17);
+  }
+  decodeValue() {
+    throw new Error("Empty cannot appear as an output");
+  }
+  get name() {
+    return "empty";
+  }
+}
+class ia extends Mn {
+  checkType(e) {
+    throw new Error("Method not implemented for unknown.");
+  }
+  accept(e, r) {
+    throw e.visitType(this, r);
+  }
+  covariant(e) {
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue() {
+    throw new Error("Unknown cannot appear as a function argument");
+  }
+  valueToString() {
+    throw new Error("Unknown cannot appear as a value");
+  }
+  encodeType() {
+    throw new Error("Unknown cannot be serialized");
+  }
+  decodeValue(e, r) {
+    let n = r.decodeValue(e, r);
+    Object(n) !== n && (n = Object(n));
+    let i;
+    return (
+      r instanceof Qt ? (i = () => r.getType()) : (i = () => r),
+      Object.defineProperty(n, "type", {
+        value: i,
+        writable: !0,
+        enumerable: !1,
+        configurable: !0,
+      }),
+      n
+    );
+  }
+  _buildTypeTableImpl() {
+    throw new Error("Unknown cannot be serialized");
+  }
+  get name() {
+    return "Unknown";
+  }
+}
+class sa extends ht {
+  accept(e, r) {
+    return e.visitBool(this, r);
+  }
+  covariant(e) {
+    if (typeof e == "boolean") return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    return new Uint8Array([e ? 1 : 0]);
+  }
+  encodeType() {
+    return Ye(-2);
+  }
+  decodeValue(e, r) {
+    switch ((this.checkType(r), fr(e))) {
+      case 0:
+        return !1;
+      case 1:
+        return !0;
+      default:
+        throw new Error("Boolean value out of range");
+    }
+  }
+  get name() {
+    return "bool";
+  }
+}
+class aa extends ht {
+  accept(e, r) {
+    return e.visitNull(this, r);
+  }
+  covariant(e) {
+    if (e === null) return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue() {
+    return new ArrayBuffer(0);
+  }
+  encodeType() {
+    return Ye(-1);
+  }
+  decodeValue(e, r) {
+    return this.checkType(r), null;
+  }
+  get name() {
+    return "null";
+  }
+}
+class In extends ht {
+  accept(e, r) {
+    return e.visitReserved(this, r);
+  }
+  covariant(e) {
+    return !0;
+  }
+  encodeValue() {
+    return new ArrayBuffer(0);
+  }
+  encodeType() {
+    return Ye(-16);
+  }
+  decodeValue(e, r) {
+    return r.name !== this.name && r.decodeValue(e, r), null;
+  }
+  get name() {
+    return "reserved";
+  }
+}
+class oa extends ht {
+  accept(e, r) {
+    return e.visitText(this, r);
+  }
+  covariant(e) {
+    if (typeof e == "string") return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    const r = new TextEncoder().encode(e),
+      n = Ve(r.byteLength);
+    return Oe(n, r);
+  }
+  encodeType() {
+    return Ye(-15);
+  }
+  decodeValue(e, r) {
+    this.checkType(r);
+    const n = Ke(e),
+      i = cr(e, Number(n));
+    return new TextDecoder("utf8", { fatal: !0 }).decode(i);
+  }
+  get name() {
+    return "text";
+  }
+  valueToString(e) {
+    return '"' + e + '"';
+  }
+}
+class ca extends ht {
+  accept(e, r) {
+    return e.visitInt(this, r);
+  }
+  covariant(e) {
+    if (typeof e == "bigint" || Number.isInteger(e)) return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    return Ye(e);
+  }
+  encodeType() {
+    return Ye(-4);
+  }
+  decodeValue(e, r) {
+    return this.checkType(r), Zt(e);
+  }
+  get name() {
+    return "int";
+  }
+  valueToString(e) {
+    return e.toString();
+  }
+}
+class fa extends ht {
+  accept(e, r) {
+    return e.visitNat(this, r);
+  }
+  covariant(e) {
+    if (
+      (typeof e == "bigint" && e >= BigInt(0)) ||
+      (Number.isInteger(e) && e >= 0)
+    )
+      return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    return Ve(e);
+  }
+  encodeType() {
+    return Ye(-3);
+  }
+  decodeValue(e, r) {
+    return this.checkType(r), Ke(e);
+  }
+  get name() {
+    return "nat";
+  }
+  valueToString(e) {
+    return e.toString();
+  }
+}
+class Oi extends ht {
+  constructor(e) {
+    if ((super(), (this._bits = e), e !== 32 && e !== 64))
+      throw new Error("not a valid float type");
+  }
+  accept(e, r) {
+    return e.visitFloat(this, r);
+  }
+  covariant(e) {
+    if (typeof e == "number" || e instanceof Number) return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    const r = new ArrayBuffer(this._bits / 8),
+      n = new DataView(r);
+    return (
+      this._bits === 32 ? n.setFloat32(0, e, !0) : n.setFloat64(0, e, !0), r
+    );
+  }
+  encodeType() {
+    const e = this._bits === 32 ? -13 : -14;
+    return Ye(e);
+  }
+  decodeValue(e, r) {
+    this.checkType(r);
+    const n = cr(e, this._bits / 8),
+      i = new DataView(n);
+    return this._bits === 32 ? i.getFloat32(0, !0) : i.getFloat64(0, !0);
+  }
+  get name() {
+    return "float" + this._bits;
+  }
+  valueToString(e) {
+    return e.toString();
+  }
+}
+class ur extends ht {
+  constructor(e) {
+    super(), (this._bits = e);
+  }
+  accept(e, r) {
+    return e.visitFixedInt(this, r);
+  }
+  covariant(e) {
+    const r = fi(this._bits - 1) * BigInt(-1),
+      n = fi(this._bits - 1) - BigInt(1);
+    let i = !1;
+    if (typeof e == "bigint") i = e >= r && e <= n;
+    else if (Number.isInteger(e)) {
+      const c = BigInt(e);
+      i = c >= r && c <= n;
+    } else i = !1;
+    if (i) return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    return ta(e, this._bits / 8);
+  }
+  encodeType() {
+    const e = Math.log2(this._bits) - 3;
+    return Ye(-9 - e);
+  }
+  decodeValue(e, r) {
+    this.checkType(r);
+    const n = Dc(e, this._bits / 8);
+    return this._bits <= 32 ? Number(n) : n;
+  }
+  get name() {
+    return `int${this._bits}`;
+  }
+  valueToString(e) {
+    return e.toString();
+  }
+}
+class Xt extends ht {
+  constructor(e) {
+    super(), (this._bits = e);
+  }
+  accept(e, r) {
+    return e.visitFixedNat(this, r);
+  }
+  covariant(e) {
+    const r = fi(this._bits);
+    let n = !1;
+    if (
+      (typeof e == "bigint" && e >= BigInt(0)
+        ? (n = e < r)
+        : Number.isInteger(e) && e >= 0
+          ? (n = BigInt(e) < r)
+          : (n = !1),
+      n)
+    )
+      return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    return Xc(e, this._bits / 8);
+  }
+  encodeType() {
+    const e = Math.log2(this._bits) - 3;
+    return Ye(-5 - e);
+  }
+  decodeValue(e, r) {
+    this.checkType(r);
+    const n = ra(e, this._bits / 8);
+    return this._bits <= 32 ? Number(n) : n;
+  }
+  get name() {
+    return `nat${this._bits}`;
+  }
+  valueToString(e) {
+    return e.toString();
+  }
+}
+class kn extends Jt {
+  constructor(e) {
+    super(),
+      (this._type = e),
+      (this._blobOptimization = !1),
+      e instanceof Xt && e._bits === 8 && (this._blobOptimization = !0);
+  }
+  accept(e, r) {
+    return e.visitVec(this, this._type, r);
+  }
+  covariant(e) {
+    const r =
+      this._type instanceof Xt
+        ? this._type._bits
+        : this._type instanceof ur
+          ? this._type._bits
+          : 0;
+    if (
+      (ArrayBuffer.isView(e) && r == e.BYTES_PER_ELEMENT * 8) ||
+      (Array.isArray(e) &&
+        e.every((n, i) => {
+          try {
+            return this._type.covariant(n);
+          } catch (c) {
+            throw new Error(`Invalid ${this.display()} argument: 
+
+index ${i} -> ${c.message}`);
+          }
+        }))
+    )
+      return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    const r = Ve(e.length);
+    if (this._blobOptimization) return Oe(r, new Uint8Array(e));
+    if (ArrayBuffer.isView(e)) return Oe(r, new Uint8Array(e.buffer));
+    const n = new Tr(new ArrayBuffer(r.byteLength + e.length), 0);
+    n.write(r);
+    for (const i of e) {
+      const c = this._type.encodeValue(i);
+      n.write(new Uint8Array(c));
+    }
+    return n.buffer;
+  }
+  _buildTypeTableImpl(e) {
+    this._type.buildTypeTable(e);
+    const r = Ye(-19),
+      n = this._type.encodeType(e);
+    e.add(this, Oe(r, n));
+  }
+  decodeValue(e, r) {
+    const n = this.checkType(r);
+    if (!(n instanceof kn)) throw new Error("Not a vector type");
+    const i = Number(Ke(e));
+    if (this._type instanceof Xt) {
+      if (this._type._bits == 8) return new Uint8Array(e.read(i));
+      if (this._type._bits == 16) return new Uint16Array(e.read(i * 2));
+      if (this._type._bits == 32) return new Uint32Array(e.read(i * 4));
+      if (this._type._bits == 64) return new BigUint64Array(e.read(i * 8));
+    }
+    if (this._type instanceof ur) {
+      if (this._type._bits == 8) return new Int8Array(e.read(i));
+      if (this._type._bits == 16) return new Int16Array(e.read(i * 2));
+      if (this._type._bits == 32) return new Int32Array(e.read(i * 4));
+      if (this._type._bits == 64) return new BigInt64Array(e.read(i * 8));
+    }
+    const c = [];
+    for (let l = 0; l < i; l++) c.push(this._type.decodeValue(e, n._type));
+    return c;
+  }
+  get name() {
+    return `vec ${this._type.name}`;
+  }
+  display() {
+    return `vec ${this._type.display()}`;
+  }
+  valueToString(e) {
+    return "vec {" + e.map((n) => this._type.valueToString(n)).join("; ") + "}";
+  }
+}
+class Br extends Jt {
+  constructor(e) {
+    super(), (this._type = e);
+  }
+  accept(e, r) {
+    return e.visitOpt(this, this._type, r);
+  }
+  covariant(e) {
+    try {
+      if (
+        Array.isArray(e) &&
+        (e.length === 0 || (e.length === 1 && this._type.covariant(e[0])))
+      )
+        return !0;
+    } catch (r) {
+      throw new Error(`Invalid ${this.display()} argument: ${Ge(e)} 
+
+-> ${r.message}`);
+    }
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    return e.length === 0
+      ? new Uint8Array([0])
+      : Oe(new Uint8Array([1]), this._type.encodeValue(e[0]));
+  }
+  _buildTypeTableImpl(e) {
+    this._type.buildTypeTable(e);
+    const r = Ye(-18),
+      n = this._type.encodeType(e);
+    e.add(this, Oe(r, n));
+  }
+  decodeValue(e, r) {
+    const n = this.checkType(r);
+    if (!(n instanceof Br)) throw new Error("Not an option type");
+    switch (fr(e)) {
+      case 0:
+        return [];
+      case 1:
+        return [this._type.decodeValue(e, n._type)];
+      default:
+        throw new Error("Not an option value");
+    }
+  }
+  get name() {
+    return `opt ${this._type.name}`;
+  }
+  display() {
+    return `opt ${this._type.display()}`;
+  }
+  valueToString(e) {
+    return e.length === 0 ? "null" : `opt ${this._type.valueToString(e[0])}`;
+  }
+}
+class Hr extends Jt {
+  constructor(e = {}) {
+    super(),
+      (this._fields = Object.entries(e).sort((r, n) => Ut(r[0]) - Ut(n[0])));
+  }
+  accept(e, r) {
+    return e.visitRecord(this, this._fields, r);
+  }
+  tryAsTuple() {
+    const e = [];
+    for (let r = 0; r < this._fields.length; r++) {
+      const [n, i] = this._fields[r];
+      if (n !== `_${r}_`) return null;
+      e.push(i);
+    }
+    return e;
+  }
+  covariant(e) {
+    if (
+      typeof e == "object" &&
+      this._fields.every(([r, n]) => {
+        if (!e.hasOwnProperty(r))
+          throw new Error(`Record is missing key "${r}".`);
+        try {
+          return n.covariant(e[r]);
+        } catch (i) {
+          throw new Error(`Invalid ${this.display()} argument: 
+
+field ${r} -> ${i.message}`);
+        }
+      })
+    )
+      return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    const r = this._fields.map(([i]) => e[i]),
+      n = $r(this._fields, r, ([, i], c) => i.encodeValue(c));
+    return Oe(...n);
+  }
+  _buildTypeTableImpl(e) {
+    this._fields.forEach(([c, l]) => l.buildTypeTable(e));
+    const r = Ye(-20),
+      n = Ve(this._fields.length),
+      i = this._fields.map(([c, l]) => Oe(Ve(Ut(c)), l.encodeType(e)));
+    e.add(this, Oe(r, n, Oe(...i)));
+  }
+  decodeValue(e, r) {
+    const n = this.checkType(r);
+    if (!(n instanceof Hr)) throw new Error("Not a record type");
+    const i = {};
+    let c = 0,
+      l = 0;
+    for (; l < n._fields.length; ) {
+      const [f, y] = n._fields[l];
+      if (c >= this._fields.length) {
+        y.decodeValue(e, y), l++;
+        continue;
+      }
+      const [m, E] = this._fields[c],
+        B = Ut(this._fields[c][0]),
+        M = Ut(f);
+      if (B === M) (i[m] = E.decodeValue(e, y)), c++, l++;
+      else if (M > B)
+        if (E instanceof Br || E instanceof In) (i[m] = []), c++;
+        else throw new Error("Cannot find required field " + m);
+      else y.decodeValue(e, y), l++;
+    }
+    for (const [f, y] of this._fields.slice(c))
+      if (y instanceof Br || y instanceof In) i[f] = [];
+      else throw new Error("Cannot find required field " + f);
+    return i;
+  }
+  get name() {
+    return `record {${this._fields.map(([r, n]) => r + ":" + n.name).join("; ")}}`;
+  }
+  display() {
+    return `record {${this._fields.map(([r, n]) => r + ":" + n.display()).join("; ")}}`;
+  }
+  valueToString(e) {
+    const r = this._fields.map(([i]) => e[i]);
+    return `record {${$r(this._fields, r, ([i, c], l) => i + "=" + c.valueToString(l)).join("; ")}}`;
+  }
+}
+class Cn extends Hr {
+  constructor(e) {
+    const r = {};
+    e.forEach((n, i) => (r["_" + i + "_"] = n)),
+      super(r),
+      (this._components = e);
+  }
+  accept(e, r) {
+    return e.visitTuple(this, this._components, r);
+  }
+  covariant(e) {
+    if (
+      Array.isArray(e) &&
+      e.length >= this._fields.length &&
+      this._components.every((r, n) => {
+        try {
+          return r.covariant(e[n]);
+        } catch (i) {
+          throw new Error(`Invalid ${this.display()} argument: 
+
+index ${n} -> ${i.message}`);
+        }
+      })
+    )
+      return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    const r = $r(this._components, e, (n, i) => n.encodeValue(i));
+    return Oe(...r);
+  }
+  decodeValue(e, r) {
+    const n = this.checkType(r);
+    if (!(n instanceof Cn)) throw new Error("not a tuple type");
+    if (n._components.length < this._components.length)
+      throw new Error("tuple mismatch");
+    const i = [];
+    for (const [c, l] of n._components.entries())
+      c >= this._components.length
+        ? l.decodeValue(e, l)
+        : i.push(this._components[c].decodeValue(e, l));
+    return i;
+  }
+  display() {
+    return `record {${this._components.map((r) => r.display()).join("; ")}}`;
+  }
+  valueToString(e) {
+    return `record {${$r(this._components, e, (n, i) => n.valueToString(i)).join("; ")}}`;
+  }
+}
+class $n extends Jt {
+  constructor(e = {}) {
+    super(),
+      (this._fields = Object.entries(e).sort((r, n) => Ut(r[0]) - Ut(n[0])));
+  }
+  accept(e, r) {
+    return e.visitVariant(this, this._fields, r);
+  }
+  covariant(e) {
+    if (
+      typeof e == "object" &&
+      Object.entries(e).length === 1 &&
+      this._fields.every(([r, n]) => {
+        try {
+          return !e.hasOwnProperty(r) || n.covariant(e[r]);
+        } catch (i) {
+          throw new Error(`Invalid ${this.display()} argument: 
+
+variant ${r} -> ${i.message}`);
+        }
+      })
+    )
+      return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    for (let r = 0; r < this._fields.length; r++) {
+      const [n, i] = this._fields[r];
+      if (e.hasOwnProperty(n)) {
+        const c = Ve(r),
+          l = i.encodeValue(e[n]);
+        return Oe(c, l);
+      }
+    }
+    throw Error("Variant has no data: " + e);
+  }
+  _buildTypeTableImpl(e) {
+    this._fields.forEach(([, c]) => {
+      c.buildTypeTable(e);
+    });
+    const r = Ye(-21),
+      n = Ve(this._fields.length),
+      i = this._fields.map(([c, l]) => Oe(Ve(Ut(c)), l.encodeType(e)));
+    e.add(this, Oe(r, n, ...i));
+  }
+  decodeValue(e, r) {
+    const n = this.checkType(r);
+    if (!(n instanceof $n)) throw new Error("Not a variant type");
+    const i = Number(Ke(e));
+    if (i >= n._fields.length) throw Error("Invalid variant index: " + i);
+    const [c, l] = n._fields[i];
+    for (const [f, y] of this._fields)
+      if (Ut(c) === Ut(f)) {
+        const m = y.decodeValue(e, l);
+        return { [f]: m };
+      }
+    throw new Error("Cannot find field hash " + c);
+  }
+  get name() {
+    return `variant {${this._fields.map(([r, n]) => r + ":" + n.name).join("; ")}}`;
+  }
+  display() {
+    return `variant {${this._fields.map(([r, n]) => r + (n.name === "null" ? "" : `:${n.display()}`)).join("; ")}}`;
+  }
+  valueToString(e) {
+    for (const [r, n] of this._fields)
+      if (e.hasOwnProperty(r)) {
+        const i = n.valueToString(e[r]);
+        return i === "null" ? `variant {${r}}` : `variant {${r}=${i}}`;
+      }
+    throw new Error("Variant has no data: " + e);
+  }
+}
+class Qt extends Jt {
+  constructor() {
+    super(...arguments), (this._id = Qt._counter++), (this._type = void 0);
+  }
+  accept(e, r) {
+    if (!this._type) throw Error("Recursive type uninitialized.");
+    return e.visitRec(this, this._type, r);
+  }
+  fill(e) {
+    this._type = e;
+  }
+  getType() {
+    return this._type;
+  }
+  covariant(e) {
+    if (this._type && this._type.covariant(e)) return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    if (!this._type) throw Error("Recursive type uninitialized.");
+    return this._type.encodeValue(e);
+  }
+  _buildTypeTableImpl(e) {
+    if (!this._type) throw Error("Recursive type uninitialized.");
+    e.add(this, new Uint8Array([])),
+      this._type.buildTypeTable(e),
+      e.merge(this, this._type.name);
+  }
+  decodeValue(e, r) {
+    if (!this._type) throw Error("Recursive type uninitialized.");
+    return this._type.decodeValue(e, r);
+  }
+  get name() {
+    return `rec_${this._id}`;
+  }
+  display() {
+    if (!this._type) throw Error("Recursive type uninitialized.");
+    return `μ${this.name}.${this._type.name}`;
+  }
+  valueToString(e) {
+    if (!this._type) throw Error("Recursive type uninitialized.");
+    return this._type.valueToString(e);
+  }
+}
+Qt._counter = 0;
+function Fi(t) {
+  if (fr(t) !== 1) throw new Error("Cannot decode principal");
+  const r = Number(Ke(t));
+  return Ie.fromUint8Array(new Uint8Array(cr(t, r)));
+}
+class ua extends ht {
+  accept(e, r) {
+    return e.visitPrincipal(this, r);
+  }
+  covariant(e) {
+    if (e && e._isPrincipal) return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    const r = e.toUint8Array(),
+      n = Ve(r.byteLength);
+    return Oe(new Uint8Array([1]), n, r);
+  }
+  encodeType() {
+    return Ye(-24);
+  }
+  decodeValue(e, r) {
+    return this.checkType(r), Fi(e);
+  }
+  get name() {
+    return "principal";
+  }
+  valueToString(e) {
+    return `${this.name} "${e.toText()}"`;
+  }
+}
+class Pi extends Jt {
+  constructor(e, r, n = []) {
+    super(), (this.argTypes = e), (this.retTypes = r), (this.annotations = n);
+  }
+  static argsToString(e, r) {
+    if (e.length !== r.length) throw new Error("arity mismatch");
+    return "(" + e.map((n, i) => n.valueToString(r[i])).join(", ") + ")";
+  }
+  accept(e, r) {
+    return e.visitFunc(this, r);
+  }
+  covariant(e) {
+    if (
+      Array.isArray(e) &&
+      e.length === 2 &&
+      e[0] &&
+      e[0]._isPrincipal &&
+      typeof e[1] == "string"
+    )
+      return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue([e, r]) {
+    const n = e.toUint8Array(),
+      i = Ve(n.byteLength),
+      c = Oe(new Uint8Array([1]), i, n),
+      l = new TextEncoder().encode(r),
+      f = Ve(l.byteLength);
+    return Oe(new Uint8Array([1]), c, f, l);
+  }
+  _buildTypeTableImpl(e) {
+    this.argTypes.forEach((m) => m.buildTypeTable(e)),
+      this.retTypes.forEach((m) => m.buildTypeTable(e));
+    const r = Ye(-22),
+      n = Ve(this.argTypes.length),
+      i = Oe(...this.argTypes.map((m) => m.encodeType(e))),
+      c = Ve(this.retTypes.length),
+      l = Oe(...this.retTypes.map((m) => m.encodeType(e))),
+      f = Ve(this.annotations.length),
+      y = Oe(...this.annotations.map((m) => this.encodeAnnotation(m)));
+    e.add(this, Oe(r, n, i, c, l, f, y));
+  }
+  decodeValue(e) {
+    if (fr(e) !== 1) throw new Error("Cannot decode function reference");
+    const n = Fi(e),
+      i = Number(Ke(e)),
+      c = cr(e, i),
+      f = new TextDecoder("utf8", { fatal: !0 }).decode(c);
+    return [n, f];
+  }
+  get name() {
+    const e = this.argTypes.map((i) => i.name).join(", "),
+      r = this.retTypes.map((i) => i.name).join(", "),
+      n = " " + this.annotations.join(" ");
+    return `(${e}) -> (${r})${n}`;
+  }
+  valueToString([e, r]) {
+    return `func "${e.toText()}".${r}`;
+  }
+  display() {
+    const e = this.argTypes.map((i) => i.display()).join(", "),
+      r = this.retTypes.map((i) => i.display()).join(", "),
+      n = " " + this.annotations.join(" ");
+    return `(${e}) → (${r})${n}`;
+  }
+  encodeAnnotation(e) {
+    if (e === "query") return new Uint8Array([1]);
+    if (e === "oneway") return new Uint8Array([2]);
+    if (e === "composite_query") return new Uint8Array([3]);
+    throw new Error("Illegal function annotation");
+  }
+}
+class la extends Jt {
+  constructor(e) {
+    super(),
+      (this._fields = Object.entries(e).sort((r, n) =>
+        r[0] < n[0] ? -1 : r[0] > n[0] ? 1 : 0,
+      ));
+  }
+  accept(e, r) {
+    return e.visitService(this, r);
+  }
+  covariant(e) {
+    if (e && e._isPrincipal) return !0;
+    throw new Error(`Invalid ${this.display()} argument: ${Ge(e)}`);
+  }
+  encodeValue(e) {
+    const r = e.toUint8Array(),
+      n = Ve(r.length);
+    return Oe(new Uint8Array([1]), n, r);
+  }
+  _buildTypeTableImpl(e) {
+    this._fields.forEach(([c, l]) => l.buildTypeTable(e));
+    const r = Ye(-23),
+      n = Ve(this._fields.length),
+      i = this._fields.map(([c, l]) => {
+        const f = new TextEncoder().encode(c),
+          y = Ve(f.length);
+        return Oe(y, f, l.encodeType(e));
+      });
+    e.add(this, Oe(r, n, ...i));
+  }
+  decodeValue(e) {
+    return Fi(e);
+  }
+  get name() {
+    return `service {${this._fields.map(([r, n]) => r + ":" + n.name).join("; ")}}`;
+  }
+  valueToString(e) {
+    return `service "${e.toText()}"`;
+  }
+}
+function Ge(t) {
+  const e = JSON.stringify(t, (r, n) =>
+    typeof n == "bigint" ? `BigInt(${n})` : n,
+  );
+  return e && e.length > es ? e.substring(0, es - 3) + "..." : e;
+}
+function ui(t, e) {
+  if (e.length < t.length) throw Error("Wrong number of message arguments");
+  const r = new Jc();
+  t.forEach((y) => y.buildTypeTable(r));
+  const n = new TextEncoder().encode(cn),
+    i = r.encode(),
+    c = Ve(e.length),
+    l = Oe(...t.map((y) => y.encodeType(r))),
+    f = Oe(
+      ...$r(t, e, (y, m) => {
+        try {
+          y.covariant(m);
+        } catch (E) {
+          throw new Error(
+            E.message +
+              `
+
+`,
+          );
+        }
+        return y.encodeValue(m);
+      }),
+    );
+  return Oe(n, i, c, l, f);
+}
+function ha(t, e) {
+  const r = new Tr(e);
+  if (e.byteLength < cn.length)
+    throw new Error("Message length smaller than magic number");
+  const n = cr(r, cn.length),
+    i = new TextDecoder().decode(n);
+  if (i !== cn) throw new Error("Wrong magic number: " + JSON.stringify(i));
+  function c(v) {
+    const U = [],
+      N = Number(Ke(v));
+    for (let V = 0; V < N; V++) {
+      const W = Number(Zt(v));
+      switch (W) {
+        case -18:
+        case -19: {
+          const J = Number(Zt(v));
+          U.push([W, J]);
+          break;
+        }
+        case -20:
+        case -21: {
+          const J = [];
+          let z = Number(Ke(v)),
+            H;
+          for (; z--; ) {
+            const j = Number(Ke(v));
+            if (j >= Math.pow(2, 32))
+              throw new Error("field id out of 32-bit range");
+            if (typeof H == "number" && H >= j)
+              throw new Error("field id collision or not sorted");
+            H = j;
+            const X = Number(Zt(v));
+            J.push([j, X]);
+          }
+          U.push([W, J]);
+          break;
+        }
+        case -22: {
+          const J = [];
+          let z = Number(Ke(v));
+          for (; z--; ) J.push(Number(Zt(v)));
+          const H = [];
+          let j = Number(Ke(v));
+          for (; j--; ) H.push(Number(Zt(v)));
+          const X = [];
+          let ue = Number(Ke(v));
+          for (; ue--; )
+            switch (Number(Ke(v))) {
+              case 1: {
+                X.push("query");
+                break;
+              }
+              case 2: {
+                X.push("oneway");
+                break;
+              }
+              case 3: {
+                X.push("composite_query");
+                break;
+              }
+              default:
+                throw new Error("unknown annotation");
+            }
+          U.push([W, [J, H, X]]);
+          break;
+        }
+        case -23: {
+          let J = Number(Ke(v));
+          const z = [];
+          for (; J--; ) {
+            const H = Number(Ke(v)),
+              j = new TextDecoder().decode(cr(v, H)),
+              X = Zt(v);
+            z.push([j, X]);
+          }
+          U.push([W, z]);
+          break;
+        }
+        default:
+          throw new Error("Illegal op_code: " + W);
+      }
+    }
+    const q = [],
+      G = Number(Ke(v));
+    for (let V = 0; V < G; V++) q.push(Number(Zt(v)));
+    return [U, q];
+  }
+  const [l, f] = c(r);
+  if (f.length < t.length) throw new Error("Wrong number of return values");
+  const y = l.map((v) => ka());
+  function m(v) {
+    if (v < -24) throw new Error("future value not supported");
+    if (v < 0)
+      switch (v) {
+        case -1:
+          return wa;
+        case -2:
+          return ya;
+        case -3:
+          return ma;
+        case -4:
+          return ba;
+        case -5:
+          return Sa;
+        case -6:
+          return va;
+        case -7:
+          return Ia;
+        case -8:
+          return Na;
+        case -9:
+          return Ea;
+        case -10:
+          return Ba;
+        case -11:
+          return Aa;
+        case -12:
+          return Ta;
+        case -13:
+          return xa;
+        case -14:
+          return _a;
+        case -15:
+          return ga;
+        case -16:
+          return pa;
+        case -17:
+          return da;
+        case -24:
+          return Ua;
+        default:
+          throw new Error("Illegal op_code: " + v);
+      }
+    if (v >= l.length) throw new Error("type index out of range");
+    return y[v];
+  }
+  function E(v) {
+    switch (v[0]) {
+      case -19: {
+        const U = m(v[1]);
+        return Oa(U);
+      }
+      case -18: {
+        const U = m(v[1]);
+        return Fa(U);
+      }
+      case -20: {
+        const U = {};
+        for (const [G, V] of v[1]) {
+          const W = `_${G}_`;
+          U[W] = m(V);
+        }
+        const N = Pa(U),
+          q = N.tryAsTuple();
+        return Array.isArray(q) ? Ra(...q) : N;
+      }
+      case -21: {
+        const U = {};
+        for (const [N, q] of v[1]) {
+          const G = `_${N}_`;
+          U[G] = m(q);
+        }
+        return Ma(U);
+      }
+      case -22: {
+        const [U, N, q] = v[1];
+        return Ca(
+          U.map((G) => m(G)),
+          N.map((G) => m(G)),
+          q,
+        );
+      }
+      case -23: {
+        const U = {},
+          N = v[1];
+        for (const [q, G] of N) {
+          let V = m(G);
+          if ((V instanceof Qt && (V = V.getType()), !(V instanceof Pi)))
+            throw new Error(
+              "Illegal service definition: services can only contain functions",
+            );
+          U[q] = V;
+        }
+        return $a(U);
+      }
+      default:
+        throw new Error("Illegal op_code: " + v[0]);
+    }
+  }
+  l.forEach((v, U) => {
+    if (v[0] === -22) {
+      const N = E(v);
+      y[U].fill(N);
+    }
+  }),
+    l.forEach((v, U) => {
+      if (v[0] !== -22) {
+        const N = E(v);
+        y[U].fill(N);
+      }
+    });
+  const B = f.map((v) => m(v)),
+    M = t.map((v, U) => v.decodeValue(r, B[U]));
+  for (let v = t.length; v < B.length; v++) B[v].decodeValue(r, B[v]);
+  if (r.byteLength > 0) throw new Error("decode: Left-over bytes");
+  return M;
+}
+const da = new na(),
+  pa = new In(),
+  ef = new ia(),
+  ya = new sa(),
+  wa = new aa(),
+  ga = new oa(),
+  ba = new ca(),
+  ma = new fa(),
+  xa = new Oi(32),
+  _a = new Oi(64),
+  Ea = new ur(8),
+  Ba = new ur(16),
+  Aa = new ur(32),
+  Ta = new ur(64),
+  Sa = new Xt(8),
+  va = new Xt(16),
+  Ia = new Xt(32),
+  Na = new Xt(64),
+  Ua = new ua();
+function Ra(...t) {
+  return new Cn(t);
+}
+function Oa(t) {
+  return new kn(t);
+}
+function Fa(t) {
+  return new Br(t);
+}
+function Pa(t) {
+  return new Hr(t);
+}
+function Ma(t) {
+  return new $n(t);
+}
+function ka() {
+  return new Qt();
+}
+function Ca(t, e, r = []) {
+  return new Pi(t, e, r);
+}
+function $a(t) {
+  return new la(t);
+}
+const tf = Object.freeze(
+  Object.defineProperty(
+    {
+      __proto__: null,
+      Bool: ya,
+      BoolClass: sa,
+      ConstructType: Jt,
+      Empty: da,
+      EmptyClass: na,
+      FixedIntClass: ur,
+      FixedNatClass: Xt,
+      Float32: xa,
+      Float64: _a,
+      FloatClass: Oi,
+      Func: Ca,
+      FuncClass: Pi,
+      Int: ba,
+      Int16: Ba,
+      Int32: Aa,
+      Int64: Ta,
+      Int8: Ea,
+      IntClass: ca,
+      Nat: ma,
+      Nat16: va,
+      Nat32: Ia,
+      Nat64: Na,
+      Nat8: Sa,
+      NatClass: fa,
+      Null: wa,
+      NullClass: aa,
+      Opt: Fa,
+      OptClass: Br,
+      PrimitiveType: ht,
+      Principal: Ua,
+      PrincipalClass: ua,
+      Rec: ka,
+      RecClass: Qt,
+      Record: Pa,
+      RecordClass: Hr,
+      Reserved: pa,
+      ReservedClass: In,
+      Service: $a,
+      ServiceClass: la,
+      Text: ga,
+      TextClass: oa,
+      Tuple: Ra,
+      TupleClass: Cn,
+      Type: Mn,
+      Unknown: ef,
+      UnknownClass: ia,
+      Variant: Ma,
+      VariantClass: $n,
+      Vec: Oa,
+      VecClass: kn,
+      Visitor: Qc,
+      decode: ha,
+      encode: ui,
+    },
+    Symbol.toStringTag,
+    { value: "Module" },
+  ),
+);
+var qa = {},
+  jr = {};
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */ (function (t) {
+  var e = Vr,
+    r = Gr,
+    n =
+      typeof Symbol == "function" && typeof Symbol.for == "function"
+        ? Symbol.for("nodejs.util.inspect.custom")
+        : null;
+  (t.Buffer = f), (t.SlowBuffer = V), (t.INSPECT_MAX_BYTES = 50);
+  var i = 2147483647;
+  (t.kMaxLength = i),
+    (f.TYPED_ARRAY_SUPPORT = c()),
+    !f.TYPED_ARRAY_SUPPORT &&
+      typeof console < "u" &&
+      typeof console.error == "function" &&
+      console.error(
+        "This browser lacks typed array (Uint8Array) support which is required by `buffer` v5.x. Use `buffer` v4.x if you require old browser support.",
+      );
+  function c() {
+    try {
+      var h = new Uint8Array(1),
+        s = {
+          foo: function () {
+            return 42;
+          },
+        };
+      return (
+        Object.setPrototypeOf(s, Uint8Array.prototype),
+        Object.setPrototypeOf(h, s),
+        h.foo() === 42
+      );
+    } catch {
+      return !1;
+    }
+  }
+  Object.defineProperty(f.prototype, "parent", {
+    enumerable: !0,
+    get: function () {
+      if (f.isBuffer(this)) return this.buffer;
+    },
+  }),
+    Object.defineProperty(f.prototype, "offset", {
+      enumerable: !0,
+      get: function () {
+        if (f.isBuffer(this)) return this.byteOffset;
+      },
+    });
+  function l(h) {
+    if (h > i)
+      throw new RangeError(
+        'The value "' + h + '" is invalid for option "size"',
+      );
+    var s = new Uint8Array(h);
+    return Object.setPrototypeOf(s, f.prototype), s;
+  }
+  function f(h, s, a) {
+    if (typeof h == "number") {
+      if (typeof s == "string")
+        throw new TypeError(
+          'The "string" argument must be of type string. Received type number',
+        );
+      return B(h);
+    }
+    return y(h, s, a);
+  }
+  f.poolSize = 8192;
+  function y(h, s, a) {
+    if (typeof h == "string") return M(h, s);
+    if (ArrayBuffer.isView(h)) return U(h);
+    if (h == null)
+      throw new TypeError(
+        "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received type " +
+          typeof h,
+      );
+    if (
+      F(h, ArrayBuffer) ||
+      (h && F(h.buffer, ArrayBuffer)) ||
+      (typeof SharedArrayBuffer < "u" &&
+        (F(h, SharedArrayBuffer) || (h && F(h.buffer, SharedArrayBuffer))))
+    )
+      return N(h, s, a);
+    if (typeof h == "number")
+      throw new TypeError(
+        'The "value" argument must not be of type number. Received type number',
+      );
+    var p = h.valueOf && h.valueOf();
+    if (p != null && p !== h) return f.from(p, s, a);
+    var g = q(h);
+    if (g) return g;
+    if (
+      typeof Symbol < "u" &&
+      Symbol.toPrimitive != null &&
+      typeof h[Symbol.toPrimitive] == "function"
+    )
+      return f.from(h[Symbol.toPrimitive]("string"), s, a);
+    throw new TypeError(
+      "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received type " +
+        typeof h,
+    );
+  }
+  (f.from = function (h, s, a) {
+    return y(h, s, a);
+  }),
+    Object.setPrototypeOf(f.prototype, Uint8Array.prototype),
+    Object.setPrototypeOf(f, Uint8Array);
+  function m(h) {
+    if (typeof h != "number")
+      throw new TypeError('"size" argument must be of type number');
+    if (h < 0)
+      throw new RangeError(
+        'The value "' + h + '" is invalid for option "size"',
+      );
+  }
+  function E(h, s, a) {
+    return (
+      m(h),
+      h <= 0
+        ? l(h)
+        : s !== void 0
+          ? typeof a == "string"
+            ? l(h).fill(s, a)
+            : l(h).fill(s)
+          : l(h)
+    );
+  }
+  f.alloc = function (h, s, a) {
+    return E(h, s, a);
+  };
+  function B(h) {
+    return m(h), l(h < 0 ? 0 : G(h) | 0);
+  }
+  (f.allocUnsafe = function (h) {
+    return B(h);
+  }),
+    (f.allocUnsafeSlow = function (h) {
+      return B(h);
+    });
+  function M(h, s) {
+    if (((typeof s != "string" || s === "") && (s = "utf8"), !f.isEncoding(s)))
+      throw new TypeError("Unknown encoding: " + s);
+    var a = W(h, s) | 0,
+      p = l(a),
+      g = p.write(h, s);
+    return g !== a && (p = p.slice(0, g)), p;
+  }
+  function v(h) {
+    for (
+      var s = h.length < 0 ? 0 : G(h.length) | 0, a = l(s), p = 0;
+      p < s;
+      p += 1
+    )
+      a[p] = h[p] & 255;
+    return a;
+  }
+  function U(h) {
+    if (F(h, Uint8Array)) {
+      var s = new Uint8Array(h);
+      return N(s.buffer, s.byteOffset, s.byteLength);
+    }
+    return v(h);
+  }
+  function N(h, s, a) {
+    if (s < 0 || h.byteLength < s)
+      throw new RangeError('"offset" is outside of buffer bounds');
+    if (h.byteLength < s + (a || 0))
+      throw new RangeError('"length" is outside of buffer bounds');
+    var p;
+    return (
+      s === void 0 && a === void 0
+        ? (p = new Uint8Array(h))
+        : a === void 0
+          ? (p = new Uint8Array(h, s))
+          : (p = new Uint8Array(h, s, a)),
+      Object.setPrototypeOf(p, f.prototype),
+      p
+    );
+  }
+  function q(h) {
+    if (f.isBuffer(h)) {
+      var s = G(h.length) | 0,
+        a = l(s);
+      return a.length === 0 || h.copy(a, 0, 0, s), a;
+    }
+    if (h.length !== void 0)
+      return typeof h.length != "number" || R(h.length) ? l(0) : v(h);
+    if (h.type === "Buffer" && Array.isArray(h.data)) return v(h.data);
+  }
+  function G(h) {
+    if (h >= i)
+      throw new RangeError(
+        "Attempt to allocate Buffer larger than maximum size: 0x" +
+          i.toString(16) +
+          " bytes",
+      );
+    return h | 0;
+  }
+  function V(h) {
+    return +h != h && (h = 0), f.alloc(+h);
+  }
+  (f.isBuffer = function (s) {
+    return s != null && s._isBuffer === !0 && s !== f.prototype;
+  }),
+    (f.compare = function (s, a) {
+      if (
+        (F(s, Uint8Array) && (s = f.from(s, s.offset, s.byteLength)),
+        F(a, Uint8Array) && (a = f.from(a, a.offset, a.byteLength)),
+        !f.isBuffer(s) || !f.isBuffer(a))
+      )
+        throw new TypeError(
+          'The "buf1", "buf2" arguments must be one of type Buffer or Uint8Array',
+        );
+      if (s === a) return 0;
+      for (
+        var p = s.length, g = a.length, T = 0, k = Math.min(p, g);
+        T < k;
+        ++T
+      )
+        if (s[T] !== a[T]) {
+          (p = s[T]), (g = a[T]);
+          break;
+        }
+      return p < g ? -1 : g < p ? 1 : 0;
+    }),
+    (f.isEncoding = function (s) {
+      switch (String(s).toLowerCase()) {
+        case "hex":
+        case "utf8":
+        case "utf-8":
+        case "ascii":
+        case "latin1":
+        case "binary":
+        case "base64":
+        case "ucs2":
+        case "ucs-2":
+        case "utf16le":
+        case "utf-16le":
+          return !0;
+        default:
+          return !1;
+      }
+    }),
+    (f.concat = function (s, a) {
+      if (!Array.isArray(s))
+        throw new TypeError('"list" argument must be an Array of Buffers');
+      if (s.length === 0) return f.alloc(0);
+      var p;
+      if (a === void 0) for (a = 0, p = 0; p < s.length; ++p) a += s[p].length;
+      var g = f.allocUnsafe(a),
+        T = 0;
+      for (p = 0; p < s.length; ++p) {
+        var k = s[p];
+        if (F(k, Uint8Array))
+          T + k.length > g.length
+            ? f.from(k).copy(g, T)
+            : Uint8Array.prototype.set.call(g, k, T);
+        else if (f.isBuffer(k)) k.copy(g, T);
+        else throw new TypeError('"list" argument must be an Array of Buffers');
+        T += k.length;
+      }
+      return g;
+    });
+  function W(h, s) {
+    if (f.isBuffer(h)) return h.length;
+    if (ArrayBuffer.isView(h) || F(h, ArrayBuffer)) return h.byteLength;
+    if (typeof h != "string")
+      throw new TypeError(
+        'The "string" argument must be one of type string, Buffer, or ArrayBuffer. Received type ' +
+          typeof h,
+      );
+    var a = h.length,
+      p = arguments.length > 2 && arguments[2] === !0;
+    if (!p && a === 0) return 0;
+    for (var g = !1; ; )
+      switch (s) {
+        case "ascii":
+        case "latin1":
+        case "binary":
+          return a;
+        case "utf8":
+        case "utf-8":
+          return re(h).length;
+        case "ucs2":
+        case "ucs-2":
+        case "utf16le":
+        case "utf-16le":
+          return a * 2;
+        case "hex":
+          return a >>> 1;
+        case "base64":
+          return x(h).length;
+        default:
+          if (g) return p ? -1 : re(h).length;
+          (s = ("" + s).toLowerCase()), (g = !0);
+      }
+  }
+  f.byteLength = W;
+  function J(h, s, a) {
+    var p = !1;
+    if (
+      ((s === void 0 || s < 0) && (s = 0),
+      s > this.length ||
+        ((a === void 0 || a > this.length) && (a = this.length), a <= 0) ||
+        ((a >>>= 0), (s >>>= 0), a <= s))
+    )
+      return "";
+    for (h || (h = "utf8"); ; )
+      switch (h) {
+        case "hex":
+          return Y(this, s, a);
+        case "utf8":
+        case "utf-8":
+          return Te(this, s, a);
+        case "ascii":
+          return pe(this, s, a);
+        case "latin1":
+        case "binary":
+          return K(this, s, a);
+        case "base64":
+          return he(this, s, a);
+        case "ucs2":
+        case "ucs-2":
+        case "utf16le":
+        case "utf-16le":
+          return te(this, s, a);
+        default:
+          if (p) throw new TypeError("Unknown encoding: " + h);
+          (h = (h + "").toLowerCase()), (p = !0);
+      }
+  }
+  f.prototype._isBuffer = !0;
+  function z(h, s, a) {
+    var p = h[s];
+    (h[s] = h[a]), (h[a] = p);
+  }
+  (f.prototype.swap16 = function () {
+    var s = this.length;
+    if (s % 2 !== 0)
+      throw new RangeError("Buffer size must be a multiple of 16-bits");
+    for (var a = 0; a < s; a += 2) z(this, a, a + 1);
+    return this;
+  }),
+    (f.prototype.swap32 = function () {
+      var s = this.length;
+      if (s % 4 !== 0)
+        throw new RangeError("Buffer size must be a multiple of 32-bits");
+      for (var a = 0; a < s; a += 4) z(this, a, a + 3), z(this, a + 1, a + 2);
+      return this;
+    }),
+    (f.prototype.swap64 = function () {
+      var s = this.length;
+      if (s % 8 !== 0)
+        throw new RangeError("Buffer size must be a multiple of 64-bits");
+      for (var a = 0; a < s; a += 8)
+        z(this, a, a + 7),
+          z(this, a + 1, a + 6),
+          z(this, a + 2, a + 5),
+          z(this, a + 3, a + 4);
+      return this;
+    }),
+    (f.prototype.toString = function () {
+      var s = this.length;
+      return s === 0
+        ? ""
+        : arguments.length === 0
+          ? Te(this, 0, s)
+          : J.apply(this, arguments);
+    }),
+    (f.prototype.toLocaleString = f.prototype.toString),
+    (f.prototype.equals = function (s) {
+      if (!f.isBuffer(s)) throw new TypeError("Argument must be a Buffer");
+      return this === s ? !0 : f.compare(this, s) === 0;
+    }),
+    (f.prototype.inspect = function () {
+      var s = "",
+        a = t.INSPECT_MAX_BYTES;
+      return (
+        (s = this.toString("hex", 0, a)
+          .replace(/(.{2})/g, "$1 ")
+          .trim()),
+        this.length > a && (s += " ... "),
+        "<Buffer " + s + ">"
+      );
+    }),
+    n && (f.prototype[n] = f.prototype.inspect),
+    (f.prototype.compare = function (s, a, p, g, T) {
+      if (
+        (F(s, Uint8Array) && (s = f.from(s, s.offset, s.byteLength)),
+        !f.isBuffer(s))
+      )
+        throw new TypeError(
+          'The "target" argument must be one of type Buffer or Uint8Array. Received type ' +
+            typeof s,
+        );
+      if (
+        (a === void 0 && (a = 0),
+        p === void 0 && (p = s ? s.length : 0),
+        g === void 0 && (g = 0),
+        T === void 0 && (T = this.length),
+        a < 0 || p > s.length || g < 0 || T > this.length)
+      )
+        throw new RangeError("out of range index");
+      if (g >= T && a >= p) return 0;
+      if (g >= T) return -1;
+      if (a >= p) return 1;
+      if (((a >>>= 0), (p >>>= 0), (g >>>= 0), (T >>>= 0), this === s))
+        return 0;
+      for (
+        var k = T - g,
+          Q = p - a,
+          ae = Math.min(k, Q),
+          le = this.slice(g, T),
+          _e = s.slice(a, p),
+          d = 0;
+        d < ae;
+        ++d
+      )
+        if (le[d] !== _e[d]) {
+          (k = le[d]), (Q = _e[d]);
+          break;
+        }
+      return k < Q ? -1 : Q < k ? 1 : 0;
+    });
+  function H(h, s, a, p, g) {
+    if (h.length === 0) return -1;
+    if (
+      (typeof a == "string"
+        ? ((p = a), (a = 0))
+        : a > 2147483647
+          ? (a = 2147483647)
+          : a < -2147483648 && (a = -2147483648),
+      (a = +a),
+      R(a) && (a = g ? 0 : h.length - 1),
+      a < 0 && (a = h.length + a),
+      a >= h.length)
+    ) {
+      if (g) return -1;
+      a = h.length - 1;
+    } else if (a < 0)
+      if (g) a = 0;
+      else return -1;
+    if ((typeof s == "string" && (s = f.from(s, p)), f.isBuffer(s)))
+      return s.length === 0 ? -1 : j(h, s, a, p, g);
+    if (typeof s == "number")
+      return (
+        (s = s & 255),
+        typeof Uint8Array.prototype.indexOf == "function"
+          ? g
+            ? Uint8Array.prototype.indexOf.call(h, s, a)
+            : Uint8Array.prototype.lastIndexOf.call(h, s, a)
+          : j(h, [s], a, p, g)
+      );
+    throw new TypeError("val must be string, number or Buffer");
+  }
+  function j(h, s, a, p, g) {
+    var T = 1,
+      k = h.length,
+      Q = s.length;
+    if (
+      p !== void 0 &&
+      ((p = String(p).toLowerCase()),
+      p === "ucs2" || p === "ucs-2" || p === "utf16le" || p === "utf-16le")
+    ) {
+      if (h.length < 2 || s.length < 2) return -1;
+      (T = 2), (k /= 2), (Q /= 2), (a /= 2);
+    }
+    function ae(u, _) {
+      return T === 1 ? u[_] : u.readUInt16BE(_ * T);
+    }
+    var le;
+    if (g) {
+      var _e = -1;
+      for (le = a; le < k; le++)
+        if (ae(h, le) === ae(s, _e === -1 ? 0 : le - _e)) {
+          if ((_e === -1 && (_e = le), le - _e + 1 === Q)) return _e * T;
+        } else _e !== -1 && (le -= le - _e), (_e = -1);
+    } else
+      for (a + Q > k && (a = k - Q), le = a; le >= 0; le--) {
+        for (var d = !0, o = 0; o < Q; o++)
+          if (ae(h, le + o) !== ae(s, o)) {
+            d = !1;
+            break;
+          }
+        if (d) return le;
+      }
+    return -1;
+  }
+  (f.prototype.includes = function (s, a, p) {
+    return this.indexOf(s, a, p) !== -1;
+  }),
+    (f.prototype.indexOf = function (s, a, p) {
+      return H(this, s, a, p, !0);
+    }),
+    (f.prototype.lastIndexOf = function (s, a, p) {
+      return H(this, s, a, p, !1);
+    });
+  function X(h, s, a, p) {
+    a = Number(a) || 0;
+    var g = h.length - a;
+    p ? ((p = Number(p)), p > g && (p = g)) : (p = g);
+    var T = s.length;
+    p > T / 2 && (p = T / 2);
+    for (var k = 0; k < p; ++k) {
+      var Q = parseInt(s.substr(k * 2, 2), 16);
+      if (R(Q)) return k;
+      h[a + k] = Q;
+    }
+    return k;
+  }
+  function ue(h, s, a, p) {
+    return A(re(s, h.length - a), h, a, p);
+  }
+  function L(h, s, a, p) {
+    return A(se(s), h, a, p);
+  }
+  function oe(h, s, a, p) {
+    return A(x(s), h, a, p);
+  }
+  function we(h, s, a, p) {
+    return A(b(s, h.length - a), h, a, p);
+  }
+  (f.prototype.write = function (s, a, p, g) {
+    if (a === void 0) (g = "utf8"), (p = this.length), (a = 0);
+    else if (p === void 0 && typeof a == "string")
+      (g = a), (p = this.length), (a = 0);
+    else if (isFinite(a))
+      (a = a >>> 0),
+        isFinite(p)
+          ? ((p = p >>> 0), g === void 0 && (g = "utf8"))
+          : ((g = p), (p = void 0));
+    else
+      throw new Error(
+        "Buffer.write(string, encoding, offset[, length]) is no longer supported",
+      );
+    var T = this.length - a;
+    if (
+      ((p === void 0 || p > T) && (p = T),
+      (s.length > 0 && (p < 0 || a < 0)) || a > this.length)
+    )
+      throw new RangeError("Attempt to write outside buffer bounds");
+    g || (g = "utf8");
+    for (var k = !1; ; )
+      switch (g) {
+        case "hex":
+          return X(this, s, a, p);
+        case "utf8":
+        case "utf-8":
+          return ue(this, s, a, p);
+        case "ascii":
+        case "latin1":
+        case "binary":
+          return L(this, s, a, p);
+        case "base64":
+          return oe(this, s, a, p);
+        case "ucs2":
+        case "ucs-2":
+        case "utf16le":
+        case "utf-16le":
+          return we(this, s, a, p);
+        default:
+          if (k) throw new TypeError("Unknown encoding: " + g);
+          (g = ("" + g).toLowerCase()), (k = !0);
+      }
+  }),
+    (f.prototype.toJSON = function () {
+      return {
+        type: "Buffer",
+        data: Array.prototype.slice.call(this._arr || this, 0),
+      };
+    });
+  function he(h, s, a) {
+    return s === 0 && a === h.length
+      ? e.fromByteArray(h)
+      : e.fromByteArray(h.slice(s, a));
+  }
+  function Te(h, s, a) {
+    a = Math.min(h.length, a);
+    for (var p = [], g = s; g < a; ) {
+      var T = h[g],
+        k = null,
+        Q = T > 239 ? 4 : T > 223 ? 3 : T > 191 ? 2 : 1;
+      if (g + Q <= a) {
+        var ae, le, _e, d;
+        switch (Q) {
+          case 1:
+            T < 128 && (k = T);
+            break;
+          case 2:
+            (ae = h[g + 1]),
+              (ae & 192) === 128 &&
+                ((d = ((T & 31) << 6) | (ae & 63)), d > 127 && (k = d));
+            break;
+          case 3:
+            (ae = h[g + 1]),
+              (le = h[g + 2]),
+              (ae & 192) === 128 &&
+                (le & 192) === 128 &&
+                ((d = ((T & 15) << 12) | ((ae & 63) << 6) | (le & 63)),
+                d > 2047 && (d < 55296 || d > 57343) && (k = d));
+            break;
+          case 4:
+            (ae = h[g + 1]),
+              (le = h[g + 2]),
+              (_e = h[g + 3]),
+              (ae & 192) === 128 &&
+                (le & 192) === 128 &&
+                (_e & 192) === 128 &&
+                ((d =
+                  ((T & 15) << 18) |
+                  ((ae & 63) << 12) |
+                  ((le & 63) << 6) |
+                  (_e & 63)),
+                d > 65535 && d < 1114112 && (k = d));
+        }
+      }
+      k === null
+        ? ((k = 65533), (Q = 1))
+        : k > 65535 &&
+          ((k -= 65536),
+          p.push(((k >>> 10) & 1023) | 55296),
+          (k = 56320 | (k & 1023))),
+        p.push(k),
+        (g += Q);
+    }
+    return ne(p);
+  }
+  var ge = 4096;
+  function ne(h) {
+    var s = h.length;
+    if (s <= ge) return String.fromCharCode.apply(String, h);
+    for (var a = "", p = 0; p < s; )
+      a += String.fromCharCode.apply(String, h.slice(p, (p += ge)));
+    return a;
+  }
+  function pe(h, s, a) {
+    var p = "";
+    a = Math.min(h.length, a);
+    for (var g = s; g < a; ++g) p += String.fromCharCode(h[g] & 127);
+    return p;
+  }
+  function K(h, s, a) {
+    var p = "";
+    a = Math.min(h.length, a);
+    for (var g = s; g < a; ++g) p += String.fromCharCode(h[g]);
+    return p;
+  }
+  function Y(h, s, a) {
+    var p = h.length;
+    (!s || s < 0) && (s = 0), (!a || a < 0 || a > p) && (a = p);
+    for (var g = "", T = s; T < a; ++T) g += P[h[T]];
+    return g;
+  }
+  function te(h, s, a) {
+    for (var p = h.slice(s, a), g = "", T = 0; T < p.length - 1; T += 2)
+      g += String.fromCharCode(p[T] + p[T + 1] * 256);
+    return g;
+  }
+  f.prototype.slice = function (s, a) {
+    var p = this.length;
+    (s = ~~s),
+      (a = a === void 0 ? p : ~~a),
+      s < 0 ? ((s += p), s < 0 && (s = 0)) : s > p && (s = p),
+      a < 0 ? ((a += p), a < 0 && (a = 0)) : a > p && (a = p),
+      a < s && (a = s);
+    var g = this.subarray(s, a);
+    return Object.setPrototypeOf(g, f.prototype), g;
+  };
+  function D(h, s, a) {
+    if (h % 1 !== 0 || h < 0) throw new RangeError("offset is not uint");
+    if (h + s > a)
+      throw new RangeError("Trying to access beyond buffer length");
+  }
+  (f.prototype.readUintLE = f.prototype.readUIntLE =
+    function (s, a, p) {
+      (s = s >>> 0), (a = a >>> 0), p || D(s, a, this.length);
+      for (var g = this[s], T = 1, k = 0; ++k < a && (T *= 256); )
+        g += this[s + k] * T;
+      return g;
+    }),
+    (f.prototype.readUintBE = f.prototype.readUIntBE =
+      function (s, a, p) {
+        (s = s >>> 0), (a = a >>> 0), p || D(s, a, this.length);
+        for (var g = this[s + --a], T = 1; a > 0 && (T *= 256); )
+          g += this[s + --a] * T;
+        return g;
+      }),
+    (f.prototype.readUint8 = f.prototype.readUInt8 =
+      function (s, a) {
+        return (s = s >>> 0), a || D(s, 1, this.length), this[s];
+      }),
+    (f.prototype.readUint16LE = f.prototype.readUInt16LE =
+      function (s, a) {
+        return (
+          (s = s >>> 0), a || D(s, 2, this.length), this[s] | (this[s + 1] << 8)
+        );
+      }),
+    (f.prototype.readUint16BE = f.prototype.readUInt16BE =
+      function (s, a) {
+        return (
+          (s = s >>> 0), a || D(s, 2, this.length), (this[s] << 8) | this[s + 1]
+        );
+      }),
+    (f.prototype.readUint32LE = f.prototype.readUInt32LE =
+      function (s, a) {
+        return (
+          (s = s >>> 0),
+          a || D(s, 4, this.length),
+          (this[s] | (this[s + 1] << 8) | (this[s + 2] << 16)) +
+            this[s + 3] * 16777216
+        );
+      }),
+    (f.prototype.readUint32BE = f.prototype.readUInt32BE =
+      function (s, a) {
+        return (
+          (s = s >>> 0),
+          a || D(s, 4, this.length),
+          this[s] * 16777216 +
+            ((this[s + 1] << 16) | (this[s + 2] << 8) | this[s + 3])
+        );
+      }),
+    (f.prototype.readIntLE = function (s, a, p) {
+      (s = s >>> 0), (a = a >>> 0), p || D(s, a, this.length);
+      for (var g = this[s], T = 1, k = 0; ++k < a && (T *= 256); )
+        g += this[s + k] * T;
+      return (T *= 128), g >= T && (g -= Math.pow(2, 8 * a)), g;
+    }),
+    (f.prototype.readIntBE = function (s, a, p) {
+      (s = s >>> 0), (a = a >>> 0), p || D(s, a, this.length);
+      for (var g = a, T = 1, k = this[s + --g]; g > 0 && (T *= 256); )
+        k += this[s + --g] * T;
+      return (T *= 128), k >= T && (k -= Math.pow(2, 8 * a)), k;
+    }),
+    (f.prototype.readInt8 = function (s, a) {
+      return (
+        (s = s >>> 0),
+        a || D(s, 1, this.length),
+        this[s] & 128 ? (255 - this[s] + 1) * -1 : this[s]
+      );
+    }),
+    (f.prototype.readInt16LE = function (s, a) {
+      (s = s >>> 0), a || D(s, 2, this.length);
+      var p = this[s] | (this[s + 1] << 8);
+      return p & 32768 ? p | 4294901760 : p;
+    }),
+    (f.prototype.readInt16BE = function (s, a) {
+      (s = s >>> 0), a || D(s, 2, this.length);
+      var p = this[s + 1] | (this[s] << 8);
+      return p & 32768 ? p | 4294901760 : p;
+    }),
+    (f.prototype.readInt32LE = function (s, a) {
+      return (
+        (s = s >>> 0),
+        a || D(s, 4, this.length),
+        this[s] | (this[s + 1] << 8) | (this[s + 2] << 16) | (this[s + 3] << 24)
+      );
+    }),
+    (f.prototype.readInt32BE = function (s, a) {
+      return (
+        (s = s >>> 0),
+        a || D(s, 4, this.length),
+        (this[s] << 24) | (this[s + 1] << 16) | (this[s + 2] << 8) | this[s + 3]
+      );
+    }),
+    (f.prototype.readFloatLE = function (s, a) {
+      return (
+        (s = s >>> 0), a || D(s, 4, this.length), r.read(this, s, !0, 23, 4)
+      );
+    }),
+    (f.prototype.readFloatBE = function (s, a) {
+      return (
+        (s = s >>> 0), a || D(s, 4, this.length), r.read(this, s, !1, 23, 4)
+      );
+    }),
+    (f.prototype.readDoubleLE = function (s, a) {
+      return (
+        (s = s >>> 0), a || D(s, 8, this.length), r.read(this, s, !0, 52, 8)
+      );
+    }),
+    (f.prototype.readDoubleBE = function (s, a) {
+      return (
+        (s = s >>> 0), a || D(s, 8, this.length), r.read(this, s, !1, 52, 8)
+      );
+    });
+  function ee(h, s, a, p, g, T) {
+    if (!f.isBuffer(h))
+      throw new TypeError('"buffer" argument must be a Buffer instance');
+    if (s > g || s < T)
+      throw new RangeError('"value" argument is out of bounds');
+    if (a + p > h.length) throw new RangeError("Index out of range");
+  }
+  (f.prototype.writeUintLE = f.prototype.writeUIntLE =
+    function (s, a, p, g) {
+      if (((s = +s), (a = a >>> 0), (p = p >>> 0), !g)) {
+        var T = Math.pow(2, 8 * p) - 1;
+        ee(this, s, a, p, T, 0);
+      }
+      var k = 1,
+        Q = 0;
+      for (this[a] = s & 255; ++Q < p && (k *= 256); )
+        this[a + Q] = (s / k) & 255;
+      return a + p;
+    }),
+    (f.prototype.writeUintBE = f.prototype.writeUIntBE =
+      function (s, a, p, g) {
+        if (((s = +s), (a = a >>> 0), (p = p >>> 0), !g)) {
+          var T = Math.pow(2, 8 * p) - 1;
+          ee(this, s, a, p, T, 0);
+        }
+        var k = p - 1,
+          Q = 1;
+        for (this[a + k] = s & 255; --k >= 0 && (Q *= 256); )
+          this[a + k] = (s / Q) & 255;
+        return a + p;
+      }),
+    (f.prototype.writeUint8 = f.prototype.writeUInt8 =
+      function (s, a, p) {
+        return (
+          (s = +s),
+          (a = a >>> 0),
+          p || ee(this, s, a, 1, 255, 0),
+          (this[a] = s & 255),
+          a + 1
+        );
+      }),
+    (f.prototype.writeUint16LE = f.prototype.writeUInt16LE =
+      function (s, a, p) {
+        return (
+          (s = +s),
+          (a = a >>> 0),
+          p || ee(this, s, a, 2, 65535, 0),
+          (this[a] = s & 255),
+          (this[a + 1] = s >>> 8),
+          a + 2
+        );
+      }),
+    (f.prototype.writeUint16BE = f.prototype.writeUInt16BE =
+      function (s, a, p) {
+        return (
+          (s = +s),
+          (a = a >>> 0),
+          p || ee(this, s, a, 2, 65535, 0),
+          (this[a] = s >>> 8),
+          (this[a + 1] = s & 255),
+          a + 2
+        );
+      }),
+    (f.prototype.writeUint32LE = f.prototype.writeUInt32LE =
+      function (s, a, p) {
+        return (
+          (s = +s),
+          (a = a >>> 0),
+          p || ee(this, s, a, 4, 4294967295, 0),
+          (this[a + 3] = s >>> 24),
+          (this[a + 2] = s >>> 16),
+          (this[a + 1] = s >>> 8),
+          (this[a] = s & 255),
+          a + 4
+        );
+      }),
+    (f.prototype.writeUint32BE = f.prototype.writeUInt32BE =
+      function (s, a, p) {
+        return (
+          (s = +s),
+          (a = a >>> 0),
+          p || ee(this, s, a, 4, 4294967295, 0),
+          (this[a] = s >>> 24),
+          (this[a + 1] = s >>> 16),
+          (this[a + 2] = s >>> 8),
+          (this[a + 3] = s & 255),
+          a + 4
+        );
+      }),
+    (f.prototype.writeIntLE = function (s, a, p, g) {
+      if (((s = +s), (a = a >>> 0), !g)) {
+        var T = Math.pow(2, 8 * p - 1);
+        ee(this, s, a, p, T - 1, -T);
+      }
+      var k = 0,
+        Q = 1,
+        ae = 0;
+      for (this[a] = s & 255; ++k < p && (Q *= 256); )
+        s < 0 && ae === 0 && this[a + k - 1] !== 0 && (ae = 1),
+          (this[a + k] = (((s / Q) >> 0) - ae) & 255);
+      return a + p;
+    }),
+    (f.prototype.writeIntBE = function (s, a, p, g) {
+      if (((s = +s), (a = a >>> 0), !g)) {
+        var T = Math.pow(2, 8 * p - 1);
+        ee(this, s, a, p, T - 1, -T);
+      }
+      var k = p - 1,
+        Q = 1,
+        ae = 0;
+      for (this[a + k] = s & 255; --k >= 0 && (Q *= 256); )
+        s < 0 && ae === 0 && this[a + k + 1] !== 0 && (ae = 1),
+          (this[a + k] = (((s / Q) >> 0) - ae) & 255);
+      return a + p;
+    }),
+    (f.prototype.writeInt8 = function (s, a, p) {
+      return (
+        (s = +s),
+        (a = a >>> 0),
+        p || ee(this, s, a, 1, 127, -128),
+        s < 0 && (s = 255 + s + 1),
+        (this[a] = s & 255),
+        a + 1
+      );
+    }),
+    (f.prototype.writeInt16LE = function (s, a, p) {
+      return (
+        (s = +s),
+        (a = a >>> 0),
+        p || ee(this, s, a, 2, 32767, -32768),
+        (this[a] = s & 255),
+        (this[a + 1] = s >>> 8),
+        a + 2
+      );
+    }),
+    (f.prototype.writeInt16BE = function (s, a, p) {
+      return (
+        (s = +s),
+        (a = a >>> 0),
+        p || ee(this, s, a, 2, 32767, -32768),
+        (this[a] = s >>> 8),
+        (this[a + 1] = s & 255),
+        a + 2
+      );
+    }),
+    (f.prototype.writeInt32LE = function (s, a, p) {
+      return (
+        (s = +s),
+        (a = a >>> 0),
+        p || ee(this, s, a, 4, 2147483647, -2147483648),
+        (this[a] = s & 255),
+        (this[a + 1] = s >>> 8),
+        (this[a + 2] = s >>> 16),
+        (this[a + 3] = s >>> 24),
+        a + 4
+      );
+    }),
+    (f.prototype.writeInt32BE = function (s, a, p) {
+      return (
+        (s = +s),
+        (a = a >>> 0),
+        p || ee(this, s, a, 4, 2147483647, -2147483648),
+        s < 0 && (s = 4294967295 + s + 1),
+        (this[a] = s >>> 24),
+        (this[a + 1] = s >>> 16),
+        (this[a + 2] = s >>> 8),
+        (this[a + 3] = s & 255),
+        a + 4
+      );
+    });
+  function ce(h, s, a, p, g, T) {
+    if (a + p > h.length) throw new RangeError("Index out of range");
+    if (a < 0) throw new RangeError("Index out of range");
+  }
+  function w(h, s, a, p, g) {
+    return (
+      (s = +s),
+      (a = a >>> 0),
+      g || ce(h, s, a, 4),
+      r.write(h, s, a, p, 23, 4),
+      a + 4
+    );
+  }
+  (f.prototype.writeFloatLE = function (s, a, p) {
+    return w(this, s, a, !0, p);
+  }),
+    (f.prototype.writeFloatBE = function (s, a, p) {
+      return w(this, s, a, !1, p);
+    });
+  function ye(h, s, a, p, g) {
+    return (
+      (s = +s),
+      (a = a >>> 0),
+      g || ce(h, s, a, 8),
+      r.write(h, s, a, p, 52, 8),
+      a + 8
+    );
+  }
+  (f.prototype.writeDoubleLE = function (s, a, p) {
+    return ye(this, s, a, !0, p);
+  }),
+    (f.prototype.writeDoubleBE = function (s, a, p) {
+      return ye(this, s, a, !1, p);
+    }),
+    (f.prototype.copy = function (s, a, p, g) {
+      if (!f.isBuffer(s)) throw new TypeError("argument should be a Buffer");
+      if (
+        (p || (p = 0),
+        !g && g !== 0 && (g = this.length),
+        a >= s.length && (a = s.length),
+        a || (a = 0),
+        g > 0 && g < p && (g = p),
+        g === p || s.length === 0 || this.length === 0)
+      )
+        return 0;
+      if (a < 0) throw new RangeError("targetStart out of bounds");
+      if (p < 0 || p >= this.length) throw new RangeError("Index out of range");
+      if (g < 0) throw new RangeError("sourceEnd out of bounds");
+      g > this.length && (g = this.length),
+        s.length - a < g - p && (g = s.length - a + p);
+      var T = g - p;
+      return (
+        this === s && typeof Uint8Array.prototype.copyWithin == "function"
+          ? this.copyWithin(a, p, g)
+          : Uint8Array.prototype.set.call(s, this.subarray(p, g), a),
+        T
+      );
+    }),
+    (f.prototype.fill = function (s, a, p, g) {
+      if (typeof s == "string") {
+        if (
+          (typeof a == "string"
+            ? ((g = a), (a = 0), (p = this.length))
+            : typeof p == "string" && ((g = p), (p = this.length)),
+          g !== void 0 && typeof g != "string")
+        )
+          throw new TypeError("encoding must be a string");
+        if (typeof g == "string" && !f.isEncoding(g))
+          throw new TypeError("Unknown encoding: " + g);
+        if (s.length === 1) {
+          var T = s.charCodeAt(0);
+          ((g === "utf8" && T < 128) || g === "latin1") && (s = T);
+        }
+      } else
+        typeof s == "number"
+          ? (s = s & 255)
+          : typeof s == "boolean" && (s = Number(s));
+      if (a < 0 || this.length < a || this.length < p)
+        throw new RangeError("Out of range index");
+      if (p <= a) return this;
+      (a = a >>> 0), (p = p === void 0 ? this.length : p >>> 0), s || (s = 0);
+      var k;
+      if (typeof s == "number") for (k = a; k < p; ++k) this[k] = s;
+      else {
+        var Q = f.isBuffer(s) ? s : f.from(s, g),
+          ae = Q.length;
+        if (ae === 0)
+          throw new TypeError(
+            'The value "' + s + '" is invalid for argument "value"',
+          );
+        for (k = 0; k < p - a; ++k) this[k + a] = Q[k % ae];
+      }
+      return this;
+    });
+  var de = /[^+/0-9A-Za-z-_]/g;
+  function xe(h) {
+    if (((h = h.split("=")[0]), (h = h.trim().replace(de, "")), h.length < 2))
+      return "";
+    for (; h.length % 4 !== 0; ) h = h + "=";
+    return h;
+  }
+  function re(h, s) {
+    s = s || 1 / 0;
+    for (var a, p = h.length, g = null, T = [], k = 0; k < p; ++k) {
+      if (((a = h.charCodeAt(k)), a > 55295 && a < 57344)) {
+        if (!g) {
+          if (a > 56319) {
+            (s -= 3) > -1 && T.push(239, 191, 189);
+            continue;
+          } else if (k + 1 === p) {
+            (s -= 3) > -1 && T.push(239, 191, 189);
+            continue;
+          }
+          g = a;
+          continue;
+        }
+        if (a < 56320) {
+          (s -= 3) > -1 && T.push(239, 191, 189), (g = a);
+          continue;
+        }
+        a = (((g - 55296) << 10) | (a - 56320)) + 65536;
+      } else g && (s -= 3) > -1 && T.push(239, 191, 189);
+      if (((g = null), a < 128)) {
+        if ((s -= 1) < 0) break;
+        T.push(a);
+      } else if (a < 2048) {
+        if ((s -= 2) < 0) break;
+        T.push((a >> 6) | 192, (a & 63) | 128);
+      } else if (a < 65536) {
+        if ((s -= 3) < 0) break;
+        T.push((a >> 12) | 224, ((a >> 6) & 63) | 128, (a & 63) | 128);
+      } else if (a < 1114112) {
+        if ((s -= 4) < 0) break;
+        T.push(
+          (a >> 18) | 240,
+          ((a >> 12) & 63) | 128,
+          ((a >> 6) & 63) | 128,
+          (a & 63) | 128,
+        );
+      } else throw new Error("Invalid code point");
+    }
+    return T;
+  }
+  function se(h) {
+    for (var s = [], a = 0; a < h.length; ++a) s.push(h.charCodeAt(a) & 255);
+    return s;
+  }
+  function b(h, s) {
+    for (var a, p, g, T = [], k = 0; k < h.length && !((s -= 2) < 0); ++k)
+      (a = h.charCodeAt(k)), (p = a >> 8), (g = a % 256), T.push(g), T.push(p);
+    return T;
+  }
+  function x(h) {
+    return e.toByteArray(xe(h));
+  }
+  function A(h, s, a, p) {
+    for (var g = 0; g < p && !(g + a >= s.length || g >= h.length); ++g)
+      s[g + a] = h[g];
+    return g;
+  }
+  function F(h, s) {
+    return (
+      h instanceof s ||
+      (h != null &&
+        h.constructor != null &&
+        h.constructor.name != null &&
+        h.constructor.name === s.name)
+    );
+  }
+  function R(h) {
+    return h !== h;
+  }
+  var P = (function () {
+    for (var h = "0123456789abcdef", s = new Array(256), a = 0; a < 16; ++a)
+      for (var p = a * 16, g = 0; g < 16; ++g) s[p + g] = h[a] + h[g];
+    return s;
+  })();
+})(jr);
+var Va = { exports: {} };
+(function (t) {
+  (function (e) {
+    var r,
+      n = /^-?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i,
+      i = Math.ceil,
+      c = Math.floor,
+      l = "[BigNumber Error] ",
+      f = l + "Number primitive has more than 15 significant digits: ",
+      y = 1e14,
+      m = 14,
+      E = 9007199254740991,
+      B = [
+        1, 10, 100, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13,
+      ],
+      M = 1e7,
+      v = 1e9;
+    function U(H) {
+      var j,
+        X,
+        ue,
+        L = (w.prototype = { constructor: w, toString: null, valueOf: null }),
+        oe = new w(1),
+        we = 20,
+        he = 4,
+        Te = -7,
+        ge = 21,
+        ne = -1e7,
+        pe = 1e7,
+        K = !1,
+        Y = 1,
+        te = 0,
+        D = {
+          prefix: "",
+          groupSize: 3,
+          secondaryGroupSize: 0,
+          groupSeparator: ",",
+          decimalSeparator: ".",
+          fractionGroupSize: 0,
+          fractionGroupSeparator: " ",
+          suffix: "",
+        },
+        ee = "0123456789abcdefghijklmnopqrstuvwxyz",
+        ce = !0;
+      function w(b, x) {
+        var A,
+          F,
+          R,
+          P,
+          h,
+          s,
+          a,
+          p,
+          g = this;
+        if (!(g instanceof w)) return new w(b, x);
+        if (x == null) {
+          if (b && b._isBigNumber === !0) {
+            (g.s = b.s),
+              !b.c || b.e > pe
+                ? (g.c = g.e = null)
+                : b.e < ne
+                  ? (g.c = [(g.e = 0)])
+                  : ((g.e = b.e), (g.c = b.c.slice()));
+            return;
+          }
+          if ((s = typeof b == "number") && b * 0 == 0) {
+            if (((g.s = 1 / b < 0 ? ((b = -b), -1) : 1), b === ~~b)) {
+              for (P = 0, h = b; h >= 10; h /= 10, P++);
+              P > pe ? (g.c = g.e = null) : ((g.e = P), (g.c = [b]));
+              return;
+            }
+            p = String(b);
+          } else {
+            if (!n.test((p = String(b)))) return ue(g, p, s);
+            g.s = p.charCodeAt(0) == 45 ? ((p = p.slice(1)), -1) : 1;
+          }
+          (P = p.indexOf(".")) > -1 && (p = p.replace(".", "")),
+            (h = p.search(/e/i)) > 0
+              ? (P < 0 && (P = h),
+                (P += +p.slice(h + 1)),
+                (p = p.substring(0, h)))
+              : P < 0 && (P = p.length);
+        } else {
+          if ((V(x, 2, ee.length, "Base"), x == 10 && ce))
+            return (g = new w(b)), re(g, we + g.e + 1, he);
+          if (((p = String(b)), (s = typeof b == "number"))) {
+            if (b * 0 != 0) return ue(g, p, s, x);
+            if (
+              ((g.s = 1 / b < 0 ? ((p = p.slice(1)), -1) : 1),
+              w.DEBUG && p.replace(/^0\.0*|\./, "").length > 15)
+            )
+              throw Error(f + b);
+          } else g.s = p.charCodeAt(0) === 45 ? ((p = p.slice(1)), -1) : 1;
+          for (A = ee.slice(0, x), P = h = 0, a = p.length; h < a; h++)
+            if (A.indexOf((F = p.charAt(h))) < 0) {
+              if (F == ".") {
+                if (h > P) {
+                  P = a;
+                  continue;
+                }
+              } else if (
+                !R &&
+                ((p == p.toUpperCase() && (p = p.toLowerCase())) ||
+                  (p == p.toLowerCase() && (p = p.toUpperCase())))
+              ) {
+                (R = !0), (h = -1), (P = 0);
+                continue;
+              }
+              return ue(g, String(b), s, x);
+            }
+          (s = !1),
+            (p = X(p, x, 10, g.s)),
+            (P = p.indexOf(".")) > -1
+              ? (p = p.replace(".", ""))
+              : (P = p.length);
+        }
+        for (h = 0; p.charCodeAt(h) === 48; h++);
+        for (a = p.length; p.charCodeAt(--a) === 48; );
+        if ((p = p.slice(h, ++a))) {
+          if (((a -= h), s && w.DEBUG && a > 15 && (b > E || b !== c(b))))
+            throw Error(f + g.s * b);
+          if ((P = P - h - 1) > pe) g.c = g.e = null;
+          else if (P < ne) g.c = [(g.e = 0)];
+          else {
+            if (
+              ((g.e = P),
+              (g.c = []),
+              (h = (P + 1) % m),
+              P < 0 && (h += m),
+              h < a)
+            ) {
+              for (h && g.c.push(+p.slice(0, h)), a -= m; h < a; )
+                g.c.push(+p.slice(h, (h += m)));
+              h = m - (p = p.slice(h)).length;
+            } else h -= a;
+            for (; h--; p += "0");
+            g.c.push(+p);
+          }
+        } else g.c = [(g.e = 0)];
+      }
+      (w.clone = U),
+        (w.ROUND_UP = 0),
+        (w.ROUND_DOWN = 1),
+        (w.ROUND_CEIL = 2),
+        (w.ROUND_FLOOR = 3),
+        (w.ROUND_HALF_UP = 4),
+        (w.ROUND_HALF_DOWN = 5),
+        (w.ROUND_HALF_EVEN = 6),
+        (w.ROUND_HALF_CEIL = 7),
+        (w.ROUND_HALF_FLOOR = 8),
+        (w.EUCLID = 9),
+        (w.config = w.set =
+          function (b) {
+            var x, A;
+            if (b != null)
+              if (typeof b == "object") {
+                if (
+                  (b.hasOwnProperty((x = "DECIMAL_PLACES")) &&
+                    ((A = b[x]), V(A, 0, v, x), (we = A)),
+                  b.hasOwnProperty((x = "ROUNDING_MODE")) &&
+                    ((A = b[x]), V(A, 0, 8, x), (he = A)),
+                  b.hasOwnProperty((x = "EXPONENTIAL_AT")) &&
+                    ((A = b[x]),
+                    A && A.pop
+                      ? (V(A[0], -v, 0, x),
+                        V(A[1], 0, v, x),
+                        (Te = A[0]),
+                        (ge = A[1]))
+                      : (V(A, -v, v, x), (Te = -(ge = A < 0 ? -A : A)))),
+                  b.hasOwnProperty((x = "RANGE")))
+                )
+                  if (((A = b[x]), A && A.pop))
+                    V(A[0], -v, -1, x),
+                      V(A[1], 1, v, x),
+                      (ne = A[0]),
+                      (pe = A[1]);
+                  else if ((V(A, -v, v, x), A)) ne = -(pe = A < 0 ? -A : A);
+                  else throw Error(l + x + " cannot be zero: " + A);
+                if (b.hasOwnProperty((x = "CRYPTO")))
+                  if (((A = b[x]), A === !!A))
+                    if (A)
+                      if (
+                        typeof crypto < "u" &&
+                        crypto &&
+                        (crypto.getRandomValues || crypto.randomBytes)
+                      )
+                        K = A;
+                      else throw ((K = !A), Error(l + "crypto unavailable"));
+                    else K = A;
+                  else throw Error(l + x + " not true or false: " + A);
+                if (
+                  (b.hasOwnProperty((x = "MODULO_MODE")) &&
+                    ((A = b[x]), V(A, 0, 9, x), (Y = A)),
+                  b.hasOwnProperty((x = "POW_PRECISION")) &&
+                    ((A = b[x]), V(A, 0, v, x), (te = A)),
+                  b.hasOwnProperty((x = "FORMAT")))
+                )
+                  if (((A = b[x]), typeof A == "object")) D = A;
+                  else throw Error(l + x + " not an object: " + A);
+                if (b.hasOwnProperty((x = "ALPHABET")))
+                  if (
+                    ((A = b[x]),
+                    typeof A == "string" && !/^.?$|[+\-.\s]|(.).*\1/.test(A))
+                  )
+                    (ce = A.slice(0, 10) == "0123456789"), (ee = A);
+                  else throw Error(l + x + " invalid: " + A);
+              } else throw Error(l + "Object expected: " + b);
+            return {
+              DECIMAL_PLACES: we,
+              ROUNDING_MODE: he,
+              EXPONENTIAL_AT: [Te, ge],
+              RANGE: [ne, pe],
+              CRYPTO: K,
+              MODULO_MODE: Y,
+              POW_PRECISION: te,
+              FORMAT: D,
+              ALPHABET: ee,
+            };
+          }),
+        (w.isBigNumber = function (b) {
+          if (!b || b._isBigNumber !== !0) return !1;
+          if (!w.DEBUG) return !0;
+          var x,
+            A,
+            F = b.c,
+            R = b.e,
+            P = b.s;
+          e: if ({}.toString.call(F) == "[object Array]") {
+            if ((P === 1 || P === -1) && R >= -v && R <= v && R === c(R)) {
+              if (F[0] === 0) {
+                if (R === 0 && F.length === 1) return !0;
+                break e;
+              }
+              if (
+                ((x = (R + 1) % m), x < 1 && (x += m), String(F[0]).length == x)
+              ) {
+                for (x = 0; x < F.length; x++)
+                  if (((A = F[x]), A < 0 || A >= y || A !== c(A))) break e;
+                if (A !== 0) return !0;
+              }
+            }
+          } else if (
+            F === null &&
+            R === null &&
+            (P === null || P === 1 || P === -1)
+          )
+            return !0;
+          throw Error(l + "Invalid BigNumber: " + b);
+        }),
+        (w.maximum = w.max =
+          function () {
+            return de(arguments, -1);
+          }),
+        (w.minimum = w.min =
+          function () {
+            return de(arguments, 1);
+          }),
+        (w.random = (function () {
+          var b = 9007199254740992,
+            x =
+              (Math.random() * b) & 2097151
+                ? function () {
+                    return c(Math.random() * b);
+                  }
+                : function () {
+                    return (
+                      ((Math.random() * 1073741824) | 0) * 8388608 +
+                      ((Math.random() * 8388608) | 0)
+                    );
+                  };
+          return function (A) {
+            var F,
+              R,
+              P,
+              h,
+              s,
+              a = 0,
+              p = [],
+              g = new w(oe);
+            if ((A == null ? (A = we) : V(A, 0, v), (h = i(A / m)), K))
+              if (crypto.getRandomValues) {
+                for (
+                  F = crypto.getRandomValues(new Uint32Array((h *= 2)));
+                  a < h;
+
+                )
+                  (s = F[a] * 131072 + (F[a + 1] >>> 11)),
+                    s >= 9e15
+                      ? ((R = crypto.getRandomValues(new Uint32Array(2))),
+                        (F[a] = R[0]),
+                        (F[a + 1] = R[1]))
+                      : (p.push(s % 1e14), (a += 2));
+                a = h / 2;
+              } else if (crypto.randomBytes) {
+                for (F = crypto.randomBytes((h *= 7)); a < h; )
+                  (s =
+                    (F[a] & 31) * 281474976710656 +
+                    F[a + 1] * 1099511627776 +
+                    F[a + 2] * 4294967296 +
+                    F[a + 3] * 16777216 +
+                    (F[a + 4] << 16) +
+                    (F[a + 5] << 8) +
+                    F[a + 6]),
+                    s >= 9e15
+                      ? crypto.randomBytes(7).copy(F, a)
+                      : (p.push(s % 1e14), (a += 7));
+                a = h / 7;
+              } else throw ((K = !1), Error(l + "crypto unavailable"));
+            if (!K) for (; a < h; ) (s = x()), s < 9e15 && (p[a++] = s % 1e14);
+            for (
+              h = p[--a],
+                A %= m,
+                h && A && ((s = B[m - A]), (p[a] = c(h / s) * s));
+              p[a] === 0;
+              p.pop(), a--
+            );
+            if (a < 0) p = [(P = 0)];
+            else {
+              for (P = -1; p[0] === 0; p.splice(0, 1), P -= m);
+              for (a = 1, s = p[0]; s >= 10; s /= 10, a++);
+              a < m && (P -= m - a);
+            }
+            return (g.e = P), (g.c = p), g;
+          };
+        })()),
+        (w.sum = function () {
+          for (var b = 1, x = arguments, A = new w(x[0]); b < x.length; )
+            A = A.plus(x[b++]);
+          return A;
+        }),
+        (X = (function () {
+          var b = "0123456789";
+          function x(A, F, R, P) {
+            for (var h, s = [0], a, p = 0, g = A.length; p < g; ) {
+              for (a = s.length; a--; s[a] *= F);
+              for (s[0] += P.indexOf(A.charAt(p++)), h = 0; h < s.length; h++)
+                s[h] > R - 1 &&
+                  (s[h + 1] == null && (s[h + 1] = 0),
+                  (s[h + 1] += (s[h] / R) | 0),
+                  (s[h] %= R));
+            }
+            return s.reverse();
+          }
+          return function (A, F, R, P, h) {
+            var s,
+              a,
+              p,
+              g,
+              T,
+              k,
+              Q,
+              ae,
+              le = A.indexOf("."),
+              _e = we,
+              d = he;
+            for (
+              le >= 0 &&
+                ((g = te),
+                (te = 0),
+                (A = A.replace(".", "")),
+                (ae = new w(F)),
+                (k = ae.pow(A.length - le)),
+                (te = g),
+                (ae.c = x(z(q(k.c), k.e, "0"), 10, R, b)),
+                (ae.e = ae.c.length)),
+                Q = x(A, F, R, h ? ((s = ee), b) : ((s = b), ee)),
+                p = g = Q.length;
+              Q[--g] == 0;
+              Q.pop()
+            );
+            if (!Q[0]) return s.charAt(0);
+            if (
+              (le < 0
+                ? --p
+                : ((k.c = Q),
+                  (k.e = p),
+                  (k.s = P),
+                  (k = j(k, ae, _e, d, R)),
+                  (Q = k.c),
+                  (T = k.r),
+                  (p = k.e)),
+              (a = p + _e + 1),
+              (le = Q[a]),
+              (g = R / 2),
+              (T = T || a < 0 || Q[a + 1] != null),
+              (T =
+                d < 4
+                  ? (le != null || T) && (d == 0 || d == (k.s < 0 ? 3 : 2))
+                  : le > g ||
+                    (le == g &&
+                      (d == 4 ||
+                        T ||
+                        (d == 6 && Q[a - 1] & 1) ||
+                        d == (k.s < 0 ? 8 : 7)))),
+              a < 1 || !Q[0])
+            )
+              A = T ? z(s.charAt(1), -_e, s.charAt(0)) : s.charAt(0);
+            else {
+              if (((Q.length = a), T))
+                for (--R; ++Q[--a] > R; )
+                  (Q[a] = 0), a || (++p, (Q = [1].concat(Q)));
+              for (g = Q.length; !Q[--g]; );
+              for (le = 0, A = ""; le <= g; A += s.charAt(Q[le++]));
+              A = z(A, p, s.charAt(0));
+            }
+            return A;
+          };
+        })()),
+        (j = (function () {
+          function b(F, R, P) {
+            var h,
+              s,
+              a,
+              p,
+              g = 0,
+              T = F.length,
+              k = R % M,
+              Q = (R / M) | 0;
+            for (F = F.slice(); T--; )
+              (a = F[T] % M),
+                (p = (F[T] / M) | 0),
+                (h = Q * a + p * k),
+                (s = k * a + (h % M) * M + g),
+                (g = ((s / P) | 0) + ((h / M) | 0) + Q * p),
+                (F[T] = s % P);
+            return g && (F = [g].concat(F)), F;
+          }
+          function x(F, R, P, h) {
+            var s, a;
+            if (P != h) a = P > h ? 1 : -1;
+            else
+              for (s = a = 0; s < P; s++)
+                if (F[s] != R[s]) {
+                  a = F[s] > R[s] ? 1 : -1;
+                  break;
+                }
+            return a;
+          }
+          function A(F, R, P, h) {
+            for (var s = 0; P--; )
+              (F[P] -= s),
+                (s = F[P] < R[P] ? 1 : 0),
+                (F[P] = s * h + F[P] - R[P]);
+            for (; !F[0] && F.length > 1; F.splice(0, 1));
+          }
+          return function (F, R, P, h, s) {
+            var a,
+              p,
+              g,
+              T,
+              k,
+              Q,
+              ae,
+              le,
+              _e,
+              d,
+              o,
+              u,
+              _,
+              O,
+              $,
+              C,
+              Ee,
+              Se = F.s == R.s ? 1 : -1,
+              Be = F.c,
+              me = R.c;
+            if (!Be || !Be[0] || !me || !me[0])
+              return new w(
+                !F.s || !R.s || (Be ? me && Be[0] == me[0] : !me)
+                  ? NaN
+                  : (Be && Be[0] == 0) || !me
+                    ? Se * 0
+                    : Se / 0,
+              );
+            for (
+              le = new w(Se),
+                _e = le.c = [],
+                p = F.e - R.e,
+                Se = P + p + 1,
+                s ||
+                  ((s = y), (p = N(F.e / m) - N(R.e / m)), (Se = (Se / m) | 0)),
+                g = 0;
+              me[g] == (Be[g] || 0);
+              g++
+            );
+            if ((me[g] > (Be[g] || 0) && p--, Se < 0)) _e.push(1), (T = !0);
+            else {
+              for (
+                O = Be.length,
+                  C = me.length,
+                  g = 0,
+                  Se += 2,
+                  k = c(s / (me[0] + 1)),
+                  k > 1 &&
+                    ((me = b(me, k, s)),
+                    (Be = b(Be, k, s)),
+                    (C = me.length),
+                    (O = Be.length)),
+                  _ = C,
+                  d = Be.slice(0, C),
+                  o = d.length;
+                o < C;
+                d[o++] = 0
+              );
+              (Ee = me.slice()),
+                (Ee = [0].concat(Ee)),
+                ($ = me[0]),
+                me[1] >= s / 2 && $++;
+              do {
+                if (((k = 0), (a = x(me, d, C, o)), a < 0)) {
+                  if (
+                    ((u = d[0]),
+                    C != o && (u = u * s + (d[1] || 0)),
+                    (k = c(u / $)),
+                    k > 1)
+                  )
+                    for (
+                      k >= s && (k = s - 1),
+                        Q = b(me, k, s),
+                        ae = Q.length,
+                        o = d.length;
+                      x(Q, d, ae, o) == 1;
+
+                    )
+                      k--,
+                        A(Q, C < ae ? Ee : me, ae, s),
+                        (ae = Q.length),
+                        (a = 1);
+                  else k == 0 && (a = k = 1), (Q = me.slice()), (ae = Q.length);
+                  if (
+                    (ae < o && (Q = [0].concat(Q)),
+                    A(d, Q, o, s),
+                    (o = d.length),
+                    a == -1)
+                  )
+                    for (; x(me, d, C, o) < 1; )
+                      k++, A(d, C < o ? Ee : me, o, s), (o = d.length);
+                } else a === 0 && (k++, (d = [0]));
+                (_e[g++] = k),
+                  d[0] ? (d[o++] = Be[_] || 0) : ((d = [Be[_]]), (o = 1));
+              } while ((_++ < O || d[0] != null) && Se--);
+              (T = d[0] != null), _e[0] || _e.splice(0, 1);
+            }
+            if (s == y) {
+              for (g = 1, Se = _e[0]; Se >= 10; Se /= 10, g++);
+              re(le, P + (le.e = g + p * m - 1) + 1, h, T);
+            } else (le.e = p), (le.r = +T);
+            return le;
+          };
+        })());
+      function ye(b, x, A, F) {
+        var R, P, h, s, a;
+        if ((A == null ? (A = he) : V(A, 0, 8), !b.c)) return b.toString();
+        if (((R = b.c[0]), (h = b.e), x == null))
+          (a = q(b.c)),
+            (a =
+              F == 1 || (F == 2 && (h <= Te || h >= ge))
+                ? J(a, h)
+                : z(a, h, "0"));
+        else if (
+          ((b = re(new w(b), x, A)),
+          (P = b.e),
+          (a = q(b.c)),
+          (s = a.length),
+          F == 1 || (F == 2 && (x <= P || P <= Te)))
+        ) {
+          for (; s < x; a += "0", s++);
+          a = J(a, P);
+        } else if (((x -= h), (a = z(a, P, "0")), P + 1 > s)) {
+          if (--x > 0) for (a += "."; x--; a += "0");
+        } else if (((x += P - s), x > 0))
+          for (P + 1 == s && (a += "."); x--; a += "0");
+        return b.s < 0 && R ? "-" + a : a;
+      }
+      function de(b, x) {
+        for (var A, F, R = 1, P = new w(b[0]); R < b.length; R++)
+          (F = new w(b[R])),
+            (!F.s || (A = G(P, F)) === x || (A === 0 && P.s === x)) && (P = F);
+        return P;
+      }
+      function xe(b, x, A) {
+        for (var F = 1, R = x.length; !x[--R]; x.pop());
+        for (R = x[0]; R >= 10; R /= 10, F++);
+        return (
+          (A = F + A * m - 1) > pe
+            ? (b.c = b.e = null)
+            : A < ne
+              ? (b.c = [(b.e = 0)])
+              : ((b.e = A), (b.c = x)),
+          b
+        );
+      }
+      ue = (function () {
+        var b = /^(-?)0([xbo])(?=\w[\w.]*$)/i,
+          x = /^([^.]+)\.$/,
+          A = /^\.([^.]+)$/,
+          F = /^-?(Infinity|NaN)$/,
+          R = /^\s*\+(?=[\w.])|^\s+|\s+$/g;
+        return function (P, h, s, a) {
+          var p,
+            g = s ? h : h.replace(R, "");
+          if (F.test(g)) P.s = isNaN(g) ? null : g < 0 ? -1 : 1;
+          else {
+            if (
+              !s &&
+              ((g = g.replace(b, function (T, k, Q) {
+                return (
+                  (p = (Q = Q.toLowerCase()) == "x" ? 16 : Q == "b" ? 2 : 8),
+                  !a || a == p ? k : T
+                );
+              })),
+              a && ((p = a), (g = g.replace(x, "$1").replace(A, "0.$1"))),
+              h != g)
+            )
+              return new w(g, p);
+            if (w.DEBUG)
+              throw Error(
+                l + "Not a" + (a ? " base " + a : "") + " number: " + h,
+              );
+            P.s = null;
+          }
+          P.c = P.e = null;
+        };
+      })();
+      function re(b, x, A, F) {
+        var R,
+          P,
+          h,
+          s,
+          a,
+          p,
+          g,
+          T = b.c,
+          k = B;
+        if (T) {
+          e: {
+            for (R = 1, s = T[0]; s >= 10; s /= 10, R++);
+            if (((P = x - R), P < 0))
+              (P += m),
+                (h = x),
+                (a = T[(p = 0)]),
+                (g = c((a / k[R - h - 1]) % 10));
+            else if (((p = i((P + 1) / m)), p >= T.length))
+              if (F) {
+                for (; T.length <= p; T.push(0));
+                (a = g = 0), (R = 1), (P %= m), (h = P - m + 1);
+              } else break e;
+            else {
+              for (a = s = T[p], R = 1; s >= 10; s /= 10, R++);
+              (P %= m),
+                (h = P - m + R),
+                (g = h < 0 ? 0 : c((a / k[R - h - 1]) % 10));
+            }
+            if (
+              ((F =
+                F ||
+                x < 0 ||
+                T[p + 1] != null ||
+                (h < 0 ? a : a % k[R - h - 1])),
+              (F =
+                A < 4
+                  ? (g || F) && (A == 0 || A == (b.s < 0 ? 3 : 2))
+                  : g > 5 ||
+                    (g == 5 &&
+                      (A == 4 ||
+                        F ||
+                        (A == 6 &&
+                          (P > 0 ? (h > 0 ? a / k[R - h] : 0) : T[p - 1]) % 10 &
+                            1) ||
+                        A == (b.s < 0 ? 8 : 7)))),
+              x < 1 || !T[0])
+            )
+              return (
+                (T.length = 0),
+                F
+                  ? ((x -= b.e + 1),
+                    (T[0] = k[(m - (x % m)) % m]),
+                    (b.e = -x || 0))
+                  : (T[0] = b.e = 0),
+                b
+              );
+            if (
+              (P == 0
+                ? ((T.length = p), (s = 1), p--)
+                : ((T.length = p + 1),
+                  (s = k[m - P]),
+                  (T[p] = h > 0 ? c((a / k[R - h]) % k[h]) * s : 0)),
+              F)
+            )
+              for (;;)
+                if (p == 0) {
+                  for (P = 1, h = T[0]; h >= 10; h /= 10, P++);
+                  for (h = T[0] += s, s = 1; h >= 10; h /= 10, s++);
+                  P != s && (b.e++, T[0] == y && (T[0] = 1));
+                  break;
+                } else {
+                  if (((T[p] += s), T[p] != y)) break;
+                  (T[p--] = 0), (s = 1);
+                }
+            for (P = T.length; T[--P] === 0; T.pop());
+          }
+          b.e > pe ? (b.c = b.e = null) : b.e < ne && (b.c = [(b.e = 0)]);
+        }
+        return b;
+      }
+      function se(b) {
+        var x,
+          A = b.e;
+        return A === null
+          ? b.toString()
+          : ((x = q(b.c)),
+            (x = A <= Te || A >= ge ? J(x, A) : z(x, A, "0")),
+            b.s < 0 ? "-" + x : x);
+      }
+      return (
+        (L.absoluteValue = L.abs =
+          function () {
+            var b = new w(this);
+            return b.s < 0 && (b.s = 1), b;
+          }),
+        (L.comparedTo = function (b, x) {
+          return G(this, new w(b, x));
+        }),
+        (L.decimalPlaces = L.dp =
+          function (b, x) {
+            var A,
+              F,
+              R,
+              P = this;
+            if (b != null)
+              return (
+                V(b, 0, v),
+                x == null ? (x = he) : V(x, 0, 8),
+                re(new w(P), b + P.e + 1, x)
+              );
+            if (!(A = P.c)) return null;
+            if (((F = ((R = A.length - 1) - N(this.e / m)) * m), (R = A[R])))
+              for (; R % 10 == 0; R /= 10, F--);
+            return F < 0 && (F = 0), F;
+          }),
+        (L.dividedBy = L.div =
+          function (b, x) {
+            return j(this, new w(b, x), we, he);
+          }),
+        (L.dividedToIntegerBy = L.idiv =
+          function (b, x) {
+            return j(this, new w(b, x), 0, 1);
+          }),
+        (L.exponentiatedBy = L.pow =
+          function (b, x) {
+            var A,
+              F,
+              R,
+              P,
+              h,
+              s,
+              a,
+              p,
+              g,
+              T = this;
+            if (((b = new w(b)), b.c && !b.isInteger()))
+              throw Error(l + "Exponent not an integer: " + se(b));
+            if (
+              (x != null && (x = new w(x)),
+              (s = b.e > 14),
+              !T.c ||
+                !T.c[0] ||
+                (T.c[0] == 1 && !T.e && T.c.length == 1) ||
+                !b.c ||
+                !b.c[0])
+            )
+              return (
+                (g = new w(Math.pow(+se(T), s ? b.s * (2 - W(b)) : +se(b)))),
+                x ? g.mod(x) : g
+              );
+            if (((a = b.s < 0), x)) {
+              if (x.c ? !x.c[0] : !x.s) return new w(NaN);
+              (F = !a && T.isInteger() && x.isInteger()), F && (T = T.mod(x));
+            } else {
+              if (
+                b.e > 9 &&
+                (T.e > 0 ||
+                  T.e < -1 ||
+                  (T.e == 0
+                    ? T.c[0] > 1 || (s && T.c[1] >= 24e7)
+                    : T.c[0] < 8e13 || (s && T.c[0] <= 9999975e7)))
+              )
+                return (
+                  (P = T.s < 0 && W(b) ? -0 : 0),
+                  T.e > -1 && (P = 1 / P),
+                  new w(a ? 1 / P : P)
+                );
+              te && (P = i(te / m + 2));
+            }
+            for (
+              s
+                ? ((A = new w(0.5)), a && (b.s = 1), (p = W(b)))
+                : ((R = Math.abs(+se(b))), (p = R % 2)),
+                g = new w(oe);
+              ;
+
+            ) {
+              if (p) {
+                if (((g = g.times(T)), !g.c)) break;
+                P ? g.c.length > P && (g.c.length = P) : F && (g = g.mod(x));
+              }
+              if (R) {
+                if (((R = c(R / 2)), R === 0)) break;
+                p = R % 2;
+              } else if (((b = b.times(A)), re(b, b.e + 1, 1), b.e > 14))
+                p = W(b);
+              else {
+                if (((R = +se(b)), R === 0)) break;
+                p = R % 2;
+              }
+              (T = T.times(T)),
+                P
+                  ? T.c && T.c.length > P && (T.c.length = P)
+                  : F && (T = T.mod(x));
+            }
+            return F
+              ? g
+              : (a && (g = oe.div(g)), x ? g.mod(x) : P ? re(g, te, he, h) : g);
+          }),
+        (L.integerValue = function (b) {
+          var x = new w(this);
+          return b == null ? (b = he) : V(b, 0, 8), re(x, x.e + 1, b);
+        }),
+        (L.isEqualTo = L.eq =
+          function (b, x) {
+            return G(this, new w(b, x)) === 0;
+          }),
+        (L.isFinite = function () {
+          return !!this.c;
+        }),
+        (L.isGreaterThan = L.gt =
+          function (b, x) {
+            return G(this, new w(b, x)) > 0;
+          }),
+        (L.isGreaterThanOrEqualTo = L.gte =
+          function (b, x) {
+            return (x = G(this, new w(b, x))) === 1 || x === 0;
+          }),
+        (L.isInteger = function () {
+          return !!this.c && N(this.e / m) > this.c.length - 2;
+        }),
+        (L.isLessThan = L.lt =
+          function (b, x) {
+            return G(this, new w(b, x)) < 0;
+          }),
+        (L.isLessThanOrEqualTo = L.lte =
+          function (b, x) {
+            return (x = G(this, new w(b, x))) === -1 || x === 0;
+          }),
+        (L.isNaN = function () {
+          return !this.s;
+        }),
+        (L.isNegative = function () {
+          return this.s < 0;
+        }),
+        (L.isPositive = function () {
+          return this.s > 0;
+        }),
+        (L.isZero = function () {
+          return !!this.c && this.c[0] == 0;
+        }),
+        (L.minus = function (b, x) {
+          var A,
+            F,
+            R,
+            P,
+            h = this,
+            s = h.s;
+          if (((b = new w(b, x)), (x = b.s), !s || !x)) return new w(NaN);
+          if (s != x) return (b.s = -x), h.plus(b);
+          var a = h.e / m,
+            p = b.e / m,
+            g = h.c,
+            T = b.c;
+          if (!a || !p) {
+            if (!g || !T) return g ? ((b.s = -x), b) : new w(T ? h : NaN);
+            if (!g[0] || !T[0])
+              return T[0]
+                ? ((b.s = -x), b)
+                : new w(g[0] ? h : he == 3 ? -0 : 0);
+          }
+          if (((a = N(a)), (p = N(p)), (g = g.slice()), (s = a - p))) {
+            for (
+              (P = s < 0) ? ((s = -s), (R = g)) : ((p = a), (R = T)),
+                R.reverse(),
+                x = s;
+              x--;
+              R.push(0)
+            );
+            R.reverse();
+          } else
+            for (
+              F = (P = (s = g.length) < (x = T.length)) ? s : x, s = x = 0;
+              x < F;
+              x++
+            )
+              if (g[x] != T[x]) {
+                P = g[x] < T[x];
+                break;
+              }
+          if (
+            (P && ((R = g), (g = T), (T = R), (b.s = -b.s)),
+            (x = (F = T.length) - (A = g.length)),
+            x > 0)
+          )
+            for (; x--; g[A++] = 0);
+          for (x = y - 1; F > s; ) {
+            if (g[--F] < T[F]) {
+              for (A = F; A && !g[--A]; g[A] = x);
+              --g[A], (g[F] += y);
+            }
+            g[F] -= T[F];
+          }
+          for (; g[0] == 0; g.splice(0, 1), --p);
+          return g[0]
+            ? xe(b, g, p)
+            : ((b.s = he == 3 ? -1 : 1), (b.c = [(b.e = 0)]), b);
+        }),
+        (L.modulo = L.mod =
+          function (b, x) {
+            var A,
+              F,
+              R = this;
+            return (
+              (b = new w(b, x)),
+              !R.c || !b.s || (b.c && !b.c[0])
+                ? new w(NaN)
+                : !b.c || (R.c && !R.c[0])
+                  ? new w(R)
+                  : (Y == 9
+                      ? ((F = b.s),
+                        (b.s = 1),
+                        (A = j(R, b, 0, 3)),
+                        (b.s = F),
+                        (A.s *= F))
+                      : (A = j(R, b, 0, Y)),
+                    (b = R.minus(A.times(b))),
+                    !b.c[0] && Y == 1 && (b.s = R.s),
+                    b)
+            );
+          }),
+        (L.multipliedBy = L.times =
+          function (b, x) {
+            var A,
+              F,
+              R,
+              P,
+              h,
+              s,
+              a,
+              p,
+              g,
+              T,
+              k,
+              Q,
+              ae,
+              le,
+              _e,
+              d = this,
+              o = d.c,
+              u = (b = new w(b, x)).c;
+            if (!o || !u || !o[0] || !u[0])
+              return (
+                !d.s || !b.s || (o && !o[0] && !u) || (u && !u[0] && !o)
+                  ? (b.c = b.e = b.s = null)
+                  : ((b.s *= d.s),
+                    !o || !u ? (b.c = b.e = null) : ((b.c = [0]), (b.e = 0))),
+                b
+              );
+            for (
+              F = N(d.e / m) + N(b.e / m),
+                b.s *= d.s,
+                a = o.length,
+                T = u.length,
+                a < T &&
+                  ((ae = o), (o = u), (u = ae), (R = a), (a = T), (T = R)),
+                R = a + T,
+                ae = [];
+              R--;
+              ae.push(0)
+            );
+            for (le = y, _e = M, R = T; --R >= 0; ) {
+              for (
+                A = 0, k = u[R] % _e, Q = (u[R] / _e) | 0, h = a, P = R + h;
+                P > R;
+
+              )
+                (p = o[--h] % _e),
+                  (g = (o[h] / _e) | 0),
+                  (s = Q * p + g * k),
+                  (p = k * p + (s % _e) * _e + ae[P] + A),
+                  (A = ((p / le) | 0) + ((s / _e) | 0) + Q * g),
+                  (ae[P--] = p % le);
+              ae[P] = A;
+            }
+            return A ? ++F : ae.splice(0, 1), xe(b, ae, F);
+          }),
+        (L.negated = function () {
+          var b = new w(this);
+          return (b.s = -b.s || null), b;
+        }),
+        (L.plus = function (b, x) {
+          var A,
+            F = this,
+            R = F.s;
+          if (((b = new w(b, x)), (x = b.s), !R || !x)) return new w(NaN);
+          if (R != x) return (b.s = -x), F.minus(b);
+          var P = F.e / m,
+            h = b.e / m,
+            s = F.c,
+            a = b.c;
+          if (!P || !h) {
+            if (!s || !a) return new w(R / 0);
+            if (!s[0] || !a[0]) return a[0] ? b : new w(s[0] ? F : R * 0);
+          }
+          if (((P = N(P)), (h = N(h)), (s = s.slice()), (R = P - h))) {
+            for (
+              R > 0 ? ((h = P), (A = a)) : ((R = -R), (A = s)), A.reverse();
+              R--;
+              A.push(0)
+            );
+            A.reverse();
+          }
+          for (
+            R = s.length,
+              x = a.length,
+              R - x < 0 && ((A = a), (a = s), (s = A), (x = R)),
+              R = 0;
+            x;
+
+          )
+            (R = ((s[--x] = s[x] + a[x] + R) / y) | 0),
+              (s[x] = y === s[x] ? 0 : s[x] % y);
+          return R && ((s = [R].concat(s)), ++h), xe(b, s, h);
+        }),
+        (L.precision = L.sd =
+          function (b, x) {
+            var A,
+              F,
+              R,
+              P = this;
+            if (b != null && b !== !!b)
+              return (
+                V(b, 1, v),
+                x == null ? (x = he) : V(x, 0, 8),
+                re(new w(P), b, x)
+              );
+            if (!(A = P.c)) return null;
+            if (((R = A.length - 1), (F = R * m + 1), (R = A[R]))) {
+              for (; R % 10 == 0; R /= 10, F--);
+              for (R = A[0]; R >= 10; R /= 10, F++);
+            }
+            return b && P.e + 1 > F && (F = P.e + 1), F;
+          }),
+        (L.shiftedBy = function (b) {
+          return V(b, -E, E), this.times("1e" + b);
+        }),
+        (L.squareRoot = L.sqrt =
+          function () {
+            var b,
+              x,
+              A,
+              F,
+              R,
+              P = this,
+              h = P.c,
+              s = P.s,
+              a = P.e,
+              p = we + 4,
+              g = new w("0.5");
+            if (s !== 1 || !h || !h[0])
+              return new w(!s || (s < 0 && (!h || h[0])) ? NaN : h ? P : 1 / 0);
+            if (
+              ((s = Math.sqrt(+se(P))),
+              s == 0 || s == 1 / 0
+                ? ((x = q(h)),
+                  (x.length + a) % 2 == 0 && (x += "0"),
+                  (s = Math.sqrt(+x)),
+                  (a = N((a + 1) / 2) - (a < 0 || a % 2)),
+                  s == 1 / 0
+                    ? (x = "5e" + a)
+                    : ((x = s.toExponential()),
+                      (x = x.slice(0, x.indexOf("e") + 1) + a)),
+                  (A = new w(x)))
+                : (A = new w(s + "")),
+              A.c[0])
+            ) {
+              for (a = A.e, s = a + p, s < 3 && (s = 0); ; )
+                if (
+                  ((R = A),
+                  (A = g.times(R.plus(j(P, R, p, 1)))),
+                  q(R.c).slice(0, s) === (x = q(A.c)).slice(0, s))
+                )
+                  if (
+                    (A.e < a && --s,
+                    (x = x.slice(s - 3, s + 1)),
+                    x == "9999" || (!F && x == "4999"))
+                  ) {
+                    if (!F && (re(R, R.e + we + 2, 0), R.times(R).eq(P))) {
+                      A = R;
+                      break;
+                    }
+                    (p += 4), (s += 4), (F = 1);
+                  } else {
+                    (!+x || (!+x.slice(1) && x.charAt(0) == "5")) &&
+                      (re(A, A.e + we + 2, 1), (b = !A.times(A).eq(P)));
+                    break;
+                  }
+            }
+            return re(A, A.e + we + 1, he, b);
+          }),
+        (L.toExponential = function (b, x) {
+          return b != null && (V(b, 0, v), b++), ye(this, b, x, 1);
+        }),
+        (L.toFixed = function (b, x) {
+          return (
+            b != null && (V(b, 0, v), (b = b + this.e + 1)), ye(this, b, x)
+          );
+        }),
+        (L.toFormat = function (b, x, A) {
+          var F,
+            R = this;
+          if (A == null)
+            b != null && x && typeof x == "object"
+              ? ((A = x), (x = null))
+              : b && typeof b == "object"
+                ? ((A = b), (b = x = null))
+                : (A = D);
+          else if (typeof A != "object")
+            throw Error(l + "Argument not an object: " + A);
+          if (((F = R.toFixed(b, x)), R.c)) {
+            var P,
+              h = F.split("."),
+              s = +A.groupSize,
+              a = +A.secondaryGroupSize,
+              p = A.groupSeparator || "",
+              g = h[0],
+              T = h[1],
+              k = R.s < 0,
+              Q = k ? g.slice(1) : g,
+              ae = Q.length;
+            if (
+              (a && ((P = s), (s = a), (a = P), (ae -= P)), s > 0 && ae > 0)
+            ) {
+              for (P = ae % s || s, g = Q.substr(0, P); P < ae; P += s)
+                g += p + Q.substr(P, s);
+              a > 0 && (g += p + Q.slice(P)), k && (g = "-" + g);
+            }
+            F = T
+              ? g +
+                (A.decimalSeparator || "") +
+                ((a = +A.fractionGroupSize)
+                  ? T.replace(
+                      new RegExp("\\d{" + a + "}\\B", "g"),
+                      "$&" + (A.fractionGroupSeparator || ""),
+                    )
+                  : T)
+              : g;
+          }
+          return (A.prefix || "") + F + (A.suffix || "");
+        }),
+        (L.toFraction = function (b) {
+          var x,
+            A,
+            F,
+            R,
+            P,
+            h,
+            s,
+            a,
+            p,
+            g,
+            T,
+            k,
+            Q = this,
+            ae = Q.c;
+          if (
+            b != null &&
+            ((s = new w(b)), (!s.isInteger() && (s.c || s.s !== 1)) || s.lt(oe))
+          )
+            throw Error(
+              l +
+                "Argument " +
+                (s.isInteger() ? "out of range: " : "not an integer: ") +
+                se(s),
+            );
+          if (!ae) return new w(Q);
+          for (
+            x = new w(oe),
+              p = A = new w(oe),
+              F = a = new w(oe),
+              k = q(ae),
+              P = x.e = k.length - Q.e - 1,
+              x.c[0] = B[(h = P % m) < 0 ? m + h : h],
+              b = !b || s.comparedTo(x) > 0 ? (P > 0 ? x : p) : s,
+              h = pe,
+              pe = 1 / 0,
+              s = new w(k),
+              a.c[0] = 0;
+            (g = j(s, x, 0, 1)), (R = A.plus(g.times(F))), R.comparedTo(b) != 1;
+
+          )
+            (A = F),
+              (F = R),
+              (p = a.plus(g.times((R = p)))),
+              (a = R),
+              (x = s.minus(g.times((R = x)))),
+              (s = R);
+          return (
+            (R = j(b.minus(A), F, 0, 1)),
+            (a = a.plus(R.times(p))),
+            (A = A.plus(R.times(F))),
+            (a.s = p.s = Q.s),
+            (P = P * 2),
+            (T =
+              j(p, F, P, he)
+                .minus(Q)
+                .abs()
+                .comparedTo(j(a, A, P, he).minus(Q).abs()) < 1
+                ? [p, F]
+                : [a, A]),
+            (pe = h),
+            T
+          );
+        }),
+        (L.toNumber = function () {
+          return +se(this);
+        }),
+        (L.toPrecision = function (b, x) {
+          return b != null && V(b, 1, v), ye(this, b, x, 2);
+        }),
+        (L.toString = function (b) {
+          var x,
+            A = this,
+            F = A.s,
+            R = A.e;
+          return (
+            R === null
+              ? F
+                ? ((x = "Infinity"), F < 0 && (x = "-" + x))
+                : (x = "NaN")
+              : (b == null
+                  ? (x = R <= Te || R >= ge ? J(q(A.c), R) : z(q(A.c), R, "0"))
+                  : b === 10 && ce
+                    ? ((A = re(new w(A), we + R + 1, he)),
+                      (x = z(q(A.c), A.e, "0")))
+                    : (V(b, 2, ee.length, "Base"),
+                      (x = X(z(q(A.c), R, "0"), 10, b, F, !0))),
+                F < 0 && A.c[0] && (x = "-" + x)),
+            x
+          );
+        }),
+        (L.valueOf = L.toJSON =
+          function () {
+            return se(this);
+          }),
+        (L._isBigNumber = !0),
+        H != null && w.set(H),
+        w
+      );
+    }
+    function N(H) {
+      var j = H | 0;
+      return H > 0 || H === j ? j : j - 1;
+    }
+    function q(H) {
+      for (var j, X, ue = 1, L = H.length, oe = H[0] + ""; ue < L; ) {
+        for (j = H[ue++] + "", X = m - j.length; X--; j = "0" + j);
+        oe += j;
+      }
+      for (L = oe.length; oe.charCodeAt(--L) === 48; );
+      return oe.slice(0, L + 1 || 1);
+    }
+    function G(H, j) {
+      var X,
+        ue,
+        L = H.c,
+        oe = j.c,
+        we = H.s,
+        he = j.s,
+        Te = H.e,
+        ge = j.e;
+      if (!we || !he) return null;
+      if (((X = L && !L[0]), (ue = oe && !oe[0]), X || ue))
+        return X ? (ue ? 0 : -he) : we;
+      if (we != he) return we;
+      if (((X = we < 0), (ue = Te == ge), !L || !oe))
+        return ue ? 0 : !L ^ X ? 1 : -1;
+      if (!ue) return (Te > ge) ^ X ? 1 : -1;
+      for (
+        he = (Te = L.length) < (ge = oe.length) ? Te : ge, we = 0;
+        we < he;
+        we++
+      )
+        if (L[we] != oe[we]) return (L[we] > oe[we]) ^ X ? 1 : -1;
+      return Te == ge ? 0 : (Te > ge) ^ X ? 1 : -1;
+    }
+    function V(H, j, X, ue) {
+      if (H < j || H > X || H !== c(H))
+        throw Error(
+          l +
+            (ue || "Argument") +
+            (typeof H == "number"
+              ? H < j || H > X
+                ? " out of range: "
+                : " not an integer: "
+              : " not a primitive number: ") +
+            String(H),
+        );
+    }
+    function W(H) {
+      var j = H.c.length - 1;
+      return N(H.e / m) == j && H.c[j] % 2 != 0;
+    }
+    function J(H, j) {
+      return (
+        (H.length > 1 ? H.charAt(0) + "." + H.slice(1) : H) +
+        (j < 0 ? "e" : "e+") +
+        j
+      );
+    }
+    function z(H, j, X) {
+      var ue, L;
+      if (j < 0) {
+        for (L = X + "."; ++j; L += X);
+        H = L + H;
+      } else if (((ue = H.length), ++j > ue)) {
+        for (L = X, j -= ue; --j; L += X);
+        H += L;
+      } else j < ue && (H = H.slice(0, j) + "." + H.slice(j));
+      return H;
+    }
+    (r = U()),
+      (r.default = r.BigNumber = r),
+      t.exports
+        ? (t.exports = r)
+        : (e || (e = typeof self < "u" && self ? self : window),
+          (e.BigNumber = r));
+  })(_r);
+})(Va);
+var qn = Va.exports,
+  rf = function (e, r, n) {
+    var i = new e.Uint8Array(n),
+      c = r.pushInt,
+      l = r.pushInt32,
+      f = r.pushInt32Neg,
+      y = r.pushInt64,
+      m = r.pushInt64Neg,
+      E = r.pushFloat,
+      B = r.pushFloatSingle,
+      M = r.pushFloatDouble,
+      v = r.pushTrue,
+      U = r.pushFalse,
+      N = r.pushUndefined,
+      q = r.pushNull,
+      G = r.pushInfinity,
+      V = r.pushInfinityNeg,
+      W = r.pushNaN,
+      J = r.pushNaNNeg,
+      z = r.pushArrayStart,
+      H = r.pushArrayStartFixed,
+      j = r.pushArrayStartFixed32,
+      X = r.pushArrayStartFixed64,
+      ue = r.pushObjectStart,
+      L = r.pushObjectStartFixed,
+      oe = r.pushObjectStartFixed32,
+      we = r.pushObjectStartFixed64,
+      he = r.pushByteString,
+      Te = r.pushByteStringStart,
+      ge = r.pushUtf8String,
+      ne = r.pushUtf8StringStart,
+      pe = r.pushSimpleUnassigned,
+      K = r.pushTagStart,
+      Y = r.pushTagStart4,
+      te = r.pushTagStart8,
+      D = r.pushTagUnassigned,
+      ee = r.pushBreak,
+      ce = e.Math.pow,
+      w = 0,
+      ye = 0,
+      de = 0;
+    function xe(I) {
+      for (
+        I = I | 0, w = 0, ye = I;
+        (w | 0) < (ye | 0) &&
+        ((de = lc[i[w] & 255](i[w] | 0) | 0), !((de | 0) > 0));
+
+      );
+      return de | 0;
+    }
+    function re(I) {
+      return (I = I | 0), (((w | 0) + (I | 0)) | 0) < (ye | 0) ? 0 : 1;
+    }
+    function se(I) {
+      return (I = I | 0), (i[I | 0] << 8) | i[(I + 1) | 0] | 0;
+    }
+    function b(I) {
+      return (
+        (I = I | 0),
+        (i[I | 0] << 24) |
+          (i[(I + 1) | 0] << 16) |
+          (i[(I + 2) | 0] << 8) |
+          i[(I + 3) | 0] |
+          0
+      );
+    }
+    function x(I) {
+      return (I = I | 0), c(I | 0), (w = (w + 1) | 0), 0;
+    }
+    function A(I) {
+      return (
+        (I = I | 0),
+        re(1) | 0 ? 1 : (c(i[(w + 1) | 0] | 0), (w = (w + 2) | 0), 0)
+      );
+    }
+    function F(I) {
+      return (
+        (I = I | 0),
+        re(2) | 0 ? 1 : (c(se((w + 1) | 0) | 0), (w = (w + 3) | 0), 0)
+      );
+    }
+    function R(I) {
+      return (
+        (I = I | 0),
+        re(4) | 0
+          ? 1
+          : (l(se((w + 1) | 0) | 0, se((w + 3) | 0) | 0), (w = (w + 5) | 0), 0)
+      );
+    }
+    function P(I) {
+      return (
+        (I = I | 0),
+        re(8) | 0
+          ? 1
+          : (y(
+              se((w + 1) | 0) | 0,
+              se((w + 3) | 0) | 0,
+              se((w + 5) | 0) | 0,
+              se((w + 7) | 0) | 0,
+            ),
+            (w = (w + 9) | 0),
+            0)
+      );
+    }
+    function h(I) {
+      return (I = I | 0), c((-1 - ((I - 32) | 0)) | 0), (w = (w + 1) | 0), 0;
+    }
+    function s(I) {
+      return (
+        (I = I | 0),
+        re(1) | 0
+          ? 1
+          : (c((-1 - (i[(w + 1) | 0] | 0)) | 0), (w = (w + 2) | 0), 0)
+      );
+    }
+    function a(I) {
+      I = I | 0;
+      var Ne = 0;
+      return re(2) | 0
+        ? 1
+        : ((Ne = se((w + 1) | 0) | 0),
+          c((-1 - (Ne | 0)) | 0),
+          (w = (w + 3) | 0),
+          0);
+    }
+    function p(I) {
+      return (
+        (I = I | 0),
+        re(4) | 0
+          ? 1
+          : (f(se((w + 1) | 0) | 0, se((w + 3) | 0) | 0), (w = (w + 5) | 0), 0)
+      );
+    }
+    function g(I) {
+      return (
+        (I = I | 0),
+        re(8) | 0
+          ? 1
+          : (m(
+              se((w + 1) | 0) | 0,
+              se((w + 3) | 0) | 0,
+              se((w + 5) | 0) | 0,
+              se((w + 7) | 0) | 0,
+            ),
+            (w = (w + 9) | 0),
+            0)
+      );
+    }
+    function T(I) {
+      I = I | 0;
+      var Ne = 0,
+        Ue = 0,
+        ve = 0;
+      return (
+        (ve = (I - 64) | 0),
+        re(ve | 0) | 0
+          ? 1
+          : ((Ne = (w + 1) | 0),
+            (Ue = (((w + 1) | 0) + (ve | 0)) | 0),
+            he(Ne | 0, Ue | 0),
+            (w = Ue | 0),
+            0)
+      );
+    }
+    function k(I) {
+      I = I | 0;
+      var Ne = 0,
+        Ue = 0,
+        ve = 0;
+      return re(1) | 0 ||
+        ((ve = i[(w + 1) | 0] | 0),
+        (Ne = (w + 2) | 0),
+        (Ue = (((w + 2) | 0) + (ve | 0)) | 0),
+        re((ve + 1) | 0) | 0)
+        ? 1
+        : (he(Ne | 0, Ue | 0), (w = Ue | 0), 0);
+    }
+    function Q(I) {
+      I = I | 0;
+      var Ne = 0,
+        Ue = 0,
+        ve = 0;
+      return re(2) | 0 ||
+        ((ve = se((w + 1) | 0) | 0),
+        (Ne = (w + 3) | 0),
+        (Ue = (((w + 3) | 0) + (ve | 0)) | 0),
+        re((ve + 2) | 0) | 0)
+        ? 1
+        : (he(Ne | 0, Ue | 0), (w = Ue | 0), 0);
+    }
+    function ae(I) {
+      I = I | 0;
+      var Ne = 0,
+        Ue = 0,
+        ve = 0;
+      return re(4) | 0 ||
+        ((ve = b((w + 1) | 0) | 0),
+        (Ne = (w + 5) | 0),
+        (Ue = (((w + 5) | 0) + (ve | 0)) | 0),
+        re((ve + 4) | 0) | 0)
+        ? 1
+        : (he(Ne | 0, Ue | 0), (w = Ue | 0), 0);
+    }
+    function le(I) {
+      return (I = I | 0), 1;
+    }
+    function _e(I) {
+      return (I = I | 0), Te(), (w = (w + 1) | 0), 0;
+    }
+    function d(I) {
+      I = I | 0;
+      var Ne = 0,
+        Ue = 0,
+        ve = 0;
+      return (
+        (ve = (I - 96) | 0),
+        re(ve | 0) | 0
+          ? 1
+          : ((Ne = (w + 1) | 0),
+            (Ue = (((w + 1) | 0) + (ve | 0)) | 0),
+            ge(Ne | 0, Ue | 0),
+            (w = Ue | 0),
+            0)
+      );
+    }
+    function o(I) {
+      I = I | 0;
+      var Ne = 0,
+        Ue = 0,
+        ve = 0;
+      return re(1) | 0 ||
+        ((ve = i[(w + 1) | 0] | 0),
+        (Ne = (w + 2) | 0),
+        (Ue = (((w + 2) | 0) + (ve | 0)) | 0),
+        re((ve + 1) | 0) | 0)
+        ? 1
+        : (ge(Ne | 0, Ue | 0), (w = Ue | 0), 0);
+    }
+    function u(I) {
+      I = I | 0;
+      var Ne = 0,
+        Ue = 0,
+        ve = 0;
+      return re(2) | 0 ||
+        ((ve = se((w + 1) | 0) | 0),
+        (Ne = (w + 3) | 0),
+        (Ue = (((w + 3) | 0) + (ve | 0)) | 0),
+        re((ve + 2) | 0) | 0)
+        ? 1
+        : (ge(Ne | 0, Ue | 0), (w = Ue | 0), 0);
+    }
+    function _(I) {
+      I = I | 0;
+      var Ne = 0,
+        Ue = 0,
+        ve = 0;
+      return re(4) | 0 ||
+        ((ve = b((w + 1) | 0) | 0),
+        (Ne = (w + 5) | 0),
+        (Ue = (((w + 5) | 0) + (ve | 0)) | 0),
+        re((ve + 4) | 0) | 0)
+        ? 1
+        : (ge(Ne | 0, Ue | 0), (w = Ue | 0), 0);
+    }
+    function O(I) {
+      return (I = I | 0), 1;
+    }
+    function $(I) {
+      return (I = I | 0), ne(), (w = (w + 1) | 0), 0;
+    }
+    function C(I) {
+      return (I = I | 0), H((I - 128) | 0), (w = (w + 1) | 0), 0;
+    }
+    function Ee(I) {
+      return (
+        (I = I | 0),
+        re(1) | 0 ? 1 : (H(i[(w + 1) | 0] | 0), (w = (w + 2) | 0), 0)
+      );
+    }
+    function Se(I) {
+      return (
+        (I = I | 0),
+        re(2) | 0 ? 1 : (H(se((w + 1) | 0) | 0), (w = (w + 3) | 0), 0)
+      );
+    }
+    function Be(I) {
+      return (
+        (I = I | 0),
+        re(4) | 0
+          ? 1
+          : (j(se((w + 1) | 0) | 0, se((w + 3) | 0) | 0), (w = (w + 5) | 0), 0)
+      );
+    }
+    function me(I) {
+      return (
+        (I = I | 0),
+        re(8) | 0
+          ? 1
+          : (X(
+              se((w + 1) | 0) | 0,
+              se((w + 3) | 0) | 0,
+              se((w + 5) | 0) | 0,
+              se((w + 7) | 0) | 0,
+            ),
+            (w = (w + 9) | 0),
+            0)
+      );
+    }
+    function Re(I) {
+      return (I = I | 0), z(), (w = (w + 1) | 0), 0;
+    }
+    function ke(I) {
+      I = I | 0;
+      var Ne = 0;
+      return (
+        (Ne = (I - 160) | 0),
+        re(Ne | 0) | 0 ? 1 : (L(Ne | 0), (w = (w + 1) | 0), 0)
+      );
+    }
+    function Zo(I) {
+      return (
+        (I = I | 0),
+        re(1) | 0 ? 1 : (L(i[(w + 1) | 0] | 0), (w = (w + 2) | 0), 0)
+      );
+    }
+    function Wo(I) {
+      return (
+        (I = I | 0),
+        re(2) | 0 ? 1 : (L(se((w + 1) | 0) | 0), (w = (w + 3) | 0), 0)
+      );
+    }
+    function Ko(I) {
+      return (
+        (I = I | 0),
+        re(4) | 0
+          ? 1
+          : (oe(se((w + 1) | 0) | 0, se((w + 3) | 0) | 0), (w = (w + 5) | 0), 0)
+      );
+    }
+    function Xo(I) {
+      return (
+        (I = I | 0),
+        re(8) | 0
+          ? 1
+          : (we(
+              se((w + 1) | 0) | 0,
+              se((w + 3) | 0) | 0,
+              se((w + 5) | 0) | 0,
+              se((w + 7) | 0) | 0,
+            ),
+            (w = (w + 9) | 0),
+            0)
+      );
+    }
+    function Do(I) {
+      return (I = I | 0), ue(), (w = (w + 1) | 0), 0;
+    }
+    function hr(I) {
+      return (I = I | 0), K((I - 192) | 0 | 0), (w = (w + 1) | 0), 0;
+    }
+    function sl(I) {
+      return (I = I | 0), K(I | 0), (w = (w + 1) | 0), 0;
+    }
+    function al(I) {
+      return (I = I | 0), K(I | 0), (w = (w + 1) | 0), 0;
+    }
+    function ol(I) {
+      return (I = I | 0), K(I | 0), (w = (w + 1) | 0), 0;
+    }
+    function cl(I) {
+      return (I = I | 0), K(I | 0), (w = (w + 1) | 0), 0;
+    }
+    function We(I) {
+      return (I = I | 0), K((I - 192) | 0 | 0), (w = (w + 1) | 0), 0;
+    }
+    function fl(I) {
+      return (I = I | 0), K(I | 0), (w = (w + 1) | 0), 0;
+    }
+    function ul(I) {
+      return (I = I | 0), K(I | 0), (w = (w + 1) | 0), 0;
+    }
+    function ll(I) {
+      return (I = I | 0), K(I | 0), (w = (w + 1) | 0), 0;
+    }
+    function Jo(I) {
+      return (
+        (I = I | 0),
+        re(1) | 0 ? 1 : (K(i[(w + 1) | 0] | 0), (w = (w + 2) | 0), 0)
+      );
+    }
+    function Qo(I) {
+      return (
+        (I = I | 0),
+        re(2) | 0 ? 1 : (K(se((w + 1) | 0) | 0), (w = (w + 3) | 0), 0)
+      );
+    }
+    function ec(I) {
+      return (
+        (I = I | 0),
+        re(4) | 0
+          ? 1
+          : (Y(se((w + 1) | 0) | 0, se((w + 3) | 0) | 0), (w = (w + 5) | 0), 0)
+      );
+    }
+    function tc(I) {
+      return (
+        (I = I | 0),
+        re(8) | 0
+          ? 1
+          : (te(
+              se((w + 1) | 0) | 0,
+              se((w + 3) | 0) | 0,
+              se((w + 5) | 0) | 0,
+              se((w + 7) | 0) | 0,
+            ),
+            (w = (w + 9) | 0),
+            0)
+      );
+    }
+    function He(I) {
+      return (I = I | 0), pe(((I | 0) - 224) | 0), (w = (w + 1) | 0), 0;
+    }
+    function rc(I) {
+      return (I = I | 0), U(), (w = (w + 1) | 0), 0;
+    }
+    function nc(I) {
+      return (I = I | 0), v(), (w = (w + 1) | 0), 0;
+    }
+    function ic(I) {
+      return (I = I | 0), q(), (w = (w + 1) | 0), 0;
+    }
+    function sc(I) {
+      return (I = I | 0), N(), (w = (w + 1) | 0), 0;
+    }
+    function ac(I) {
+      return (
+        (I = I | 0),
+        re(1) | 0 ? 1 : (pe(i[(w + 1) | 0] | 0), (w = (w + 2) | 0), 0)
+      );
+    }
+    function oc(I) {
+      I = I | 0;
+      var Ne = 0,
+        Ue = 0,
+        ve = 1,
+        Yr = 0,
+        vr = 0,
+        hl = 0;
+      return re(2) | 0
+        ? 1
+        : ((Ne = i[(w + 1) | 0] | 0),
+          (Ue = i[(w + 2) | 0] | 0),
+          (Ne | 0) & 128 && (ve = -1),
+          (Yr = +(((Ne | 0) & 124) >> 2)),
+          (vr = +((((Ne | 0) & 3) << 8) | Ue)),
+          +Yr == 0
+            ? E(+(+ve * 5960464477539063e-23 * +vr))
+            : +Yr == 31
+              ? +ve == 1
+                ? +vr > 0
+                  ? W()
+                  : G()
+                : +vr > 0
+                  ? J()
+                  : V()
+              : E(+(+ve * ce(2, +(+Yr - 25)) * +(1024 + vr))),
+          (w = (w + 3) | 0),
+          0);
+    }
+    function cc(I) {
+      return (
+        (I = I | 0),
+        re(4) | 0
+          ? 1
+          : (B(
+              i[(w + 1) | 0] | 0,
+              i[(w + 2) | 0] | 0,
+              i[(w + 3) | 0] | 0,
+              i[(w + 4) | 0] | 0,
+            ),
+            (w = (w + 5) | 0),
+            0)
+      );
+    }
+    function fc(I) {
+      return (
+        (I = I | 0),
+        re(8) | 0
+          ? 1
+          : (M(
+              i[(w + 1) | 0] | 0,
+              i[(w + 2) | 0] | 0,
+              i[(w + 3) | 0] | 0,
+              i[(w + 4) | 0] | 0,
+              i[(w + 5) | 0] | 0,
+              i[(w + 6) | 0] | 0,
+              i[(w + 7) | 0] | 0,
+              i[(w + 8) | 0] | 0,
+            ),
+            (w = (w + 9) | 0),
+            0)
+      );
+    }
+    function Pe(I) {
+      return (I = I | 0), 1;
+    }
+    function uc(I) {
+      return (I = I | 0), ee(), (w = (w + 1) | 0), 0;
+    }
+    var lc = [
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      x,
+      A,
+      F,
+      R,
+      P,
+      Pe,
+      Pe,
+      Pe,
+      Pe,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      h,
+      s,
+      a,
+      p,
+      g,
+      Pe,
+      Pe,
+      Pe,
+      Pe,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      T,
+      k,
+      Q,
+      ae,
+      le,
+      Pe,
+      Pe,
+      Pe,
+      _e,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      d,
+      o,
+      u,
+      _,
+      O,
+      Pe,
+      Pe,
+      Pe,
+      $,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      C,
+      Ee,
+      Se,
+      Be,
+      me,
+      Pe,
+      Pe,
+      Pe,
+      Re,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      ke,
+      Zo,
+      Wo,
+      Ko,
+      Xo,
+      Pe,
+      Pe,
+      Pe,
+      Do,
+      hr,
+      hr,
+      hr,
+      hr,
+      hr,
+      hr,
+      We,
+      We,
+      We,
+      We,
+      We,
+      We,
+      We,
+      We,
+      We,
+      We,
+      We,
+      We,
+      We,
+      We,
+      We,
+      We,
+      We,
+      We,
+      Jo,
+      Qo,
+      ec,
+      tc,
+      Pe,
+      Pe,
+      Pe,
+      Pe,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      He,
+      rc,
+      nc,
+      ic,
+      sc,
+      ac,
+      oc,
+      cc,
+      fc,
+      Pe,
+      Pe,
+      Pe,
+      uc,
+    ];
+    return { parse: xe };
+  },
+  Vn = {},
+  nt = {};
+const Mi = qn.BigNumber;
+nt.MT = {
+  POS_INT: 0,
+  NEG_INT: 1,
+  BYTE_STRING: 2,
+  UTF8_STRING: 3,
+  ARRAY: 4,
+  MAP: 5,
+  TAG: 6,
+  SIMPLE_FLOAT: 7,
+};
+nt.TAG = {
+  DATE_STRING: 0,
+  DATE_EPOCH: 1,
+  POS_BIGINT: 2,
+  NEG_BIGINT: 3,
+  DECIMAL_FRAC: 4,
+  BIGFLOAT: 5,
+  BASE64URL_EXPECTED: 21,
+  BASE64_EXPECTED: 22,
+  BASE16_EXPECTED: 23,
+  CBOR: 24,
+  URI: 32,
+  BASE64URL: 33,
+  BASE64: 34,
+  REGEXP: 35,
+  MIME: 36,
+};
+nt.NUMBYTES = {
+  ZERO: 0,
+  ONE: 24,
+  TWO: 25,
+  FOUR: 26,
+  EIGHT: 27,
+  INDEFINITE: 31,
+};
+nt.SIMPLE = { FALSE: 20, TRUE: 21, NULL: 22, UNDEFINED: 23 };
+nt.SYMS = {
+  NULL: Symbol("null"),
+  UNDEFINED: Symbol("undef"),
+  PARENT: Symbol("parent"),
+  BREAK: Symbol("break"),
+  STREAM: Symbol("stream"),
+};
+nt.SHIFT32 = Math.pow(2, 32);
+nt.SHIFT16 = Math.pow(2, 16);
+nt.MAX_SAFE_HIGH = 2097151;
+nt.NEG_ONE = new Mi(-1);
+nt.TEN = new Mi(10);
+nt.TWO = new Mi(2);
+nt.PARENT = {
+  ARRAY: 0,
+  OBJECT: 1,
+  MAP: 2,
+  TAG: 3,
+  BYTE_STRING: 4,
+  UTF8_STRING: 5,
+};
+(function (t) {
+  const { Buffer: e } = jr,
+    r = qn.BigNumber,
+    n = nt,
+    i = n.SHIFT32,
+    c = n.SHIFT16,
+    l = 2097151;
+  t.parseHalf = function (m) {
+    var E, B, M;
+    return (
+      (M = m[0] & 128 ? -1 : 1),
+      (E = (m[0] & 124) >> 2),
+      (B = ((m[0] & 3) << 8) | m[1]),
+      E
+        ? E === 31
+          ? M * (B ? NaN : 1 / 0)
+          : M * Math.pow(2, E - 25) * (1024 + B)
+        : M * 5960464477539063e-23 * B
+    );
+  };
+  function f(y) {
+    return y < 16 ? "0" + y.toString(16) : y.toString(16);
+  }
+  (t.arrayBufferToBignumber = function (y) {
+    const m = y.byteLength;
+    let E = "";
+    for (let B = 0; B < m; B++) E += f(y[B]);
+    return new r(E, 16);
+  }),
+    (t.buildMap = (y) => {
+      const m = new Map(),
+        E = Object.keys(y),
+        B = E.length;
+      for (let M = 0; M < B; M++) m.set(E[M], y[E[M]]);
+      return m;
+    }),
+    (t.buildInt32 = (y, m) => y * c + m),
+    (t.buildInt64 = (y, m, E, B) => {
+      const M = t.buildInt32(y, m),
+        v = t.buildInt32(E, B);
+      return M > l ? new r(M).times(i).plus(v) : M * i + v;
+    }),
+    (t.writeHalf = function (m, E) {
+      const B = e.allocUnsafe(4);
+      B.writeFloatBE(E, 0);
+      const M = B.readUInt32BE(0);
+      if (M & 8191) return !1;
+      var v = (M >> 16) & 32768;
+      const U = (M >> 23) & 255,
+        N = M & 8388607;
+      if (U >= 113 && U <= 142) v += ((U - 112) << 10) + (N >> 13);
+      else if (U >= 103 && U < 113) {
+        if (N & ((1 << (126 - U)) - 1)) return !1;
+        v += (N + 8388608) >> (126 - U);
+      } else return !1;
+      return m.writeUInt16BE(v, 0), !0;
+    }),
+    (t.keySorter = function (y, m) {
+      var E = y[0].byteLength,
+        B = m[0].byteLength;
+      return E > B ? 1 : B > E ? -1 : y[0].compare(m[0]);
+    }),
+    (t.isNegativeZero = (y) => y === 0 && 1 / y < 0),
+    (t.nextPowerOf2 = (y) => {
+      let m = 0;
+      if (y && !(y & (y - 1))) return y;
+      for (; y !== 0; ) (y >>= 1), (m += 1);
+      return 1 << m;
+    });
+})(Vn);
+const ki = nt,
+  nf = ki.MT,
+  Wr = ki.SIMPLE,
+  Jn = ki.SYMS;
+let sf = class li {
+  constructor(e) {
+    if (typeof e != "number")
+      throw new Error("Invalid Simple type: " + typeof e);
+    if (e < 0 || e > 255 || (e | 0) !== e)
+      throw new Error("value must be a small positive integer: " + e);
+    this.value = e;
+  }
+  toString() {
+    return "simple(" + this.value + ")";
+  }
+  inspect() {
+    return "simple(" + this.value + ")";
+  }
+  encodeCBOR(e) {
+    return e._pushInt(this.value, nf.SIMPLE_FLOAT);
+  }
+  static isSimple(e) {
+    return e instanceof li;
+  }
+  static decode(e, r) {
+    switch ((r == null && (r = !0), e)) {
+      case Wr.FALSE:
+        return !1;
+      case Wr.TRUE:
+        return !0;
+      case Wr.NULL:
+        return r ? null : Jn.NULL;
+      case Wr.UNDEFINED:
+        return r ? void 0 : Jn.UNDEFINED;
+      case -1:
+        if (!r) throw new Error("Invalid BREAK");
+        return Jn.BREAK;
+      default:
+        return new li(e);
+    }
+  }
+};
+var Ga = sf;
+let af = class hi {
+  constructor(e, r, n) {
+    if (
+      ((this.tag = e),
+      (this.value = r),
+      (this.err = n),
+      typeof this.tag != "number")
+    )
+      throw new Error("Invalid tag type (" + typeof this.tag + ")");
+    if (this.tag < 0 || (this.tag | 0) !== this.tag)
+      throw new Error("Tag must be a positive integer: " + this.tag);
+  }
+  toString() {
+    return `${this.tag}(${JSON.stringify(this.value)})`;
+  }
+  encodeCBOR(e) {
+    return e._pushTag(this.tag), e.pushAny(this.value);
+  }
+  convert(e) {
+    var r, n;
+    if (
+      ((n = e?.[this.tag]),
+      typeof n != "function" &&
+        ((n = hi["_tag" + this.tag]), typeof n != "function"))
+    )
+      return this;
+    try {
+      return n.call(hi, this.value);
+    } catch (i) {
+      return (r = i), (this.err = r), this;
+    }
+  }
+};
+var Ha = af;
+const ja = self.location
+    ? self.location.protocol + "//" + self.location.host
+    : "",
+  di = self.URL;
+let of = class {
+  constructor(e = "", r = ja) {
+    (this.super = new di(e, r)),
+      (this.path = this.pathname + this.search),
+      (this.auth =
+        this.username && this.password
+          ? this.username + ":" + this.password
+          : null),
+      (this.query =
+        this.search && this.search.startsWith("?")
+          ? this.search.slice(1)
+          : null);
+  }
+  get hash() {
+    return this.super.hash;
+  }
+  get host() {
+    return this.super.host;
+  }
+  get hostname() {
+    return this.super.hostname;
+  }
+  get href() {
+    return this.super.href;
+  }
+  get origin() {
+    return this.super.origin;
+  }
+  get password() {
+    return this.super.password;
+  }
+  get pathname() {
+    return this.super.pathname;
+  }
+  get port() {
+    return this.super.port;
+  }
+  get protocol() {
+    return this.super.protocol;
+  }
+  get search() {
+    return this.super.search;
+  }
+  get searchParams() {
+    return this.super.searchParams;
+  }
+  get username() {
+    return this.super.username;
+  }
+  set hash(e) {
+    this.super.hash = e;
+  }
+  set host(e) {
+    this.super.host = e;
+  }
+  set hostname(e) {
+    this.super.hostname = e;
+  }
+  set href(e) {
+    this.super.href = e;
+  }
+  set origin(e) {
+    this.super.origin = e;
+  }
+  set password(e) {
+    this.super.password = e;
+  }
+  set pathname(e) {
+    this.super.pathname = e;
+  }
+  set port(e) {
+    this.super.port = e;
+  }
+  set protocol(e) {
+    this.super.protocol = e;
+  }
+  set search(e) {
+    this.super.search = e;
+  }
+  set searchParams(e) {
+    this.super.searchParams = e;
+  }
+  set username(e) {
+    this.super.username = e;
+  }
+  createObjectURL(e) {
+    return this.super.createObjectURL(e);
+  }
+  revokeObjectURL(e) {
+    this.super.revokeObjectURL(e);
+  }
+  toJSON() {
+    return this.super.toJSON();
+  }
+  toString() {
+    return this.super.toString();
+  }
+  format() {
+    return this.toString();
+  }
+};
+function cf(t) {
+  if (typeof t == "string") return new di(t).toString();
+  if (!(t instanceof di)) {
+    const e = t.username && t.password ? `${t.username}:${t.password}@` : "",
+      r = t.auth ? t.auth + "@" : "",
+      n = t.port ? ":" + t.port : "",
+      i = t.protocol ? t.protocol + "//" : "",
+      c = t.host || "",
+      l = t.hostname || "",
+      f = t.search || (t.query ? "?" + t.query : ""),
+      y = t.hash || "",
+      m = t.pathname || "",
+      E = t.path || m + f;
+    return `${i}${e || r}${c || l + n}${E}${y}`;
+  }
+}
+var za = {
+  URLWithLegacySupport: of,
+  URLSearchParams: self.URLSearchParams,
+  defaultBase: ja,
+  format: cf,
+};
+const { URLWithLegacySupport: ts, format: ff } = za;
+var uf = (t, e = {}, r = {}, n) => {
+  let i = e.protocol ? e.protocol.replace(":", "") : "http";
+  i = (r[i] || n || i) + ":";
+  let c;
+  try {
+    c = new ts(t);
+  } catch {
+    c = {};
+  }
+  const l = Object.assign({}, e, {
+    protocol: i || c.protocol,
+    host: e.host || c.host,
+  });
+  return new ts(t, ff(l)).toString();
+};
+const {
+    URLWithLegacySupport: lf,
+    format: hf,
+    URLSearchParams: df,
+    defaultBase: pf,
+  } = za,
+  yf = uf;
+var La = {
+  URL: lf,
+  URLSearchParams: df,
+  format: hf,
+  relative: yf,
+  defaultBase: pf,
+};
+const { Buffer: pr } = jr,
+  rs = Gr,
+  wf = qn.BigNumber,
+  gf = rf,
+  it = Vn,
+  Fe = nt,
+  bf = Ga,
+  mf = Ha,
+  { URL: xf } = La;
+let pi = class yi {
+  constructor(e) {
+    (e = e || {}),
+      !e.size || e.size < 65536
+        ? (e.size = 65536)
+        : (e.size = it.nextPowerOf2(e.size)),
+      (this._heap = new ArrayBuffer(e.size)),
+      (this._heap8 = new Uint8Array(this._heap)),
+      (this._buffer = pr.from(this._heap)),
+      this._reset(),
+      (this._knownTags = Object.assign(
+        {
+          0: (r) => new Date(r),
+          1: (r) => new Date(r * 1e3),
+          2: (r) => it.arrayBufferToBignumber(r),
+          3: (r) => Fe.NEG_ONE.minus(it.arrayBufferToBignumber(r)),
+          4: (r) => Fe.TEN.pow(r[0]).times(r[1]),
+          5: (r) => Fe.TWO.pow(r[0]).times(r[1]),
+          32: (r) => new xf(r),
+          35: (r) => new RegExp(r),
+        },
+        e.tags,
+      )),
+      (this.parser = gf(
+        _r,
+        {
+          log: console.log.bind(console),
+          pushInt: this.pushInt.bind(this),
+          pushInt32: this.pushInt32.bind(this),
+          pushInt32Neg: this.pushInt32Neg.bind(this),
+          pushInt64: this.pushInt64.bind(this),
+          pushInt64Neg: this.pushInt64Neg.bind(this),
+          pushFloat: this.pushFloat.bind(this),
+          pushFloatSingle: this.pushFloatSingle.bind(this),
+          pushFloatDouble: this.pushFloatDouble.bind(this),
+          pushTrue: this.pushTrue.bind(this),
+          pushFalse: this.pushFalse.bind(this),
+          pushUndefined: this.pushUndefined.bind(this),
+          pushNull: this.pushNull.bind(this),
+          pushInfinity: this.pushInfinity.bind(this),
+          pushInfinityNeg: this.pushInfinityNeg.bind(this),
+          pushNaN: this.pushNaN.bind(this),
+          pushNaNNeg: this.pushNaNNeg.bind(this),
+          pushArrayStart: this.pushArrayStart.bind(this),
+          pushArrayStartFixed: this.pushArrayStartFixed.bind(this),
+          pushArrayStartFixed32: this.pushArrayStartFixed32.bind(this),
+          pushArrayStartFixed64: this.pushArrayStartFixed64.bind(this),
+          pushObjectStart: this.pushObjectStart.bind(this),
+          pushObjectStartFixed: this.pushObjectStartFixed.bind(this),
+          pushObjectStartFixed32: this.pushObjectStartFixed32.bind(this),
+          pushObjectStartFixed64: this.pushObjectStartFixed64.bind(this),
+          pushByteString: this.pushByteString.bind(this),
+          pushByteStringStart: this.pushByteStringStart.bind(this),
+          pushUtf8String: this.pushUtf8String.bind(this),
+          pushUtf8StringStart: this.pushUtf8StringStart.bind(this),
+          pushSimpleUnassigned: this.pushSimpleUnassigned.bind(this),
+          pushTagUnassigned: this.pushTagUnassigned.bind(this),
+          pushTagStart: this.pushTagStart.bind(this),
+          pushTagStart4: this.pushTagStart4.bind(this),
+          pushTagStart8: this.pushTagStart8.bind(this),
+          pushBreak: this.pushBreak.bind(this),
+        },
+        this._heap,
+      ));
+  }
+  get _depth() {
+    return this._parents.length;
+  }
+  get _currentParent() {
+    return this._parents[this._depth - 1];
+  }
+  get _ref() {
+    return this._currentParent.ref;
+  }
+  _closeParent() {
+    var e = this._parents.pop();
+    if (e.length > 0) throw new Error(`Missing ${e.length} elements`);
+    switch (e.type) {
+      case Fe.PARENT.TAG:
+        this._push(this.createTag(e.ref[0], e.ref[1]));
+        break;
+      case Fe.PARENT.BYTE_STRING:
+        this._push(this.createByteString(e.ref, e.length));
+        break;
+      case Fe.PARENT.UTF8_STRING:
+        this._push(this.createUtf8String(e.ref, e.length));
+        break;
+      case Fe.PARENT.MAP:
+        if (e.values % 2 > 0)
+          throw new Error("Odd number of elements in the map");
+        this._push(this.createMap(e.ref, e.length));
+        break;
+      case Fe.PARENT.OBJECT:
+        if (e.values % 2 > 0)
+          throw new Error("Odd number of elements in the map");
+        this._push(this.createObject(e.ref, e.length));
+        break;
+      case Fe.PARENT.ARRAY:
+        this._push(this.createArray(e.ref, e.length));
+        break;
+    }
+    this._currentParent &&
+      this._currentParent.type === Fe.PARENT.TAG &&
+      this._dec();
+  }
+  _dec() {
+    const e = this._currentParent;
+    e.length < 0 || (e.length--, e.length === 0 && this._closeParent());
+  }
+  _push(e, r) {
+    const n = this._currentParent;
+    switch ((n.values++, n.type)) {
+      case Fe.PARENT.ARRAY:
+      case Fe.PARENT.BYTE_STRING:
+      case Fe.PARENT.UTF8_STRING:
+        n.length > -1
+          ? (this._ref[this._ref.length - n.length] = e)
+          : this._ref.push(e),
+          this._dec();
+        break;
+      case Fe.PARENT.OBJECT:
+        n.tmpKey != null
+          ? ((this._ref[n.tmpKey] = e), (n.tmpKey = null), this._dec())
+          : ((n.tmpKey = e),
+            typeof n.tmpKey != "string" &&
+              ((n.type = Fe.PARENT.MAP), (n.ref = it.buildMap(n.ref))));
+        break;
+      case Fe.PARENT.MAP:
+        n.tmpKey != null
+          ? (this._ref.set(n.tmpKey, e), (n.tmpKey = null), this._dec())
+          : (n.tmpKey = e);
+        break;
+      case Fe.PARENT.TAG:
+        this._ref.push(e), r || this._dec();
+        break;
+      default:
+        throw new Error("Unknown parent type");
+    }
+  }
+  _createParent(e, r, n) {
+    this._parents[this._depth] = {
+      type: r,
+      length: n,
+      ref: e,
+      values: 0,
+      tmpKey: null,
+    };
+  }
+  _reset() {
+    (this._res = []),
+      (this._parents = [
+        {
+          type: Fe.PARENT.ARRAY,
+          length: -1,
+          ref: this._res,
+          values: 0,
+          tmpKey: null,
+        },
+      ]);
+  }
+  createTag(e, r) {
+    const n = this._knownTags[e];
+    return n ? n(r) : new mf(e, r);
+  }
+  createMap(e, r) {
+    return e;
+  }
+  createObject(e, r) {
+    return e;
+  }
+  createArray(e, r) {
+    return e;
+  }
+  createByteString(e, r) {
+    return pr.concat(e);
+  }
+  createByteStringFromHeap(e, r) {
+    return e === r ? pr.alloc(0) : pr.from(this._heap.slice(e, r));
+  }
+  createInt(e) {
+    return e;
+  }
+  createInt32(e, r) {
+    return it.buildInt32(e, r);
+  }
+  createInt64(e, r, n, i) {
+    return it.buildInt64(e, r, n, i);
+  }
+  createFloat(e) {
+    return e;
+  }
+  createFloatSingle(e, r, n, i) {
+    return rs.read([e, r, n, i], 0, !1, 23, 4);
+  }
+  createFloatDouble(e, r, n, i, c, l, f, y) {
+    return rs.read([e, r, n, i, c, l, f, y], 0, !1, 52, 8);
+  }
+  createInt32Neg(e, r) {
+    return -1 - it.buildInt32(e, r);
+  }
+  createInt64Neg(e, r, n, i) {
+    const c = it.buildInt32(e, r),
+      l = it.buildInt32(n, i);
+    return c > Fe.MAX_SAFE_HIGH
+      ? Fe.NEG_ONE.minus(new wf(c).times(Fe.SHIFT32).plus(l))
+      : -1 - (c * Fe.SHIFT32 + l);
+  }
+  createTrue() {
+    return !0;
+  }
+  createFalse() {
+    return !1;
+  }
+  createNull() {
+    return null;
+  }
+  createUndefined() {}
+  createInfinity() {
+    return 1 / 0;
+  }
+  createInfinityNeg() {
+    return -1 / 0;
+  }
+  createNaN() {
+    return NaN;
+  }
+  createNaNNeg() {
+    return NaN;
+  }
+  createUtf8String(e, r) {
+    return e.join("");
+  }
+  createUtf8StringFromHeap(e, r) {
+    return e === r ? "" : this._buffer.toString("utf8", e, r);
+  }
+  createSimpleUnassigned(e) {
+    return new bf(e);
+  }
+  pushInt(e) {
+    this._push(this.createInt(e));
+  }
+  pushInt32(e, r) {
+    this._push(this.createInt32(e, r));
+  }
+  pushInt64(e, r, n, i) {
+    this._push(this.createInt64(e, r, n, i));
+  }
+  pushFloat(e) {
+    this._push(this.createFloat(e));
+  }
+  pushFloatSingle(e, r, n, i) {
+    this._push(this.createFloatSingle(e, r, n, i));
+  }
+  pushFloatDouble(e, r, n, i, c, l, f, y) {
+    this._push(this.createFloatDouble(e, r, n, i, c, l, f, y));
+  }
+  pushInt32Neg(e, r) {
+    this._push(this.createInt32Neg(e, r));
+  }
+  pushInt64Neg(e, r, n, i) {
+    this._push(this.createInt64Neg(e, r, n, i));
+  }
+  pushTrue() {
+    this._push(this.createTrue());
+  }
+  pushFalse() {
+    this._push(this.createFalse());
+  }
+  pushNull() {
+    this._push(this.createNull());
+  }
+  pushUndefined() {
+    this._push(this.createUndefined());
+  }
+  pushInfinity() {
+    this._push(this.createInfinity());
+  }
+  pushInfinityNeg() {
+    this._push(this.createInfinityNeg());
+  }
+  pushNaN() {
+    this._push(this.createNaN());
+  }
+  pushNaNNeg() {
+    this._push(this.createNaNNeg());
+  }
+  pushArrayStart() {
+    this._createParent([], Fe.PARENT.ARRAY, -1);
+  }
+  pushArrayStartFixed(e) {
+    this._createArrayStartFixed(e);
+  }
+  pushArrayStartFixed32(e, r) {
+    const n = it.buildInt32(e, r);
+    this._createArrayStartFixed(n);
+  }
+  pushArrayStartFixed64(e, r, n, i) {
+    const c = it.buildInt64(e, r, n, i);
+    this._createArrayStartFixed(c);
+  }
+  pushObjectStart() {
+    this._createObjectStartFixed(-1);
+  }
+  pushObjectStartFixed(e) {
+    this._createObjectStartFixed(e);
+  }
+  pushObjectStartFixed32(e, r) {
+    const n = it.buildInt32(e, r);
+    this._createObjectStartFixed(n);
+  }
+  pushObjectStartFixed64(e, r, n, i) {
+    const c = it.buildInt64(e, r, n, i);
+    this._createObjectStartFixed(c);
+  }
+  pushByteStringStart() {
+    this._parents[this._depth] = {
+      type: Fe.PARENT.BYTE_STRING,
+      length: -1,
+      ref: [],
+      values: 0,
+      tmpKey: null,
+    };
+  }
+  pushByteString(e, r) {
+    this._push(this.createByteStringFromHeap(e, r));
+  }
+  pushUtf8StringStart() {
+    this._parents[this._depth] = {
+      type: Fe.PARENT.UTF8_STRING,
+      length: -1,
+      ref: [],
+      values: 0,
+      tmpKey: null,
+    };
+  }
+  pushUtf8String(e, r) {
+    this._push(this.createUtf8StringFromHeap(e, r));
+  }
+  pushSimpleUnassigned(e) {
+    this._push(this.createSimpleUnassigned(e));
+  }
+  pushTagStart(e) {
+    this._parents[this._depth] = { type: Fe.PARENT.TAG, length: 1, ref: [e] };
+  }
+  pushTagStart4(e, r) {
+    this.pushTagStart(it.buildInt32(e, r));
+  }
+  pushTagStart8(e, r, n, i) {
+    this.pushTagStart(it.buildInt64(e, r, n, i));
+  }
+  pushTagUnassigned(e) {
+    this._push(this.createTag(e));
+  }
+  pushBreak() {
+    if (this._currentParent.length > -1) throw new Error("Unexpected break");
+    this._closeParent();
+  }
+  _createObjectStartFixed(e) {
+    if (e === 0) {
+      this._push(this.createObject({}));
+      return;
+    }
+    this._createParent({}, Fe.PARENT.OBJECT, e);
+  }
+  _createArrayStartFixed(e) {
+    if (e === 0) {
+      this._push(this.createArray([]));
+      return;
+    }
+    this._createParent(new Array(e), Fe.PARENT.ARRAY, e);
+  }
+  _decode(e) {
+    if (e.byteLength === 0) throw new Error("Input too short");
+    this._reset(), this._heap8.set(e);
+    const r = this.parser.parse(e.byteLength);
+    if (this._depth > 1) {
+      for (; this._currentParent.length === 0; ) this._closeParent();
+      if (this._depth > 1) throw new Error("Undeterminated nesting");
+    }
+    if (r > 0) throw new Error("Failed to parse");
+    if (this._res.length === 0) throw new Error("No valid result");
+  }
+  decodeFirst(e) {
+    return this._decode(e), this._res[0];
+  }
+  decodeAll(e) {
+    return this._decode(e), this._res;
+  }
+  static decode(e, r) {
+    return (
+      typeof e == "string" && (e = pr.from(e, r || "hex")),
+      new yi({ size: e.length }).decodeFirst(e)
+    );
+  }
+  static decodeAll(e, r) {
+    return (
+      typeof e == "string" && (e = pr.from(e, r || "hex")),
+      new yi({ size: e.length }).decodeAll(e)
+    );
+  }
+};
+pi.decodeFirst = pi.decode;
+var Ya = pi;
+const { Buffer: Qn } = jr,
+  _f = Ya,
+  Ef = Vn;
+class Ci extends _f {
+  createTag(e, r) {
+    return `${e}(${r})`;
+  }
+  createInt(e) {
+    return super.createInt(e).toString();
+  }
+  createInt32(e, r) {
+    return super.createInt32(e, r).toString();
+  }
+  createInt64(e, r, n, i) {
+    return super.createInt64(e, r, n, i).toString();
+  }
+  createInt32Neg(e, r) {
+    return super.createInt32Neg(e, r).toString();
+  }
+  createInt64Neg(e, r, n, i) {
+    return super.createInt64Neg(e, r, n, i).toString();
+  }
+  createTrue() {
+    return "true";
+  }
+  createFalse() {
+    return "false";
+  }
+  createFloat(e) {
+    const r = super.createFloat(e);
+    return Ef.isNegativeZero(e) ? "-0_1" : `${r}_1`;
+  }
+  createFloatSingle(e, r, n, i) {
+    return `${super.createFloatSingle(e, r, n, i)}_2`;
+  }
+  createFloatDouble(e, r, n, i, c, l, f, y) {
+    return `${super.createFloatDouble(e, r, n, i, c, l, f, y)}_3`;
+  }
+  createByteString(e, r) {
+    const n = e.join(", ");
+    return r === -1 ? `(_ ${n})` : `h'${n}`;
+  }
+  createByteStringFromHeap(e, r) {
+    return `h'${Qn.from(super.createByteStringFromHeap(e, r)).toString("hex")}'`;
+  }
+  createInfinity() {
+    return "Infinity_1";
+  }
+  createInfinityNeg() {
+    return "-Infinity_1";
+  }
+  createNaN() {
+    return "NaN_1";
+  }
+  createNaNNeg() {
+    return "-NaN_1";
+  }
+  createNull() {
+    return "null";
+  }
+  createUndefined() {
+    return "undefined";
+  }
+  createSimpleUnassigned(e) {
+    return `simple(${e})`;
+  }
+  createArray(e, r) {
+    const n = super.createArray(e, r);
+    return r === -1 ? `[_ ${n.join(", ")}]` : `[${n.join(", ")}]`;
+  }
+  createMap(e, r) {
+    const n = super.createMap(e),
+      i = Array.from(n.keys()).reduce(ns(n), "");
+    return r === -1 ? `{_ ${i}}` : `{${i}}`;
+  }
+  createObject(e, r) {
+    const n = super.createObject(e),
+      i = Object.keys(n).reduce(ns(n), "");
+    return r === -1 ? `{_ ${i}}` : `{${i}}`;
+  }
+  createUtf8String(e, r) {
+    const n = e.join(", ");
+    return r === -1 ? `(_ ${n})` : `"${n}"`;
+  }
+  createUtf8StringFromHeap(e, r) {
+    return `"${Qn.from(super.createUtf8StringFromHeap(e, r)).toString("utf8")}"`;
+  }
+  static diagnose(e, r) {
+    return (
+      typeof e == "string" && (e = Qn.from(e, r || "hex")),
+      new Ci().decodeFirst(e)
+    );
+  }
+}
+var Bf = Ci;
+function ns(t) {
+  return (e, r) => (e ? `${e}, ${r}: ${t[r]}` : `${r}: ${t[r]}`);
+}
+const { Buffer: vt } = jr,
+  { URL: Af } = La,
+  wi = qn.BigNumber,
+  ei = Vn,
+  Ze = nt,
+  dt = Ze.MT,
+  Kr = Ze.NUMBYTES,
+  is = Ze.SHIFT32,
+  ss = Ze.SYMS,
+  yr = Ze.TAG,
+  Tf = (Ze.MT.SIMPLE_FLOAT << 5) | Ze.NUMBYTES.TWO,
+  Sf = (Ze.MT.SIMPLE_FLOAT << 5) | Ze.NUMBYTES.FOUR,
+  vf = (Ze.MT.SIMPLE_FLOAT << 5) | Ze.NUMBYTES.EIGHT,
+  If = (Ze.MT.SIMPLE_FLOAT << 5) | Ze.SIMPLE.TRUE,
+  Nf = (Ze.MT.SIMPLE_FLOAT << 5) | Ze.SIMPLE.FALSE,
+  Uf = (Ze.MT.SIMPLE_FLOAT << 5) | Ze.SIMPLE.UNDEFINED,
+  as = (Ze.MT.SIMPLE_FLOAT << 5) | Ze.SIMPLE.NULL,
+  Rf = new wi("0x20000000000000"),
+  Of = vt.from("f97e00", "hex"),
+  Ff = vt.from("f9fc00", "hex"),
+  Pf = vt.from("f97c00", "hex");
+function Mf(t) {
+  return {}.toString.call(t).slice(8, -1);
+}
+class Nn {
+  constructor(e) {
+    (e = e || {}),
+      (this.streaming = typeof e.stream == "function"),
+      (this.onData = e.stream),
+      (this.semanticTypes = [
+        [Af, this._pushUrl],
+        [wi, this._pushBigNumber],
+      ]);
+    const r = e.genTypes || [],
+      n = r.length;
+    for (let i = 0; i < n; i++) this.addSemanticType(r[i][0], r[i][1]);
+    this._reset();
+  }
+  addSemanticType(e, r) {
+    const n = this.semanticTypes.length;
+    for (let i = 0; i < n; i++)
+      if (this.semanticTypes[i][0] === e) {
+        const l = this.semanticTypes[i][1];
+        return (this.semanticTypes[i][1] = r), l;
+      }
+    return this.semanticTypes.push([e, r]), null;
+  }
+  push(e) {
+    return (
+      e &&
+        ((this.result[this.offset] = e),
+        (this.resultMethod[this.offset] = 0),
+        (this.resultLength[this.offset] = e.length),
+        this.offset++,
+        this.streaming && this.onData(this.finalize())),
+      !0
+    );
+  }
+  pushWrite(e, r, n) {
+    return (
+      (this.result[this.offset] = e),
+      (this.resultMethod[this.offset] = r),
+      (this.resultLength[this.offset] = n),
+      this.offset++,
+      this.streaming && this.onData(this.finalize()),
+      !0
+    );
+  }
+  _pushUInt8(e) {
+    return this.pushWrite(e, 1, 1);
+  }
+  _pushUInt16BE(e) {
+    return this.pushWrite(e, 2, 2);
+  }
+  _pushUInt32BE(e) {
+    return this.pushWrite(e, 3, 4);
+  }
+  _pushDoubleBE(e) {
+    return this.pushWrite(e, 4, 8);
+  }
+  _pushNaN() {
+    return this.push(Of);
+  }
+  _pushInfinity(e) {
+    const r = e < 0 ? Ff : Pf;
+    return this.push(r);
+  }
+  _pushFloat(e) {
+    const r = vt.allocUnsafe(2);
+    if (ei.writeHalf(r, e) && ei.parseHalf(r) === e)
+      return this._pushUInt8(Tf) && this.push(r);
+    const n = vt.allocUnsafe(4);
+    return (
+      n.writeFloatBE(e, 0),
+      n.readFloatBE(0) === e
+        ? this._pushUInt8(Sf) && this.push(n)
+        : this._pushUInt8(vf) && this._pushDoubleBE(e)
+    );
+  }
+  _pushInt(e, r, n) {
+    const i = r << 5;
+    return e < 24
+      ? this._pushUInt8(i | e)
+      : e <= 255
+        ? this._pushUInt8(i | Kr.ONE) && this._pushUInt8(e)
+        : e <= 65535
+          ? this._pushUInt8(i | Kr.TWO) && this._pushUInt16BE(e)
+          : e <= 4294967295
+            ? this._pushUInt8(i | Kr.FOUR) && this._pushUInt32BE(e)
+            : e <= Number.MAX_SAFE_INTEGER
+              ? this._pushUInt8(i | Kr.EIGHT) &&
+                this._pushUInt32BE(Math.floor(e / is)) &&
+                this._pushUInt32BE(e % is)
+              : r === dt.NEG_INT
+                ? this._pushFloat(n)
+                : this._pushFloat(e);
+  }
+  _pushIntNum(e) {
+    return e < 0
+      ? this._pushInt(-e - 1, dt.NEG_INT, e)
+      : this._pushInt(e, dt.POS_INT);
+  }
+  _pushNumber(e) {
+    switch (!1) {
+      case e === e:
+        return this._pushNaN(e);
+      case isFinite(e):
+        return this._pushInfinity(e);
+      case e % 1 !== 0:
+        return this._pushIntNum(e);
+      default:
+        return this._pushFloat(e);
+    }
+  }
+  _pushString(e) {
+    const r = vt.byteLength(e, "utf8");
+    return this._pushInt(r, dt.UTF8_STRING) && this.pushWrite(e, 5, r);
+  }
+  _pushBoolean(e) {
+    return this._pushUInt8(e ? If : Nf);
+  }
+  _pushUndefined(e) {
+    return this._pushUInt8(Uf);
+  }
+  _pushArray(e, r) {
+    const n = r.length;
+    if (!e._pushInt(n, dt.ARRAY)) return !1;
+    for (let i = 0; i < n; i++) if (!e.pushAny(r[i])) return !1;
+    return !0;
+  }
+  _pushTag(e) {
+    return this._pushInt(e, dt.TAG);
+  }
+  _pushDate(e, r) {
+    return e._pushTag(yr.DATE_EPOCH) && e.pushAny(Math.round(r / 1e3));
+  }
+  _pushBuffer(e, r) {
+    return e._pushInt(r.length, dt.BYTE_STRING) && e.push(r);
+  }
+  _pushNoFilter(e, r) {
+    return e._pushBuffer(e, r.slice());
+  }
+  _pushRegexp(e, r) {
+    return e._pushTag(yr.REGEXP) && e.pushAny(r.source);
+  }
+  _pushSet(e, r) {
+    if (!e._pushInt(r.size, dt.ARRAY)) return !1;
+    for (const n of r) if (!e.pushAny(n)) return !1;
+    return !0;
+  }
+  _pushUrl(e, r) {
+    return e._pushTag(yr.URI) && e.pushAny(r.format());
+  }
+  _pushBigint(e) {
+    let r = yr.POS_BIGINT;
+    e.isNegative() && ((e = e.negated().minus(1)), (r = yr.NEG_BIGINT));
+    let n = e.toString(16);
+    n.length % 2 && (n = "0" + n);
+    const i = vt.from(n, "hex");
+    return this._pushTag(r) && this._pushBuffer(this, i);
+  }
+  _pushBigNumber(e, r) {
+    if (r.isNaN()) return e._pushNaN();
+    if (!r.isFinite()) return e._pushInfinity(r.isNegative() ? -1 / 0 : 1 / 0);
+    if (r.isInteger()) return e._pushBigint(r);
+    if (!(e._pushTag(yr.DECIMAL_FRAC) && e._pushInt(2, dt.ARRAY))) return !1;
+    const n = r.decimalPlaces(),
+      i = r.multipliedBy(new wi(10).pow(n));
+    return e._pushIntNum(-n)
+      ? i.abs().isLessThan(Rf)
+        ? e._pushIntNum(i.toNumber())
+        : e._pushBigint(i)
+      : !1;
+  }
+  _pushMap(e, r) {
+    return e._pushInt(r.size, dt.MAP)
+      ? this._pushRawMap(r.size, Array.from(r))
+      : !1;
+  }
+  _pushObject(e) {
+    if (!e) return this._pushUInt8(as);
+    for (var r = this.semanticTypes.length, n = 0; n < r; n++)
+      if (e instanceof this.semanticTypes[n][0])
+        return this.semanticTypes[n][1].call(e, this, e);
+    var i = e.encodeCBOR;
+    if (typeof i == "function") return i.call(e, this);
+    var c = Object.keys(e),
+      l = c.length;
+    return this._pushInt(l, dt.MAP)
+      ? this._pushRawMap(
+          l,
+          c.map((f) => [f, e[f]]),
+        )
+      : !1;
+  }
+  _pushRawMap(e, r) {
+    r = r
+      .map(function (i) {
+        return (i[0] = Nn.encode(i[0])), i;
+      })
+      .sort(ei.keySorter);
+    for (var n = 0; n < e; n++)
+      if (!this.push(r[n][0]) || !this.pushAny(r[n][1])) return !1;
+    return !0;
+  }
+  write(e) {
+    return this.pushAny(e);
+  }
+  pushAny(e) {
+    var r = Mf(e);
+    switch (r) {
+      case "Number":
+        return this._pushNumber(e);
+      case "String":
+        return this._pushString(e);
+      case "Boolean":
+        return this._pushBoolean(e);
+      case "Object":
+        return this._pushObject(e);
+      case "Array":
+        return this._pushArray(this, e);
+      case "Uint8Array":
+        return this._pushBuffer(this, vt.isBuffer(e) ? e : vt.from(e));
+      case "Null":
+        return this._pushUInt8(as);
+      case "Undefined":
+        return this._pushUndefined(e);
+      case "Map":
+        return this._pushMap(this, e);
+      case "Set":
+        return this._pushSet(this, e);
+      case "URL":
+        return this._pushUrl(this, e);
+      case "BigNumber":
+        return this._pushBigNumber(this, e);
+      case "Date":
+        return this._pushDate(this, e);
+      case "RegExp":
+        return this._pushRegexp(this, e);
+      case "Symbol":
+        switch (e) {
+          case ss.NULL:
+            return this._pushObject(null);
+          case ss.UNDEFINED:
+            return this._pushUndefined(void 0);
+          default:
+            throw new Error("Unknown symbol: " + e.toString());
+        }
+      default:
+        throw new Error(
+          "Unknown type: " + typeof e + ", " + (e ? e.toString() : ""),
+        );
+    }
+  }
+  finalize() {
+    if (this.offset === 0) return null;
+    for (
+      var e = this.result,
+        r = this.resultLength,
+        n = this.resultMethod,
+        i = this.offset,
+        c = 0,
+        l = 0;
+      l < i;
+      l++
+    )
+      c += r[l];
+    var f = vt.allocUnsafe(c),
+      y = 0,
+      m = 0;
+    for (l = 0; l < i; l++) {
+      switch (((m = r[l]), n[l])) {
+        case 0:
+          e[l].copy(f, y);
+          break;
+        case 1:
+          f.writeUInt8(e[l], y, !0);
+          break;
+        case 2:
+          f.writeUInt16BE(e[l], y, !0);
+          break;
+        case 3:
+          f.writeUInt32BE(e[l], y, !0);
+          break;
+        case 4:
+          f.writeDoubleBE(e[l], y, !0);
+          break;
+        case 5:
+          f.write(e[l], y, m, "utf8");
+          break;
+        default:
+          throw new Error("unkown method");
+      }
+      y += m;
+    }
+    var E = f;
+    return this._reset(), E;
+  }
+  _reset() {
+    (this.result = []),
+      (this.resultMethod = []),
+      (this.resultLength = []),
+      (this.offset = 0);
+  }
+  static encode(e) {
+    const r = new Nn();
+    if (!r.pushAny(e)) throw new Error("Failed to encode input");
+    return r.finalize();
+  }
+}
+var kf = Nn;
+(function (t) {
+  (t.Diagnose = Bf),
+    (t.Decoder = Ya),
+    (t.Encoder = kf),
+    (t.Simple = Ga),
+    (t.Tagged = Ha),
+    (t.decodeAll = t.Decoder.decodeAll),
+    (t.decodeFirst = t.Decoder.decodeFirst),
+    (t.diagnose = t.Diagnose.diagnose),
+    (t.encode = t.Encoder.encode),
+    (t.decode = t.Decoder.decode),
+    (t.leveldb = {
+      decode: t.Decoder.decodeAll,
+      encode: t.Encoder.encode,
+      buffer: !0,
+      name: "cbor",
+    });
+})(qa);
+const Za = hc(qa);
+function Ot(...t) {
+  const e = new Uint8Array(t.reduce((n, i) => n + i.byteLength, 0));
+  let r = 0;
+  for (const n of t) e.set(new Uint8Array(n), r), (r += n.byteLength);
+  return e.buffer;
+}
+function xt(t) {
+  return [...new Uint8Array(t)]
+    .map((e) => e.toString(16).padStart(2, "0"))
+    .join("");
+}
+const Cf = new RegExp(/^[0-9a-fA-F]+$/);
+function Un(t) {
+  if (!Cf.test(t)) throw new Error("Invalid hexadecimal string.");
+  const e = [...t]
+    .reduce((r, n, i) => ((r[(i / 2) | 0] = (r[(i / 2) | 0] || "") + n), r), [])
+    .map((r) => Number.parseInt(r, 16));
+  return new Uint8Array(e).buffer;
+}
+function Wa(t, e) {
+  if (t.byteLength !== e.byteLength) return t.byteLength - e.byteLength;
+  const r = new Uint8Array(t),
+    n = new Uint8Array(e);
+  for (let i = 0; i < r.length; i++) if (r[i] !== n[i]) return r[i] - n[i];
+  return 0;
+}
+function $i(t, e) {
+  return Wa(t, e) === 0;
+}
+function fn(t) {
+  return new DataView(t.buffer, t.byteOffset, t.byteLength).buffer;
+}
+function Ka(t) {
+  return t instanceof Uint8Array
+    ? fn(t)
+    : t instanceof ArrayBuffer
+      ? t
+      : Array.isArray(t)
+        ? fn(new Uint8Array(t))
+        : "buffer" in t
+          ? Ka(t.buffer)
+          : fn(new Uint8Array(t));
+}
+function mt(t) {
+  return fn(Ri.create().update(new Uint8Array(t)).digest());
+}
+function un(t) {
+  if (t instanceof Za.Tagged) return un(t.value);
+  if (typeof t == "string") return Xa(t);
+  if (typeof t == "number") return mt(Ve(t));
+  if (t instanceof ArrayBuffer || ArrayBuffer.isView(t)) return mt(t);
+  if (Array.isArray(t)) {
+    const e = t.map(un);
+    return mt(Ot(...e));
+  } else {
+    if (t && typeof t == "object" && t._isPrincipal)
+      return mt(t.toUint8Array());
+    if (typeof t == "object" && t !== null && typeof t.toHash == "function")
+      return un(t.toHash());
+    if (typeof t == "object") return Rn(t);
+    if (typeof t == "bigint") return mt(Ve(t));
+  }
+  throw Object.assign(
+    new Error(`Attempt to hash a value of unsupported type: ${t}`),
+    { value: t },
+  );
+}
+const Xa = (t) => {
+  const e = new TextEncoder().encode(t);
+  return mt(e);
+};
+function os(t) {
+  return Rn(t);
+}
+function Rn(t) {
+  const n = Object.entries(t)
+      .filter(([, l]) => l !== void 0)
+      .map(([l, f]) => {
+        const y = Xa(l),
+          m = un(f);
+        return [y, m];
+      })
+      .sort(([l], [f]) => Wa(l, f)),
+    i = Ot(...n.map((l) => Ot(...l)));
+  return mt(i);
+}
+new TextEncoder().encode(`
+ic-request`);
+class $f {
+  getPrincipal() {
+    return Ie.anonymous();
+  }
+  async transformRequest(e) {
+    return Object.assign(Object.assign({}, e), { body: { content: e.body } });
+  }
+}
+var kt = {},
+  Sr = {},
+  Me = {};
+Object.defineProperty(Me, "__esModule", { value: !0 });
+const qf = 9007199254740992;
+function Vt(t, ...e) {
+  const r = new Uint8Array(
+    t.byteLength + e.reduce((i, c) => i + c.byteLength, 0),
+  );
+  r.set(new Uint8Array(t), 0);
+  let n = t.byteLength;
+  for (const i of e) r.set(new Uint8Array(i), n), (n += i.byteLength);
+  return r.buffer;
+}
+function _t(t, e, r) {
+  r = r.replace(/[^0-9a-fA-F]/g, "");
+  const n = 2 ** (e - 24);
+  r = r.slice(-n * 2).padStart(n * 2, "0");
+  const i = [(t << 5) + e].concat(r.match(/../g).map((c) => parseInt(c, 16)));
+  return new Uint8Array(i).buffer;
+}
+function Gn(t, e) {
+  if (e < 24) return new Uint8Array([(t << 5) + e]).buffer;
+  {
+    const r = e <= 255 ? 24 : e <= 65535 ? 25 : e <= 4294967295 ? 26 : 27;
+    return _t(t, r, e.toString(16));
+  }
+}
+function Da(t) {
+  const e = [];
+  for (let r = 0; r < t.length; r++) {
+    let n = t.charCodeAt(r);
+    n < 128
+      ? e.push(n)
+      : n < 2048
+        ? e.push(192 | (n >> 6), 128 | (n & 63))
+        : n < 55296 || n >= 57344
+          ? e.push(224 | (n >> 12), 128 | ((n >> 6) & 63), 128 | (n & 63))
+          : (r++,
+            (n = ((n & 1023) << 10) | (t.charCodeAt(r) & 1023)),
+            e.push(
+              240 | (n >> 18),
+              128 | ((n >> 12) & 63),
+              128 | ((n >> 6) & 63),
+              128 | (n & 63),
+            ));
+  }
+  return Vt(new Uint8Array(Gn(3, t.length)), new Uint8Array(e));
+}
+function Vf(t, e) {
+  if (t == 14277111) return Vt(new Uint8Array([217, 217, 247]), e);
+  if (t < 24) return Vt(new Uint8Array([192 + t]), e);
+  {
+    const r = t <= 255 ? 24 : t <= 65535 ? 25 : t <= 4294967295 ? 26 : 27,
+      n = 2 ** (r - 24),
+      i = t
+        .toString(16)
+        .slice(-n * 2)
+        .padStart(n * 2, "0"),
+      c = [192 + r].concat(i.match(/../g).map((l) => parseInt(l, 16)));
+    return new Uint8Array(c).buffer;
+  }
+}
+Me.tagged = Vf;
+function zr(t) {
+  return new Uint8Array(t).buffer;
+}
+Me.raw = zr;
+function qi(t) {
+  if (isNaN(t)) throw new RangeError("Invalid number.");
+  t = Math.min(Math.max(0, t), 23);
+  const e = [0 + t];
+  return new Uint8Array(e).buffer;
+}
+Me.uSmall = qi;
+function Ja(t, e) {
+  if (((t = parseInt("" + t, e)), isNaN(t)))
+    throw new RangeError("Invalid number.");
+  return (
+    (t = Math.min(Math.max(0, t), 255)), (t = t.toString(16)), _t(0, 24, t)
+  );
+}
+Me.u8 = Ja;
+function Qa(t, e) {
+  if (((t = parseInt("" + t, e)), isNaN(t)))
+    throw new RangeError("Invalid number.");
+  return (
+    (t = Math.min(Math.max(0, t), 65535)), (t = t.toString(16)), _t(0, 25, t)
+  );
+}
+Me.u16 = Qa;
+function eo(t, e) {
+  if (((t = parseInt("" + t, e)), isNaN(t)))
+    throw new RangeError("Invalid number.");
+  return (
+    (t = Math.min(Math.max(0, t), 4294967295)),
+    (t = t.toString(16)),
+    _t(0, 26, t)
+  );
+}
+Me.u32 = eo;
+function Vi(t, e) {
+  if (typeof t == "string" && e == 16) {
+    if (t.match(/[^0-9a-fA-F]/)) throw new RangeError("Invalid number.");
+    return _t(0, 27, t);
+  }
+  if (((t = parseInt("" + t, e)), isNaN(t)))
+    throw new RangeError("Invalid number.");
+  return (t = Math.min(Math.max(0, t), qf)), (t = t.toString(16)), _t(0, 27, t);
+}
+Me.u64 = Vi;
+function to(t) {
+  if (isNaN(t)) throw new RangeError("Invalid number.");
+  if (t === 0) return qi(0);
+  t = Math.min(Math.max(0, -t), 24) - 1;
+  const e = [32 + t];
+  return new Uint8Array(e).buffer;
+}
+Me.iSmall = to;
+function ro(t, e) {
+  if (((t = parseInt("" + t, e)), isNaN(t)))
+    throw new RangeError("Invalid number.");
+  return (
+    (t = Math.min(Math.max(0, -t - 1), 255)), (t = t.toString(16)), _t(1, 24, t)
+  );
+}
+Me.i8 = ro;
+function no(t, e) {
+  if (((t = parseInt("" + t, e)), isNaN(t)))
+    throw new RangeError("Invalid number.");
+  return (
+    (t = Math.min(Math.max(0, -t - 1), 65535)),
+    (t = t.toString(16)),
+    _t(1, 25, t)
+  );
+}
+Me.i16 = no;
+function io(t, e) {
+  if (((t = parseInt("" + t, e)), isNaN(t)))
+    throw new RangeError("Invalid number.");
+  return (
+    (t = Math.min(Math.max(0, -t - 1), 4294967295)),
+    (t = t.toString(16)),
+    _t(1, 26, t)
+  );
+}
+Me.i32 = io;
+function so(t, e) {
+  if (typeof t == "string" && e == 16) {
+    if (
+      (t.startsWith("-") ? (t = t.slice(1)) : (t = "0"),
+      t.match(/[^0-9a-fA-F]/) || t.length > 16)
+    )
+      throw new RangeError("Invalid number.");
+    let r = !1,
+      n = t.split("").reduceRight((i, c) => {
+        if (r) return c + i;
+        let l = parseInt(c, 16) - 1;
+        return l >= 0 ? ((r = !0), l.toString(16) + i) : "f" + i;
+      }, "");
+    return r ? _t(1, 27, n) : Vi(0);
+  }
+  if (((t = parseInt("" + t, e)), isNaN(t)))
+    throw new RangeError("Invalid number.");
+  return (
+    (t = Math.min(Math.max(0, -t - 1), 9007199254740992)),
+    (t = t.toString(16)),
+    _t(1, 27, t)
+  );
+}
+Me.i64 = so;
+function Gf(t) {
+  return t >= 0
+    ? t < 24
+      ? qi(t)
+      : t <= 255
+        ? Ja(t)
+        : t <= 65535
+          ? Qa(t)
+          : t <= 4294967295
+            ? eo(t)
+            : Vi(t)
+    : t >= -24
+      ? to(t)
+      : t >= -255
+        ? ro(t)
+        : t >= -65535
+          ? no(t)
+          : t >= -4294967295
+            ? io(t)
+            : so(t);
+}
+Me.number = Gf;
+function Hf(t) {
+  return Vt(Gn(2, t.byteLength), t);
+}
+Me.bytes = Hf;
+function jf(t) {
+  return Da(t);
+}
+Me.string = jf;
+function zf(t) {
+  return Vt(Gn(4, t.length), ...t);
+}
+Me.array = zf;
+function Lf(t, e = !1) {
+  t instanceof Map || (t = new Map(Object.entries(t)));
+  let r = Array.from(t.entries());
+  return (
+    e && (r = r.sort(([n], [i]) => n.localeCompare(i))),
+    Vt(Gn(5, t.size), ...r.map(([n, i]) => Vt(Da(n), i)))
+  );
+}
+Me.map = Lf;
+function Yf(t) {
+  const e = new Float32Array([t]);
+  return Vt(new Uint8Array([250]), new Uint8Array(e.buffer));
+}
+Me.singleFloat = Yf;
+function Zf(t) {
+  const e = new Float64Array([t]);
+  return Vt(new Uint8Array([251]), new Uint8Array(e.buffer));
+}
+Me.doubleFloat = Zf;
+function Wf(t) {
+  return t ? ao() : oo();
+}
+Me.bool = Wf;
+function ao() {
+  return zr(new Uint8Array([245]));
+}
+Me.true_ = ao;
+function oo() {
+  return zr(new Uint8Array([244]));
+}
+Me.false_ = oo;
+function Kf() {
+  return zr(new Uint8Array([246]));
+}
+Me.null_ = Kf;
+function Xf() {
+  return zr(new Uint8Array([247]));
+}
+Me.undefined_ = Xf;
+var Df =
+  (_r && _r.__importStar) ||
+  function (t) {
+    if (t && t.__esModule) return t;
+    var e = {};
+    if (t != null)
+      for (var r in t) Object.hasOwnProperty.call(t, r) && (e[r] = t[r]);
+    return (e.default = t), e;
+  };
+Object.defineProperty(Sr, "__esModule", { value: !0 });
+const yt = Df(Me),
+  Jf = [
+    ArrayBuffer,
+    Uint8Array,
+    Uint16Array,
+    Uint32Array,
+    Int8Array,
+    Int16Array,
+    Int32Array,
+    Float32Array,
+    Float64Array,
+  ];
+class co {
+  constructor(e, r = !1) {
+    (this._serializer = e),
+      (this._stable = r),
+      (this.name = "jsonDefault"),
+      (this.priority = -100);
+  }
+  match(e) {
+    return (
+      ["undefined", "boolean", "number", "string", "object"].indexOf(
+        typeof e,
+      ) != -1
+    );
+  }
+  encode(e) {
+    switch (typeof e) {
+      case "undefined":
+        return yt.undefined_();
+      case "boolean":
+        return yt.bool(e);
+      case "number":
+        return Math.floor(e) === e ? yt.number(e) : yt.doubleFloat(e);
+      case "string":
+        return yt.string(e);
+      case "object":
+        if (e === null) return yt.null_();
+        if (Array.isArray(e))
+          return yt.array(e.map((r) => this._serializer.serializeValue(r)));
+        if (Jf.find((r) => e instanceof r)) return yt.bytes(e.buffer);
+        if (Object.getOwnPropertyNames(e).indexOf("toJSON") !== -1)
+          return this.encode(e.toJSON());
+        if (e instanceof Map) {
+          const r = new Map();
+          for (const [n, i] of e.entries())
+            r.set(n, this._serializer.serializeValue(i));
+          return yt.map(r, this._stable);
+        } else {
+          const r = new Map();
+          for (const [n, i] of Object.entries(e))
+            r.set(n, this._serializer.serializeValue(i));
+          return yt.map(r, this._stable);
+        }
+      default:
+        throw new Error("Invalid value.");
+    }
+  }
+}
+Sr.JsonDefaultCborEncoder = co;
+class fo {
+  constructor() {
+    (this.name = "cborEncoder"), (this.priority = -90);
+  }
+  match(e) {
+    return typeof e == "object" && typeof e.toCBOR == "function";
+  }
+  encode(e) {
+    return e.toCBOR();
+  }
+}
+Sr.ToCborEncoder = fo;
+class uo {
+  constructor() {
+    this._encoders = new Set();
+  }
+  static withDefaultEncoders(e = !1) {
+    const r = new this();
+    return r.addEncoder(new co(r, e)), r.addEncoder(new fo()), r;
+  }
+  removeEncoder(e) {
+    for (const r of this._encoders.values())
+      r.name == e && this._encoders.delete(r);
+  }
+  addEncoder(e) {
+    this._encoders.add(e);
+  }
+  getEncoderFor(e) {
+    let r = null;
+    for (const n of this._encoders)
+      (!r || n.priority > r.priority) && n.match(e) && (r = n);
+    if (r === null) throw new Error("Could not find an encoder for value.");
+    return r;
+  }
+  serializeValue(e) {
+    return this.getEncoderFor(e).encode(e);
+  }
+  serialize(e) {
+    return this.serializeValue(e);
+  }
+}
+Sr.CborSerializer = uo;
+class Qf extends uo {
+  serialize(e) {
+    return yt.raw(
+      new Uint8Array([
+        ...new Uint8Array([217, 217, 247]),
+        ...new Uint8Array(super.serializeValue(e)),
+      ]),
+    );
+  }
+}
+Sr.SelfDescribeCborSerializer = Qf;
+(function (t) {
+  function e(i) {
+    for (var c in i) t.hasOwnProperty(c) || (t[c] = i[c]);
+  }
+  var r =
+    (_r && _r.__importStar) ||
+    function (i) {
+      if (i && i.__esModule) return i;
+      var c = {};
+      if (i != null)
+        for (var l in i) Object.hasOwnProperty.call(i, l) && (c[l] = i[l]);
+      return (c.default = i), c;
+    };
+  Object.defineProperty(t, "__esModule", { value: !0 }), e(Sr);
+  const n = r(Me);
+  t.value = n;
+})(kt);
+class eu {
+  get name() {
+    return "Principal";
+  }
+  get priority() {
+    return 0;
+  }
+  match(e) {
+    return e && e._isPrincipal === !0;
+  }
+  encode(e) {
+    return kt.value.bytes(e.toUint8Array());
+  }
+}
+class tu {
+  get name() {
+    return "Buffer";
+  }
+  get priority() {
+    return 1;
+  }
+  match(e) {
+    return e instanceof ArrayBuffer || ArrayBuffer.isView(e);
+  }
+  encode(e) {
+    return kt.value.bytes(new Uint8Array(e));
+  }
+}
+class ru {
+  get name() {
+    return "BigInt";
+  }
+  get priority() {
+    return 1;
+  }
+  match(e) {
+    return typeof e == "bigint";
+  }
+  encode(e) {
+    return e > BigInt(0)
+      ? kt.value.tagged(2, kt.value.bytes(Un(e.toString(16))))
+      : kt.value.tagged(3, kt.value.bytes(Un((BigInt("-1") * e).toString(16))));
+  }
+}
+const Hn = kt.SelfDescribeCborSerializer.withDefaultEncoders(!0);
+Hn.addEncoder(new eu());
+Hn.addEncoder(new tu());
+Hn.addEncoder(new ru());
+var gi;
+(function (t) {
+  (t[(t.Uint64LittleEndian = 71)] = "Uint64LittleEndian"),
+    (t[(t.Semantic = 55799)] = "Semantic");
+})(gi || (gi = {}));
+function ti(t) {
+  return Hn.serialize(t);
+}
+function cs(t) {
+  const e = t.byteLength;
+  let r = BigInt(0);
+  for (let n = 0; n < e; n++) r = r * BigInt(256) + BigInt(t[n]);
+  return r;
+}
+class nu extends Za.Decoder {
+  createByteString(e) {
+    return Ot(...e);
+  }
+  createByteStringFromHeap(e, r) {
+    return e === r
+      ? new ArrayBuffer(0)
+      : new Uint8Array(this._heap.slice(e, r));
+  }
+}
+function Ct(t) {
+  const e = new Uint8Array(t),
+    r = new nu({
+      size: e.byteLength,
+      tags: { 2: (n) => cs(n), 3: (n) => -cs(n), [gi.Semantic]: (n) => n },
+    });
+  try {
+    return r.decodeFirst(e);
+  } catch (n) {
+    throw new Error(`Failed to decode CBOR: ${n}, input: ${xt(e)}`);
+  }
+}
+const Xr = () => {
+  if (typeof window < "u" && window.crypto && window.crypto.getRandomValues) {
+    const t = new Uint32Array(1);
+    return window.crypto.getRandomValues(t), t[0];
+  }
+  if (typeof crypto < "u" && crypto.getRandomValues) {
+    const t = new Uint32Array(1);
+    return crypto.getRandomValues(t), t[0];
+  }
+  return typeof crypto < "u" && crypto.randomInt
+    ? crypto.randomInt(0, 4294967295)
+    : Math.floor(Math.random() * 4294967295);
+};
+var bi;
+(function (t) {
+  t.Call = "call";
+})(bi || (bi = {}));
+function mi() {
+  const t = new ArrayBuffer(16),
+    e = new DataView(t),
+    r = Xr(),
+    n = Xr(),
+    i = Xr(),
+    c = Xr();
+  return (
+    e.setUint32(0, r),
+    e.setUint32(4, n),
+    e.setUint32(8, i),
+    e.setUint32(12, c),
+    t
+  );
+}
+const iu = BigInt(1e6),
+  su = 60 * 1e3;
+class Dr {
+  constructor(e) {
+    const c =
+      ((BigInt(Math.floor(Date.now() + e - su)) * iu) /
+        BigInt(1e9) /
+        BigInt(60)) *
+      BigInt(60) *
+      BigInt(1e9);
+    this._value = c;
+  }
+  toCBOR() {
+    return kt.value.u64(this._value.toString(16), 16);
+  }
+  toHash() {
+    return Ve(this._value);
+  }
+}
+function fs(t = mi) {
+  return async (e) => {
+    const r = e.request.headers;
+    (e.request.headers = r), e.endpoint === "call" && (e.body.nonce = t());
+  };
+}
+function Nr(t) {
+  const e = [];
+  return (
+    t.forEach((r, n) => {
+      e.push([n, r]);
+    }),
+    e
+  );
+}
+class ri extends rt {
+  constructor(e, r) {
+    super(e),
+      (this.response = r),
+      (this.name = this.constructor.name),
+      Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
+/*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */ const au =
+    BigInt(0),
+  Gi = BigInt(1),
+  ou = BigInt(2);
+function jn(t) {
+  return (
+    t instanceof Uint8Array ||
+    (t != null && typeof t == "object" && t.constructor.name === "Uint8Array")
+  );
+}
+function Dt(t) {
+  if (!jn(t)) throw new Error("Uint8Array expected");
+}
+const cu = Array.from({ length: 256 }, (t, e) =>
+  e.toString(16).padStart(2, "0"),
+);
+function lr(t) {
+  Dt(t);
+  let e = "";
+  for (let r = 0; r < t.length; r++) e += cu[t[r]];
+  return e;
+}
+function lo(t) {
+  if (typeof t != "string")
+    throw new Error("hex string expected, got " + typeof t);
+  return BigInt(t === "" ? "0" : `0x${t}`);
+}
+const Ft = { _0: 48, _9: 57, _A: 65, _F: 70, _a: 97, _f: 102 };
+function us(t) {
+  if (t >= Ft._0 && t <= Ft._9) return t - Ft._0;
+  if (t >= Ft._A && t <= Ft._F) return t - (Ft._A - 10);
+  if (t >= Ft._a && t <= Ft._f) return t - (Ft._a - 10);
+}
+function ho(t) {
+  if (typeof t != "string")
+    throw new Error("hex string expected, got " + typeof t);
+  const e = t.length,
+    r = e / 2;
+  if (e % 2)
+    throw new Error(
+      "padded hex string expected, got unpadded hex of length " + e,
+    );
+  const n = new Uint8Array(r);
+  for (let i = 0, c = 0; i < r; i++, c += 2) {
+    const l = us(t.charCodeAt(c)),
+      f = us(t.charCodeAt(c + 1));
+    if (l === void 0 || f === void 0) {
+      const y = t[c] + t[c + 1];
+      throw new Error(
+        'hex string expected, got non-hex character "' + y + '" at index ' + c,
+      );
+    }
+    n[i] = l * 16 + f;
+  }
+  return n;
+}
+function bt(t) {
+  return lo(lr(t));
+}
+function Mr(t) {
+  return Dt(t), lo(lr(Uint8Array.from(t).reverse()));
+}
+function Qe(t, e) {
+  return ho(t.toString(16).padStart(e * 2, "0"));
+}
+function On(t, e) {
+  return Qe(t, e).reverse();
+}
+function ot(t, e, r) {
+  let n;
+  if (typeof e == "string")
+    try {
+      n = ho(e);
+    } catch (c) {
+      throw new Error(`${t} must be valid hex string, got "${e}". Cause: ${c}`);
+    }
+  else if (jn(e)) n = Uint8Array.from(e);
+  else throw new Error(`${t} must be hex string or Uint8Array`);
+  const i = n.length;
+  if (typeof r == "number" && i !== r)
+    throw new Error(`${t} expected ${r} bytes, got ${i}`);
+  return n;
+}
+function ze(...t) {
+  let e = 0;
+  for (let n = 0; n < t.length; n++) {
+    const i = t[n];
+    Dt(i), (e += i.length);
+  }
+  const r = new Uint8Array(e);
+  for (let n = 0, i = 0; n < t.length; n++) {
+    const c = t[n];
+    r.set(c, i), (i += c.length);
+  }
+  return r;
+}
+function Hi(t) {
+  if (typeof t != "string")
+    throw new Error(`utf8ToBytes expected string, got ${typeof t}`);
+  return new Uint8Array(new TextEncoder().encode(t));
+}
+function kr(t) {
+  let e;
+  for (e = 0; t > au; t >>= Gi, e += 1);
+  return e;
+}
+function xi(t, e) {
+  return (t >> BigInt(e)) & Gi;
+}
+const zn = (t) => (ou << BigInt(t - 1)) - Gi,
+  fu = {
+    bigint: (t) => typeof t == "bigint",
+    function: (t) => typeof t == "function",
+    boolean: (t) => typeof t == "boolean",
+    string: (t) => typeof t == "string",
+    stringOrUint8Array: (t) => typeof t == "string" || jn(t),
+    isSafeInteger: (t) => Number.isSafeInteger(t),
+    array: (t) => Array.isArray(t),
+    field: (t, e) => e.Fp.isValid(t),
+    hash: (t) => typeof t == "function" && Number.isSafeInteger(t.outputLen),
+  };
+function Lr(t, e, r = {}) {
+  const n = (i, c, l) => {
+    const f = fu[c];
+    if (typeof f != "function")
+      throw new Error(`Invalid validator "${c}", expected function`);
+    const y = t[i];
+    if (!(l && y === void 0) && !f(y, t))
+      throw new Error(
+        `Invalid param ${String(i)}=${y} (${typeof y}), expected ${c}`,
+      );
+  };
+  for (const [i, c] of Object.entries(e)) n(i, c, !1);
+  for (const [i, c] of Object.entries(r)) n(i, c, !0);
+  return t;
+}
+/*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */ const De =
+    BigInt(0),
+  Ce = BigInt(1),
+  rr = BigInt(2),
+  uu = BigInt(3),
+  _i = BigInt(4),
+  ls = BigInt(5),
+  hs = BigInt(8);
+BigInt(9);
+BigInt(16);
+function qe(t, e) {
+  const r = t % e;
+  return r >= De ? r : e + r;
+}
+function lu(t, e, r) {
+  if (r <= De || e < De) throw new Error("Expected power/modulo > 0");
+  if (r === Ce) return De;
+  let n = Ce;
+  for (; e > De; ) e & Ce && (n = (n * t) % r), (t = (t * t) % r), (e >>= Ce);
+  return n;
+}
+function Bt(t, e, r) {
+  let n = t;
+  for (; e-- > De; ) (n *= n), (n %= r);
+  return n;
+}
+function ds(t, e) {
+  if (t === De || e <= De)
+    throw new Error(`invert: expected positive integers, got n=${t} mod=${e}`);
+  let r = qe(t, e),
+    n = e,
+    i = De,
+    c = Ce;
+  for (; r !== De; ) {
+    const f = n / r,
+      y = n % r,
+      m = i - c * f;
+    (n = r), (r = y), (i = c), (c = m);
+  }
+  if (n !== Ce) throw new Error("invert: does not exist");
+  return qe(i, e);
+}
+function hu(t) {
+  const e = (t - Ce) / rr;
+  let r, n, i;
+  for (r = t - Ce, n = 0; r % rr === De; r /= rr, n++);
+  for (i = rr; i < t && lu(i, e, t) !== t - Ce; i++);
+  if (n === 1) {
+    const l = (t + Ce) / _i;
+    return function (y, m) {
+      const E = y.pow(m, l);
+      if (!y.eql(y.sqr(E), m)) throw new Error("Cannot find square root");
+      return E;
+    };
+  }
+  const c = (r + Ce) / rr;
+  return function (f, y) {
+    if (f.pow(y, e) === f.neg(f.ONE))
+      throw new Error("Cannot find square root");
+    let m = n,
+      E = f.pow(f.mul(f.ONE, i), r),
+      B = f.pow(y, c),
+      M = f.pow(y, r);
+    for (; !f.eql(M, f.ONE); ) {
+      if (f.eql(M, f.ZERO)) return f.ZERO;
+      let v = 1;
+      for (let N = f.sqr(M); v < m && !f.eql(N, f.ONE); v++) N = f.sqr(N);
+      const U = f.pow(E, Ce << BigInt(m - v - 1));
+      (E = f.sqr(U)), (B = f.mul(B, U)), (M = f.mul(M, E)), (m = v);
+    }
+    return B;
+  };
+}
+function du(t) {
+  if (t % _i === uu) {
+    const e = (t + Ce) / _i;
+    return function (n, i) {
+      const c = n.pow(i, e);
+      if (!n.eql(n.sqr(c), i)) throw new Error("Cannot find square root");
+      return c;
+    };
+  }
+  if (t % hs === ls) {
+    const e = (t - ls) / hs;
+    return function (n, i) {
+      const c = n.mul(i, rr),
+        l = n.pow(c, e),
+        f = n.mul(i, l),
+        y = n.mul(n.mul(f, rr), l),
+        m = n.mul(f, n.sub(y, n.ONE));
+      if (!n.eql(n.sqr(m), i)) throw new Error("Cannot find square root");
+      return m;
+    };
+  }
+  return hu(t);
+}
+const pu = (t, e) => (qe(t, e) & Ce) === Ce,
+  yu = [
+    "create",
+    "isValid",
+    "is0",
+    "neg",
+    "inv",
+    "sqrt",
+    "sqr",
+    "eql",
+    "add",
+    "sub",
+    "mul",
+    "pow",
+    "div",
+    "addN",
+    "subN",
+    "mulN",
+    "sqrN",
+  ];
+function po(t) {
+  const e = {
+      ORDER: "bigint",
+      MASK: "bigint",
+      BYTES: "isSafeInteger",
+      BITS: "isSafeInteger",
+    },
+    r = yu.reduce((n, i) => ((n[i] = "function"), n), e);
+  return Lr(t, r);
+}
+function Ln(t, e, r) {
+  if (r < De) throw new Error("Expected power > 0");
+  if (r === De) return t.ONE;
+  if (r === Ce) return e;
+  let n = t.ONE,
+    i = e;
+  for (; r > De; ) r & Ce && (n = t.mul(n, i)), (i = t.sqr(i)), (r >>= Ce);
+  return n;
+}
+function Yn(t, e) {
+  const r = new Array(e.length),
+    n = e.reduce(
+      (c, l, f) => (t.is0(l) ? c : ((r[f] = c), t.mul(c, l))),
+      t.ONE,
+    ),
+    i = t.inv(n);
+  return (
+    e.reduceRight(
+      (c, l, f) => (t.is0(l) ? c : ((r[f] = t.mul(c, r[f])), t.mul(c, l))),
+      i,
+    ),
+    r
+  );
+}
+function yo(t, e) {
+  const r = e !== void 0 ? e : t.toString(2).length,
+    n = Math.ceil(r / 8);
+  return { nBitLength: r, nByteLength: n };
+}
+function ji(t, e, r = !1, n = {}) {
+  if (t <= De) throw new Error(`Expected Field ORDER > 0, got ${t}`);
+  const { nBitLength: i, nByteLength: c } = yo(t, e);
+  if (c > 2048)
+    throw new Error("Field lengths over 2048 bytes are not supported");
+  const l = du(t),
+    f = Object.freeze({
+      ORDER: t,
+      BITS: i,
+      BYTES: c,
+      MASK: zn(i),
+      ZERO: De,
+      ONE: Ce,
+      create: (y) => qe(y, t),
+      isValid: (y) => {
+        if (typeof y != "bigint")
+          throw new Error(
+            `Invalid field element: expected bigint, got ${typeof y}`,
+          );
+        return De <= y && y < t;
+      },
+      is0: (y) => y === De,
+      isOdd: (y) => (y & Ce) === Ce,
+      neg: (y) => qe(-y, t),
+      eql: (y, m) => y === m,
+      sqr: (y) => qe(y * y, t),
+      add: (y, m) => qe(y + m, t),
+      sub: (y, m) => qe(y - m, t),
+      mul: (y, m) => qe(y * m, t),
+      pow: (y, m) => Ln(f, y, m),
+      div: (y, m) => qe(y * ds(m, t), t),
+      sqrN: (y) => y * y,
+      addN: (y, m) => y + m,
+      subN: (y, m) => y - m,
+      mulN: (y, m) => y * m,
+      inv: (y) => ds(y, t),
+      sqrt: n.sqrt || ((y) => l(f, y)),
+      invertBatch: (y) => Yn(f, y),
+      cmov: (y, m, E) => (E ? m : y),
+      toBytes: (y) => (r ? On(y, c) : Qe(y, c)),
+      fromBytes: (y) => {
+        if (y.length !== c)
+          throw new Error(`Fp.fromBytes: expected ${c}, got ${y.length}`);
+        return r ? Mr(y) : bt(y);
+      },
+    });
+  return Object.freeze(f);
+}
+function wu(t, e) {
+  if (!t.isOdd) throw new Error("Field doesn't have isOdd");
+  const r = t.sqrt(e);
+  return t.isOdd(r) ? t.neg(r) : r;
+}
+function wo(t) {
+  if (typeof t != "bigint") throw new Error("field order must be bigint");
+  const e = t.toString(2).length;
+  return Math.ceil(e / 8);
+}
+function go(t) {
+  const e = wo(t);
+  return e + Math.ceil(e / 2);
+}
+function gu(t, e, r = !1) {
+  const n = t.length,
+    i = wo(e),
+    c = go(e);
+  if (n < 16 || n < c || n > 1024)
+    throw new Error(`expected ${c}-1024 bytes of input, got ${n}`);
+  const l = r ? bt(t) : Mr(t),
+    f = qe(l, e - Ce) + Ce;
+  return r ? On(f, i) : Qe(f, i);
+}
+const bu = bt;
+function Wt(t, e) {
+  if (t < 0 || t >= 1 << (8 * e))
+    throw new Error(`bad I2OSP call: value=${t} length=${e}`);
+  const r = Array.from({ length: e }).fill(0);
+  for (let n = e - 1; n >= 0; n--) (r[n] = t & 255), (t >>>= 8);
+  return new Uint8Array(r);
+}
+function mu(t, e) {
+  const r = new Uint8Array(t.length);
+  for (let n = 0; n < t.length; n++) r[n] = t[n] ^ e[n];
+  return r;
+}
+function zi(t) {
+  if (!Number.isSafeInteger(t)) throw new Error("number expected");
+}
+function xu(t, e, r, n) {
+  Dt(t),
+    Dt(e),
+    zi(r),
+    e.length > 255 && (e = n(ze(Hi("H2C-OVERSIZE-DST-"), e)));
+  const { outputLen: i, blockLen: c } = n,
+    l = Math.ceil(r / i);
+  if (l > 255) throw new Error("Invalid xmd length");
+  const f = ze(e, Wt(e.length, 1)),
+    y = Wt(0, c),
+    m = Wt(r, 2),
+    E = new Array(l),
+    B = n(ze(y, t, m, Wt(0, 1), f));
+  E[0] = n(ze(B, Wt(1, 1), f));
+  for (let v = 1; v <= l; v++) {
+    const U = [mu(B, E[v - 1]), Wt(v + 1, 1), f];
+    E[v] = n(ze(...U));
+  }
+  return ze(...E).slice(0, r);
+}
+function _u(t, e, r, n, i) {
+  if ((Dt(t), Dt(e), zi(r), e.length > 255)) {
+    const c = Math.ceil((2 * n) / 8);
+    e = i
+      .create({ dkLen: c })
+      .update(Hi("H2C-OVERSIZE-DST-"))
+      .update(e)
+      .digest();
+  }
+  if (r > 65535 || e.length > 255)
+    throw new Error("expand_message_xof: invalid lenInBytes");
+  return i
+    .create({ dkLen: r })
+    .update(t)
+    .update(Wt(r, 2))
+    .update(e)
+    .update(Wt(e.length, 1))
+    .digest();
+}
+function ps(t, e, r) {
+  Lr(r, {
+    DST: "stringOrUint8Array",
+    p: "bigint",
+    m: "isSafeInteger",
+    k: "isSafeInteger",
+    hash: "hash",
+  });
+  const { p: n, k: i, m: c, hash: l, expand: f, DST: y } = r;
+  Dt(t), zi(e);
+  const m = typeof y == "string" ? Hi(y) : y,
+    E = n.toString(2).length,
+    B = Math.ceil((E + i) / 8),
+    M = e * c * B;
+  let v;
+  if (f === "xmd") v = xu(t, m, M, l);
+  else if (f === "xof") v = _u(t, m, M, i, l);
+  else if (f === "_internal_pass") v = t;
+  else throw new Error('expand must be "xmd" or "xof"');
+  const U = new Array(e);
+  for (let N = 0; N < e; N++) {
+    const q = new Array(c);
+    for (let G = 0; G < c; G++) {
+      const V = B * (G + N * c),
+        W = v.subarray(V, V + B);
+      q[G] = qe(bu(W), n);
+    }
+    U[N] = q;
+  }
+  return U;
+}
+function bo(t, e) {
+  const r = e.map((n) => Array.from(n).reverse());
+  return (n, i) => {
+    const [c, l, f, y] = r.map((m) =>
+      m.reduce((E, B) => t.add(t.mul(E, n), B)),
+    );
+    return (n = t.div(c, l)), (i = t.mul(i, t.div(f, y))), { x: n, y: i };
+  };
+}
+function ys(t, e, r) {
+  if (typeof e != "function") throw new Error("mapToCurve() must be defined");
+  return {
+    hashToCurve(n, i) {
+      const c = ps(n, 2, { ...r, DST: r.DST, ...i }),
+        l = t.fromAffine(e(c[0])),
+        f = t.fromAffine(e(c[1])),
+        y = l.add(f).clearCofactor();
+      return y.assertValidity(), y;
+    },
+    encodeToCurve(n, i) {
+      const c = ps(n, 1, { ...r, DST: r.encodeDST, ...i }),
+        l = t.fromAffine(e(c[0])).clearCofactor();
+      return l.assertValidity(), l;
+    },
+  };
+}
+/*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */ const Eu =
+    BigInt(0),
+  ni = BigInt(1);
+function mo(t, e) {
+  const r = (i, c) => {
+      const l = c.negate();
+      return i ? l : c;
+    },
+    n = (i) => {
+      const c = Math.ceil(e / i) + 1,
+        l = 2 ** (i - 1);
+      return { windows: c, windowSize: l };
+    };
+  return {
+    constTimeNegate: r,
+    unsafeLadder(i, c) {
+      let l = t.ZERO,
+        f = i;
+      for (; c > Eu; ) c & ni && (l = l.add(f)), (f = f.double()), (c >>= ni);
+      return l;
+    },
+    precomputeWindow(i, c) {
+      const { windows: l, windowSize: f } = n(c),
+        y = [];
+      let m = i,
+        E = m;
+      for (let B = 0; B < l; B++) {
+        (E = m), y.push(E);
+        for (let M = 1; M < f; M++) (E = E.add(m)), y.push(E);
+        m = E.double();
+      }
+      return y;
+    },
+    wNAF(i, c, l) {
+      const { windows: f, windowSize: y } = n(i);
+      let m = t.ZERO,
+        E = t.BASE;
+      const B = BigInt(2 ** i - 1),
+        M = 2 ** i,
+        v = BigInt(i);
+      for (let U = 0; U < f; U++) {
+        const N = U * y;
+        let q = Number(l & B);
+        (l >>= v), q > y && ((q -= M), (l += ni));
+        const G = N,
+          V = N + Math.abs(q) - 1,
+          W = U % 2 !== 0,
+          J = q < 0;
+        q === 0 ? (E = E.add(r(W, c[G]))) : (m = m.add(r(J, c[V])));
+      }
+      return { p: m, f: E };
+    },
+    wNAFCached(i, c, l, f) {
+      const y = i._WINDOW_SIZE || 1;
+      let m = c.get(i);
+      return (
+        m || ((m = this.precomputeWindow(i, y)), y !== 1 && c.set(i, f(m))),
+        this.wNAF(y, m, l)
+      );
+    },
+  };
+}
+function xo(t) {
+  return (
+    po(t.Fp),
+    Lr(
+      t,
+      { n: "bigint", h: "bigint", Gx: "field", Gy: "field" },
+      { nBitLength: "isSafeInteger", nByteLength: "isSafeInteger" },
+    ),
+    Object.freeze({ ...yo(t.n, t.nBitLength), ...t, p: t.Fp.ORDER })
+  );
+}
+/*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */ function Bu(
+  t,
+) {
+  const e = xo(t);
+  Lr(
+    e,
+    { a: "field", b: "field" },
+    {
+      allowedPrivateKeyLengths: "array",
+      wrapPrivateKey: "boolean",
+      isTorsionFree: "function",
+      clearCofactor: "function",
+      allowInfinityPoint: "boolean",
+      fromBytes: "function",
+      toBytes: "function",
+    },
+  );
+  const { endo: r, Fp: n, a: i } = e;
+  if (r) {
+    if (!n.eql(i, n.ZERO))
+      throw new Error(
+        "Endomorphism can only be defined for Koblitz curves that have a=0",
+      );
+    if (
+      typeof r != "object" ||
+      typeof r.beta != "bigint" ||
+      typeof r.splitScalar != "function"
+    )
+      throw new Error(
+        "Expected endomorphism with beta: bigint and splitScalar: function",
+      );
+  }
+  return Object.freeze({ ...e });
+}
+const nr = BigInt(0),
+  Xe = BigInt(1),
+  jt = BigInt(2),
+  Fn = BigInt(3),
+  ws = BigInt(4);
+function gs(t) {
+  const e = Bu(t),
+    { Fp: r } = e,
+    n =
+      e.toBytes ||
+      ((U, N, q) => {
+        const G = N.toAffine();
+        return ze(Uint8Array.from([4]), r.toBytes(G.x), r.toBytes(G.y));
+      }),
+    i =
+      e.fromBytes ||
+      ((U) => {
+        const N = U.subarray(1),
+          q = r.fromBytes(N.subarray(0, r.BYTES)),
+          G = r.fromBytes(N.subarray(r.BYTES, 2 * r.BYTES));
+        return { x: q, y: G };
+      });
+  function c(U) {
+    const { a: N, b: q } = e,
+      G = r.sqr(U),
+      V = r.mul(G, U);
+    return r.add(r.add(V, r.mul(U, N)), q);
+  }
+  if (!r.eql(r.sqr(e.Gy), c(e.Gx)))
+    throw new Error("bad generator point: equation left != right");
+  function l(U) {
+    return typeof U == "bigint" && nr < U && U < e.n;
+  }
+  function f(U) {
+    if (!l(U)) throw new Error("Expected valid bigint: 0 < bigint < curve.n");
+  }
+  function y(U) {
+    const {
+      allowedPrivateKeyLengths: N,
+      nByteLength: q,
+      wrapPrivateKey: G,
+      n: V,
+    } = e;
+    if (N && typeof U != "bigint") {
+      if ((jn(U) && (U = lr(U)), typeof U != "string" || !N.includes(U.length)))
+        throw new Error("Invalid key");
+      U = U.padStart(q * 2, "0");
+    }
+    let W;
+    try {
+      W = typeof U == "bigint" ? U : bt(ot("private key", U, q));
+    } catch {
+      throw new Error(
+        `private key must be ${q} bytes, hex or bigint, not ${typeof U}`,
+      );
+    }
+    return G && (W = qe(W, V)), f(W), W;
+  }
+  const m = new Map();
+  function E(U) {
+    if (!(U instanceof B)) throw new Error("ProjectivePoint expected");
+  }
+  class B {
+    constructor(N, q, G) {
+      if (
+        ((this.px = N),
+        (this.py = q),
+        (this.pz = G),
+        N == null || !r.isValid(N))
+      )
+        throw new Error("x required");
+      if (q == null || !r.isValid(q)) throw new Error("y required");
+      if (G == null || !r.isValid(G)) throw new Error("z required");
+    }
+    static fromAffine(N) {
+      const { x: q, y: G } = N || {};
+      if (!N || !r.isValid(q) || !r.isValid(G))
+        throw new Error("invalid affine point");
+      if (N instanceof B) throw new Error("projective point not allowed");
+      const V = (W) => r.eql(W, r.ZERO);
+      return V(q) && V(G) ? B.ZERO : new B(q, G, r.ONE);
+    }
+    get x() {
+      return this.toAffine().x;
+    }
+    get y() {
+      return this.toAffine().y;
+    }
+    static normalizeZ(N) {
+      const q = r.invertBatch(N.map((G) => G.pz));
+      return N.map((G, V) => G.toAffine(q[V])).map(B.fromAffine);
+    }
+    static fromHex(N) {
+      const q = B.fromAffine(i(ot("pointHex", N)));
+      return q.assertValidity(), q;
+    }
+    static fromPrivateKey(N) {
+      return B.BASE.multiply(y(N));
+    }
+    _setWindowSize(N) {
+      (this._WINDOW_SIZE = N), m.delete(this);
+    }
+    assertValidity() {
+      if (this.is0()) {
+        if (e.allowInfinityPoint && !r.is0(this.py)) return;
+        throw new Error("bad point: ZERO");
+      }
+      const { x: N, y: q } = this.toAffine();
+      if (!r.isValid(N) || !r.isValid(q))
+        throw new Error("bad point: x or y not FE");
+      const G = r.sqr(q),
+        V = c(N);
+      if (!r.eql(G, V)) throw new Error("bad point: equation left != right");
+      if (!this.isTorsionFree())
+        throw new Error("bad point: not in prime-order subgroup");
+    }
+    hasEvenY() {
+      const { y: N } = this.toAffine();
+      if (r.isOdd) return !r.isOdd(N);
+      throw new Error("Field doesn't support isOdd");
+    }
+    equals(N) {
+      E(N);
+      const { px: q, py: G, pz: V } = this,
+        { px: W, py: J, pz: z } = N,
+        H = r.eql(r.mul(q, z), r.mul(W, V)),
+        j = r.eql(r.mul(G, z), r.mul(J, V));
+      return H && j;
+    }
+    negate() {
+      return new B(this.px, r.neg(this.py), this.pz);
+    }
+    double() {
+      const { a: N, b: q } = e,
+        G = r.mul(q, Fn),
+        { px: V, py: W, pz: J } = this;
+      let z = r.ZERO,
+        H = r.ZERO,
+        j = r.ZERO,
+        X = r.mul(V, V),
+        ue = r.mul(W, W),
+        L = r.mul(J, J),
+        oe = r.mul(V, W);
+      return (
+        (oe = r.add(oe, oe)),
+        (j = r.mul(V, J)),
+        (j = r.add(j, j)),
+        (z = r.mul(N, j)),
+        (H = r.mul(G, L)),
+        (H = r.add(z, H)),
+        (z = r.sub(ue, H)),
+        (H = r.add(ue, H)),
+        (H = r.mul(z, H)),
+        (z = r.mul(oe, z)),
+        (j = r.mul(G, j)),
+        (L = r.mul(N, L)),
+        (oe = r.sub(X, L)),
+        (oe = r.mul(N, oe)),
+        (oe = r.add(oe, j)),
+        (j = r.add(X, X)),
+        (X = r.add(j, X)),
+        (X = r.add(X, L)),
+        (X = r.mul(X, oe)),
+        (H = r.add(H, X)),
+        (L = r.mul(W, J)),
+        (L = r.add(L, L)),
+        (X = r.mul(L, oe)),
+        (z = r.sub(z, X)),
+        (j = r.mul(L, ue)),
+        (j = r.add(j, j)),
+        (j = r.add(j, j)),
+        new B(z, H, j)
+      );
+    }
+    add(N) {
+      E(N);
+      const { px: q, py: G, pz: V } = this,
+        { px: W, py: J, pz: z } = N;
+      let H = r.ZERO,
+        j = r.ZERO,
+        X = r.ZERO;
+      const ue = e.a,
+        L = r.mul(e.b, Fn);
+      let oe = r.mul(q, W),
+        we = r.mul(G, J),
+        he = r.mul(V, z),
+        Te = r.add(q, G),
+        ge = r.add(W, J);
+      (Te = r.mul(Te, ge)),
+        (ge = r.add(oe, we)),
+        (Te = r.sub(Te, ge)),
+        (ge = r.add(q, V));
+      let ne = r.add(W, z);
+      return (
+        (ge = r.mul(ge, ne)),
+        (ne = r.add(oe, he)),
+        (ge = r.sub(ge, ne)),
+        (ne = r.add(G, V)),
+        (H = r.add(J, z)),
+        (ne = r.mul(ne, H)),
+        (H = r.add(we, he)),
+        (ne = r.sub(ne, H)),
+        (X = r.mul(ue, ge)),
+        (H = r.mul(L, he)),
+        (X = r.add(H, X)),
+        (H = r.sub(we, X)),
+        (X = r.add(we, X)),
+        (j = r.mul(H, X)),
+        (we = r.add(oe, oe)),
+        (we = r.add(we, oe)),
+        (he = r.mul(ue, he)),
+        (ge = r.mul(L, ge)),
+        (we = r.add(we, he)),
+        (he = r.sub(oe, he)),
+        (he = r.mul(ue, he)),
+        (ge = r.add(ge, he)),
+        (oe = r.mul(we, ge)),
+        (j = r.add(j, oe)),
+        (oe = r.mul(ne, ge)),
+        (H = r.mul(Te, H)),
+        (H = r.sub(H, oe)),
+        (oe = r.mul(Te, we)),
+        (X = r.mul(ne, X)),
+        (X = r.add(X, oe)),
+        new B(H, j, X)
+      );
+    }
+    subtract(N) {
+      return this.add(N.negate());
+    }
+    is0() {
+      return this.equals(B.ZERO);
+    }
+    wNAF(N) {
+      return v.wNAFCached(this, m, N, (q) => {
+        const G = r.invertBatch(q.map((V) => V.pz));
+        return q.map((V, W) => V.toAffine(G[W])).map(B.fromAffine);
+      });
+    }
+    multiplyUnsafe(N) {
+      const q = B.ZERO;
+      if (N === nr) return q;
+      if ((f(N), N === Xe)) return this;
+      const { endo: G } = e;
+      if (!G) return v.unsafeLadder(this, N);
+      let { k1neg: V, k1: W, k2neg: J, k2: z } = G.splitScalar(N),
+        H = q,
+        j = q,
+        X = this;
+      for (; W > nr || z > nr; )
+        W & Xe && (H = H.add(X)),
+          z & Xe && (j = j.add(X)),
+          (X = X.double()),
+          (W >>= Xe),
+          (z >>= Xe);
+      return (
+        V && (H = H.negate()),
+        J && (j = j.negate()),
+        (j = new B(r.mul(j.px, G.beta), j.py, j.pz)),
+        H.add(j)
+      );
+    }
+    multiply(N) {
+      f(N);
+      let q = N,
+        G,
+        V;
+      const { endo: W } = e;
+      if (W) {
+        const { k1neg: J, k1: z, k2neg: H, k2: j } = W.splitScalar(q);
+        let { p: X, f: ue } = this.wNAF(z),
+          { p: L, f: oe } = this.wNAF(j);
+        (X = v.constTimeNegate(J, X)),
+          (L = v.constTimeNegate(H, L)),
+          (L = new B(r.mul(L.px, W.beta), L.py, L.pz)),
+          (G = X.add(L)),
+          (V = ue.add(oe));
+      } else {
+        const { p: J, f: z } = this.wNAF(q);
+        (G = J), (V = z);
+      }
+      return B.normalizeZ([G, V])[0];
+    }
+    multiplyAndAddUnsafe(N, q, G) {
+      const V = B.BASE,
+        W = (z, H) =>
+          H === nr || H === Xe || !z.equals(V)
+            ? z.multiplyUnsafe(H)
+            : z.multiply(H),
+        J = W(this, q).add(W(N, G));
+      return J.is0() ? void 0 : J;
+    }
+    toAffine(N) {
+      const { px: q, py: G, pz: V } = this,
+        W = this.is0();
+      N == null && (N = W ? r.ONE : r.inv(V));
+      const J = r.mul(q, N),
+        z = r.mul(G, N),
+        H = r.mul(V, N);
+      if (W) return { x: r.ZERO, y: r.ZERO };
+      if (!r.eql(H, r.ONE)) throw new Error("invZ was invalid");
+      return { x: J, y: z };
+    }
+    isTorsionFree() {
+      const { h: N, isTorsionFree: q } = e;
+      if (N === Xe) return !0;
+      if (q) return q(B, this);
+      throw new Error(
+        "isTorsionFree() has not been declared for the elliptic curve",
+      );
+    }
+    clearCofactor() {
+      const { h: N, clearCofactor: q } = e;
+      return N === Xe ? this : q ? q(B, this) : this.multiplyUnsafe(e.h);
+    }
+    toRawBytes(N = !0) {
+      return this.assertValidity(), n(B, this, N);
+    }
+    toHex(N = !0) {
+      return lr(this.toRawBytes(N));
+    }
+  }
+  (B.BASE = new B(e.Gx, e.Gy, r.ONE)), (B.ZERO = new B(r.ZERO, r.ONE, r.ZERO));
+  const M = e.nBitLength,
+    v = mo(B, e.endo ? Math.ceil(M / 2) : M);
+  return {
+    CURVE: e,
+    ProjectivePoint: B,
+    normPrivateKeyToScalar: y,
+    weierstrassEquation: c,
+    isWithinCurveOrder: l,
+  };
+}
+function Au(t, e) {
+  const r = t.ORDER;
+  let n = nr;
+  for (let U = r - Xe; U % jt === nr; U /= jt) n += Xe;
+  const i = n,
+    c = jt << (i - Xe - Xe),
+    l = c * jt,
+    f = (r - Xe) / l,
+    y = (f - Xe) / jt,
+    m = l - Xe,
+    E = c,
+    B = t.pow(e, f),
+    M = t.pow(e, (f + Xe) / jt);
+  let v = (U, N) => {
+    let q = B,
+      G = t.pow(N, m),
+      V = t.sqr(G);
+    V = t.mul(V, N);
+    let W = t.mul(U, V);
+    (W = t.pow(W, y)), (W = t.mul(W, G)), (G = t.mul(W, N)), (V = t.mul(W, U));
+    let J = t.mul(V, G);
+    W = t.pow(J, E);
+    let z = t.eql(W, t.ONE);
+    (G = t.mul(V, M)),
+      (W = t.mul(J, q)),
+      (V = t.cmov(G, V, z)),
+      (J = t.cmov(W, J, z));
+    for (let H = i; H > Xe; H--) {
+      let j = H - jt;
+      j = jt << (j - Xe);
+      let X = t.pow(J, j);
+      const ue = t.eql(X, t.ONE);
+      (G = t.mul(V, q)),
+        (q = t.mul(q, q)),
+        (X = t.mul(J, q)),
+        (V = t.cmov(G, V, ue)),
+        (J = t.cmov(X, J, ue));
+    }
+    return { isValid: z, value: V };
+  };
+  if (t.ORDER % ws === Fn) {
+    const U = (t.ORDER - Fn) / ws,
+      N = t.sqrt(t.neg(e));
+    v = (q, G) => {
+      let V = t.sqr(G);
+      const W = t.mul(q, G);
+      V = t.mul(V, W);
+      let J = t.pow(V, U);
+      J = t.mul(J, W);
+      const z = t.mul(J, N),
+        H = t.mul(t.sqr(J), G),
+        j = t.eql(H, q);
+      let X = t.cmov(z, J, j);
+      return { isValid: j, value: X };
+    };
+  }
+  return v;
+}
+function _o(t, e) {
+  if ((po(t), !t.isValid(e.A) || !t.isValid(e.B) || !t.isValid(e.Z)))
+    throw new Error("mapToCurveSimpleSWU: invalid opts");
+  const r = Au(t, e.Z);
+  if (!t.isOdd) throw new Error("Fp.isOdd is not implemented!");
+  return (n) => {
+    let i, c, l, f, y, m, E, B;
+    (i = t.sqr(n)),
+      (i = t.mul(i, e.Z)),
+      (c = t.sqr(i)),
+      (c = t.add(c, i)),
+      (l = t.add(c, t.ONE)),
+      (l = t.mul(l, e.B)),
+      (f = t.cmov(e.Z, t.neg(c), !t.eql(c, t.ZERO))),
+      (f = t.mul(f, e.A)),
+      (c = t.sqr(l)),
+      (m = t.sqr(f)),
+      (y = t.mul(m, e.A)),
+      (c = t.add(c, y)),
+      (c = t.mul(c, l)),
+      (m = t.mul(m, f)),
+      (y = t.mul(m, e.B)),
+      (c = t.add(c, y)),
+      (E = t.mul(i, l));
+    const { isValid: M, value: v } = r(c, m);
+    (B = t.mul(i, n)),
+      (B = t.mul(B, v)),
+      (E = t.cmov(E, l, M)),
+      (B = t.cmov(B, v, M));
+    const U = t.isOdd(n) === t.isOdd(B);
+    return (B = t.cmov(t.neg(B), B, U)), (E = t.div(E, f)), { x: E, y: B };
+  };
+}
+const ii = BigInt(2),
+  Jr = BigInt(3);
+function Tu(t) {
+  const { Fp: e, Fr: r, Fp2: n, Fp6: i, Fp12: c } = t.fields,
+    l = kr(t.params.x);
+  function f(ne) {
+    const { x: pe, y: K } = ne,
+      Y = pe,
+      te = K,
+      D = n.ONE;
+    let ee = Y,
+      ce = te,
+      w = D,
+      ye = [];
+    for (let de = l - 2; de >= 0; de--) {
+      let xe = n.sqr(ce),
+        re = n.sqr(w),
+        se = n.multiplyByB(n.mul(re, Jr)),
+        b = n.mul(se, Jr),
+        x = n.sub(n.sub(n.sqr(n.add(ce, w)), re), xe);
+      if (
+        (ye.push([n.sub(se, xe), n.mul(n.sqr(ee), Jr), n.neg(x)]),
+        (ee = n.div(n.mul(n.mul(n.sub(xe, b), ee), ce), ii)),
+        (ce = n.sub(n.sqr(n.div(n.add(xe, b), ii)), n.mul(n.sqr(se), Jr))),
+        (w = n.mul(xe, x)),
+        xi(t.params.x, de))
+      ) {
+        let A = n.sub(ce, n.mul(te, w)),
+          F = n.sub(ee, n.mul(Y, w));
+        ye.push([n.sub(n.mul(A, Y), n.mul(F, te)), n.neg(A), F]);
+        let R = n.sqr(F),
+          P = n.mul(R, F),
+          h = n.mul(R, ee),
+          s = n.add(n.sub(P, n.mul(h, ii)), n.mul(n.sqr(A), w));
+        (ee = n.mul(F, s)),
+          (ce = n.sub(n.mul(n.sub(h, s), A), n.mul(P, ce))),
+          (w = n.mul(w, P));
+      }
+    }
+    return ye;
+  }
+  function y(ne, pe) {
+    const { x: K } = t.params,
+      Y = pe[0],
+      te = pe[1];
+    let D = c.ONE;
+    for (let ee = 0, ce = l - 2; ce >= 0; ce--, ee++) {
+      const w = ne[ee];
+      if (
+        ((D = c.multiplyBy014(D, w[0], n.mul(w[1], Y), n.mul(w[2], te))),
+        xi(K, ce))
+      ) {
+        ee += 1;
+        const ye = ne[ee];
+        D = c.multiplyBy014(D, ye[0], n.mul(ye[1], Y), n.mul(ye[2], te));
+      }
+      ce !== 0 && (D = c.sqr(D));
+    }
+    return c.conjugate(D);
+  }
+  const m = {
+      randomPrivateKey: () => {
+        const ne = go(r.ORDER);
+        return gu(t.randomBytes(ne), r.ORDER);
+      },
+      calcPairingPrecomputes: f,
+    },
+    E = gs({ n: r.ORDER, ...t.G1 }),
+    B = Object.assign(
+      E,
+      ys(E.ProjectivePoint, t.G1.mapToCurve, {
+        ...t.htfDefaults,
+        ...t.G1.htfDefaults,
+      }),
+    );
+  function M(ne) {
+    const pe = ne;
+    return (
+      pe._PPRECOMPUTES || (pe._PPRECOMPUTES = f(ne.toAffine())),
+      pe._PPRECOMPUTES
+    );
+  }
+  const v = gs({ n: r.ORDER, ...t.G2 }),
+    U = Object.assign(
+      v,
+      ys(v.ProjectivePoint, t.G2.mapToCurve, {
+        ...t.htfDefaults,
+        ...t.G2.htfDefaults,
+      }),
+    ),
+    { ShortSignature: N } = t.G1,
+    { Signature: q } = t.G2;
+  function G(ne, pe, K = !0) {
+    if (ne.equals(B.ProjectivePoint.ZERO) || pe.equals(U.ProjectivePoint.ZERO))
+      throw new Error("pairing is not available for ZERO point");
+    ne.assertValidity(), pe.assertValidity();
+    const Y = ne.toAffine(),
+      te = y(M(pe), [Y.x, Y.y]);
+    return K ? c.finalExponentiate(te) : te;
+  }
+  function V(ne) {
+    return ne instanceof B.ProjectivePoint ? ne : B.ProjectivePoint.fromHex(ne);
+  }
+  function W(ne, pe) {
+    return ne instanceof B.ProjectivePoint
+      ? ne
+      : B.hashToCurve(ot("point", ne), pe);
+  }
+  function J(ne) {
+    return ne instanceof U.ProjectivePoint ? ne : q.fromHex(ne);
+  }
+  function z(ne, pe) {
+    return ne instanceof U.ProjectivePoint
+      ? ne
+      : U.hashToCurve(ot("point", ne), pe);
+  }
+  function H(ne) {
+    return B.ProjectivePoint.fromPrivateKey(ne).toRawBytes(!0);
+  }
+  function j(ne) {
+    return U.ProjectivePoint.fromPrivateKey(ne).toRawBytes(!0);
+  }
+  function X(ne, pe, K) {
+    const Y = z(ne, K);
+    Y.assertValidity();
+    const te = Y.multiply(B.normPrivateKeyToScalar(pe));
+    return ne instanceof U.ProjectivePoint ? te : q.toRawBytes(te);
+  }
+  function ue(ne, pe, K) {
+    const Y = W(ne, K);
+    Y.assertValidity();
+    const te = Y.multiply(B.normPrivateKeyToScalar(pe));
+    return ne instanceof B.ProjectivePoint ? te : N.toRawBytes(te);
+  }
+  function L(ne, pe, K, Y) {
+    const te = V(K),
+      D = z(pe, Y),
+      ee = B.ProjectivePoint.BASE,
+      ce = J(ne),
+      w = G(te.negate(), D, !1),
+      ye = G(ee, ce, !1),
+      de = c.finalExponentiate(c.mul(ye, w));
+    return c.eql(de, c.ONE);
+  }
+  function oe(ne, pe, K, Y) {
+    const te = J(K),
+      D = W(pe, Y),
+      ee = U.ProjectivePoint.BASE,
+      ce = V(ne),
+      w = G(D, te, !1),
+      ye = G(ce, ee.negate(), !1),
+      de = c.finalExponentiate(c.mul(ye, w));
+    return c.eql(de, c.ONE);
+  }
+  function we(ne) {
+    if (!ne.length) throw new Error("Expected non-empty array");
+    const K = ne.map(V).reduce((Y, te) => Y.add(te), B.ProjectivePoint.ZERO);
+    return ne[0] instanceof B.ProjectivePoint
+      ? (K.assertValidity(), K)
+      : K.toRawBytes(!0);
+  }
+  function he(ne) {
+    if (!ne.length) throw new Error("Expected non-empty array");
+    const K = ne.map(J).reduce((Y, te) => Y.add(te), U.ProjectivePoint.ZERO);
+    return ne[0] instanceof U.ProjectivePoint
+      ? (K.assertValidity(), K)
+      : q.toRawBytes(K);
+  }
+  function Te(ne) {
+    if (!ne.length) throw new Error("Expected non-empty array");
+    const K = ne.map(V).reduce((Y, te) => Y.add(te), B.ProjectivePoint.ZERO);
+    return ne[0] instanceof B.ProjectivePoint
+      ? (K.assertValidity(), K)
+      : N.toRawBytes(K);
+  }
+  function ge(ne, pe, K, Y) {
+    if (!pe.length) throw new Error("Expected non-empty messages array");
+    if (K.length !== pe.length)
+      throw new Error("Pubkey count should equal msg count");
+    const te = J(ne),
+      D = pe.map((ce) => z(ce, Y)),
+      ee = K.map(V);
+    try {
+      const ce = [];
+      for (const de of new Set(D)) {
+        const xe = D.reduce(
+          (re, se, b) => (se === de ? re.add(ee[b]) : re),
+          B.ProjectivePoint.ZERO,
+        );
+        ce.push(G(xe, de, !1));
+      }
+      ce.push(G(B.ProjectivePoint.BASE.negate(), te, !1));
+      const w = ce.reduce((de, xe) => c.mul(de, xe), c.ONE),
+        ye = c.finalExponentiate(w);
+      return c.eql(ye, c.ONE);
+    } catch {
+      return !1;
+    }
+  }
+  return (
+    B.ProjectivePoint.BASE._setWindowSize(4),
+    {
+      getPublicKey: H,
+      getPublicKeyForShortSignatures: j,
+      sign: X,
+      signShortSignature: ue,
+      verify: L,
+      verifyBatch: ge,
+      verifyShortSignature: oe,
+      aggregatePublicKeys: we,
+      aggregateSignatures: he,
+      aggregateShortSignatures: Te,
+      millerLoop: y,
+      pairing: G,
+      G1: B,
+      G2: U,
+      Signature: q,
+      ShortSignature: N,
+      fields: { Fr: r, Fp: e, Fp2: n, Fp6: i, Fp12: c },
+      params: { x: t.params.x, r: t.params.r, G1b: t.G1.b, G2b: t.G2.b },
+      utils: m,
+    }
+  );
+}
+/*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */ const je =
+    BigInt(0),
+  sr = BigInt(1),
+  $e = BigInt(2),
+  Qr = BigInt(3),
+  Cr = BigInt(4),
+  Su = BigInt(8),
+  vu = BigInt(16),
+  Ei = BigInt(
+    "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab",
+  ),
+  Z = ji(Ei),
+  bs = ji(
+    BigInt(
+      "0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001",
+    ),
+  ),
+  ms = ({ c0: t, c1: e }, { c0: r, c1: n }) => ({
+    c0: Z.add(t, r),
+    c1: Z.add(e, n),
+  }),
+  xs = ({ c0: t, c1: e }, { c0: r, c1: n }) => ({
+    c0: Z.sub(t, r),
+    c1: Z.sub(e, n),
+  }),
+  _s = ({ c0: t, c1: e }, r) => {
+    if (typeof r == "bigint") return { c0: Z.mul(t, r), c1: Z.mul(e, r) };
+    const { c0: n, c1: i } = r;
+    let c = Z.mul(t, n),
+      l = Z.mul(e, i);
+    const f = Z.sub(c, l),
+      y = Z.sub(Z.mul(Z.add(t, e), Z.add(n, i)), Z.add(c, l));
+    return { c0: f, c1: y };
+  },
+  Es = ({ c0: t, c1: e }) => {
+    const r = Z.add(t, e),
+      n = Z.sub(t, e),
+      i = Z.add(t, t);
+    return { c0: Z.mul(r, n), c1: Z.mul(i, e) };
+  },
+  en = Ei * Ei,
+  S = {
+    ORDER: en,
+    BITS: kr(en),
+    BYTES: Math.ceil(kr(en) / 8),
+    MASK: zn(kr(en)),
+    ZERO: { c0: Z.ZERO, c1: Z.ZERO },
+    ONE: { c0: Z.ONE, c1: Z.ZERO },
+    create: (t) => t,
+    isValid: ({ c0: t, c1: e }) => typeof t == "bigint" && typeof e == "bigint",
+    is0: ({ c0: t, c1: e }) => Z.is0(t) && Z.is0(e),
+    eql: ({ c0: t, c1: e }, { c0: r, c1: n }) => Z.eql(t, r) && Z.eql(e, n),
+    neg: ({ c0: t, c1: e }) => ({ c0: Z.neg(t), c1: Z.neg(e) }),
+    pow: (t, e) => Ln(S, t, e),
+    invertBatch: (t) => Yn(S, t),
+    add: ms,
+    sub: xs,
+    mul: _s,
+    sqr: Es,
+    addN: ms,
+    subN: xs,
+    mulN: _s,
+    sqrN: Es,
+    div: (t, e) =>
+      S.mul(t, typeof e == "bigint" ? Z.inv(Z.create(e)) : S.inv(e)),
+    inv: ({ c0: t, c1: e }) => {
+      const r = Z.inv(Z.create(t * t + e * e));
+      return { c0: Z.mul(r, Z.create(t)), c1: Z.mul(r, Z.create(-e)) };
+    },
+    sqrt: (t) => {
+      if (S.eql(t, S.ZERO)) return S.ZERO;
+      const e = S.pow(t, (S.ORDER + Su) / vu),
+        r = S.div(S.sqr(e), t),
+        n = Nu,
+        i = [n[0], n[2], n[4], n[6]].find((v) => S.eql(v, r));
+      if (!i) throw new Error("No root");
+      const c = n.indexOf(i),
+        l = n[c / 2];
+      if (!l) throw new Error("Invalid root");
+      const f = S.div(e, l),
+        y = S.neg(f),
+        { re: m, im: E } = S.reim(f),
+        { re: B, im: M } = S.reim(y);
+      return E > M || (E === M && m > B) ? f : y;
+    },
+    isOdd: (t) => {
+      const { re: e, im: r } = S.reim(t),
+        n = e % $e,
+        i = e === je,
+        c = r % $e;
+      return BigInt(n || (i && c)) == sr;
+    },
+    fromBytes(t) {
+      if (t.length !== S.BYTES)
+        throw new Error(`fromBytes wrong length=${t.length}`);
+      return {
+        c0: Z.fromBytes(t.subarray(0, Z.BYTES)),
+        c1: Z.fromBytes(t.subarray(Z.BYTES)),
+      };
+    },
+    toBytes: ({ c0: t, c1: e }) => ze(Z.toBytes(t), Z.toBytes(e)),
+    cmov: ({ c0: t, c1: e }, { c0: r, c1: n }, i) => ({
+      c0: Z.cmov(t, r, i),
+      c1: Z.cmov(e, n, i),
+    }),
+    reim: ({ c0: t, c1: e }) => ({ re: t, im: e }),
+    mulByNonresidue: ({ c0: t, c1: e }) => ({
+      c0: Z.sub(t, e),
+      c1: Z.add(t, e),
+    }),
+    multiplyByB: ({ c0: t, c1: e }) => {
+      let r = Z.mul(t, Cr),
+        n = Z.mul(e, Cr);
+      return { c0: Z.sub(r, n), c1: Z.add(r, n) };
+    },
+    fromBigTuple: (t) => {
+      if (t.length !== 2) throw new Error("Invalid tuple");
+      const e = t.map((r) => Z.create(r));
+      return { c0: e[0], c1: e[1] };
+    },
+    frobeniusMap: ({ c0: t, c1: e }, r) => ({ c0: t, c1: Z.mul(e, Iu[r % 2]) }),
+  },
+  Iu = [
+    BigInt("0x1"),
+    BigInt(
+      "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaaa",
+    ),
+  ].map((t) => Z.create(t)),
+  zt = BigInt(
+    "0x6af0e0437ff400b6831e36d6bd17ffe48395dabc2d3435e77f76e17009241c5ee67992f72ec05f4c81084fbede3cc09",
+  ),
+  Nu = [
+    [sr, je],
+    [zt, -zt],
+    [je, sr],
+    [zt, zt],
+    [-sr, je],
+    [-zt, zt],
+    [je, -sr],
+    [-zt, -zt],
+  ].map((t) => S.fromBigTuple(t)),
+  Bs = ({ c0: t, c1: e, c2: r }, { c0: n, c1: i, c2: c }) => ({
+    c0: S.add(t, n),
+    c1: S.add(e, i),
+    c2: S.add(r, c),
+  }),
+  As = ({ c0: t, c1: e, c2: r }, { c0: n, c1: i, c2: c }) => ({
+    c0: S.sub(t, n),
+    c1: S.sub(e, i),
+    c2: S.sub(r, c),
+  }),
+  Ts = ({ c0: t, c1: e, c2: r }, n) => {
+    if (typeof n == "bigint")
+      return { c0: S.mul(t, n), c1: S.mul(e, n), c2: S.mul(r, n) };
+    const { c0: i, c1: c, c2: l } = n,
+      f = S.mul(t, i),
+      y = S.mul(e, c),
+      m = S.mul(r, l);
+    return {
+      c0: S.add(
+        f,
+        S.mulByNonresidue(S.sub(S.mul(S.add(e, r), S.add(c, l)), S.add(y, m))),
+      ),
+      c1: S.add(
+        S.sub(S.mul(S.add(t, e), S.add(i, c)), S.add(f, y)),
+        S.mulByNonresidue(m),
+      ),
+      c2: S.sub(S.add(y, S.mul(S.add(t, r), S.add(i, l))), S.add(f, m)),
+    };
+  },
+  Ss = ({ c0: t, c1: e, c2: r }) => {
+    let n = S.sqr(t),
+      i = S.mul(S.mul(t, e), $e),
+      c = S.mul(S.mul(e, r), $e),
+      l = S.sqr(r);
+    return {
+      c0: S.add(S.mulByNonresidue(c), n),
+      c1: S.add(S.mulByNonresidue(l), i),
+      c2: S.sub(S.sub(S.add(S.add(i, S.sqr(S.add(S.sub(t, e), r))), c), n), l),
+    };
+  },
+  ie = {
+    ORDER: S.ORDER,
+    BITS: 3 * S.BITS,
+    BYTES: 3 * S.BYTES,
+    MASK: zn(3 * S.BITS),
+    ZERO: { c0: S.ZERO, c1: S.ZERO, c2: S.ZERO },
+    ONE: { c0: S.ONE, c1: S.ZERO, c2: S.ZERO },
+    create: (t) => t,
+    isValid: ({ c0: t, c1: e, c2: r }) =>
+      S.isValid(t) && S.isValid(e) && S.isValid(r),
+    is0: ({ c0: t, c1: e, c2: r }) => S.is0(t) && S.is0(e) && S.is0(r),
+    neg: ({ c0: t, c1: e, c2: r }) => ({
+      c0: S.neg(t),
+      c1: S.neg(e),
+      c2: S.neg(r),
+    }),
+    eql: ({ c0: t, c1: e, c2: r }, { c0: n, c1: i, c2: c }) =>
+      S.eql(t, n) && S.eql(e, i) && S.eql(r, c),
+    sqrt: () => {
+      throw new Error("Not implemented");
+    },
+    div: (t, e) =>
+      ie.mul(t, typeof e == "bigint" ? Z.inv(Z.create(e)) : ie.inv(e)),
+    pow: (t, e) => Ln(ie, t, e),
+    invertBatch: (t) => Yn(ie, t),
+    add: Bs,
+    sub: As,
+    mul: Ts,
+    sqr: Ss,
+    addN: Bs,
+    subN: As,
+    mulN: Ts,
+    sqrN: Ss,
+    inv: ({ c0: t, c1: e, c2: r }) => {
+      let n = S.sub(S.sqr(t), S.mulByNonresidue(S.mul(r, e))),
+        i = S.sub(S.mulByNonresidue(S.sqr(r)), S.mul(t, e)),
+        c = S.sub(S.sqr(e), S.mul(t, r)),
+        l = S.inv(
+          S.add(
+            S.mulByNonresidue(S.add(S.mul(r, i), S.mul(e, c))),
+            S.mul(t, n),
+          ),
+        );
+      return { c0: S.mul(l, n), c1: S.mul(l, i), c2: S.mul(l, c) };
+    },
+    fromBytes: (t) => {
+      if (t.length !== ie.BYTES)
+        throw new Error(`fromBytes wrong length=${t.length}`);
+      return {
+        c0: S.fromBytes(t.subarray(0, S.BYTES)),
+        c1: S.fromBytes(t.subarray(S.BYTES, 2 * S.BYTES)),
+        c2: S.fromBytes(t.subarray(2 * S.BYTES)),
+      };
+    },
+    toBytes: ({ c0: t, c1: e, c2: r }) =>
+      ze(S.toBytes(t), S.toBytes(e), S.toBytes(r)),
+    cmov: ({ c0: t, c1: e, c2: r }, { c0: n, c1: i, c2: c }, l) => ({
+      c0: S.cmov(t, n, l),
+      c1: S.cmov(e, i, l),
+      c2: S.cmov(r, c, l),
+    }),
+    fromBigSix: (t) => {
+      if (!Array.isArray(t) || t.length !== 6)
+        throw new Error("Invalid Fp6 usage");
+      return {
+        c0: S.fromBigTuple(t.slice(0, 2)),
+        c1: S.fromBigTuple(t.slice(2, 4)),
+        c2: S.fromBigTuple(t.slice(4, 6)),
+      };
+    },
+    frobeniusMap: ({ c0: t, c1: e, c2: r }, n) => ({
+      c0: S.frobeniusMap(t, n),
+      c1: S.mul(S.frobeniusMap(e, n), Uu[n % 6]),
+      c2: S.mul(S.frobeniusMap(r, n), Ru[n % 6]),
+    }),
+    mulByNonresidue: ({ c0: t, c1: e, c2: r }) => ({
+      c0: S.mulByNonresidue(r),
+      c1: t,
+      c2: e,
+    }),
+    multiplyBy1: ({ c0: t, c1: e, c2: r }, n) => ({
+      c0: S.mulByNonresidue(S.mul(r, n)),
+      c1: S.mul(t, n),
+      c2: S.mul(e, n),
+    }),
+    multiplyBy01({ c0: t, c1: e, c2: r }, n, i) {
+      let c = S.mul(t, n),
+        l = S.mul(e, i);
+      return {
+        c0: S.add(S.mulByNonresidue(S.sub(S.mul(S.add(e, r), i), l)), c),
+        c1: S.sub(S.sub(S.mul(S.add(n, i), S.add(t, e)), c), l),
+        c2: S.add(S.sub(S.mul(S.add(t, r), n), c), l),
+      };
+    },
+    multiplyByFp2: ({ c0: t, c1: e, c2: r }, n) => ({
+      c0: S.mul(t, n),
+      c1: S.mul(e, n),
+      c2: S.mul(r, n),
+    }),
+  },
+  Uu = [
+    [BigInt("0x1"), BigInt("0x0")],
+    [
+      BigInt("0x0"),
+      BigInt(
+        "0x1a0111ea397fe699ec02408663d4de85aa0d857d89759ad4897d29650fb85f9b409427eb4f49fffd8bfd00000000aaac",
+      ),
+    ],
+    [
+      BigInt(
+        "0x00000000000000005f19672fdf76ce51ba69c6076a0f77eaddb3a93be6f89688de17d813620a00022e01fffffffefffe",
+      ),
+      BigInt("0x0"),
+    ],
+    [BigInt("0x0"), BigInt("0x1")],
+    [
+      BigInt(
+        "0x1a0111ea397fe699ec02408663d4de85aa0d857d89759ad4897d29650fb85f9b409427eb4f49fffd8bfd00000000aaac",
+      ),
+      BigInt("0x0"),
+    ],
+    [
+      BigInt("0x0"),
+      BigInt(
+        "0x00000000000000005f19672fdf76ce51ba69c6076a0f77eaddb3a93be6f89688de17d813620a00022e01fffffffefffe",
+      ),
+    ],
+  ].map((t) => S.fromBigTuple(t)),
+  Ru = [
+    [BigInt("0x1"), BigInt("0x0")],
+    [
+      BigInt(
+        "0x1a0111ea397fe699ec02408663d4de85aa0d857d89759ad4897d29650fb85f9b409427eb4f49fffd8bfd00000000aaad",
+      ),
+      BigInt("0x0"),
+    ],
+    [
+      BigInt(
+        "0x1a0111ea397fe699ec02408663d4de85aa0d857d89759ad4897d29650fb85f9b409427eb4f49fffd8bfd00000000aaac",
+      ),
+      BigInt("0x0"),
+    ],
+    [
+      BigInt(
+        "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaaa",
+      ),
+      BigInt("0x0"),
+    ],
+    [
+      BigInt(
+        "0x00000000000000005f19672fdf76ce51ba69c6076a0f77eaddb3a93be6f89688de17d813620a00022e01fffffffefffe",
+      ),
+      BigInt("0x0"),
+    ],
+    [
+      BigInt(
+        "0x00000000000000005f19672fdf76ce51ba69c6076a0f77eaddb3a93be6f89688de17d813620a00022e01fffffffeffff",
+      ),
+      BigInt("0x0"),
+    ],
+  ].map((t) => S.fromBigTuple(t)),
+  Li = BigInt("0xd201000000010000"),
+  Ou = kr(Li),
+  vs = ({ c0: t, c1: e }, { c0: r, c1: n }) => ({
+    c0: ie.add(t, r),
+    c1: ie.add(e, n),
+  }),
+  Is = ({ c0: t, c1: e }, { c0: r, c1: n }) => ({
+    c0: ie.sub(t, r),
+    c1: ie.sub(e, n),
+  }),
+  Ns = ({ c0: t, c1: e }, r) => {
+    if (typeof r == "bigint") return { c0: ie.mul(t, r), c1: ie.mul(e, r) };
+    let { c0: n, c1: i } = r,
+      c = ie.mul(t, n),
+      l = ie.mul(e, i);
+    return {
+      c0: ie.add(c, ie.mulByNonresidue(l)),
+      c1: ie.sub(ie.mul(ie.add(t, e), ie.add(n, i)), ie.add(c, l)),
+    };
+  },
+  Us = ({ c0: t, c1: e }) => {
+    let r = ie.mul(t, e);
+    return {
+      c0: ie.sub(
+        ie.sub(ie.mul(ie.add(ie.mulByNonresidue(e), t), ie.add(t, e)), r),
+        ie.mulByNonresidue(r),
+      ),
+      c1: ie.add(r, r),
+    };
+  };
+function si(t, e) {
+  const r = S.sqr(t),
+    n = S.sqr(e);
+  return {
+    first: S.add(S.mulByNonresidue(n), r),
+    second: S.sub(S.sub(S.sqr(S.add(t, e)), r), n),
+  };
+}
+const be = {
+    ORDER: S.ORDER,
+    BITS: 2 * S.BITS,
+    BYTES: 2 * S.BYTES,
+    MASK: zn(2 * S.BITS),
+    ZERO: { c0: ie.ZERO, c1: ie.ZERO },
+    ONE: { c0: ie.ONE, c1: ie.ZERO },
+    create: (t) => t,
+    isValid: ({ c0: t, c1: e }) => ie.isValid(t) && ie.isValid(e),
+    is0: ({ c0: t, c1: e }) => ie.is0(t) && ie.is0(e),
+    neg: ({ c0: t, c1: e }) => ({ c0: ie.neg(t), c1: ie.neg(e) }),
+    eql: ({ c0: t, c1: e }, { c0: r, c1: n }) => ie.eql(t, r) && ie.eql(e, n),
+    sqrt: () => {
+      throw new Error("Not implemented");
+    },
+    inv: ({ c0: t, c1: e }) => {
+      let r = ie.inv(ie.sub(ie.sqr(t), ie.mulByNonresidue(ie.sqr(e))));
+      return { c0: ie.mul(t, r), c1: ie.neg(ie.mul(e, r)) };
+    },
+    div: (t, e) =>
+      be.mul(t, typeof e == "bigint" ? Z.inv(Z.create(e)) : be.inv(e)),
+    pow: (t, e) => Ln(be, t, e),
+    invertBatch: (t) => Yn(be, t),
+    add: vs,
+    sub: Is,
+    mul: Ns,
+    sqr: Us,
+    addN: vs,
+    subN: Is,
+    mulN: Ns,
+    sqrN: Us,
+    fromBytes: (t) => {
+      if (t.length !== be.BYTES)
+        throw new Error(`fromBytes wrong length=${t.length}`);
+      return {
+        c0: ie.fromBytes(t.subarray(0, ie.BYTES)),
+        c1: ie.fromBytes(t.subarray(ie.BYTES)),
+      };
+    },
+    toBytes: ({ c0: t, c1: e }) => ze(ie.toBytes(t), ie.toBytes(e)),
+    cmov: ({ c0: t, c1: e }, { c0: r, c1: n }, i) => ({
+      c0: ie.cmov(t, r, i),
+      c1: ie.cmov(e, n, i),
+    }),
+    fromBigTwelve: (t) => ({
+      c0: ie.fromBigSix(t.slice(0, 6)),
+      c1: ie.fromBigSix(t.slice(6, 12)),
+    }),
+    frobeniusMap(t, e) {
+      const r = ie.frobeniusMap(t.c0, e),
+        { c0: n, c1: i, c2: c } = ie.frobeniusMap(t.c1, e),
+        l = Fu[e % 12];
+      return {
+        c0: r,
+        c1: ie.create({ c0: S.mul(n, l), c1: S.mul(i, l), c2: S.mul(c, l) }),
+      };
+    },
+    multiplyBy014: ({ c0: t, c1: e }, r, n, i) => {
+      let c = ie.multiplyBy01(t, r, n),
+        l = ie.multiplyBy1(e, i);
+      return {
+        c0: ie.add(ie.mulByNonresidue(l), c),
+        c1: ie.sub(ie.sub(ie.multiplyBy01(ie.add(e, t), r, S.add(n, i)), c), l),
+      };
+    },
+    multiplyByFp2: ({ c0: t, c1: e }, r) => ({
+      c0: ie.multiplyByFp2(t, r),
+      c1: ie.multiplyByFp2(e, r),
+    }),
+    conjugate: ({ c0: t, c1: e }) => ({ c0: t, c1: ie.neg(e) }),
+    _cyclotomicSquare: ({ c0: t, c1: e }) => {
+      const { c0: r, c1: n, c2: i } = t,
+        { c0: c, c1: l, c2: f } = e,
+        { first: y, second: m } = si(r, l),
+        { first: E, second: B } = si(c, i),
+        { first: M, second: v } = si(n, f);
+      let U = S.mulByNonresidue(v);
+      return {
+        c0: ie.create({
+          c0: S.add(S.mul(S.sub(y, r), $e), y),
+          c1: S.add(S.mul(S.sub(E, n), $e), E),
+          c2: S.add(S.mul(S.sub(M, i), $e), M),
+        }),
+        c1: ie.create({
+          c0: S.add(S.mul(S.add(U, c), $e), U),
+          c1: S.add(S.mul(S.add(m, l), $e), m),
+          c2: S.add(S.mul(S.add(B, f), $e), B),
+        }),
+      };
+    },
+    _cyclotomicExp(t, e) {
+      let r = be.ONE;
+      for (let n = Ou - 1; n >= 0; n--)
+        (r = be._cyclotomicSquare(r)), xi(e, n) && (r = be.mul(r, t));
+      return r;
+    },
+    finalExponentiate: (t) => {
+      const e = Li,
+        r = be.div(be.frobeniusMap(t, 6), t),
+        n = be.mul(be.frobeniusMap(r, 2), r),
+        i = be.conjugate(be._cyclotomicExp(n, e)),
+        c = be.mul(be.conjugate(be._cyclotomicSquare(n)), i),
+        l = be.conjugate(be._cyclotomicExp(c, e)),
+        f = be.conjugate(be._cyclotomicExp(l, e)),
+        y = be.mul(
+          be.conjugate(be._cyclotomicExp(f, e)),
+          be._cyclotomicSquare(i),
+        ),
+        m = be.conjugate(be._cyclotomicExp(y, e)),
+        E = be.frobeniusMap(be.mul(i, f), 2),
+        B = be.frobeniusMap(be.mul(l, n), 3),
+        M = be.frobeniusMap(be.mul(y, be.conjugate(n)), 1),
+        v = be.mul(be.mul(m, be.conjugate(c)), n);
+      return be.mul(be.mul(be.mul(E, B), M), v);
+    },
+  },
+  Fu = [
+    [BigInt("0x1"), BigInt("0x0")],
+    [
+      BigInt(
+        "0x1904d3bf02bb0667c231beb4202c0d1f0fd603fd3cbd5f4f7b2443d784bab9c4f67ea53d63e7813d8d0775ed92235fb8",
+      ),
+      BigInt(
+        "0x00fc3e2b36c4e03288e9e902231f9fb854a14787b6c7b36fec0c8ec971f63c5f282d5ac14d6c7ec22cf78a126ddc4af3",
+      ),
+    ],
+    [
+      BigInt(
+        "0x00000000000000005f19672fdf76ce51ba69c6076a0f77eaddb3a93be6f89688de17d813620a00022e01fffffffeffff",
+      ),
+      BigInt("0x0"),
+    ],
+    [
+      BigInt(
+        "0x135203e60180a68ee2e9c448d77a2cd91c3dedd930b1cf60ef396489f61eb45e304466cf3e67fa0af1ee7b04121bdea2",
+      ),
+      BigInt(
+        "0x06af0e0437ff400b6831e36d6bd17ffe48395dabc2d3435e77f76e17009241c5ee67992f72ec05f4c81084fbede3cc09",
+      ),
+    ],
+    [
+      BigInt(
+        "0x00000000000000005f19672fdf76ce51ba69c6076a0f77eaddb3a93be6f89688de17d813620a00022e01fffffffefffe",
+      ),
+      BigInt("0x0"),
+    ],
+    [
+      BigInt(
+        "0x144e4211384586c16bd3ad4afa99cc9170df3560e77982d0db45f3536814f0bd5871c1908bd478cd1ee605167ff82995",
+      ),
+      BigInt(
+        "0x05b2cfd9013a5fd8df47fa6b48b1e045f39816240c0b8fee8beadf4d8e9c0566c63a3e6e257f87329b18fae980078116",
+      ),
+    ],
+    [
+      BigInt(
+        "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaaa",
+      ),
+      BigInt("0x0"),
+    ],
+    [
+      BigInt(
+        "0x00fc3e2b36c4e03288e9e902231f9fb854a14787b6c7b36fec0c8ec971f63c5f282d5ac14d6c7ec22cf78a126ddc4af3",
+      ),
+      BigInt(
+        "0x1904d3bf02bb0667c231beb4202c0d1f0fd603fd3cbd5f4f7b2443d784bab9c4f67ea53d63e7813d8d0775ed92235fb8",
+      ),
+    ],
+    [
+      BigInt(
+        "0x1a0111ea397fe699ec02408663d4de85aa0d857d89759ad4897d29650fb85f9b409427eb4f49fffd8bfd00000000aaac",
+      ),
+      BigInt("0x0"),
+    ],
+    [
+      BigInt(
+        "0x06af0e0437ff400b6831e36d6bd17ffe48395dabc2d3435e77f76e17009241c5ee67992f72ec05f4c81084fbede3cc09",
+      ),
+      BigInt(
+        "0x135203e60180a68ee2e9c448d77a2cd91c3dedd930b1cf60ef396489f61eb45e304466cf3e67fa0af1ee7b04121bdea2",
+      ),
+    ],
+    [
+      BigInt(
+        "0x1a0111ea397fe699ec02408663d4de85aa0d857d89759ad4897d29650fb85f9b409427eb4f49fffd8bfd00000000aaad",
+      ),
+      BigInt("0x0"),
+    ],
+    [
+      BigInt(
+        "0x05b2cfd9013a5fd8df47fa6b48b1e045f39816240c0b8fee8beadf4d8e9c0566c63a3e6e257f87329b18fae980078116",
+      ),
+      BigInt(
+        "0x144e4211384586c16bd3ad4afa99cc9170df3560e77982d0db45f3536814f0bd5871c1908bd478cd1ee605167ff82995",
+      ),
+    ],
+  ].map((t) => S.fromBigTuple(t)),
+  Pu = bo(
+    S,
+    [
+      [
+        [
+          "0x5c759507e8e333ebb5b7a9a47d7ed8532c52d39fd3a042a88b58423c50ae15d5c2638e343d9c71c6238aaaaaaaa97d6",
+          "0x5c759507e8e333ebb5b7a9a47d7ed8532c52d39fd3a042a88b58423c50ae15d5c2638e343d9c71c6238aaaaaaaa97d6",
+        ],
+        [
+          "0x0",
+          "0x11560bf17baa99bc32126fced787c88f984f87adf7ae0c7f9a208c6b4f20a4181472aaa9cb8d555526a9ffffffffc71a",
+        ],
+        [
+          "0x11560bf17baa99bc32126fced787c88f984f87adf7ae0c7f9a208c6b4f20a4181472aaa9cb8d555526a9ffffffffc71e",
+          "0x8ab05f8bdd54cde190937e76bc3e447cc27c3d6fbd7063fcd104635a790520c0a395554e5c6aaaa9354ffffffffe38d",
+        ],
+        [
+          "0x171d6541fa38ccfaed6dea691f5fb614cb14b4e7f4e810aa22d6108f142b85757098e38d0f671c7188e2aaaaaaaa5ed1",
+          "0x0",
+        ],
+      ],
+      [
+        [
+          "0x0",
+          "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaa63",
+        ],
+        [
+          "0xc",
+          "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaa9f",
+        ],
+        ["0x1", "0x0"],
+      ],
+      [
+        [
+          "0x1530477c7ab4113b59a4c18b076d11930f7da5d4a07f649bf54439d87d27e500fc8c25ebf8c92f6812cfc71c71c6d706",
+          "0x1530477c7ab4113b59a4c18b076d11930f7da5d4a07f649bf54439d87d27e500fc8c25ebf8c92f6812cfc71c71c6d706",
+        ],
+        [
+          "0x0",
+          "0x5c759507e8e333ebb5b7a9a47d7ed8532c52d39fd3a042a88b58423c50ae15d5c2638e343d9c71c6238aaaaaaaa97be",
+        ],
+        [
+          "0x11560bf17baa99bc32126fced787c88f984f87adf7ae0c7f9a208c6b4f20a4181472aaa9cb8d555526a9ffffffffc71c",
+          "0x8ab05f8bdd54cde190937e76bc3e447cc27c3d6fbd7063fcd104635a790520c0a395554e5c6aaaa9354ffffffffe38f",
+        ],
+        [
+          "0x124c9ad43b6cf79bfbf7043de3811ad0761b0f37a1e26286b0e977c69aa274524e79097a56dc4bd9e1b371c71c718b10",
+          "0x0",
+        ],
+      ],
+      [
+        [
+          "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffa8fb",
+          "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffa8fb",
+        ],
+        [
+          "0x0",
+          "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffa9d3",
+        ],
+        [
+          "0x12",
+          "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaa99",
+        ],
+        ["0x1", "0x0"],
+      ],
+    ].map((t) => t.map((e) => S.fromBigTuple(e.map(BigInt)))),
+  ),
+  Mu = bo(
+    Z,
+    [
+      [
+        "0x11a05f2b1e833340b809101dd99815856b303e88a2d7005ff2627b56cdb4e2c85610c2d5f2e62d6eaeac1662734649b7",
+        "0x17294ed3e943ab2f0588bab22147a81c7c17e75b2f6a8417f565e33c70d1e86b4838f2a6f318c356e834eef1b3cb83bb",
+        "0xd54005db97678ec1d1048c5d10a9a1bce032473295983e56878e501ec68e25c958c3e3d2a09729fe0179f9dac9edcb0",
+        "0x1778e7166fcc6db74e0609d307e55412d7f5e4656a8dbf25f1b33289f1b330835336e25ce3107193c5b388641d9b6861",
+        "0xe99726a3199f4436642b4b3e4118e5499db995a1257fb3f086eeb65982fac18985a286f301e77c451154ce9ac8895d9",
+        "0x1630c3250d7313ff01d1201bf7a74ab5db3cb17dd952799b9ed3ab9097e68f90a0870d2dcae73d19cd13c1c66f652983",
+        "0xd6ed6553fe44d296a3726c38ae652bfb11586264f0f8ce19008e218f9c86b2a8da25128c1052ecaddd7f225a139ed84",
+        "0x17b81e7701abdbe2e8743884d1117e53356de5ab275b4db1a682c62ef0f2753339b7c8f8c8f475af9ccb5618e3f0c88e",
+        "0x80d3cf1f9a78fc47b90b33563be990dc43b756ce79f5574a2c596c928c5d1de4fa295f296b74e956d71986a8497e317",
+        "0x169b1f8e1bcfa7c42e0c37515d138f22dd2ecb803a0c5c99676314baf4bb1b7fa3190b2edc0327797f241067be390c9e",
+        "0x10321da079ce07e272d8ec09d2565b0dfa7dccdde6787f96d50af36003b14866f69b771f8c285decca67df3f1605fb7b",
+        "0x6e08c248e260e70bd1e962381edee3d31d79d7e22c837bc23c0bf1bc24c6b68c24b1b80b64d391fa9c8ba2e8ba2d229",
+      ],
+      [
+        "0x8ca8d548cff19ae18b2e62f4bd3fa6f01d5ef4ba35b48ba9c9588617fc8ac62b558d681be343df8993cf9fa40d21b1c",
+        "0x12561a5deb559c4348b4711298e536367041e8ca0cf0800c0126c2588c48bf5713daa8846cb026e9e5c8276ec82b3bff",
+        "0xb2962fe57a3225e8137e629bff2991f6f89416f5a718cd1fca64e00b11aceacd6a3d0967c94fedcfcc239ba5cb83e19",
+        "0x3425581a58ae2fec83aafef7c40eb545b08243f16b1655154cca8abc28d6fd04976d5243eecf5c4130de8938dc62cd8",
+        "0x13a8e162022914a80a6f1d5f43e7a07dffdfc759a12062bb8d6b44e833b306da9bd29ba81f35781d539d395b3532a21e",
+        "0xe7355f8e4e667b955390f7f0506c6e9395735e9ce9cad4d0a43bcef24b8982f7400d24bc4228f11c02df9a29f6304a5",
+        "0x772caacf16936190f3e0c63e0596721570f5799af53a1894e2e073062aede9cea73b3538f0de06cec2574496ee84a3a",
+        "0x14a7ac2a9d64a8b230b3f5b074cf01996e7f63c21bca68a81996e1cdf9822c580fa5b9489d11e2d311f7d99bbdcc5a5e",
+        "0xa10ecf6ada54f825e920b3dafc7a3cce07f8d1d7161366b74100da67f39883503826692abba43704776ec3a79a1d641",
+        "0x95fc13ab9e92ad4476d6e3eb3a56680f682b4ee96f7d03776df533978f31c1593174e4b4b7865002d6384d168ecdd0a",
+        "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+      ],
+      [
+        "0x90d97c81ba24ee0259d1f094980dcfa11ad138e48a869522b52af6c956543d3cd0c7aee9b3ba3c2be9845719707bb33",
+        "0x134996a104ee5811d51036d776fb46831223e96c254f383d0f906343eb67ad34d6c56711962fa8bfe097e75a2e41c696",
+        "0xcc786baa966e66f4a384c86a3b49942552e2d658a31ce2c344be4b91400da7d26d521628b00523b8dfe240c72de1f6",
+        "0x1f86376e8981c217898751ad8746757d42aa7b90eeb791c09e4a3ec03251cf9de405aba9ec61deca6355c77b0e5f4cb",
+        "0x8cc03fdefe0ff135caf4fe2a21529c4195536fbe3ce50b879833fd221351adc2ee7f8dc099040a841b6daecf2e8fedb",
+        "0x16603fca40634b6a2211e11db8f0a6a074a7d0d4afadb7bd76505c3d3ad5544e203f6326c95a807299b23ab13633a5f0",
+        "0x4ab0b9bcfac1bbcb2c977d027796b3ce75bb8ca2be184cb5231413c4d634f3747a87ac2460f415ec961f8855fe9d6f2",
+        "0x987c8d5333ab86fde9926bd2ca6c674170a05bfe3bdd81ffd038da6c26c842642f64550fedfe935a15e4ca31870fb29",
+        "0x9fc4018bd96684be88c9e221e4da1bb8f3abd16679dc26c1e8b6e6a1f20cabe69d65201c78607a360370e577bdba587",
+        "0xe1bba7a1186bdb5223abde7ada14a23c42a0ca7915af6fe06985e7ed1e4d43b9b3f7055dd4eba6f2bafaaebca731c30",
+        "0x19713e47937cd1be0dfd0b8f1d43fb93cd2fcbcb6caf493fd1183e416389e61031bf3a5cce3fbafce813711ad011c132",
+        "0x18b46a908f36f6deb918c143fed2edcc523559b8aaf0c2462e6bfe7f911f643249d9cdf41b44d606ce07c8a4d0074d8e",
+        "0xb182cac101b9399d155096004f53f447aa7b12a3426b08ec02710e807b4633f06c851c1919211f20d4c04f00b971ef8",
+        "0x245a394ad1eca9b72fc00ae7be315dc757b3b080d4c158013e6632d3c40659cc6cf90ad1c232a6442d9d3f5db980133",
+        "0x5c129645e44cf1102a159f748c4a3fc5e673d81d7e86568d9ab0f5d396a7ce46ba1049b6579afb7866b1e715475224b",
+        "0x15e6be4e990f03ce4ea50b3b42df2eb5cb181d8f84965a3957add4fa95af01b2b665027efec01c7704b456be69c8b604",
+      ],
+      [
+        "0x16112c4c3a9c98b252181140fad0eae9601a6de578980be6eec3232b5be72e7a07f3688ef60c206d01479253b03663c1",
+        "0x1962d75c2381201e1a0cbd6c43c348b885c84ff731c4d59ca4a10356f453e01f78a4260763529e3532f6102c2e49a03d",
+        "0x58df3306640da276faaae7d6e8eb15778c4855551ae7f310c35a5dd279cd2eca6757cd636f96f891e2538b53dbf67f2",
+        "0x16b7d288798e5395f20d23bf89edb4d1d115c5dbddbcd30e123da489e726af41727364f2c28297ada8d26d98445f5416",
+        "0xbe0e079545f43e4b00cc912f8228ddcc6d19c9f0f69bbb0542eda0fc9dec916a20b15dc0fd2ededda39142311a5001d",
+        "0x8d9e5297186db2d9fb266eaac783182b70152c65550d881c5ecd87b6f0f5a6449f38db9dfa9cce202c6477faaf9b7ac",
+        "0x166007c08a99db2fc3ba8734ace9824b5eecfdfa8d0cf8ef5dd365bc400a0051d5fa9c01a58b1fb93d1a1399126a775c",
+        "0x16a3ef08be3ea7ea03bcddfabba6ff6ee5a4375efa1f4fd7feb34fd206357132b920f5b00801dee460ee415a15812ed9",
+        "0x1866c8ed336c61231a1be54fd1d74cc4f9fb0ce4c6af5920abc5750c4bf39b4852cfe2f7bb9248836b233d9d55535d4a",
+        "0x167a55cda70a6e1cea820597d94a84903216f763e13d87bb5308592e7ea7d4fbc7385ea3d529b35e346ef48bb8913f55",
+        "0x4d2f259eea405bd48f010a01ad2911d9c6dd039bb61a6290e591b36e636a5c871a5c29f4f83060400f8b49cba8f6aa8",
+        "0xaccbb67481d033ff5852c1e48c50c477f94ff8aefce42d28c0f9a88cea7913516f968986f7ebbea9684b529e2561092",
+        "0xad6b9514c767fe3c3613144b45f1496543346d98adf02267d5ceef9a00d9b8693000763e3b90ac11e99b138573345cc",
+        "0x2660400eb2e4f3b628bdd0d53cd76f2bf565b94e72927c1cb748df27942480e420517bd8714cc80d1fadc1326ed06f7",
+        "0xe0fa1d816ddc03e6b24255e0d7819c171c40f65e273b853324efcd6356caa205ca2f570f13497804415473a1d634b8f",
+        "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+      ],
+    ].map((t) => t.map((e) => BigInt(e))),
+  ),
+  ku = _o(S, {
+    A: S.create({ c0: Z.create(je), c1: Z.create(BigInt(240)) }),
+    B: S.create({ c0: Z.create(BigInt(1012)), c1: Z.create(BigInt(1012)) }),
+    Z: S.create({ c0: Z.create(BigInt(-2)), c1: Z.create(BigInt(-1)) }),
+  }),
+  Cu = _o(Z, {
+    A: Z.create(
+      BigInt(
+        "0x144698a3b8e9433d693a02c96d4982b0ea985383ee66a8d8e8981aefd881ac98936f8da0e0f97f5cf428082d584c1d",
+      ),
+    ),
+    B: Z.create(
+      BigInt(
+        "0x12e2908d11688030018b12e8753eee3b2016c1f0f24f4070a0b9c14fcef35ef55a23215a316ceaa5d1cc48e98e172be0",
+      ),
+    ),
+    Z: Z.create(BigInt(11)),
+  }),
+  Eo = ie.create({ c0: S.ZERO, c1: S.ONE, c2: S.ZERO }),
+  Bo = be.create({ c0: Eo, c1: ie.ZERO }),
+  Ao = be.create({ c0: ie.ZERO, c1: Eo }),
+  [$u, qu] = be.invertBatch([Bo, Ao]);
+function Vu(t, e) {
+  const r = be.mul(be.frobeniusMap(be.multiplyByFp2($u, t), 1), Bo).c0.c0,
+    n = be.mul(be.frobeniusMap(be.multiplyByFp2(qu, e), 1), Ao).c0.c0;
+  return [r, n];
+}
+function Rs(t, e) {
+  const r = e.toAffine(),
+    n = Vu(r.x, r.y);
+  return new t(n[0], n[1], S.ONE);
+}
+const Gu = BigInt(
+  "0x1a0111ea397fe699ec02408663d4de85aa0d857d89759ad4897d29650fb85f9b409427eb4f49fffd8bfd00000000aaac",
+);
+function Hu(t, e) {
+  return [S.mul(t, Gu), S.neg(e)];
+}
+function ju(t, e) {
+  const r = e.toAffine(),
+    n = Hu(r.x, r.y);
+  return new t(n[0], n[1], S.ONE);
+}
+const ai = Object.freeze({
+    DST: "BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_NUL_",
+    encodeDST: "BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_NUL_",
+    p: Z.ORDER,
+    m: 2,
+    k: 128,
+    expand: "xmd",
+    hash: Ri,
+  }),
+  Pn = qr(Z.toBytes(je), { infinity: !0, compressed: !0 });
+function tn(t) {
+  t = t.slice();
+  const e = t[0] & 224,
+    r = !!((e >> 7) & 1),
+    n = !!((e >> 6) & 1),
+    i = !!((e >> 5) & 1);
+  return (t[0] &= 31), { compressed: r, infinity: n, sort: i, value: t };
+}
+function qr(t, e) {
+  if (t[0] & 224) throw new Error("setMask: non-empty mask");
+  return (
+    e.compressed && (t[0] |= 128),
+    e.infinity && (t[0] |= 64),
+    e.sort && (t[0] |= 32),
+    t
+  );
+}
+function Os(t) {
+  t.assertValidity();
+  const e = t.equals(Je.G1.ProjectivePoint.ZERO),
+    { x: r, y: n } = t.toAffine();
+  if (e) return Pn.slice();
+  const i = Z.ORDER,
+    c = !!((n * $e) / i);
+  return qr(Qe(r, Z.BYTES), { compressed: !0, sort: c });
+}
+function Fs(t) {
+  t.assertValidity();
+  const e = Z.BYTES;
+  if (t.equals(Je.G2.ProjectivePoint.ZERO)) return ze(Pn, Qe(je, e));
+  const { x: r, y: n } = t.toAffine(),
+    { re: i, im: c } = S.reim(r),
+    { re: l, im: f } = S.reim(n),
+    m = !!(((f > je ? f * $e : l * $e) / Z.ORDER) & sr),
+    E = i;
+  return ze(qr(Qe(c, e), { sort: m, compressed: !0 }), Qe(E, e));
+}
+const Je = Tu({
+  fields: { Fp: Z, Fp2: S, Fp6: ie, Fp12: be, Fr: bs },
+  G1: {
+    Fp: Z,
+    h: BigInt("0x396c8c005555e1568c00aaab0000aaab"),
+    Gx: BigInt(
+      "0x17f1d3a73197d7942695638c4fa9ac0fc3688c4f9774b905a14e3a3f171bac586c55e83ff97a1aeffb3af00adb22c6bb",
+    ),
+    Gy: BigInt(
+      "0x08b3f481e3aaa0f1a09e30ed741d8ae4fcf5e095d5d00af600db18cb2c04b3edd03cc744a2888ae40caa232946c5e7e1",
+    ),
+    a: Z.ZERO,
+    b: Cr,
+    htfDefaults: {
+      ...ai,
+      m: 1,
+      DST: "BLS_SIG_BLS12381G1_XMD:SHA-256_SSWU_RO_NUL_",
+    },
+    wrapPrivateKey: !0,
+    allowInfinityPoint: !0,
+    isTorsionFree: (t, e) => {
+      const r = BigInt(
+          "0x5f19672fdf76ce51ba69c6076a0f77eaddb3a93be6f89688de17d813620a00022e01fffffffefffe",
+        ),
+        n = new t(Z.mul(e.px, r), e.py, e.pz);
+      return e
+        .multiplyUnsafe(Je.params.x)
+        .negate()
+        .multiplyUnsafe(Je.params.x)
+        .equals(n);
+    },
+    clearCofactor: (t, e) => e.multiplyUnsafe(Je.params.x).add(e),
+    mapToCurve: (t) => {
+      const { x: e, y: r } = Cu(Z.create(t[0]));
+      return Mu(e, r);
+    },
+    fromBytes: (t) => {
+      const { compressed: e, infinity: r, sort: n, value: i } = tn(t);
+      if (i.length === 48 && e) {
+        const c = Z.ORDER,
+          l = bt(i),
+          f = Z.create(l & Z.MASK);
+        if (r) {
+          if (f !== je)
+            throw new Error("G1: non-empty compressed point at infinity");
+          return { x: je, y: je };
+        }
+        const y = Z.add(Z.pow(f, Qr), Z.create(Je.params.G1b));
+        let m = Z.sqrt(y);
+        if (!m) throw new Error("Invalid compressed G1 point");
+        return (
+          (m * $e) / c !== BigInt(n) && (m = Z.neg(m)),
+          { x: Z.create(f), y: Z.create(m) }
+        );
+      } else if (i.length === 96 && !e) {
+        const c = bt(i.subarray(0, Z.BYTES)),
+          l = bt(i.subarray(Z.BYTES));
+        if (r) {
+          if (c !== je || l !== je)
+            throw new Error("G1: non-empty point at infinity");
+          return Je.G1.ProjectivePoint.ZERO.toAffine();
+        }
+        return { x: Z.create(c), y: Z.create(l) };
+      } else throw new Error("Invalid point G1, expected 48/96 bytes");
+    },
+    toBytes: (t, e, r) => {
+      const n = e.equals(t.ZERO),
+        { x: i, y: c } = e.toAffine();
+      if (r) {
+        if (n) return Pn.slice();
+        const l = Z.ORDER,
+          f = !!((c * $e) / l);
+        return qr(Qe(i, Z.BYTES), { compressed: !0, sort: f });
+      } else
+        return n
+          ? ze(new Uint8Array([64]), new Uint8Array(2 * Z.BYTES - 1))
+          : ze(Qe(i, Z.BYTES), Qe(c, Z.BYTES));
+    },
+    ShortSignature: {
+      fromHex(t) {
+        const {
+            infinity: e,
+            sort: r,
+            value: n,
+          } = tn(ot("signatureHex", t, 48)),
+          i = Z.ORDER,
+          c = bt(n);
+        if (e) return Je.G1.ProjectivePoint.ZERO;
+        const l = Z.create(c & Z.MASK),
+          f = Z.add(Z.pow(l, Qr), Z.create(Je.params.G1b));
+        let y = Z.sqrt(f);
+        if (!y) throw new Error("Invalid compressed G1 point");
+        const m = BigInt(r);
+        (y * $e) / i !== m && (y = Z.neg(y));
+        const E = Je.G1.ProjectivePoint.fromAffine({ x: l, y });
+        return E.assertValidity(), E;
+      },
+      toRawBytes(t) {
+        return Os(t);
+      },
+      toHex(t) {
+        return lr(Os(t));
+      },
+    },
+  },
+  G2: {
+    Fp: S,
+    h: BigInt(
+      "0x5d543a95414e7f1091d50792876a202cd91de4547085abaa68a205b2e5a7ddfa628f1cb4d9e82ef21537e293a6691ae1616ec6e786f0c70cf1c38e31c7238e5",
+    ),
+    Gx: S.fromBigTuple([
+      BigInt(
+        "0x024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8",
+      ),
+      BigInt(
+        "0x13e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e",
+      ),
+    ]),
+    Gy: S.fromBigTuple([
+      BigInt(
+        "0x0ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801",
+      ),
+      BigInt(
+        "0x0606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be",
+      ),
+    ]),
+    a: S.ZERO,
+    b: S.fromBigTuple([Cr, Cr]),
+    hEff: BigInt(
+      "0xbc69f08f2ee75b3584c6a0ea91b352888e2a8e9145ad7689986ff031508ffe1329c2f178731db956d82bf015d1212b02ec0ec69d7477c1ae954cbc06689f6a359894c0adebbf6b4e8020005aaa95551",
+    ),
+    htfDefaults: { ...ai },
+    wrapPrivateKey: !0,
+    allowInfinityPoint: !0,
+    mapToCurve: (t) => {
+      const { x: e, y: r } = ku(S.fromBigTuple(t));
+      return Pu(e, r);
+    },
+    isTorsionFree: (t, e) =>
+      e.multiplyUnsafe(Je.params.x).negate().equals(Rs(t, e)),
+    clearCofactor: (t, e) => {
+      const r = Je.params.x;
+      let n = e.multiplyUnsafe(r).negate(),
+        i = Rs(t, e),
+        c = e.double();
+      return (
+        (c = ju(t, c)),
+        (c = c.subtract(i)),
+        (i = n.add(i)),
+        (i = i.multiplyUnsafe(r).negate()),
+        (c = c.add(i)),
+        (c = c.subtract(n)),
+        c.subtract(e)
+      );
+    },
+    fromBytes: (t) => {
+      const { compressed: e, infinity: r, sort: n, value: i } = tn(t);
+      if ((!e && !r && n) || (!e && r && n) || (n && r && e))
+        throw new Error("Invalid encoding flag: " + (t[0] & 224));
+      const c = Z.BYTES,
+        l = (f, y, m) => bt(f.slice(y, m));
+      if (i.length === 96 && e) {
+        const f = Je.params.G2b,
+          y = Z.ORDER;
+        if (r) {
+          if (i.reduce((N, q) => (N !== 0 ? q + 1 : q), 0) > 0)
+            throw new Error("Invalid compressed G2 point");
+          return { x: S.ZERO, y: S.ZERO };
+        }
+        const m = l(i, 0, c),
+          E = l(i, c, 2 * c),
+          B = S.create({ c0: Z.create(E), c1: Z.create(m) }),
+          M = S.add(S.pow(B, Qr), f);
+        let v = S.sqrt(M);
+        const U = v.c1 === je ? (v.c0 * $e) / y : (v.c1 * $e) / y ? sr : je;
+        return (v = n && U > 0 ? v : S.neg(v)), { x: B, y: v };
+      } else if (i.length === 192 && !e) {
+        if (r) {
+          if (i.reduce((B, M) => (B !== 0 ? M + 1 : M), 0) > 0)
+            throw new Error("Invalid uncompressed G2 point");
+          return { x: S.ZERO, y: S.ZERO };
+        }
+        const f = l(i, 0, c),
+          y = l(i, c, 2 * c),
+          m = l(i, 2 * c, 3 * c),
+          E = l(i, 3 * c, 4 * c);
+        return { x: S.fromBigTuple([y, f]), y: S.fromBigTuple([E, m]) };
+      } else throw new Error("Invalid point G2, expected 96/192 bytes");
+    },
+    toBytes: (t, e, r) => {
+      const { BYTES: n, ORDER: i } = Z,
+        c = e.equals(t.ZERO),
+        { x: l, y: f } = e.toAffine();
+      if (r) {
+        if (c) return ze(Pn, Qe(je, n));
+        const y = !!(f.c1 === je ? (f.c0 * $e) / i : (f.c1 * $e) / i);
+        return ze(qr(Qe(l.c1, n), { compressed: !0, sort: y }), Qe(l.c0, n));
+      } else {
+        if (c) return ze(new Uint8Array([64]), new Uint8Array(4 * n - 1));
+        const { re: y, im: m } = S.reim(l),
+          { re: E, im: B } = S.reim(f);
+        return ze(Qe(m, n), Qe(y, n), Qe(B, n), Qe(E, n));
+      }
+    },
+    Signature: {
+      fromHex(t) {
+        const { infinity: e, sort: r, value: n } = tn(ot("signatureHex", t)),
+          i = Z.ORDER,
+          c = n.length / 2;
+        if (c !== 48 && c !== 96)
+          throw new Error(
+            "Invalid compressed signature length, must be 96 or 192",
+          );
+        const l = bt(n.slice(0, c)),
+          f = bt(n.slice(c));
+        if (e) return Je.G2.ProjectivePoint.ZERO;
+        const y = Z.create(l & Z.MASK),
+          m = Z.create(f),
+          E = S.create({ c0: m, c1: y }),
+          B = S.add(S.pow(E, Qr), Je.params.G2b);
+        let M = S.sqrt(B);
+        if (!M) throw new Error("Failed to find a square root");
+        const { re: v, im: U } = S.reim(M),
+          N = BigInt(r),
+          q = U > je && (U * $e) / i !== N,
+          G = U === je && (v * $e) / i !== N;
+        (q || G) && (M = S.neg(M));
+        const V = Je.G2.ProjectivePoint.fromAffine({ x: E, y: M });
+        return V.assertValidity(), V;
+      },
+      toRawBytes(t) {
+        return Fs(t);
+      },
+      toHex(t) {
+        return lr(Fs(t));
+      },
+    },
+  },
+  params: { x: Li, r: bs.ORDER },
+  htfDefaults: ai,
+  hash: Ri,
+  randomBytes: Ds,
+});
+function zu(t, e, r) {
+  const n = typeof t == "string" ? t : xt(t),
+    i = typeof e == "string" ? e : xt(e),
+    c = typeof r == "string" ? r : xt(r);
+  return Je.verifyShortSignature(i, c, n);
+}
+const To = (t) => Ke(new Tr(t)),
+  Yi = (t) => {
+    const e = To(t);
+    return new Date(Number(e) / 1e6);
+  };
+class It extends rt {
+  constructor(e) {
+    super(`Invalid certificate: ${e}`);
+  }
+}
+var ft;
+(function (t) {
+  (t[(t.Empty = 0)] = "Empty"),
+    (t[(t.Fork = 1)] = "Fork"),
+    (t[(t.Labeled = 2)] = "Labeled"),
+    (t[(t.Leaf = 3)] = "Leaf"),
+    (t[(t.Pruned = 4)] = "Pruned");
+})(ft || (ft = {}));
+function Lu(t, e) {
+  const r = new Uint8Array(t),
+    n = new Uint8Array(e);
+  for (let i = 0; i < r.length; i++) if (r[i] > n[i]) return !0;
+  return !1;
+}
+class or {
+  constructor(e, r, n, i, c = 5) {
+    (this._rootKey = r),
+      (this._canisterId = n),
+      (this._blsVerify = i),
+      (this._maxAgeInMinutes = c),
+      (this.cert = Ct(new Uint8Array(e)));
+  }
+  static async create(e) {
+    const r = or.createUnverified(e);
+    return await r.verify(), r;
+  }
+  static createUnverified(e) {
+    let r = e.blsVerify;
+    return (
+      r || (r = zu),
+      new or(e.certificate, e.rootKey, e.canisterId, r, e.maxAgeInMinutes)
+    );
+  }
+  lookup(e) {
+    return Ar(e, this.cert.tree);
+  }
+  lookup_label(e) {
+    return this.lookup([e]);
+  }
+  async verify() {
+    const e = await ln(this.cert.tree),
+      r = await this._checkDelegationAndGetKey(this.cert.delegation),
+      n = this.cert.signature,
+      i = Zu(r),
+      c = Ot(Ur("ic-state-root"), e);
+    let l = !1;
+    const f = $t(this.lookup(["time"]));
+    if (!f) throw new It("Certificate does not contain a time");
+    const y = 5 * 60 * 1e3,
+      m = this._maxAgeInMinutes * 60 * 1e3,
+      E = Date.now(),
+      B = E - m,
+      M = E + y,
+      v = Yi(f);
+    if (v.getTime() < B)
+      throw new It(
+        `Certificate is signed more than ${this._maxAgeInMinutes} minutes in the past. Certificate time: ` +
+          v.toISOString() +
+          " Current time: " +
+          new Date(E).toISOString(),
+      );
+    if (v.getTime() > M)
+      throw new It(
+        "Certificate is signed more than 5 minutes in the future. Certificate time: " +
+          v.toISOString() +
+          " Current time: " +
+          new Date(E).toISOString(),
+      );
+    try {
+      l = await this._blsVerify(
+        new Uint8Array(i),
+        new Uint8Array(n),
+        new Uint8Array(c),
+      );
+    } catch {
+      l = !1;
+    }
+    if (!l) throw new It("Signature verification failed");
+  }
+  async _checkDelegationAndGetKey(e) {
+    if (!e) return this._rootKey;
+    const r = await or.createUnverified({
+      certificate: e.certificate,
+      rootKey: this._rootKey,
+      canisterId: this._canisterId,
+      blsVerify: this._blsVerify,
+      maxAgeInMinutes: 1 / 0,
+    });
+    if (r.cert.delegation)
+      throw new It("Delegation certificates cannot be nested");
+    if (
+      (await r.verify(),
+      !So({
+        canisterId: this._canisterId,
+        subnetId: Ie.fromUint8Array(new Uint8Array(e.subnet_id)),
+        tree: r.cert.tree,
+      }))
+    )
+      throw new It(
+        `Canister ${this._canisterId} not in range of delegations for subnet 0x${xt(e.subnet_id)}`,
+      );
+    const i = $t(r.lookup(["subnet", e.subnet_id, "public_key"]));
+    if (!i)
+      throw new Error(
+        `Could not find subnet key for subnet 0x${xt(e.subnet_id)}`,
+      );
+    return i;
+  }
+}
+const Ir = Un(
+    "308182301d060d2b0601040182dc7c0503010201060c2b0601040182dc7c05030201036100",
+  ),
+  Yu = 96;
+function Zu(t) {
+  const e = Ir.byteLength + Yu;
+  if (t.byteLength !== e)
+    throw new TypeError(`BLS DER-encoded public key must be ${e} bytes long`);
+  const r = t.slice(0, Ir.byteLength);
+  if (!$i(r, Ir))
+    throw new TypeError(
+      `BLS DER-encoded public key is invalid. Expect the following prefix: ${Ir}, but get ${r}`,
+    );
+  return t.slice(Ir.byteLength);
+}
+function $t(t) {
+  if (t.status === Le.Found) {
+    if (t.value instanceof ArrayBuffer) return t.value;
+    if (t.value instanceof Uint8Array) return t.value.buffer;
+  }
+}
+async function ln(t) {
+  switch (t[0]) {
+    case ft.Empty:
+      return mt(Ur("ic-hashtree-empty"));
+    case ft.Pruned:
+      return t[1];
+    case ft.Leaf:
+      return mt(Ot(Ur("ic-hashtree-leaf"), t[1]));
+    case ft.Labeled:
+      return mt(Ot(Ur("ic-hashtree-labeled"), t[1], await ln(t[2])));
+    case ft.Fork:
+      return mt(Ot(Ur("ic-hashtree-fork"), await ln(t[1]), await ln(t[2])));
+    default:
+      throw new Error("unreachable");
+  }
+}
+function Ur(t) {
+  const e = new Uint8Array([t.length]),
+    r = new TextEncoder().encode(t);
+  return Ot(e, r);
+}
+var Le;
+(function (t) {
+  (t.Unknown = "unknown"), (t.Absent = "absent"), (t.Found = "found");
+})(Le || (Le = {}));
+var Mt;
+(function (t) {
+  (t.Less = "less"), (t.Greater = "greater");
+})(Mt || (Mt = {}));
+function Ar(t, e) {
+  if (t.length === 0)
+    switch (e[0]) {
+      case ft.Leaf: {
+        if (!e[1]) throw new Error("Invalid tree structure for leaf");
+        return e[1] instanceof ArrayBuffer
+          ? { status: Le.Found, value: e[1] }
+          : e[1] instanceof Uint8Array
+            ? { status: Le.Found, value: e[1].buffer }
+            : { status: Le.Found, value: e[1] };
+      }
+      default:
+        return { status: Le.Found, value: e };
+    }
+  const r = typeof t[0] == "string" ? new TextEncoder().encode(t[0]) : t[0],
+    n = hn(r, e);
+  switch (n.status) {
+    case Le.Found:
+      return Ar(t.slice(1), n.value);
+    case Mt.Greater:
+    case Mt.Less:
+      return { status: Le.Absent };
+    default:
+      return n;
+  }
+}
+function Bi(t) {
+  switch (t[0]) {
+    case ft.Empty:
+      return [];
+    case ft.Fork:
+      return Bi(t[1]).concat(Bi(t[2]));
+    default:
+      return [t];
+  }
+}
+function hn(t, e) {
+  switch (e[0]) {
+    case ft.Labeled:
+      return Lu(t, e[1])
+        ? { status: Mt.Greater }
+        : $i(t, e[1])
+          ? { status: Le.Found, value: e[2] }
+          : { status: Mt.Less };
+    case ft.Fork:
+      const r = hn(t, e[1]);
+      switch (r.status) {
+        case Mt.Greater: {
+          const n = hn(t, e[2]);
+          return n.status === Mt.Less ? { status: Le.Absent } : n;
+        }
+        case Le.Unknown: {
+          let n = hn(t, e[2]);
+          return n.status === Mt.Less ? { status: Le.Unknown } : n;
+        }
+        default:
+          return r;
+      }
+    case ft.Pruned:
+      return { status: Le.Unknown };
+    default:
+      return { status: Le.Absent };
+  }
+}
+function So(t) {
+  const { canisterId: e, subnetId: r, tree: n } = t,
+    i = Ar(["subnet", r.toUint8Array(), "canister_ranges"], n);
+  if (i.status !== Le.Found || !(i.value instanceof ArrayBuffer))
+    throw new Error(`Could not find canister ranges for subnet ${r}`);
+  return Ct(i.value)
+    .map((y) => [Ie.fromUint8Array(y[0]), Ie.fromUint8Array(y[1])])
+    .some((y) => y[0].ltEq(e) && y[1].gtEq(e));
+}
+class Wu {
+  constructor(e, r, n) {
+    (this.key = e), (this.path = r), (this.decodeStrategy = n);
+  }
+}
+const vo = async (t) => {
+    const { agent: e, paths: r } = t,
+      n = Ie.from(t.canisterId),
+      i = [...new Set(r)],
+      c = i.map((y) => Ai(y, n)),
+      l = new Map(),
+      f = i.map((y, m) =>
+        (async () => {
+          var E;
+          try {
+            const B = await e.readState(n, { paths: [c[m]] }),
+              M = await or.create({
+                certificate: B.certificate,
+                rootKey: e.rootKey,
+                canisterId: n,
+              }),
+              v = (q, G) => {
+                if (G === "subnet") {
+                  const V = Io(B.certificate, n, e.rootKey);
+                  return { path: G, data: V };
+                } else return { path: G, data: $t(q.lookup(Ai(G, n))) };
+              },
+              { path: U, data: N } = v(M, i[m]);
+            if (!N)
+              console.warn(
+                `Expected to find result for path ${U}, but instead found nothing.`,
+              ),
+                typeof U == "string" ? l.set(U, null) : l.set(U.key, null);
+            else
+              switch (U) {
+                case "time": {
+                  l.set(U, Yi(N));
+                  break;
+                }
+                case "controllers": {
+                  l.set(U, Xu(N));
+                  break;
+                }
+                case "module_hash": {
+                  l.set(U, Ps(N));
+                  break;
+                }
+                case "subnet": {
+                  l.set(U, N);
+                  break;
+                }
+                case "candid": {
+                  l.set(U, new TextDecoder().decode(N));
+                  break;
+                }
+                default:
+                  if (typeof U != "string" && "key" in U && "path" in U)
+                    switch (U.decodeStrategy) {
+                      case "raw":
+                        l.set(U.key, N);
+                        break;
+                      case "leb128": {
+                        l.set(U.key, To(N));
+                        break;
+                      }
+                      case "cbor": {
+                        l.set(U.key, No(N));
+                        break;
+                      }
+                      case "hex": {
+                        l.set(U.key, Ps(N));
+                        break;
+                      }
+                      case "utf-8":
+                        l.set(U.key, Ku(N));
+                    }
+              }
+          } catch (B) {
+            if (
+              !((E = B?.message) === null || E === void 0) &&
+              E.includes("Invalid certificate")
+            )
+              throw new rt(B.message);
+            typeof y != "string" && "key" in y && "path" in y
+              ? l.set(y.key, null)
+              : l.set(y, null),
+              console.group(),
+              console.warn(
+                `Expected to find result for path ${y}, but instead found nothing.`,
+              ),
+              console.warn(B),
+              console.groupEnd();
+          }
+        })(),
+      );
+    return await Promise.all(f), l;
+  },
+  Io = (t, e, r) => {
+    if (!e._isPrincipal) throw new Error("Invalid canisterId");
+    const n = Ct(new Uint8Array(t)),
+      i = n.tree;
+    let c = n.delegation,
+      l;
+    if (
+      (c && c.subnet_id
+        ? (l = Ie.fromUint8Array(new Uint8Array(c.subnet_id)))
+        : !c && typeof r < "u"
+          ? ((l = Ie.selfAuthenticating(new Uint8Array(r))),
+            (c = {
+              subnet_id: l.toUint8Array(),
+              certificate: new ArrayBuffer(0),
+            }))
+          : ((l = Ie.selfAuthenticating(
+              Ie.fromText(
+                "tdb26-jop6k-aogll-7ltgs-eruif-6kk7m-qpktf-gdiqx-mxtrf-vb5e6-eqe",
+              ).toUint8Array(),
+            )),
+            (c = {
+              subnet_id: l.toUint8Array(),
+              certificate: new ArrayBuffer(0),
+            })),
+      !So({ canisterId: e, subnetId: l, tree: i }))
+    )
+      throw new Error("Canister not in range");
+    const y = Ar(["subnet", c.subnet_id, "node"], i);
+    if (y.status !== Le.Found) throw new Error("Node not found");
+    if (y.value instanceof ArrayBuffer) throw new Error("Invalid node tree");
+    const m = Bi(y.value),
+      E = new Map();
+    return (
+      m.forEach((B) => {
+        const M = Ie.from(new Uint8Array(B[1])).toText(),
+          v = Ar(["public_key"], B[2]);
+        if (v.status !== Le.Found) throw new Error("Public key not found");
+        const U = v.value;
+        if (U.byteLength !== 44) throw new Error("Invalid public key length");
+        E.set(M, U);
+      }),
+      {
+        subnetId: Ie.fromUint8Array(new Uint8Array(c.subnet_id)).toText(),
+        nodeKeys: E,
+      }
+    );
+  },
+  Ai = (t, e) => {
+    const r = new TextEncoder(),
+      n = (c) => new DataView(r.encode(c).buffer).buffer,
+      i = new DataView(e.toUint8Array().buffer).buffer;
+    switch (t) {
+      case "time":
+        return [n("time")];
+      case "controllers":
+        return [n("canister"), i, n("controllers")];
+      case "module_hash":
+        return [n("canister"), i, n("module_hash")];
+      case "subnet":
+        return [n("subnet")];
+      case "candid":
+        return [n("canister"), i, n("metadata"), n("candid:service")];
+      default:
+        if ("key" in t && "path" in t)
+          if (typeof t.path == "string" || t.path instanceof ArrayBuffer) {
+            const c = t.path,
+              l = typeof c == "string" ? n(c) : c;
+            return [n("canister"), i, n("metadata"), l];
+          } else return t.path;
+    }
+    throw new Error(
+      `An unexpeected error was encountered while encoding your path for canister status. Please ensure that your path, ${t} was formatted correctly.`,
+    );
+  },
+  Ps = (t) => xt(t),
+  No = (t) => Ct(t),
+  Ku = (t) => new TextDecoder().decode(t),
+  Xu = (t) => No(t).map((r) => Ie.fromUint8Array(new Uint8Array(r))),
+  Du = Object.freeze(
+    Object.defineProperty(
+      {
+        __proto__: null,
+        CustomPath: Wu,
+        encodePath: Ai,
+        fetchNodeKeys: Io,
+        request: vo,
+      },
+      Symbol.toStringTag,
+      { value: "Module" },
+    ),
+  ),
+  rn = BigInt(2 ** 32 - 1),
+  Ti = BigInt(32);
+function Uo(t, e = !1) {
+  return e
+    ? { h: Number(t & rn), l: Number((t >> Ti) & rn) }
+    : { h: Number((t >> Ti) & rn) | 0, l: Number(t & rn) | 0 };
+}
+function Ju(t, e = !1) {
+  let r = new Uint32Array(t.length),
+    n = new Uint32Array(t.length);
+  for (let i = 0; i < t.length; i++) {
+    const { h: c, l } = Uo(t[i], e);
+    [r[i], n[i]] = [c, l];
+  }
+  return [r, n];
+}
+const Qu = (t, e) => (BigInt(t >>> 0) << Ti) | BigInt(e >>> 0),
+  e0 = (t, e, r) => t >>> r,
+  t0 = (t, e, r) => (t << (32 - r)) | (e >>> r),
+  r0 = (t, e, r) => (t >>> r) | (e << (32 - r)),
+  n0 = (t, e, r) => (t << (32 - r)) | (e >>> r),
+  i0 = (t, e, r) => (t << (64 - r)) | (e >>> (r - 32)),
+  s0 = (t, e, r) => (t >>> (r - 32)) | (e << (64 - r)),
+  a0 = (t, e) => e,
+  o0 = (t, e) => t,
+  c0 = (t, e, r) => (t << r) | (e >>> (32 - r)),
+  f0 = (t, e, r) => (e << r) | (t >>> (32 - r)),
+  u0 = (t, e, r) => (e << (r - 32)) | (t >>> (64 - r)),
+  l0 = (t, e, r) => (t << (r - 32)) | (e >>> (64 - r));
+function h0(t, e, r, n) {
+  const i = (e >>> 0) + (n >>> 0);
+  return { h: (t + r + ((i / 2 ** 32) | 0)) | 0, l: i | 0 };
+}
+const d0 = (t, e, r) => (t >>> 0) + (e >>> 0) + (r >>> 0),
+  p0 = (t, e, r, n) => (e + r + n + ((t / 2 ** 32) | 0)) | 0,
+  y0 = (t, e, r, n) => (t >>> 0) + (e >>> 0) + (r >>> 0) + (n >>> 0),
+  w0 = (t, e, r, n, i) => (e + r + n + i + ((t / 2 ** 32) | 0)) | 0,
+  g0 = (t, e, r, n, i) =>
+    (t >>> 0) + (e >>> 0) + (r >>> 0) + (n >>> 0) + (i >>> 0),
+  b0 = (t, e, r, n, i, c) => (e + r + n + i + c + ((t / 2 ** 32) | 0)) | 0,
+  Ae = {
+    fromBig: Uo,
+    split: Ju,
+    toBig: Qu,
+    shrSH: e0,
+    shrSL: t0,
+    rotrSH: r0,
+    rotrSL: n0,
+    rotrBH: i0,
+    rotrBL: s0,
+    rotr32H: a0,
+    rotr32L: o0,
+    rotlSH: c0,
+    rotlSL: f0,
+    rotlBH: u0,
+    rotlBL: l0,
+    add: h0,
+    add3L: d0,
+    add3H: p0,
+    add4L: y0,
+    add4H: w0,
+    add5H: b0,
+    add5L: g0,
+  },
+  [m0, x0] = Ae.split(
+    [
+      "0x428a2f98d728ae22",
+      "0x7137449123ef65cd",
+      "0xb5c0fbcfec4d3b2f",
+      "0xe9b5dba58189dbbc",
+      "0x3956c25bf348b538",
+      "0x59f111f1b605d019",
+      "0x923f82a4af194f9b",
+      "0xab1c5ed5da6d8118",
+      "0xd807aa98a3030242",
+      "0x12835b0145706fbe",
+      "0x243185be4ee4b28c",
+      "0x550c7dc3d5ffb4e2",
+      "0x72be5d74f27b896f",
+      "0x80deb1fe3b1696b1",
+      "0x9bdc06a725c71235",
+      "0xc19bf174cf692694",
+      "0xe49b69c19ef14ad2",
+      "0xefbe4786384f25e3",
+      "0x0fc19dc68b8cd5b5",
+      "0x240ca1cc77ac9c65",
+      "0x2de92c6f592b0275",
+      "0x4a7484aa6ea6e483",
+      "0x5cb0a9dcbd41fbd4",
+      "0x76f988da831153b5",
+      "0x983e5152ee66dfab",
+      "0xa831c66d2db43210",
+      "0xb00327c898fb213f",
+      "0xbf597fc7beef0ee4",
+      "0xc6e00bf33da88fc2",
+      "0xd5a79147930aa725",
+      "0x06ca6351e003826f",
+      "0x142929670a0e6e70",
+      "0x27b70a8546d22ffc",
+      "0x2e1b21385c26c926",
+      "0x4d2c6dfc5ac42aed",
+      "0x53380d139d95b3df",
+      "0x650a73548baf63de",
+      "0x766a0abb3c77b2a8",
+      "0x81c2c92e47edaee6",
+      "0x92722c851482353b",
+      "0xa2bfe8a14cf10364",
+      "0xa81a664bbc423001",
+      "0xc24b8b70d0f89791",
+      "0xc76c51a30654be30",
+      "0xd192e819d6ef5218",
+      "0xd69906245565a910",
+      "0xf40e35855771202a",
+      "0x106aa07032bbd1b8",
+      "0x19a4c116b8d2d0c8",
+      "0x1e376c085141ab53",
+      "0x2748774cdf8eeb99",
+      "0x34b0bcb5e19b48a8",
+      "0x391c0cb3c5c95a63",
+      "0x4ed8aa4ae3418acb",
+      "0x5b9cca4f7763e373",
+      "0x682e6ff3d6b2b8a3",
+      "0x748f82ee5defb2fc",
+      "0x78a5636f43172f60",
+      "0x84c87814a1f0ab72",
+      "0x8cc702081a6439ec",
+      "0x90befffa23631e28",
+      "0xa4506cebde82bde9",
+      "0xbef9a3f7b2c67915",
+      "0xc67178f2e372532b",
+      "0xca273eceea26619c",
+      "0xd186b8c721c0c207",
+      "0xeada7dd6cde0eb1e",
+      "0xf57d4f7fee6ed178",
+      "0x06f067aa72176fba",
+      "0x0a637dc5a2c898a6",
+      "0x113f9804bef90dae",
+      "0x1b710b35131c471b",
+      "0x28db77f523047d84",
+      "0x32caab7b40c72493",
+      "0x3c9ebe0a15c9bebc",
+      "0x431d67c49c100d4c",
+      "0x4cc5d4becb3e42b6",
+      "0x597f299cfc657e2a",
+      "0x5fcb6fab3ad6faec",
+      "0x6c44198c4a475817",
+    ].map((t) => BigInt(t)),
+  ),
+  Lt = new Uint32Array(80),
+  Yt = new Uint32Array(80);
+class _0 extends Js {
+  constructor() {
+    super(128, 64, 16, !1),
+      (this.Ah = 1779033703),
+      (this.Al = -205731576),
+      (this.Bh = -1150833019),
+      (this.Bl = -2067093701),
+      (this.Ch = 1013904242),
+      (this.Cl = -23791573),
+      (this.Dh = -1521486534),
+      (this.Dl = 1595750129),
+      (this.Eh = 1359893119),
+      (this.El = -1377402159),
+      (this.Fh = -1694144372),
+      (this.Fl = 725511199),
+      (this.Gh = 528734635),
+      (this.Gl = -79577749),
+      (this.Hh = 1541459225),
+      (this.Hl = 327033209);
+  }
+  get() {
+    const {
+      Ah: e,
+      Al: r,
+      Bh: n,
+      Bl: i,
+      Ch: c,
+      Cl: l,
+      Dh: f,
+      Dl: y,
+      Eh: m,
+      El: E,
+      Fh: B,
+      Fl: M,
+      Gh: v,
+      Gl: U,
+      Hh: N,
+      Hl: q,
+    } = this;
+    return [e, r, n, i, c, l, f, y, m, E, B, M, v, U, N, q];
+  }
+  set(e, r, n, i, c, l, f, y, m, E, B, M, v, U, N, q) {
+    (this.Ah = e | 0),
+      (this.Al = r | 0),
+      (this.Bh = n | 0),
+      (this.Bl = i | 0),
+      (this.Ch = c | 0),
+      (this.Cl = l | 0),
+      (this.Dh = f | 0),
+      (this.Dl = y | 0),
+      (this.Eh = m | 0),
+      (this.El = E | 0),
+      (this.Fh = B | 0),
+      (this.Fl = M | 0),
+      (this.Gh = v | 0),
+      (this.Gl = U | 0),
+      (this.Hh = N | 0),
+      (this.Hl = q | 0);
+  }
+  process(e, r) {
+    for (let W = 0; W < 16; W++, r += 4)
+      (Lt[W] = e.getUint32(r)), (Yt[W] = e.getUint32((r += 4)));
+    for (let W = 16; W < 80; W++) {
+      const J = Lt[W - 15] | 0,
+        z = Yt[W - 15] | 0,
+        H = Ae.rotrSH(J, z, 1) ^ Ae.rotrSH(J, z, 8) ^ Ae.shrSH(J, z, 7),
+        j = Ae.rotrSL(J, z, 1) ^ Ae.rotrSL(J, z, 8) ^ Ae.shrSL(J, z, 7),
+        X = Lt[W - 2] | 0,
+        ue = Yt[W - 2] | 0,
+        L = Ae.rotrSH(X, ue, 19) ^ Ae.rotrBH(X, ue, 61) ^ Ae.shrSH(X, ue, 6),
+        oe = Ae.rotrSL(X, ue, 19) ^ Ae.rotrBL(X, ue, 61) ^ Ae.shrSL(X, ue, 6),
+        we = Ae.add4L(j, oe, Yt[W - 7], Yt[W - 16]),
+        he = Ae.add4H(we, H, L, Lt[W - 7], Lt[W - 16]);
+      (Lt[W] = he | 0), (Yt[W] = we | 0);
+    }
+    let {
+      Ah: n,
+      Al: i,
+      Bh: c,
+      Bl: l,
+      Ch: f,
+      Cl: y,
+      Dh: m,
+      Dl: E,
+      Eh: B,
+      El: M,
+      Fh: v,
+      Fl: U,
+      Gh: N,
+      Gl: q,
+      Hh: G,
+      Hl: V,
+    } = this;
+    for (let W = 0; W < 80; W++) {
+      const J = Ae.rotrSH(B, M, 14) ^ Ae.rotrSH(B, M, 18) ^ Ae.rotrBH(B, M, 41),
+        z = Ae.rotrSL(B, M, 14) ^ Ae.rotrSL(B, M, 18) ^ Ae.rotrBL(B, M, 41),
+        H = (B & v) ^ (~B & N),
+        j = (M & U) ^ (~M & q),
+        X = Ae.add5L(V, z, j, x0[W], Yt[W]),
+        ue = Ae.add5H(X, G, J, H, m0[W], Lt[W]),
+        L = X | 0,
+        oe = Ae.rotrSH(n, i, 28) ^ Ae.rotrBH(n, i, 34) ^ Ae.rotrBH(n, i, 39),
+        we = Ae.rotrSL(n, i, 28) ^ Ae.rotrBL(n, i, 34) ^ Ae.rotrBL(n, i, 39),
+        he = (n & c) ^ (n & f) ^ (c & f),
+        Te = (i & l) ^ (i & y) ^ (l & y);
+      (G = N | 0),
+        (V = q | 0),
+        (N = v | 0),
+        (q = U | 0),
+        (v = B | 0),
+        (U = M | 0),
+        ({ h: B, l: M } = Ae.add(m | 0, E | 0, ue | 0, L | 0)),
+        (m = f | 0),
+        (E = y | 0),
+        (f = c | 0),
+        (y = l | 0),
+        (c = n | 0),
+        (l = i | 0);
+      const ge = Ae.add3L(L, we, Te);
+      (n = Ae.add3H(ge, ue, oe, he)), (i = ge | 0);
+    }
+    ({ h: n, l: i } = Ae.add(this.Ah | 0, this.Al | 0, n | 0, i | 0)),
+      ({ h: c, l } = Ae.add(this.Bh | 0, this.Bl | 0, c | 0, l | 0)),
+      ({ h: f, l: y } = Ae.add(this.Ch | 0, this.Cl | 0, f | 0, y | 0)),
+      ({ h: m, l: E } = Ae.add(this.Dh | 0, this.Dl | 0, m | 0, E | 0)),
+      ({ h: B, l: M } = Ae.add(this.Eh | 0, this.El | 0, B | 0, M | 0)),
+      ({ h: v, l: U } = Ae.add(this.Fh | 0, this.Fl | 0, v | 0, U | 0)),
+      ({ h: N, l: q } = Ae.add(this.Gh | 0, this.Gl | 0, N | 0, q | 0)),
+      ({ h: G, l: V } = Ae.add(this.Hh | 0, this.Hl | 0, G | 0, V | 0)),
+      this.set(n, i, c, l, f, y, m, E, B, M, v, U, N, q, G, V);
+  }
+  roundClean() {
+    Lt.fill(0), Yt.fill(0);
+  }
+  destroy() {
+    this.buffer.fill(0),
+      this.set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  }
+}
+const Ro = Ui(() => new _0());
+/*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */ const pt =
+    BigInt(0),
+  ct = BigInt(1),
+  nn = BigInt(2),
+  E0 = BigInt(8),
+  B0 = { zip215: !0 };
+function A0(t) {
+  const e = xo(t);
+  return (
+    Lr(
+      t,
+      { hash: "function", a: "bigint", d: "bigint", randomBytes: "function" },
+      {
+        adjustScalarBytes: "function",
+        domain: "function",
+        uvRatio: "function",
+        mapToCurve: "function",
+      },
+    ),
+    Object.freeze({ ...e })
+  );
+}
+function Zi(t) {
+  const e = A0(t),
+    { Fp: r, n, prehash: i, hash: c, randomBytes: l, nByteLength: f, h: y } = e,
+    m = nn << (BigInt(f * 8) - ct),
+    E = r.create,
+    B =
+      e.uvRatio ||
+      ((K, Y) => {
+        try {
+          return { isValid: !0, value: r.sqrt(K * r.inv(Y)) };
+        } catch {
+          return { isValid: !1, value: pt };
+        }
+      }),
+    M = e.adjustScalarBytes || ((K) => K),
+    v =
+      e.domain ||
+      ((K, Y, te) => {
+        if (Y.length || te)
+          throw new Error("Contexts/pre-hash are not supported");
+        return K;
+      }),
+    U = (K) => typeof K == "bigint" && pt < K,
+    N = (K, Y) => U(K) && U(Y) && K < Y,
+    q = (K) => K === pt || N(K, m);
+  function G(K, Y) {
+    if (N(K, Y)) return K;
+    throw new Error(`Expected valid scalar < ${Y}, got ${typeof K} ${K}`);
+  }
+  function V(K) {
+    return K === pt ? K : G(K, n);
+  }
+  const W = new Map();
+  function J(K) {
+    if (!(K instanceof z)) throw new Error("ExtendedPoint expected");
+  }
+  class z {
+    constructor(Y, te, D, ee) {
+      if (((this.ex = Y), (this.ey = te), (this.ez = D), (this.et = ee), !q(Y)))
+        throw new Error("x required");
+      if (!q(te)) throw new Error("y required");
+      if (!q(D)) throw new Error("z required");
+      if (!q(ee)) throw new Error("t required");
+    }
+    get x() {
+      return this.toAffine().x;
+    }
+    get y() {
+      return this.toAffine().y;
+    }
+    static fromAffine(Y) {
+      if (Y instanceof z) throw new Error("extended point not allowed");
+      const { x: te, y: D } = Y || {};
+      if (!q(te) || !q(D)) throw new Error("invalid affine point");
+      return new z(te, D, ct, E(te * D));
+    }
+    static normalizeZ(Y) {
+      const te = r.invertBatch(Y.map((D) => D.ez));
+      return Y.map((D, ee) => D.toAffine(te[ee])).map(z.fromAffine);
+    }
+    _setWindowSize(Y) {
+      (this._WINDOW_SIZE = Y), W.delete(this);
+    }
+    assertValidity() {
+      const { a: Y, d: te } = e;
+      if (this.is0()) throw new Error("bad point: ZERO");
+      const { ex: D, ey: ee, ez: ce, et: w } = this,
+        ye = E(D * D),
+        de = E(ee * ee),
+        xe = E(ce * ce),
+        re = E(xe * xe),
+        se = E(ye * Y),
+        b = E(xe * E(se + de)),
+        x = E(re + E(te * E(ye * de)));
+      if (b !== x) throw new Error("bad point: equation left != right (1)");
+      const A = E(D * ee),
+        F = E(ce * w);
+      if (A !== F) throw new Error("bad point: equation left != right (2)");
+    }
+    equals(Y) {
+      J(Y);
+      const { ex: te, ey: D, ez: ee } = this,
+        { ex: ce, ey: w, ez: ye } = Y,
+        de = E(te * ye),
+        xe = E(ce * ee),
+        re = E(D * ye),
+        se = E(w * ee);
+      return de === xe && re === se;
+    }
+    is0() {
+      return this.equals(z.ZERO);
+    }
+    negate() {
+      return new z(E(-this.ex), this.ey, this.ez, E(-this.et));
+    }
+    double() {
+      const { a: Y } = e,
+        { ex: te, ey: D, ez: ee } = this,
+        ce = E(te * te),
+        w = E(D * D),
+        ye = E(nn * E(ee * ee)),
+        de = E(Y * ce),
+        xe = te + D,
+        re = E(E(xe * xe) - ce - w),
+        se = de + w,
+        b = se - ye,
+        x = de - w,
+        A = E(re * b),
+        F = E(se * x),
+        R = E(re * x),
+        P = E(b * se);
+      return new z(A, F, P, R);
+    }
+    add(Y) {
+      J(Y);
+      const { a: te, d: D } = e,
+        { ex: ee, ey: ce, ez: w, et: ye } = this,
+        { ex: de, ey: xe, ez: re, et: se } = Y;
+      if (te === BigInt(-1)) {
+        const k = E((ce - ee) * (xe + de)),
+          Q = E((ce + ee) * (xe - de)),
+          ae = E(Q - k);
+        if (ae === pt) return this.double();
+        const le = E(w * nn * se),
+          _e = E(ye * nn * re),
+          d = _e + le,
+          o = Q + k,
+          u = _e - le,
+          _ = E(d * ae),
+          O = E(o * u),
+          $ = E(d * u),
+          C = E(ae * o);
+        return new z(_, O, C, $);
+      }
+      const b = E(ee * de),
+        x = E(ce * xe),
+        A = E(ye * D * se),
+        F = E(w * re),
+        R = E((ee + ce) * (de + xe) - b - x),
+        P = F - A,
+        h = F + A,
+        s = E(x - te * b),
+        a = E(R * P),
+        p = E(h * s),
+        g = E(R * s),
+        T = E(P * h);
+      return new z(a, p, T, g);
+    }
+    subtract(Y) {
+      return this.add(Y.negate());
+    }
+    wNAF(Y) {
+      return X.wNAFCached(this, W, Y, z.normalizeZ);
+    }
+    multiply(Y) {
+      const { p: te, f: D } = this.wNAF(G(Y, n));
+      return z.normalizeZ([te, D])[0];
+    }
+    multiplyUnsafe(Y) {
+      let te = V(Y);
+      return te === pt
+        ? j
+        : this.equals(j) || te === ct
+          ? this
+          : this.equals(H)
+            ? this.wNAF(te).p
+            : X.unsafeLadder(this, te);
+    }
+    isSmallOrder() {
+      return this.multiplyUnsafe(y).is0();
+    }
+    isTorsionFree() {
+      return X.unsafeLadder(this, n).is0();
+    }
+    toAffine(Y) {
+      const { ex: te, ey: D, ez: ee } = this,
+        ce = this.is0();
+      Y == null && (Y = ce ? E0 : r.inv(ee));
+      const w = E(te * Y),
+        ye = E(D * Y),
+        de = E(ee * Y);
+      if (ce) return { x: pt, y: ct };
+      if (de !== ct) throw new Error("invZ was invalid");
+      return { x: w, y: ye };
+    }
+    clearCofactor() {
+      const { h: Y } = e;
+      return Y === ct ? this : this.multiplyUnsafe(Y);
+    }
+    static fromHex(Y, te = !1) {
+      const { d: D, a: ee } = e,
+        ce = r.BYTES;
+      Y = ot("pointHex", Y, ce);
+      const w = Y.slice(),
+        ye = Y[ce - 1];
+      w[ce - 1] = ye & -129;
+      const de = Mr(w);
+      de === pt || (te ? G(de, m) : G(de, r.ORDER));
+      const xe = E(de * de),
+        re = E(xe - ct),
+        se = E(D * xe - ee);
+      let { isValid: b, value: x } = B(re, se);
+      if (!b) throw new Error("Point.fromHex: invalid y coordinate");
+      const A = (x & ct) === ct,
+        F = (ye & 128) !== 0;
+      if (!te && x === pt && F) throw new Error("Point.fromHex: x=0 and x_0=1");
+      return F !== A && (x = E(-x)), z.fromAffine({ x, y: de });
+    }
+    static fromPrivateKey(Y) {
+      return oe(Y).point;
+    }
+    toRawBytes() {
+      const { x: Y, y: te } = this.toAffine(),
+        D = On(te, r.BYTES);
+      return (D[D.length - 1] |= Y & ct ? 128 : 0), D;
+    }
+    toHex() {
+      return lr(this.toRawBytes());
+    }
+  }
+  (z.BASE = new z(e.Gx, e.Gy, ct, E(e.Gx * e.Gy))),
+    (z.ZERO = new z(pt, ct, ct, pt));
+  const { BASE: H, ZERO: j } = z,
+    X = mo(z, f * 8);
+  function ue(K) {
+    return qe(K, n);
+  }
+  function L(K) {
+    return ue(Mr(K));
+  }
+  function oe(K) {
+    const Y = f;
+    K = ot("private key", K, Y);
+    const te = ot("hashed private key", c(K), 2 * Y),
+      D = M(te.slice(0, Y)),
+      ee = te.slice(Y, 2 * Y),
+      ce = L(D),
+      w = H.multiply(ce),
+      ye = w.toRawBytes();
+    return { head: D, prefix: ee, scalar: ce, point: w, pointBytes: ye };
+  }
+  function we(K) {
+    return oe(K).pointBytes;
+  }
+  function he(K = new Uint8Array(), ...Y) {
+    const te = ze(...Y);
+    return L(c(v(te, ot("context", K), !!i)));
+  }
+  function Te(K, Y, te = {}) {
+    (K = ot("message", K)), i && (K = i(K));
+    const { prefix: D, scalar: ee, pointBytes: ce } = oe(Y),
+      w = he(te.context, D, K),
+      ye = H.multiply(w).toRawBytes(),
+      de = he(te.context, ye, ce, K),
+      xe = ue(w + de * ee);
+    V(xe);
+    const re = ze(ye, On(xe, r.BYTES));
+    return ot("result", re, f * 2);
+  }
+  const ge = B0;
+  function ne(K, Y, te, D = ge) {
+    const { context: ee, zip215: ce } = D,
+      w = r.BYTES;
+    (K = ot("signature", K, 2 * w)), (Y = ot("message", Y)), i && (Y = i(Y));
+    const ye = Mr(K.slice(w, 2 * w));
+    let de, xe, re;
+    try {
+      (de = z.fromHex(te, ce)),
+        (xe = z.fromHex(K.slice(0, w), ce)),
+        (re = H.multiplyUnsafe(ye));
+    } catch {
+      return !1;
+    }
+    if (!ce && de.isSmallOrder()) return !1;
+    const se = he(ee, xe.toRawBytes(), de.toRawBytes(), Y);
+    return xe
+      .add(de.multiplyUnsafe(se))
+      .subtract(re)
+      .clearCofactor()
+      .equals(z.ZERO);
+  }
+  return (
+    H._setWindowSize(8),
+    {
+      CURVE: e,
+      getPublicKey: we,
+      sign: Te,
+      verify: ne,
+      ExtendedPoint: z,
+      utils: {
+        getExtendedPublicKey: oe,
+        randomPrivateKey: () => l(r.BYTES),
+        precompute(K = 8, Y = z.BASE) {
+          return Y._setWindowSize(K), Y.multiply(BigInt(3)), Y;
+        },
+      },
+    }
+  );
+}
+/*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */ const Wi =
+    BigInt(
+      "57896044618658097711785492504343953926634992332820282019728792003956564819949",
+    ),
+  Ms = BigInt(
+    "19681161376707505956807079304988542015446066515923890162744021073123829784752",
+  );
+BigInt(0);
+const T0 = BigInt(1),
+  Si = BigInt(2),
+  S0 = BigInt(5),
+  ks = BigInt(10),
+  v0 = BigInt(20),
+  I0 = BigInt(40),
+  Cs = BigInt(80);
+function N0(t) {
+  const e = Wi,
+    n = (((t * t) % e) * t) % e,
+    i = (Bt(n, Si, e) * n) % e,
+    c = (Bt(i, T0, e) * t) % e,
+    l = (Bt(c, S0, e) * c) % e,
+    f = (Bt(l, ks, e) * l) % e,
+    y = (Bt(f, v0, e) * f) % e,
+    m = (Bt(y, I0, e) * y) % e,
+    E = (Bt(m, Cs, e) * m) % e,
+    B = (Bt(E, Cs, e) * m) % e,
+    M = (Bt(B, ks, e) * l) % e;
+  return { pow_p_5_8: (Bt(M, Si, e) * t) % e, b2: n };
+}
+function U0(t) {
+  return (t[0] &= 248), (t[31] &= 127), (t[31] |= 64), t;
+}
+function R0(t, e) {
+  const r = Wi,
+    n = qe(e * e * e, r),
+    i = qe(n * n * e, r),
+    c = N0(t * i).pow_p_5_8;
+  let l = qe(t * n * c, r);
+  const f = qe(e * l * l, r),
+    y = l,
+    m = qe(l * Ms, r),
+    E = f === t,
+    B = f === qe(-t, r),
+    M = f === qe(-t * Ms, r);
+  return (
+    E && (l = y),
+    (B || M) && (l = m),
+    pu(l, r) && (l = qe(-l, r)),
+    { isValid: E || B, value: l }
+  );
+}
+const qt = ji(Wi, void 0, !0),
+  Ki = {
+    a: BigInt(-1),
+    d: BigInt(
+      "37095705934669439343138083508754565189542113879843219016388785533085940283555",
+    ),
+    Fp: qt,
+    n: BigInt(
+      "7237005577332262213973186563042994240857116359379907606001950938285454250989",
+    ),
+    h: BigInt(8),
+    Gx: BigInt(
+      "15112221349535400772501151409588531511454012693041857206046113283949847762202",
+    ),
+    Gy: BigInt(
+      "46316835694926478169428394003475163141307993866256225615783033603165251855960",
+    ),
+    hash: Ro,
+    randomBytes: Ds,
+    adjustScalarBytes: U0,
+    uvRatio: R0,
+  },
+  O0 = Zi(Ki);
+function Oo(t, e, r) {
+  if (e.length > 255) throw new Error("Context is too big");
+  return kc(
+    Ks("SigEd25519 no Ed25519 collisions"),
+    new Uint8Array([r ? 1 : 0, e.length]),
+    e,
+    t,
+  );
+}
+({ ...Ki });
+({ ...Ki });
+const F0 = (qt.ORDER + BigInt(3)) / BigInt(8);
+qt.pow(Si, F0);
+qt.sqrt(qt.neg(qt.ONE));
+(qt.ORDER - BigInt(5)) / BigInt(8);
+BigInt(486662);
+wu(qt, qt.neg(BigInt(486664)));
+BigInt(
+  "25063068953384623474111414158702152701244531502492656460079210482610430750235",
+);
+BigInt(
+  "54469307008909316920995813868745141605393597292927456921205312896311721017578",
+);
+BigInt(
+  "1159843021668779879193775521855586647937357759715417654439879720876111806838",
+);
+BigInt(
+  "40440834346308536858101042469323190826248399146238708352240133220865137265952",
+);
+BigInt("0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+var $s = function (t, e, r, n, i) {
+    if (n === "m") throw new TypeError("Private method is not writable");
+    if (n === "a" && !i)
+      throw new TypeError("Private accessor was defined without a setter");
+    if (typeof e == "function" ? t !== e || !i : !e.has(t))
+      throw new TypeError(
+        "Cannot write private member to an object whose class did not declare it",
+      );
+    return n === "a" ? i.call(t, r) : i ? (i.value = r) : e.set(t, r), r;
+  },
+  st = function (t, e, r, n) {
+    if (r === "a" && !n)
+      throw new TypeError("Private accessor was defined without a getter");
+    if (typeof e == "function" ? t !== e || !n : !e.has(t))
+      throw new TypeError(
+        "Cannot read private member from an object whose class did not declare it",
+      );
+    return r === "m" ? n : r === "a" ? n.call(t) : n ? n.value : e.get(t);
+  },
+  tt,
+  Rr,
+  Fo,
+  Po;
+class P0 {
+  constructor(e = {}) {
+    tt.set(this, void 0),
+      Rr.set(this, void 0),
+      (this[Fo] = this.entries.bind(this)),
+      (this[Po] = "ExpirableMap");
+    const { source: r = [], expirationTime: n = 10 * 60 * 1e3 } = e,
+      i = Date.now();
+    $s(
+      this,
+      tt,
+      new Map([...r].map(([c, l]) => [c, { value: l, timestamp: i }])),
+      "f",
+    ),
+      $s(this, Rr, n, "f");
+  }
+  prune() {
+    const e = Date.now();
+    for (const [r, n] of st(this, tt, "f").entries())
+      e - n.timestamp > st(this, Rr, "f") && st(this, tt, "f").delete(r);
+    return this;
+  }
+  set(e, r) {
+    this.prune();
+    const n = { value: r, timestamp: Date.now() };
+    return st(this, tt, "f").set(e, n), this;
+  }
+  get(e) {
+    const r = st(this, tt, "f").get(e);
+    if (r !== void 0) {
+      if (Date.now() - r.timestamp > st(this, Rr, "f")) {
+        st(this, tt, "f").delete(e);
+        return;
+      }
+      return r.value;
+    }
+  }
+  clear() {
+    st(this, tt, "f").clear();
+  }
+  entries() {
+    const e = st(this, tt, "f").entries();
+    return (function* () {
+      for (const [n, i] of e) yield [n, i.value];
+    })();
+  }
+  values() {
+    const e = st(this, tt, "f").values();
+    return (function* () {
+      for (const n of e) yield n.value;
+    })();
+  }
+  keys() {
+    return st(this, tt, "f").keys();
+  }
+  forEach(e, r) {
+    for (const [n, i] of st(this, tt, "f").entries())
+      e.call(r, i.value, n, this);
+  }
+  has(e) {
+    return st(this, tt, "f").has(e);
+  }
+  delete(e) {
+    return st(this, tt, "f").delete(e);
+  }
+  get size() {
+    return st(this, tt, "f").size;
+  }
+}
+(tt = new WeakMap()),
+  (Rr = new WeakMap()),
+  (Fo = Symbol.iterator),
+  (Po = Symbol.toStringTag);
+const qs = (t) => {
+    if (t <= 127) return 1;
+    if (t <= 255) return 2;
+    if (t <= 65535) return 3;
+    if (t <= 16777215) return 4;
+    throw new Error("Length too long (> 4 bytes)");
+  },
+  Vs = (t, e, r) => {
+    if (r <= 127) return (t[e] = r), 1;
+    if (r <= 255) return (t[e] = 129), (t[e + 1] = r), 2;
+    if (r <= 65535) return (t[e] = 130), (t[e + 1] = r >> 8), (t[e + 2] = r), 3;
+    if (r <= 16777215)
+      return (
+        (t[e] = 131),
+        (t[e + 1] = r >> 16),
+        (t[e + 2] = r >> 8),
+        (t[e + 3] = r),
+        4
+      );
+    throw new Error("Length too long (> 4 bytes)");
+  },
+  vi = (t, e) => {
+    if (t[e] < 128) return 1;
+    if (t[e] === 128) throw new Error("Invalid length 0");
+    if (t[e] === 129) return 2;
+    if (t[e] === 130) return 3;
+    if (t[e] === 131) return 4;
+    throw new Error("Length too long (> 4 bytes)");
+  },
+  M0 = (t, e) => {
+    const r = vi(t, e);
+    if (r === 1) return t[e];
+    if (r === 2) return t[e + 1];
+    if (r === 3) return (t[e + 1] << 8) + t[e + 2];
+    if (r === 4) return (t[e + 1] << 16) + (t[e + 2] << 8) + t[e + 3];
+    throw new Error("Length too long (> 4 bytes)");
+  };
+Uint8Array.from([48, 12, 6, 10, 43, 6, 1, 4, 1, 131, 184, 67, 1, 1]);
+const Gs = Uint8Array.from([48, 5, 6, 3, 43, 101, 112]);
+Uint8Array.from([
+  48, 16, 6, 7, 42, 134, 72, 206, 61, 2, 1, 6, 5, 43, 129, 4, 0, 10,
+]);
+function k0(t, e) {
+  const r = 2 + qs(t.byteLength + 1),
+    n = e.byteLength + r + t.byteLength;
+  let i = 0;
+  const c = new Uint8Array(1 + qs(n) + n);
+  return (
+    (c[i++] = 48),
+    (i += Vs(c, i, n)),
+    c.set(e, i),
+    (i += e.byteLength),
+    (c[i++] = 3),
+    (i += Vs(c, i, t.byteLength + 1)),
+    (c[i++] = 0),
+    c.set(new Uint8Array(t), i),
+    c
+  );
+}
+const C0 = (t, e) => {
+  let r = 0;
+  const n = (f, y) => {
+      if (i[r++] !== f) throw new Error("Expected: " + y);
+    },
+    i = new Uint8Array(t);
+  if (
+    (n(48, "sequence"), (r += vi(i, r)), !$i(i.slice(r, r + e.byteLength), e))
+  )
+    throw new Error("Not the expected OID.");
+  (r += e.byteLength), n(3, "bit string");
+  const c = M0(i, r) - 1;
+  (r += vi(i, r)), n(0, "0 padding");
+  const l = i.slice(r);
+  if (c !== l.length)
+    throw new Error(
+      `DER payload mismatch: Expected length ${c} actual length ${l.length}`,
+    );
+  return l;
+};
+var Hs = function (t, e, r, n, i) {
+    if (n === "m") throw new TypeError("Private method is not writable");
+    if (n === "a" && !i)
+      throw new TypeError("Private accessor was defined without a setter");
+    if (typeof e == "function" ? t !== e || !i : !e.has(t))
+      throw new TypeError(
+        "Cannot write private member to an object whose class did not declare it",
+      );
+    return n === "a" ? i.call(t, r) : i ? (i.value = r) : e.set(t, r), r;
+  },
+  js = function (t, e, r, n) {
+    if (r === "a" && !n)
+      throw new TypeError("Private accessor was defined without a getter");
+    if (typeof e == "function" ? t !== e || !n : !e.has(t))
+      throw new TypeError(
+        "Cannot read private member from an object whose class did not declare it",
+      );
+    return r === "m" ? n : r === "a" ? n.call(t) : n ? n.value : e.get(t);
+  },
+  dn,
+  pn;
+class ar {
+  constructor(e) {
+    if (
+      (dn.set(this, void 0),
+      pn.set(this, void 0),
+      e.byteLength !== ar.RAW_KEY_LENGTH)
+    )
+      throw new Error("An Ed25519 public key must be exactly 32bytes long");
+    Hs(this, dn, e, "f"), Hs(this, pn, ar.derEncode(e), "f");
+  }
+  static from(e) {
+    return this.fromDer(e.toDer());
+  }
+  static fromRaw(e) {
+    return new ar(e);
+  }
+  static fromDer(e) {
+    return new ar(this.derDecode(e));
+  }
+  static derEncode(e) {
+    return k0(e, Gs).buffer;
+  }
+  static derDecode(e) {
+    const r = C0(e, Gs);
+    if (r.length !== this.RAW_KEY_LENGTH)
+      throw new Error("An Ed25519 public key must be exactly 32bytes long");
+    return r;
+  }
+  get rawKey() {
+    return js(this, dn, "f");
+  }
+  get derKey() {
+    return js(this, pn, "f");
+  }
+  toDer() {
+    return this.derKey;
+  }
+  toRaw() {
+    return this.rawKey;
+  }
+}
+(dn = new WeakMap()), (pn = new WeakMap());
+ar.RAW_KEY_LENGTH = 32;
+class $0 {
+  constructor() {
+    this.observers = [];
+  }
+  subscribe(e) {
+    this.observers.push(e);
+  }
+  unsubscribe(e) {
+    this.observers = this.observers.filter((r) => r !== e);
+  }
+  notify(e, ...r) {
+    this.observers.forEach((n) => n(e, ...r));
+  }
+}
+class q0 extends $0 {
+  constructor() {
+    super();
+  }
+  print(e, ...r) {
+    this.notify({ message: e, level: "info" }, ...r);
+  }
+  warn(e, ...r) {
+    this.notify({ message: e, level: "warn" }, ...r);
+  }
+  error(e, r, ...n) {
+    this.notify({ message: e, level: "error", error: r }, ...n);
+  }
+}
+var At = function (t, e, r, n, i) {
+    if (n === "m") throw new TypeError("Private method is not writable");
+    if (n === "a" && !i)
+      throw new TypeError("Private accessor was defined without a setter");
+    if (typeof e == "function" ? t !== e || !i : !e.has(t))
+      throw new TypeError(
+        "Cannot write private member to an object whose class did not declare it",
+      );
+    return n === "a" ? i.call(t, r) : i ? (i.value = r) : e.set(t, r), r;
+  },
+  et = function (t, e, r, n) {
+    if (r === "a" && !n)
+      throw new TypeError("Private accessor was defined without a getter");
+    if (typeof e == "function" ? t !== e || !n : !e.has(t))
+      throw new TypeError(
+        "Cannot read private member from an object whose class did not declare it",
+      );
+    return r === "m" ? n : r === "a" ? n.call(t) : n ? n.value : e.get(t);
+  },
+  Tt,
+  yn,
+  wn,
+  gn,
+  bn,
+  mn,
+  xn,
+  _n,
+  gr;
+const Mo = 0.5,
+  ko = 1.5,
+  Co = 500,
+  $o = 6e4,
+  qo = 9e5,
+  Vo = 10;
+class Zn {
+  constructor(e = Zn.default) {
+    Tt.set(this, void 0),
+      yn.set(this, void 0),
+      wn.set(this, void 0),
+      gn.set(this, void 0),
+      bn.set(this, void 0),
+      mn.set(this, void 0),
+      xn.set(this, void 0),
+      _n.set(this, void 0),
+      gr.set(this, 0);
+    const {
+      initialInterval: r = Co,
+      randomizationFactor: n = Mo,
+      multiplier: i = ko,
+      maxInterval: c = $o,
+      maxElapsedTime: l = qo,
+      maxIterations: f = Vo,
+      date: y = Date,
+    } = e;
+    At(this, Tt, r, "f"),
+      At(this, yn, n, "f"),
+      At(this, wn, i, "f"),
+      At(this, gn, c, "f"),
+      At(this, _n, y, "f"),
+      At(this, bn, y.now(), "f"),
+      At(this, mn, l, "f"),
+      At(this, xn, f, "f");
+  }
+  get ellapsedTimeInMsec() {
+    return et(this, _n, "f").now() - et(this, bn, "f");
+  }
+  get currentInterval() {
+    return et(this, Tt, "f");
+  }
+  get count() {
+    return et(this, gr, "f");
+  }
+  get randomValueFromInterval() {
+    const e = et(this, yn, "f") * et(this, Tt, "f"),
+      r = et(this, Tt, "f") - e,
+      n = et(this, Tt, "f") + e;
+    return Math.random() * (n - r) + r;
+  }
+  incrementCurrentInterval() {
+    var e;
+    return (
+      At(
+        this,
+        Tt,
+        Math.min(et(this, Tt, "f") * et(this, wn, "f"), et(this, gn, "f")),
+        "f",
+      ),
+      At(this, gr, ((e = et(this, gr, "f")), e++, e), "f"),
+      et(this, Tt, "f")
+    );
+  }
+  next() {
+    return this.ellapsedTimeInMsec >= et(this, mn, "f") ||
+      et(this, gr, "f") >= et(this, xn, "f")
+      ? null
+      : (this.incrementCurrentInterval(), this.randomValueFromInterval);
+  }
+}
+(Tt = new WeakMap()),
+  (yn = new WeakMap()),
+  (wn = new WeakMap()),
+  (gn = new WeakMap()),
+  (bn = new WeakMap()),
+  (mn = new WeakMap()),
+  (xn = new WeakMap()),
+  (_n = new WeakMap()),
+  (gr = new WeakMap());
+Zn.default = {
+  initialInterval: Co,
+  randomizationFactor: Mo,
+  multiplier: ko,
+  maxInterval: $o,
+  maxElapsedTime: qo,
+  maxIterations: Vo,
+  date: Date,
+};
+var at = function (t, e, r, n, i) {
+    if (n === "m") throw new TypeError("Private method is not writable");
+    if (n === "a" && !i)
+      throw new TypeError("Private accessor was defined without a setter");
+    if (typeof e == "function" ? t !== e || !i : !e.has(t))
+      throw new TypeError(
+        "Cannot write private member to an object whose class did not declare it",
+      );
+    return n === "a" ? i.call(t, r) : i ? (i.value = r) : e.set(t, r), r;
+  },
+  fe = function (t, e, r, n) {
+    if (r === "a" && !n)
+      throw new TypeError("Private accessor was defined without a getter");
+    if (typeof e == "function" ? t !== e || !n : !e.has(t))
+      throw new TypeError(
+        "Cannot read private member from an object whose class did not declare it",
+      );
+    return r === "m" ? n : r === "a" ? n.call(t) : n ? n.value : e.get(t);
+  },
+  Rt,
+  St,
+  Kt,
+  xr,
+  Or,
+  Fr,
+  wt,
+  En,
+  gt,
+  er,
+  Pr,
+  br,
+  mr,
+  tr,
+  ir,
+  Go,
+  Bn,
+  An,
+  Pt;
+(function (t) {
+  (t.Received = "received"),
+    (t.Processing = "processing"),
+    (t.Replied = "replied"),
+    (t.Rejected = "rejected"),
+    (t.Unknown = "unknown"),
+    (t.Done = "done");
+})(Pt || (Pt = {}));
+const sn = 5 * 60 * 1e3,
+  V0 =
+    "308182301d060d2b0601040182dc7c0503010201060c2b0601040182dc7c05030201036100814c0e6ec71fab583b08bd81373c255c3c371b2e84863c98a4f1e08b74235d14fb5d9c0cd546d9685f913a0c0b2cc5341583bf4b4392e467db96d65b9bb4cb717112f8472e0d5a4d14505ffd7484b01291091c5f87b98883463f98091a0baaae",
+  G0 = "ic0.app",
+  H0 = ".ic0.app",
+  j0 = "icp0.io",
+  z0 = ".icp0.io",
+  L0 = "icp-api.io",
+  Y0 = ".icp-api.io";
+class oi extends rt {
+  constructor(e) {
+    super(e), (this.message = e);
+  }
+}
+class an extends rt {
+  constructor(e) {
+    super(e), (this.message = e);
+  }
+}
+function Z0() {
+  let t;
+  if (typeof window < "u")
+    if (window.fetch) t = window.fetch.bind(window);
+    else
+      throw new oi(
+        "Fetch implementation was not available. You appear to be in a browser context, but window.fetch was not present.",
+      );
+  else if (typeof global < "u")
+    if (global.fetch) t = global.fetch.bind(global);
+    else
+      throw new oi(
+        "Fetch implementation was not available. You appear to be in a Node.js context, but global.fetch was not available.",
+      );
+  else typeof self < "u" && self.fetch && (t = self.fetch.bind(self));
+  if (t) return t;
+  throw new oi(
+    "Fetch implementation was not available. Please provide fetch to the HttpAgent constructor, or ensure it is available in the window or global context.",
+  );
+}
+function W0(t) {
+  let e;
+  if (t !== void 0)
+    !t.match(/^[a-z]+:/) && typeof window < "u"
+      ? (e = new URL(window.location.protocol + "//" + t))
+      : (e = new URL(t));
+  else {
+    const r = ["ic0.app", "icp0.io", "127.0.0.1", "localhost"],
+      n = [".github.dev", ".gitpod.io"],
+      i = typeof window < "u" ? window.location : void 0,
+      c = i?.hostname;
+    let l;
+    c &&
+      typeof c == "string" &&
+      (n.some((f) => c.endsWith(f))
+        ? (l = c)
+        : (l = r.find((f) => c.endsWith(f)))),
+      i && l
+        ? (e = new URL(`${i.protocol}//${l}${i.port ? ":" + i.port : ""}`))
+        : (e = new URL("https://icp-api.io"));
+  }
+  return e.toString();
+}
+class Tn {
+  constructor(e = {}) {
+    var r;
+    Rt.add(this),
+      St.set(this, void 0),
+      Kt.set(this, void 0),
+      xr.set(this, void 0),
+      Or.set(this, void 0),
+      Fr.set(this, 0),
+      wt.set(this, void 0),
+      En.set(this, !1),
+      gt.set(this, void 0),
+      er.set(this, void 0),
+      (this._isAgent = !0),
+      (this.config = {}),
+      Pr.set(this, 0),
+      (this.log = new q0()),
+      br.set(this, []),
+      mr.set(this, []),
+      tr.set(this, new P0({ expirationTime: 5 * 60 * 1e3 })),
+      ir.set(this, !0),
+      An.set(this, (c, l) => {
+        if (fe(this, ir, "f") === !1) return c;
+        if (!l)
+          throw new It(
+            "Invalid signature from replica signed query: no matching node key found.",
+          );
+        const { status: f, signatures: y = [], requestId: m } = c,
+          E = new TextEncoder().encode("\vic-response");
+        for (const B of y) {
+          const { timestamp: M, identity: v } = B,
+            U = Ie.fromUint8Array(v).toText();
+          let N;
+          if (f === "replied") {
+            const { reply: J } = c;
+            N = Rn({
+              status: f,
+              reply: J,
+              timestamp: BigInt(M),
+              request_id: m,
+            });
+          } else if (f === "rejected") {
+            const { reject_code: J, reject_message: z, error_code: H } = c;
+            N = Rn({
+              status: f,
+              reject_code: J,
+              reject_message: z,
+              error_code: H,
+              timestamp: BigInt(M),
+              request_id: m,
+            });
+          } else throw new Error(`Unknown status: ${f}`);
+          const q = Ot(E, new Uint8Array(N)),
+            G = l?.nodeKeys.get(U);
+          if (!G)
+            throw new It(
+              "Invalid signature from replica signed query: no matching node key found.",
+            );
+          const V = ar.fromDer(G).rawKey;
+          if (O0.verify(B.signature, new Uint8Array(q), new Uint8Array(V)))
+            return c;
+          throw new It(`Invalid signature from replica ${U} signed query.`);
+        }
+        return c;
+      }),
+      (this.config = e),
+      at(this, Kt, e.fetch || Z0() || fetch.bind(global), "f"),
+      at(this, xr, e.fetchOptions, "f"),
+      at(this, Or, e.callOptions, "f"),
+      (this.rootKey = e.rootKey ? e.rootKey : Un(V0));
+    const n = W0(e.host);
+    (this.host = new URL(n)),
+      e.verifyQuerySignatures !== void 0 &&
+        at(this, ir, e.verifyQuerySignatures, "f"),
+      at(this, gt, (r = e.retryTimes) !== null && r !== void 0 ? r : 3, "f");
+    const i = () => new Zn({ maxIterations: fe(this, gt, "f") });
+    if (
+      (at(this, er, e.backoffStrategy || i, "f"),
+      this.host.hostname.endsWith(H0)
+        ? (this.host.hostname = G0)
+        : this.host.hostname.endsWith(z0)
+          ? (this.host.hostname = j0)
+          : this.host.hostname.endsWith(Y0) && (this.host.hostname = L0),
+      e.credentials)
+    ) {
+      const { name: c, password: l } = e.credentials;
+      at(this, wt, `${c}${l ? ":" + l : ""}`, "f");
+    }
+    at(this, St, Promise.resolve(e.identity || new $f()), "f"),
+      this.addTransform("update", fs(mi)),
+      e.useQueryNonces && this.addTransform("query", fs(mi)),
+      e.logToConsole &&
+        this.log.subscribe((c) => {
+          c.level === "error"
+            ? console.error(c.message)
+            : c.level === "warn"
+              ? console.warn(c.message)
+              : console.log(c.message);
+        });
+  }
+  get waterMark() {
+    return fe(this, Pr, "f");
+  }
+  static createSync(e = {}) {
+    return new this(Object.assign({}, e));
+  }
+  static async create(e = { shouldFetchRootKey: !1 }) {
+    const r = Tn.createSync(e),
+      n = [r.syncTime()];
+    return (
+      r.host.toString() !== "https://icp-api.io" &&
+        e.shouldFetchRootKey &&
+        n.push(r.fetchRootKey()),
+      await Promise.all(n),
+      r
+    );
+  }
+  static async from(e) {
+    var r;
+    try {
+      return "config" in e
+        ? await Tn.create(e.config)
+        : await Tn.create({
+            fetch: e._fetch,
+            fetchOptions: e._fetchOptions,
+            callOptions: e._callOptions,
+            host: e._host.toString(),
+            identity: (r = e._identity) !== null && r !== void 0 ? r : void 0,
+          });
+    } catch {
+      throw new rt("Failed to create agent from provided agent");
+    }
+  }
+  isLocal() {
+    const e = this.host.hostname;
+    return e === "127.0.0.1" || e.endsWith("127.0.0.1");
+  }
+  addTransform(e, r, n = r.priority || 0) {
+    if (e === "update") {
+      const i = fe(this, mr, "f").findIndex((c) => (c.priority || 0) < n);
+      fe(this, mr, "f").splice(
+        i >= 0 ? i : fe(this, mr, "f").length,
+        0,
+        Object.assign(r, { priority: n }),
+      );
+    } else if (e === "query") {
+      const i = fe(this, br, "f").findIndex((c) => (c.priority || 0) < n);
+      fe(this, br, "f").splice(
+        i >= 0 ? i : fe(this, br, "f").length,
+        0,
+        Object.assign(r, { priority: n }),
+      );
+    }
+  }
+  async getPrincipal() {
+    if (!fe(this, St, "f"))
+      throw new an(
+        "This identity has expired due this application's security policy. Please refresh your authentication.",
+      );
+    return (await fe(this, St, "f")).getPrincipal();
+  }
+  async call(e, r, n) {
+    var i;
+    const c = (i = r.callSync) !== null && i !== void 0 ? i : !0,
+      l = await (n !== void 0 ? await n : await fe(this, St, "f"));
+    if (!l)
+      throw new an(
+        "This identity has expired due this application's security policy. Please refresh your authentication.",
+      );
+    const f = Ie.from(e),
+      y = r.effectiveCanisterId ? Ie.from(r.effectiveCanisterId) : f,
+      m = l.getPrincipal() || Ie.anonymous();
+    let E = new Dr(sn);
+    Math.abs(fe(this, Fr, "f")) > 1e3 * 30 &&
+      (E = new Dr(sn + fe(this, Fr, "f")));
+    const B = {
+      request_type: bi.Call,
+      canister_id: f,
+      method_name: r.methodName,
+      arg: r.arg,
+      sender: m,
+      ingress_expiry: E,
+    };
+    let M = await this._transform({
+      request: {
+        body: null,
+        method: "POST",
+        headers: Object.assign(
+          { "Content-Type": "application/cbor" },
+          fe(this, wt, "f")
+            ? { Authorization: "Basic " + btoa(fe(this, wt, "f")) }
+            : {},
+        ),
+      },
+      endpoint: "call",
+      body: B,
+    });
+    const v = M.body.nonce ? U(M.body.nonce) : void 0;
+    B.nonce = v;
+    function U(G) {
+      return new Uint8Array(G);
+    }
+    M = await l.transformRequest(M);
+    const N = ti(M.body),
+      q = fe(this, er, "f").call(this);
+    try {
+      const G = () => (
+          this.log.print(
+            `fetching "/api/v3/canister/${y.toText()}/call" with request:`,
+            M,
+          ),
+          fe(this, Kt, "f").call(
+            this,
+            "" + new URL(`/api/v3/canister/${y.toText()}/call`, this.host),
+            Object.assign(
+              Object.assign(Object.assign({}, fe(this, Or, "f")), M.request),
+              { body: N },
+            ),
+          )
+        ),
+        V = () => (
+          this.log.print(
+            `fetching "/api/v2/canister/${y.toText()}/call" with request:`,
+            M,
+          ),
+          fe(this, Kt, "f").call(
+            this,
+            "" + new URL(`/api/v2/canister/${y.toText()}/call`, this.host),
+            Object.assign(
+              Object.assign(Object.assign({}, fe(this, Or, "f")), M.request),
+              { body: N },
+            ),
+          )
+        ),
+        W = fe(this, Rt, "m", Bn).call(this, {
+          request: c ? G : V,
+          backoff: q,
+          tries: 0,
+        }),
+        [J, z] = await Promise.all([W, os(B)]),
+        H = await J.arrayBuffer(),
+        j = J.status === 200 && H.byteLength > 0 ? Ct(H) : null;
+      if (j?.certificate) {
+        const X = await this.parseTimeFromResponse({
+          certificate: j.certificate,
+        });
+        at(this, Pr, X, "f");
+      }
+      return {
+        requestId: z,
+        response: {
+          ok: J.ok,
+          status: J.status,
+          statusText: J.statusText,
+          body: j,
+          headers: Nr(J.headers),
+        },
+        requestDetails: B,
+      };
+    } catch (G) {
+      if (G.message.includes("v3 api not supported."))
+        return (
+          this.log.warn("v3 api not supported. Fall back to v2"),
+          this.call(e, Object.assign(Object.assign({}, r), { callSync: !1 }), n)
+        );
+      throw (this.log.error("Error while making call:", G), G);
+    }
+  }
+  async query(e, r, n) {
+    const i = fe(this, er, "f").call(this),
+      c = r.effectiveCanisterId ? Ie.from(r.effectiveCanisterId) : Ie.from(e);
+    this.log.print(`ecid ${c.toString()}`),
+      this.log.print(`canisterId ${e.toString()}`);
+    const l = async () => {
+        const v = await (n !== void 0 ? await n : await fe(this, St, "f"));
+        if (!v)
+          throw new an(
+            "This identity has expired due this application's security policy. Please refresh your authentication.",
+          );
+        const U = Ie.from(e),
+          N = v?.getPrincipal() || Ie.anonymous(),
+          q = {
+            request_type: "query",
+            canister_id: U,
+            method_name: r.methodName,
+            arg: r.arg,
+            sender: N,
+            ingress_expiry: new Dr(sn),
+          },
+          G = await os(q);
+        let V = await this._transform({
+          request: {
+            method: "POST",
+            headers: Object.assign(
+              { "Content-Type": "application/cbor" },
+              fe(this, wt, "f")
+                ? { Authorization: "Basic " + btoa(fe(this, wt, "f")) }
+                : {},
+            ),
+          },
+          endpoint: "read",
+          body: q,
+        });
+        V = await v?.transformRequest(V);
+        const W = ti(V.body),
+          J = {
+            canister: U.toText(),
+            ecid: c,
+            transformedRequest: V,
+            body: W,
+            requestId: G,
+            backoff: i,
+            tries: 0,
+          };
+        return {
+          requestDetails: q,
+          query: await fe(this, Rt, "m", Go).call(this, J),
+        };
+      },
+      f = async () => {
+        if (!fe(this, ir, "f")) return;
+        const v = fe(this, tr, "f").get(c.toString());
+        return (
+          v ||
+          (await this.fetchSubnetKeys(c.toString()),
+          fe(this, tr, "f").get(c.toString()))
+        );
+      },
+      [y, m] = await Promise.all([l(), f()]),
+      { requestDetails: E, query: B } = y,
+      M = Object.assign(Object.assign({}, B), { requestDetails: E });
+    if ((this.log.print("Query response:", M), !fe(this, ir, "f"))) return M;
+    try {
+      return fe(this, An, "f").call(this, M, m);
+    } catch {
+      this.log.warn(
+        "Query response verification failed. Retrying with fresh subnet keys.",
+      ),
+        fe(this, tr, "f").delete(e.toString()),
+        await this.fetchSubnetKeys(c.toString());
+      const U = fe(this, tr, "f").get(e.toString());
+      if (!U)
+        throw new It(
+          "Invalid signature from replica signed query: no matching node key found.",
+        );
+      return fe(this, An, "f").call(this, M, U);
+    }
+  }
+  async createReadStateRequest(e, r) {
+    const n = await (r !== void 0 ? await r : await fe(this, St, "f"));
+    if (!n)
+      throw new an(
+        "This identity has expired due this application's security policy. Please refresh your authentication.",
+      );
+    const i = n?.getPrincipal() || Ie.anonymous(),
+      c = await this._transform({
+        request: {
+          method: "POST",
+          headers: Object.assign(
+            { "Content-Type": "application/cbor" },
+            fe(this, wt, "f")
+              ? { Authorization: "Basic " + btoa(fe(this, wt, "f")) }
+              : {},
+          ),
+        },
+        endpoint: "read_state",
+        body: {
+          request_type: "read_state",
+          paths: e.paths,
+          sender: i,
+          ingress_expiry: new Dr(sn),
+        },
+      });
+    return n?.transformRequest(c);
+  }
+  async readState(e, r, n, i) {
+    const c = typeof e == "string" ? Ie.fromText(e) : e,
+      l = i ?? (await this.createReadStateRequest(r, n)),
+      f = ti(l.body);
+    this.log.print(
+      `fetching "/api/v2/canister/${c}/read_state" with request:`,
+      l,
+    );
+    const y = fe(this, er, "f").call(this);
+    try {
+      const m = await fe(this, Rt, "m", Bn).call(this, {
+        request: () =>
+          fe(this, Kt, "f").call(
+            this,
+            "" +
+              new URL(`/api/v2/canister/${c.toString()}/read_state`, this.host),
+            Object.assign(
+              Object.assign(Object.assign({}, fe(this, xr, "f")), l.request),
+              { body: f },
+            ),
+          ),
+        backoff: y,
+        tries: 0,
+      });
+      if (!m.ok)
+        throw new Error(`Server returned an error:
+  Code: ${m.status} (${m.statusText})
+  Body: ${await m.text()}
+`);
+      const E = Ct(await m.arrayBuffer());
+      this.log.print("Read state response:", E);
+      const B = await this.parseTimeFromResponse(E);
+      return (
+        B > 0 &&
+          (this.log.print("Read state response time:", B),
+          at(this, Pr, B, "f")),
+        E
+      );
+    } catch (m) {
+      throw (
+        (this.log.error("Caught exception while attempting to read state", m),
+        m)
+      );
+    }
+  }
+  async parseTimeFromResponse(e) {
+    let r;
+    if (e.certificate) {
+      const n = Ct(e.certificate);
+      if (n && "tree" in n) r = n.tree;
+      else throw new Error("Could not decode time from response");
+      const i = Ar(["time"], r);
+      if (i.status !== Le.Found)
+        throw new Error(
+          "Time was not found in the response or was not in its expected format.",
+        );
+      if (!(i.value instanceof ArrayBuffer) && !ArrayBuffer.isView(i))
+        throw new Error(
+          "Time was not found in the response or was not in its expected format.",
+        );
+      const c = Yi(Ka(i.value));
+      return (
+        this.log.print("Time from response:", c),
+        this.log.print("Time from response in milliseconds:", Number(c)),
+        Number(c)
+      );
+    } else this.log.warn("No certificate found in response");
+    return 0;
+  }
+  async syncTime(e) {
+    const r = await dc(
+        () => Promise.resolve().then(() => Du),
+        void 0,
+        import.meta.url,
+      ),
+      n = Date.now();
+    try {
+      e ||
+        this.log.print(
+          "Syncing time with the IC. No canisterId provided, so falling back to ryjl3-tyaaa-aaaaa-aaaba-cai",
+        );
+      const c = (
+        await r.request({
+          canisterId: e ?? Ie.from("ryjl3-tyaaa-aaaaa-aaaba-cai"),
+          agent: this,
+          paths: ["time"],
+        })
+      ).get("time");
+      c && at(this, Fr, Number(c) - Number(n), "f");
+    } catch (i) {
+      this.log.error("Caught exception while attempting to sync time", i);
+    }
+  }
+  async status() {
+    const e = fe(this, wt, "f")
+      ? { Authorization: "Basic " + btoa(fe(this, wt, "f")) }
+      : {};
+    this.log.print('fetching "/api/v2/status"');
+    const r = fe(this, er, "f").call(this),
+      n = await fe(this, Rt, "m", Bn).call(this, {
+        backoff: r,
+        request: () =>
+          fe(this, Kt, "f").call(
+            this,
+            "" + new URL("/api/v2/status", this.host),
+            Object.assign({ headers: e }, fe(this, xr, "f")),
+          ),
+        tries: 0,
+      });
+    return Ct(await n.arrayBuffer());
+  }
+  async fetchRootKey() {
+    if (!fe(this, En, "f")) {
+      const e = await this.status();
+      (this.rootKey = e.root_key), at(this, En, !0, "f");
+    }
+    return this.rootKey;
+  }
+  invalidateIdentity() {
+    at(this, St, null, "f");
+  }
+  replaceIdentity(e) {
+    at(this, St, Promise.resolve(e), "f");
+  }
+  async fetchSubnetKeys(e) {
+    const r = Ie.from(e),
+      i = (await vo({ canisterId: r, paths: ["subnet"], agent: this })).get(
+        "subnet",
+      );
+    if (i && typeof i == "object" && "nodeKeys" in i)
+      return fe(this, tr, "f").set(r.toText(), i), i;
+  }
+  _transform(e) {
+    let r = Promise.resolve(e);
+    if (e.endpoint === "call")
+      for (const n of fe(this, mr, "f"))
+        r = r.then((i) => n(i).then((c) => c || i));
+    else
+      for (const n of fe(this, br, "f"))
+        r = r.then((i) => n(i).then((c) => c || i));
+    return r;
+  }
+}
+(St = new WeakMap()),
+  (Kt = new WeakMap()),
+  (xr = new WeakMap()),
+  (Or = new WeakMap()),
+  (Fr = new WeakMap()),
+  (wt = new WeakMap()),
+  (En = new WeakMap()),
+  (gt = new WeakMap()),
+  (er = new WeakMap()),
+  (Pr = new WeakMap()),
+  (br = new WeakMap()),
+  (mr = new WeakMap()),
+  (tr = new WeakMap()),
+  (ir = new WeakMap()),
+  (An = new WeakMap()),
+  (Rt = new WeakSet()),
+  (Go = async function t(e) {
+    var r, n;
+    const {
+        ecid: i,
+        transformedRequest: c,
+        body: l,
+        requestId: f,
+        backoff: y,
+        tries: m,
+      } = e,
+      E = m === 0 ? 0 : y.next();
+    if (
+      (this.log.print(
+        `fetching "/api/v2/canister/${i.toString()}/query" with tries:`,
+        { tries: m, backoff: y, delay: E },
+      ),
+      E === null)
+    )
+      throw new rt(
+        `Timestamp failed to pass the watermark after retrying the configured ${fe(this, gt, "f")} times. We cannot guarantee the integrity of the response since it could be a replay attack.`,
+      );
+    E > 0 && (await new Promise((U) => setTimeout(U, E)));
+    let B;
+    try {
+      this.log.print(
+        `fetching "/api/v2/canister/${i.toString()}/query" with request:`,
+        c,
+      );
+      const U = await fe(this, Kt, "f").call(
+        this,
+        "" + new URL(`/api/v2/canister/${i.toString()}/query`, this.host),
+        Object.assign(
+          Object.assign(Object.assign({}, fe(this, xr, "f")), c.request),
+          { body: l },
+        ),
+      );
+      if (U.status === 200) {
+        const N = Ct(await U.arrayBuffer());
+        B = Object.assign(Object.assign({}, N), {
+          httpDetails: {
+            ok: U.ok,
+            status: U.status,
+            statusText: U.statusText,
+            headers: Nr(U.headers),
+          },
+          requestId: f,
+        });
+      } else
+        throw new ri(
+          `Gateway returned an error:
+  Code: ${U.status} (${U.statusText})
+  Body: ${await U.text()}
+`,
+          {
+            ok: U.ok,
+            status: U.status,
+            statusText: U.statusText,
+            headers: Nr(U.headers),
+          },
+        );
+    } catch (U) {
+      if (m < fe(this, gt, "f"))
+        return (
+          this.log.warn(`Caught exception while attempting to make query:
+  ${U}
+  Retrying query.`),
+          await fe(this, Rt, "m", t).call(
+            this,
+            Object.assign(Object.assign({}, e), { tries: m + 1 }),
+          )
+        );
+      throw U;
+    }
+    const M =
+      (n = (r = B.signatures) === null || r === void 0 ? void 0 : r[0]) ===
+        null || n === void 0
+        ? void 0
+        : n.timestamp;
+    if (!fe(this, ir, "f")) return B;
+    if (!M)
+      throw new Error(
+        "Timestamp not found in query response. This suggests a malformed or malicious response.",
+      );
+    const v = Number(BigInt(M) / BigInt(1e6));
+    if (
+      (this.log.print("watermark and timestamp", {
+        waterMark: this.waterMark,
+        timestamp: v,
+      }),
+      Number(this.waterMark) > v)
+    ) {
+      const U = new rt("Timestamp is below the watermark. Retrying query.");
+      if (
+        (this.log.error("Timestamp is below", U, {
+          timestamp: M,
+          waterMark: this.waterMark,
+        }),
+        m < fe(this, gt, "f"))
+      )
+        return await fe(this, Rt, "m", t).call(
+          this,
+          Object.assign(Object.assign({}, e), { tries: m + 1 }),
+        );
+      throw new rt(
+        `Timestamp failed to pass the watermark after retrying the configured ${fe(this, gt, "f")} times. We cannot guarantee the integrity of the response since it could be a replay attack.`,
+      );
+    }
+    return B;
+  }),
+  (Bn = async function t(e) {
+    const { request: r, backoff: n, tries: i } = e,
+      c = i === 0 ? 0 : n.next();
+    if (c === null)
+      throw new rt(
+        `Timestamp failed to pass the watermark after retrying the configured ${fe(this, gt, "f")} times. We cannot guarantee the integrity of the response since it could be a replay attack.`,
+      );
+    c > 0 && (await new Promise((m) => setTimeout(m, c)));
+    let l;
+    try {
+      l = await r();
+    } catch (m) {
+      if (fe(this, gt, "f") > i)
+        return (
+          this.log.warn(`Caught exception while attempting to make request:
+  ${m}
+  Retrying request.`),
+          await fe(this, Rt, "m", t).call(this, {
+            request: r,
+            backoff: n,
+            tries: i + 1,
+          })
+        );
+      throw m;
+    }
+    if (l.ok) return l;
+    const f = await l.clone().text(),
+      y = `Server returned an error:
+  Code: ${l.status} (${l.statusText})
+  Body: ${f}
+`;
+    if (l.status === 404 && l.url.includes("api/v3"))
+      throw new ri("v3 api not supported. Fall back to v2", {
+        ok: l.ok,
+        status: l.status,
+        statusText: l.statusText,
+        headers: Nr(l.headers),
+      });
+    if (i < fe(this, gt, "f"))
+      return await fe(this, Rt, "m", t).call(this, {
+        request: r,
+        backoff: n,
+        tries: i + 1,
+      });
+    throw new ri(y, {
+      ok: l.ok,
+      status: l.status,
+      statusText: l.statusText,
+      headers: Nr(l.headers),
+    });
+  });
+var zs;
+(function (t) {
+  (t.Error = "err"),
+    (t.GetPrincipal = "gp"),
+    (t.GetPrincipalResponse = "gpr"),
+    (t.Query = "q"),
+    (t.QueryResponse = "qr"),
+    (t.Call = "c"),
+    (t.CallResponse = "cr"),
+    (t.ReadState = "rs"),
+    (t.ReadStateResponse = "rsr"),
+    (t.Status = "s"),
+    (t.StatusResponse = "sr");
+})(zs || (zs = {}));
+function Ls() {
+  const t =
+    typeof window > "u"
+      ? typeof global > "u"
+        ? typeof self > "u"
+          ? void 0
+          : self.ic.agent
+        : global.ic.agent
+      : window.ic.agent;
+  if (!t) throw new Error("No Agent could be found.");
+  return t;
+}
+const K0 = 5 * 60 * 1e3;
+function Ho() {
+  return el(D0(X0(), 1e3), Q0(1e3, 1.2), J0(K0));
+}
+function X0() {
+  let t = !0;
+  return async () => (t ? ((t = !1), !0) : !1);
+}
+function D0(t, e) {
+  return async (r, n, i) => {
+    if (await t(r, n, i)) return new Promise((c) => setTimeout(c, e));
+  };
+}
+function J0(t) {
+  const e = Date.now() + t;
+  return async (r, n, i) => {
+    if (Date.now() > e)
+      throw new Error(`Request timed out after ${t} msec:
+  Request ID: ${xt(n)}
+  Request status: ${i}
+`);
+  };
+}
+function Q0(t, e) {
+  let r = t;
+  return () =>
+    new Promise((n) =>
+      setTimeout(() => {
+        (r *= e), n();
+      }, r),
+    );
+}
+function el(...t) {
+  return async (e, r, n) => {
+    for (const i of t) await i(e, r, n);
+  };
+}
+async function jo(t, e, r, n = Ho(), i, c) {
+  var l;
+  const f = [new TextEncoder().encode("request_status"), r],
+    y =
+      i ??
+      (await ((l = t.createReadStateRequest) === null || l === void 0
+        ? void 0
+        : l.call(t, { paths: [f] }))),
+    m = await t.readState(e, { paths: [f] }, void 0, y);
+  if (t.rootKey == null)
+    throw new Error("Agent root key not initialized before polling");
+  const E = await or.create({
+      certificate: m.certificate,
+      rootKey: t.rootKey,
+      canisterId: e,
+      blsVerify: c,
+    }),
+    B = $t(E.lookup([...f, new TextEncoder().encode("status")]));
+  let M;
+  switch (
+    (typeof B > "u" ? (M = Pt.Unknown) : (M = new TextDecoder().decode(B)), M)
+  ) {
+    case Pt.Replied:
+      return { reply: $t(E.lookup([...f, "reply"])), certificate: E };
+    case Pt.Received:
+    case Pt.Unknown:
+    case Pt.Processing:
+      return await n(e, r, M), jo(t, e, r, n, y, c);
+    case Pt.Rejected: {
+      const v = new Uint8Array($t(E.lookup([...f, "reject_code"])))[0],
+        U = new TextDecoder().decode($t(E.lookup([...f, "reject_message"])));
+      throw new Error(`Call was rejected:
+  Request ID: ${xt(r)}
+  Reject code: ${v}
+  Reject text: ${U}
+`);
+    }
+    case Pt.Done:
+      throw new Error(`Call was marked as done but we never saw the reply:
+  Request ID: ${xt(r)}
+`);
+  }
+  throw new Error("unreachable");
+}
+const tl = ({ IDL: t }) => {
+  const e = t.Variant({ mainnet: t.Null, testnet: t.Null }),
+    r = t.Text,
+    n = t.Record({ network: e, address: r, min_confirmations: t.Opt(t.Nat32) }),
+    i = t.Nat64,
+    c = i,
+    l = t.Record({ network: e }),
+    f = t.Nat64,
+    y = t.Vec(f),
+    m = t.Record({
+      network: e,
+      filter: t.Opt(
+        t.Variant({ page: t.Vec(t.Nat8), min_confirmations: t.Nat32 }),
+      ),
+      address: r,
+    }),
+    E = t.Vec(t.Nat8),
+    B = t.Record({ txid: t.Vec(t.Nat8), vout: t.Nat32 }),
+    M = t.Record({ height: t.Nat32, value: i, outpoint: B }),
+    v = t.Record({
+      next_page: t.Opt(t.Vec(t.Nat8)),
+      tip_height: t.Nat32,
+      tip_block_hash: E,
+      utxos: t.Vec(M),
+    }),
+    U = t.Record({ transaction: t.Vec(t.Nat8), network: e }),
+    N = t.Principal,
+    q = t.Record({ canister_id: N, num_requested_changes: t.Opt(t.Nat64) }),
+    G = t.Variant({
+      from_user: t.Record({ user_id: t.Principal }),
+      from_canister: t.Record({
+        canister_version: t.Opt(t.Nat64),
+        canister_id: t.Principal,
+      }),
+    }),
+    V = t.Variant({
+      creation: t.Record({ controllers: t.Vec(t.Principal) }),
+      code_deployment: t.Record({
+        mode: t.Variant({
+          reinstall: t.Null,
+          upgrade: t.Null,
+          install: t.Null,
+        }),
+        module_hash: t.Vec(t.Nat8),
+      }),
+      controllers_change: t.Record({ controllers: t.Vec(t.Principal) }),
+      code_uninstall: t.Null,
+    }),
+    W = t.Record({
+      timestamp_nanos: t.Nat64,
+      canister_version: t.Nat64,
+      origin: G,
+      details: V,
+    }),
+    J = t.Record({
+      controllers: t.Vec(t.Principal),
+      module_hash: t.Opt(t.Vec(t.Nat8)),
+      recent_changes: t.Vec(W),
+      total_num_changes: t.Nat64,
+    }),
+    z = t.Record({ canister_id: N }),
+    H = t.Variant({ controllers: t.Null, public: t.Null }),
+    j = t.Record({
+      freezing_threshold: t.Nat,
+      controllers: t.Vec(t.Principal),
+      reserved_cycles_limit: t.Nat,
+      log_visibility: H,
+      wasm_memory_limit: t.Nat,
+      memory_allocation: t.Nat,
+      compute_allocation: t.Nat,
+    }),
+    X = t.Record({
+      status: t.Variant({ stopped: t.Null, stopping: t.Null, running: t.Null }),
+      memory_size: t.Nat,
+      cycles: t.Nat,
+      settings: j,
+      query_stats: t.Record({
+        response_payload_bytes_total: t.Nat,
+        num_instructions_total: t.Nat,
+        num_calls_total: t.Nat,
+        request_payload_bytes_total: t.Nat,
+      }),
+      idle_cycles_burned_per_day: t.Nat,
+      module_hash: t.Opt(t.Vec(t.Nat8)),
+      reserved_cycles: t.Nat,
+    }),
+    ue = t.Record({ canister_id: N }),
+    L = t.Record({
+      freezing_threshold: t.Opt(t.Nat),
+      controllers: t.Opt(t.Vec(t.Principal)),
+      reserved_cycles_limit: t.Opt(t.Nat),
+      log_visibility: t.Opt(H),
+      wasm_memory_limit: t.Opt(t.Nat),
+      memory_allocation: t.Opt(t.Nat),
+      compute_allocation: t.Opt(t.Nat),
+    }),
+    oe = t.Record({
+      settings: t.Opt(L),
+      sender_canister_version: t.Opt(t.Nat64),
+    }),
+    we = t.Record({ canister_id: N }),
+    he = t.Record({ canister_id: N }),
+    Te = t.Record({ canister_id: N }),
+    ge = t.Variant({ secp256k1: t.Null }),
+    ne = t.Record({
+      key_id: t.Record({ name: t.Text, curve: ge }),
+      canister_id: t.Opt(N),
+      derivation_path: t.Vec(t.Vec(t.Nat8)),
+    }),
+    pe = t.Record({ public_key: t.Vec(t.Nat8), chain_code: t.Vec(t.Nat8) }),
+    K = t.Record({ canister_id: N }),
+    Y = t.Record({
+      idx: t.Nat64,
+      timestamp_nanos: t.Nat64,
+      content: t.Vec(t.Nat8),
+    }),
+    te = t.Record({ canister_log_records: t.Vec(Y) }),
+    D = t.Record({ value: t.Text, name: t.Text }),
+    ee = t.Record({ status: t.Nat, body: t.Vec(t.Nat8), headers: t.Vec(D) }),
+    ce = t.Record({
+      url: t.Text,
+      method: t.Variant({ get: t.Null, head: t.Null, post: t.Null }),
+      max_response_bytes: t.Opt(t.Nat64),
+      body: t.Opt(t.Vec(t.Nat8)),
+      transform: t.Opt(
+        t.Record({
+          function: t.Func(
+            [t.Record({ context: t.Vec(t.Nat8), response: ee })],
+            [ee],
+            ["query"],
+          ),
+          context: t.Vec(t.Nat8),
+        }),
+      ),
+      headers: t.Vec(D),
+    }),
+    w = t.Variant({
+      reinstall: t.Null,
+      upgrade: t.Opt(
+        t.Record({
+          wasm_memory_persistence: t.Opt(
+            t.Variant({ keep: t.Null, replace: t.Null }),
+          ),
+          skip_pre_upgrade: t.Opt(t.Bool),
+        }),
+      ),
+      install: t.Null,
+    }),
+    ye = t.Record({ hash: t.Vec(t.Nat8) }),
+    de = t.Record({
+      arg: t.Vec(t.Nat8),
+      wasm_module_hash: t.Vec(t.Nat8),
+      mode: w,
+      chunk_hashes_list: t.Vec(ye),
+      target_canister: N,
+      store_canister: t.Opt(N),
+      sender_canister_version: t.Opt(t.Nat64),
+    }),
+    xe = t.Vec(t.Nat8),
+    re = t.Record({
+      arg: t.Vec(t.Nat8),
+      wasm_module: xe,
+      mode: w,
+      canister_id: N,
+      sender_canister_version: t.Opt(t.Nat64),
+    }),
+    se = t.Record({
+      start_at_timestamp_nanos: t.Nat64,
+      subnet_id: t.Principal,
+    }),
+    b = t.Record({
+      num_block_failures_total: t.Nat64,
+      node_id: t.Principal,
+      num_blocks_proposed_total: t.Nat64,
+    }),
+    x = t.Vec(t.Record({ timestamp_nanos: t.Nat64, node_metrics: t.Vec(b) })),
+    A = t.Record({
+      settings: t.Opt(L),
+      specified_id: t.Opt(N),
+      amount: t.Opt(t.Nat),
+      sender_canister_version: t.Opt(t.Nat64),
+    }),
+    F = t.Record({ canister_id: N }),
+    R = t.Record({ canister_id: N, amount: t.Nat }),
+    P = t.Vec(t.Nat8),
+    h = t.Variant({ ed25519: t.Null, bip340secp256k1: t.Null }),
+    s = t.Record({
+      key_id: t.Record({ algorithm: h, name: t.Text }),
+      canister_id: t.Opt(N),
+      derivation_path: t.Vec(t.Vec(t.Nat8)),
+    }),
+    a = t.Record({ public_key: t.Vec(t.Nat8), chain_code: t.Vec(t.Nat8) }),
+    p = t.Record({
+      key_id: t.Record({ name: t.Text, curve: ge }),
+      derivation_path: t.Vec(t.Vec(t.Nat8)),
+      message_hash: t.Vec(t.Nat8),
+    }),
+    g = t.Record({ signature: t.Vec(t.Nat8) }),
+    T = t.Record({
+      key_id: t.Record({ algorithm: h, name: t.Text }),
+      derivation_path: t.Vec(t.Vec(t.Nat8)),
+      message: t.Vec(t.Nat8),
+    }),
+    k = t.Record({ signature: t.Vec(t.Nat8) }),
+    Q = t.Record({ canister_id: N }),
+    ae = t.Record({ canister_id: N }),
+    le = t.Record({ canister_id: N }),
+    _e = t.Vec(ye),
+    d = t.Record({ canister_id: N, sender_canister_version: t.Opt(t.Nat64) }),
+    o = t.Record({
+      canister_id: t.Principal,
+      settings: L,
+      sender_canister_version: t.Opt(t.Nat64),
+    }),
+    u = t.Record({ chunk: t.Vec(t.Nat8), canister_id: t.Principal }),
+    _ = ye;
+  return t.Service({
+    bitcoin_get_balance: t.Func([n], [c], []),
+    bitcoin_get_current_fee_percentiles: t.Func([l], [y], []),
+    bitcoin_get_utxos: t.Func([m], [v], []),
+    bitcoin_send_transaction: t.Func([U], [], []),
+    canister_info: t.Func([q], [J], []),
+    canister_status: t.Func([z], [X], []),
+    clear_chunk_store: t.Func([ue], [], []),
+    create_canister: t.Func([oe], [we], []),
+    delete_canister: t.Func([he], [], []),
+    deposit_cycles: t.Func([Te], [], []),
+    ecdsa_public_key: t.Func([ne], [pe], []),
+    fetch_canister_logs: t.Func([K], [te], ["query"]),
+    http_request: t.Func([ce], [ee], []),
+    install_chunked_code: t.Func([de], [], []),
+    install_code: t.Func([re], [], []),
+    node_metrics_history: t.Func([se], [x], []),
+    provisional_create_canister_with_cycles: t.Func([A], [F], []),
+    provisional_top_up_canister: t.Func([R], [], []),
+    raw_rand: t.Func([], [P], []),
+    schnorr_public_key: t.Func([s], [a], []),
+    sign_with_ecdsa: t.Func([p], [g], []),
+    sign_with_schnorr: t.Func([T], [k], []),
+    start_canister: t.Func([Q], [], []),
+    stop_canister: t.Func([ae], [], []),
+    stored_chunks: t.Func([le], [_e], []),
+    uninstall_code: t.Func([d], [], []),
+    update_settings: t.Func([o], [], []),
+    upload_chunk: t.Func([u], [_], []),
+  });
+};
+class zo extends rt {
+  constructor(e, r, n, i) {
+    super(
+      [
+        "Call failed:",
+        `  Canister: ${e.toText()}`,
+        `  Method: ${r} (${n})`,
+        ...Object.getOwnPropertyNames(i).map(
+          (c) => `  "${c}": ${JSON.stringify(i[c])}`,
+        ),
+      ].join(`
+`),
+    ),
+      (this.canisterId = e),
+      (this.methodName = r),
+      (this.type = n),
+      (this.props = i);
+  }
+}
+class rl extends zo {
+  constructor(e, r, n) {
+    var i;
+    super(e, r, "query", {
+      Status: n.status,
+      Code:
+        (i = ci[n.reject_code]) !== null && i !== void 0
+          ? i
+          : `Unknown Code "${n.reject_code}"`,
+      Message: n.reject_message,
+    }),
+      (this.result = n);
+  }
+}
+class nl extends zo {
+  constructor(e, r, n, i) {
+    super(
+      e,
+      r,
+      "update",
+      Object.assign(
+        { "Request ID": xt(n) },
+        i.body
+          ? Object.assign(
+              Object.assign(
+                {},
+                i.body.error_code ? { "Error code": i.body.error_code } : {},
+              ),
+              {
+                "Reject code": String(i.body.reject_code),
+                "Reject message": i.body.reject_message,
+              },
+            )
+          : {
+              "HTTP status code": i.status.toString(),
+              "HTTP status text": i.statusText,
+            },
+      ),
+    ),
+      (this.requestId = n),
+      (this.response = i);
+  }
+}
+const lt = Symbol.for("ic-agent-metadata");
+class Xi {
+  constructor(e) {
+    this[lt] = Object.freeze(e);
+  }
+  static agentOf(e) {
+    return e[lt].config.agent;
+  }
+  static interfaceOf(e) {
+    return e[lt].service;
+  }
+  static canisterIdOf(e) {
+    return Ie.from(e[lt].config.canisterId);
+  }
+  static async install(e, r) {
+    const n = e.mode === void 0 ? { install: null } : e.mode,
+      i = e.arg ? [...new Uint8Array(e.arg)] : [],
+      c = [...new Uint8Array(e.module)],
+      l =
+        typeof r.canisterId == "string"
+          ? Ie.fromText(r.canisterId)
+          : r.canisterId;
+    await Ys(r).install_code({
+      mode: n,
+      arg: i,
+      wasm_module: c,
+      canister_id: l,
+      sender_canister_version: [],
+    });
+  }
+  static async createCanister(e, r) {
+    function n(c) {
+      return [
+        {
+          controllers: c.controllers ? [c.controllers] : [],
+          compute_allocation: c.compute_allocation
+            ? [c.compute_allocation]
+            : [],
+          freezing_threshold: c.freezing_threshold
+            ? [c.freezing_threshold]
+            : [],
+          memory_allocation: c.memory_allocation ? [c.memory_allocation] : [],
+          reserved_cycles_limit: [],
+          log_visibility: [],
+          wasm_memory_limit: [],
+        },
+      ];
+    }
+    const { canister_id: i } = await Ys(
+      e || {},
+    ).provisional_create_canister_with_cycles({
+      amount: [],
+      settings: n(r || {}),
+      specified_id: [],
+      sender_canister_version: [],
+    });
+    return i;
+  }
+  static async createAndInstallCanister(e, r, n) {
+    const i = await this.createCanister(n);
+    return (
+      await this.install(
+        Object.assign({}, r),
+        Object.assign(Object.assign({}, n), { canisterId: i }),
+      ),
+      this.createActor(
+        e,
+        Object.assign(Object.assign({}, n), { canisterId: i }),
+      )
+    );
+  }
+  static createActorClass(e, r) {
+    const n = e({ IDL: tf });
+    class i extends Xi {
+      constructor(l) {
+        if (!l.canisterId)
+          throw new rt(
+            `Canister ID is required, but received ${typeof l.canisterId} instead. If you are using automatically generated declarations, this may be because your application is not setting the canister ID in process.env correctly.`,
+          );
+        const f =
+          typeof l.canisterId == "string"
+            ? Ie.fromText(l.canisterId)
+            : l.canisterId;
+        super({
+          config: Object.assign(Object.assign(Object.assign({}, Lo), l), {
+            canisterId: f,
+          }),
+          service: n,
+        });
+        for (const [y, m] of n._fields)
+          r?.httpDetails && m.annotations.push(Ii),
+            r?.certificate && m.annotations.push(Yo),
+            (this[y] = il(this, y, m, l.blsVerify));
+      }
+    }
+    return i;
+  }
+  static createActor(e, r) {
+    if (!r.canisterId)
+      throw new rt(
+        `Canister ID is required, but received ${typeof r.canisterId} instead. If you are using automatically generated declarations, this may be because your application is not setting the canister ID in process.env correctly.`,
+      );
+    return new (this.createActorClass(e))(r);
+  }
+  static createActorWithHttpDetails(e, r) {
+    return new (this.createActorClass(e, { httpDetails: !0 }))(r);
+  }
+  static createActorWithExtendedDetails(
+    e,
+    r,
+    n = { httpDetails: !0, certificate: !0 },
+  ) {
+    return new (this.createActorClass(e, n))(r);
+  }
+}
+function wr(t, e) {
+  const r = ha(t, Zs.Buffer.from(e));
+  switch (r.length) {
+    case 0:
+      return;
+    case 1:
+      return r[0];
+    default:
+      return r;
+  }
+}
+const Lo = { pollingStrategyFactory: Ho },
+  Ii = "http-details",
+  Yo = "certificate";
+function il(t, e, r, n) {
+  let i;
+  r.annotations.includes("query") || r.annotations.includes("composite_query")
+    ? (i = async (l, ...f) => {
+        var y, m;
+        l = Object.assign(
+          Object.assign({}, l),
+          (m = (y = t[lt].config).queryTransform) === null || m === void 0
+            ? void 0
+            : m.call(
+                y,
+                e,
+                f,
+                Object.assign(Object.assign({}, t[lt].config), l),
+              ),
+        );
+        const E = l.agent || t[lt].config.agent || Ls(),
+          B = Ie.from(l.canisterId || t[lt].config.canisterId),
+          M = ui(r.argTypes, f),
+          v = await E.query(B, {
+            methodName: e,
+            arg: M,
+            effectiveCanisterId: l.effectiveCanisterId,
+          }),
+          U = Object.assign(Object.assign({}, v.httpDetails), {
+            requestDetails: v.requestDetails,
+          });
+        switch (v.status) {
+          case "rejected":
+            throw new rl(B, e, v);
+          case "replied":
+            return r.annotations.includes(Ii)
+              ? { httpDetails: U, result: wr(r.retTypes, v.reply.arg) }
+              : wr(r.retTypes, v.reply.arg);
+        }
+      })
+    : (i = async (l, ...f) => {
+        var y, m;
+        l = Object.assign(
+          Object.assign({}, l),
+          (m = (y = t[lt].config).callTransform) === null || m === void 0
+            ? void 0
+            : m.call(
+                y,
+                e,
+                f,
+                Object.assign(Object.assign({}, t[lt].config), l),
+              ),
+        );
+        const E = l.agent || t[lt].config.agent || Ls(),
+          {
+            canisterId: B,
+            effectiveCanisterId: M,
+            pollingStrategyFactory: v,
+          } = Object.assign(
+            Object.assign(Object.assign({}, Lo), t[lt].config),
+            l,
+          ),
+          U = Ie.from(B),
+          N = M !== void 0 ? Ie.from(M) : U,
+          q = ui(r.argTypes, f);
+        if (E.rootKey == null)
+          throw new rt("Agent root key not initialized before making call");
+        const {
+          requestId: G,
+          response: V,
+          requestDetails: W,
+        } = await E.call(U, { methodName: e, arg: q, effectiveCanisterId: N });
+        let J, z;
+        if (V.body && V.body.certificate) {
+          const ue = V.body.certificate;
+          z = await or.create({
+            certificate: vn(ue),
+            rootKey: E.rootKey,
+            canisterId: Ie.from(B),
+            blsVerify: n,
+          });
+          const L = [new TextEncoder().encode("request_status"), G];
+          switch (new TextDecoder().decode($t(z.lookup([...L, "status"])))) {
+            case "replied":
+              J = $t(z.lookup([...L, "reply"]));
+              break;
+            case "rejected":
+              throw new nl(U, e, G, V);
+          }
+        }
+        if (V.status === 202) {
+          const ue = v(),
+            L = await jo(E, N, G, ue, n);
+          (z = L.certificate), (J = L.reply);
+        }
+        const H = r.annotations.includes(Ii),
+          j = r.annotations.includes(Yo),
+          X = Object.assign(Object.assign({}, V), { requestDetails: W });
+        if (J !== void 0)
+          return H && j
+            ? { httpDetails: X, certificate: z, result: wr(r.retTypes, J) }
+            : j
+              ? { certificate: z, result: wr(r.retTypes, J) }
+              : H
+                ? { httpDetails: X, result: wr(r.retTypes, J) }
+                : wr(r.retTypes, J);
+        if (r.retTypes.length === 0)
+          return H ? { httpDetails: V, result: void 0 } : void 0;
+        throw new Error(
+          `Call was returned undefined, but type [${r.retTypes.join(",")}].`,
+        );
+      });
+  const c = (...l) => i({}, ...l);
+  return (
+    (c.withOptions =
+      (l) =>
+      (...f) =>
+        i(l, ...f)),
+    c
+  );
+}
+function Ys(t) {
+  function e(r, n) {
+    if (t.effectiveCanisterId)
+      return { effectiveCanisterId: Ie.from(t.effectiveCanisterId) };
+    const i = n[0];
+    let c = Ie.fromHex("");
+    return (
+      i &&
+        typeof i == "object" &&
+        i.canister_id &&
+        (c = Ie.from(i.canister_id)),
+      { effectiveCanisterId: c }
+    );
+  }
+  return Xi.createActor(
+    tl,
+    Object.assign(
+      Object.assign(Object.assign({}, t), { canisterId: Ie.fromHex("") }),
+      { callTransform: e, queryTransform: e },
+    ),
+  );
+}
+export { Xi as A, pl as B, yl as D, Tn as H, gl as u };
