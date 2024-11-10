@@ -1,5 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
+  import { authStore } from '$lib/stores/auth-store';
+  import type { AuthSignInParams } from '$lib/stores/auth-store';
   export let isMenuOpen = false;
 
   $: isHomePage = $page.url.pathname === '/';
@@ -11,8 +13,22 @@
     });
   }
 
+  let isLoggedIn = false;
+
   function toggleMenu() {
     isMenuOpen = !isMenuOpen;
+  }
+  function handleLogin() {
+    let params: AuthSignInParams = {
+      domain: import.meta.env.VITE_AUTH_PROVIDER_URLS,
+    };
+    authStore.signIn(params);
+    isLoggedIn = true;
+  }
+
+  function handleLogout() {
+    authStore.signOut();
+    isLoggedIn = false;
   }
 </script>
 
@@ -33,6 +49,20 @@
         <a href="/about" class="hover:text-blue-400">ABOUT</a>
         <a href="/team" class="hover:text-blue-400">TEAM</a>
         <a href="/contact" class="hover:text-blue-400">CONTACT</a>
+        {#if isLoggedIn}
+          <a href="/profile" class="hover:text-blue-400">PROFILE</a>
+        {/if}
+        <button 
+          class="hover:text-blue-400"
+          on:click={() => { 
+            if (isLoggedIn) {
+              handleLogout();
+            } else {
+              handleLogin();
+            }
+          }}>
+          <span>{isLoggedIn ? 'LOGOUT' : 'LOGIN'}</span>
+        </button>
       </div>
       <button 
         class="p-2 md:hidden" 
@@ -108,6 +138,37 @@
           <a href="/contact" on:click={toggleMenu}>
             <img src="arrow.svg" alt="arrow" class="w-6 h-6 cursor-pointer hover:opacity-80" />
           </a>
+        </div>
+        <hr class="w-full my-8 border-t-2 border-[#4E4E4E]" />
+        
+        {#if isLoggedIn}
+          <div class="flex items-center justify-between w-full">
+            <a href="/profile" 
+               class="transition-all duration-300 font-h4 font-med hover:text-blue-400 hover:translate-x-2" 
+               on:click={toggleMenu}>
+               PROFILE
+            </a>
+            <a href="/profile" on:click={toggleMenu}>
+              <img src="arrow.svg" alt="arrow" class="w-6 h-6 cursor-pointer hover:opacity-80" />
+            </a>
+          </div>
+          <hr class="w-full my-8 border-t-2 border-[#4E4E4E]" />
+        {/if}
+        
+        <div class="flex items-center justify-between w-full">
+          <button 
+            class="flex items-center justify-between w-full transition-all duration-300 font-h4 font-med hover:text-blue-400 hover:translate-x-2"
+            on:click={() => { 
+              if (isLoggedIn) {
+                handleLogout();
+              } else {
+                handleLogin();
+              }
+              toggleMenu();
+            }}>
+            <span>{isLoggedIn ? 'LOGOUT' : 'LOGIN'}</span>
+            <img src="arrow.svg" alt="arrow" class="w-6 h-6" />
+          </button>
         </div>
       </div>
     </div>

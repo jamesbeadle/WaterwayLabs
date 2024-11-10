@@ -2,6 +2,8 @@
   import { onMount } from "svelte";
   import { projectStore } from "$lib/stores/project-store";
   import { ProjectService } from "$lib/services/project-service";
+  import { authStore } from "$lib/stores/auth-store";
+  import { storeManager } from "$lib/manager/store-manager";
   import OpenFPLIcon from "$lib/icons/svgs/4.svelte";
   import FootballGodIcon from "$lib/icons/svgs/2.svelte";
   import GolfPadIcon from "$lib/icons/svgs/6.svelte";
@@ -32,12 +34,13 @@
     | "Waterway Labs"
     | "OpenWSL";
 
+  let isLoggedIn = false;
   let projects: Project[] = [];
   let selectedProject: Project | null = null;
   const projectService = new ProjectService();
 
   const translateXMap: Record<number, string> = {
-    2: '-135px',    
+    2: '-163px',    
     3: '-214px',    
     4: '-214px',    
     5: '-119px',
@@ -45,7 +48,7 @@
     7: '-196px',
     8: '-134px',
     9: '-36px',
-    10: '-125px',
+    10: '145px',
     11: '-62px',
   };
 
@@ -73,7 +76,7 @@
             component: getComponentByName(dto.name),
             buttonText: "Visit Site",
             backgroundImage: `/images/${dto.id}-background.png`,
-            previewImage: `/images/${dto.id}-preview.png`,
+            previewImage: `/images/${dto.id}-preview.jpg`,
             mobilePreviewImage: `/images/${dto.id}-mobile-preview.png`,
             translateX: translateXMap[dto.id] || '0px',
             twitter: twitterLink && twitterLink[1] ? twitterLink[1] : undefined,
@@ -112,7 +115,7 @@
       'OpenWSL': OpenFPLIcon,
     };
 
-    return componentMap[name as ProjectName] || OpenFPLIcon;
+    return componentMap[name as ProjectName] || FootballGodIcon;
   }
 
   function transformProjectData(project: Project) {
@@ -129,7 +132,7 @@
       mainColour: project.mainColour,
       backgroundColor: project.mainColour,
       backgroundImage: `/images/${project.id}-background.png`,
-      previewImage: `/images/${project.id}-preview.png`,
+      previewImage: `/images/${project.id}-preview.jpg`,
       mobilePreviewImage: `/images/${project.id}-mobile-preview.png`,
       translateX: translateXMap[project.id] || '0px'
     };
@@ -159,7 +162,13 @@
     selectProject(defaultProject);
   }
 
-  onMount(() => {
+  onMount(async () => {
+    await storeManager.syncStores();
+
+    authStore.subscribe((store) => {
+        isLoggedIn = store.identity !== null && store.identity !== undefined;
+      });
+
     loadProjects();
     
     const logo = document.querySelector('.logo');
