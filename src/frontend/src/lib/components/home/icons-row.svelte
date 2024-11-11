@@ -23,11 +23,9 @@
   }
 </script>
 
-<div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 max-w-[95%] sm:max-w-[90%] md:max-w-[85%] lg:max-w-screen-lg px-4 py-2">
-  <!-- Background with Blur -->
-  <div class="absolute inset-0 backdrop-blur bg-opacity-70 rounded-2xl border border-gray-300"></div>
+<div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 max-w-[95%] sm:max-w-[90%] md:max-w-[85%] lg:max-w-screen-lg px-4 py-1">
+  <div class="absolute inset-0 backdrop-blur bg-opacity-70 rounded-2xl thin-border"></div>
 
-  <!-- Icons Container (separate layer to avoid blur effect) -->
   <div class="relative flex overflow-x-auto space-x-4 py-1 scrollbar-hide">
     {#each projects as project}
       <div class="flex-none w-20 h-20 rounded-lg m-2 flex items-center justify-center text-white text-2xl" style={`background-color: ${project.backgroundColor}`}>
