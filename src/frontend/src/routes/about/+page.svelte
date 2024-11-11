@@ -24,16 +24,14 @@
     <Divider />
 
     <div class="px-4 mx-auto lg:mb-10 lg:w-4/5">
-        <!-- Mobile Image -->
         <img 
             src="about-mobile-page.png" 
-            alt="Waterway Labs Mission Image" 
+            alt="Waterway Labs Mission" 
             class="block lg:hidden object-contain w-full h-[500px] rounded-lg"
         >
-        <!-- Desktop Image -->
         <img 
             src="about-page.png" 
-            alt="Waterway Labs Mission Image" 
+            alt="Waterway Labs Mission" 
             class="hidden object-contain w-full h-auto rounded-lg lg:block"
         >
     </div>

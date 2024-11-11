@@ -1,7 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Layout from "../Layout.svelte";
-    import type { ProjectDTO } from "../../../../declarations/backend/backend.did";
     import { storeManager } from "$lib/manager/store-manager";
     import { projectStore } from "$lib/stores/project-store";
     

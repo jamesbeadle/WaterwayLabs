@@ -3092,7 +3092,7 @@ function Jn(e, t, r, n, a, i) {
   return !1;
 }
 function Ln(e, t) {
-  return e?.type === "data" ? e : e?.type === "skip" ? (t ?? null) : null;
+  return e?.type === "data" ? e : e?.type === "skip" ? t ?? null : null;
 }
 function Ts(e, t) {
   if (!e) return new Set(t.searchParams.keys());
@@ -3171,7 +3171,7 @@ async function _1({
         return $;
       },
       server_data_node: Ln(
-        P === void 0 && y[0] ? { type: "skip" } : (P ?? null),
+        P === void 0 && y[0] ? { type: "skip" } : P ?? null,
         y[0] ? S?.server : void 0,
       ),
     });
@@ -5052,9 +5052,9 @@ function zo(e, t) {
       githubLink: h.githubLink,
       mainColour: h.mainColour,
       backgroundColor: h.mainColour,
-      backgroundImage: `/images/${h.id}-background.png`,
-      previewImage: `/images/${h.id}-preview.png`,
-      mobilePreviewImage: `/images/${h.id}-mobile-preview.png`,
+      backgroundImage: `/project-images/${h.id}-background.png`,
+      previewImage: `/project-images/${h.id}-preview.png`,
+      mobilePreviewImage: `/project-images/${h.id}-mobile-preview.png`,
       translateX: i[h.id] || "0px",
     };
   }

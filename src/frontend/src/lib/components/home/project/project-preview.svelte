@@ -2,8 +2,7 @@
     export let title: string;
     export let backgroundColor: string;
     export let backgroundImage: string;
-    export let previewImage: string;
-    export let translateX: string = "0px";
+    export let screenshot: string;
     export let isDesktopApp: boolean = false;
 </script>
 
@@ -13,12 +12,11 @@
             src={backgroundImage}
             alt={title}
             class="background-image"
-            style:transform={`translateX(${translateX}) translateY(-12%)`}
         />
         <div class="preview-wrapper" class:desktop-app={isDesktopApp}>
             <div class="image-container" class:desktop-app={isDesktopApp}>
                 <img
-                    src={previewImage}
+                    src={screenshot}
                     alt="{title} preview"
                     class="preview-image"
                     class:desktop-app={isDesktopApp}
@@ -43,13 +41,6 @@
     .background-image {
         @apply hidden lg:block object-contain w-[650px] h-[750px] transform;
         @apply lg:absolute lg:z-0;
-    }
-
-    .preview-wrapper {
-        @apply relative;
-        @apply w-[361px] mx-auto rounded-lg border-[5px] border-[#272727];
-        @apply lg:absolute lg:w-[600px] lg:border-0 lg:z-10;
-        @apply lg:right-[-20%] lg:top-[35%] lg:transform lg:-translate-y-1/2; 
     }
     
 

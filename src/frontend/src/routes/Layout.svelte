@@ -6,7 +6,6 @@
   import Header from "$lib/shared/Header.svelte";
   import "../app.css";
   import { page } from "$app/stores";
-  import { toastsError } from "$lib/stores/toast-store";
   import Footer from "$lib/shared/Footer.svelte";
   import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
 
@@ -33,12 +32,7 @@
     try {
       await authStore.sync();
     } catch (err: unknown) {
-      toastsError({
-        msg: {
-          text: "Unexpected issue while syncing the status of your authentication.",
-        },
-        err,
-      });
+      console.error(err);
     }
   };
 
@@ -50,10 +44,6 @@
     try {
       await storeManager.syncStores();
     } catch (error) {
-      toastsError({
-        msg: { text: "Error mounting application data." },
-        err: error,
-      });
       console.error("Error mounting application data:", error);
     } finally {
     }

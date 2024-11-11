@@ -9,7 +9,7 @@
           <img src="logo.png" class="h-6" alt="Waterway Labs Logo" />
           <span class="ml-2 tracking-wide font-mona">
             <span class="text-white">WATERWAY</span>
-            <span class="text-white font-exlight">LABS</span>
+            <span class="text-white exLight">LABS</span>
           </span>
         </a>
       </div>
@@ -37,6 +37,7 @@
 </footer>
 
 <style>
+
   footer {
     background-color: #272727;
     position: relative;

@@ -1,5 +1,5 @@
 import type { ProjectId } from "../../../../declarations/backend/backend.did";
-import type { ComponentType } from "svelte";
+import type { Component } from "svelte";
 
 export interface Project {
   id: ProjectId;
@@ -16,12 +16,10 @@ export interface Project {
   secondaryColour: string;
   thirdColour: string;
 
-  component: ComponentType;
+  component: Component;
   buttonText: string;
   backgroundImage: string;
-  previewImage: string;
-  mobilePreviewImage: string;
-  translateX: string;
+  screenshot: string;
   twitter?: string;
   selected?: boolean;
   backgroundColor?: string;

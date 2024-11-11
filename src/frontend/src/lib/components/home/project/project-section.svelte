@@ -14,8 +14,7 @@
     export let mainColour: string = '#FFFFFF';
     export let backgroundColor: string;
     export let backgroundImage: string;
-    export let previewImage: string;
-    export let translateX: string = "0px";
+    export let screenshot: string;
 </script>
 
 <div class="desktop-layout">
@@ -38,8 +37,7 @@
         {title}
         {backgroundColor}
         {backgroundImage}
-        {previewImage}
-        {translateX}
+        {screenshot}
         isDesktopApp={isFootballGod}
     />
 </div>
@@ -51,8 +49,7 @@
                 {title}
                 {backgroundColor}
                 {backgroundImage}
-                {previewImage}
-                {translateX}
+                {screenshot}
                 isDesktopApp={isFootballGod}
             />
         </div>
@@ -110,10 +107,6 @@
         @apply w-full px-4 pt-20 pb-60;
     }
 
-    .status-badge {
-        @apply px-3 py-1 translate-y-2 text-xs text-[#272727] bg-white rounded-full;
-    }
-
     .social-icons-mobile {
         @apply flex items-center gap-4;
         transform: translateY(10px);
@@ -133,7 +126,7 @@
     }
   
     :global(body) {
-        font-family: "Poppins", "Mona Sans Expanded", sans-serif !important;
+        font-family: "Mono Sans Expanded", sans-serif !important;
         @apply text-white;
     }
 

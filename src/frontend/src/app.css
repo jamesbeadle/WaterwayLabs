@@ -2,14 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-display: swap;
-  font-family: "Poppins";
-  font-style: normal;
-  font-weight: 400;
-  src: url("/Rubik-Regular.woff2") format("woff2");
-}
-
 .modal-backdrop {
   z-index: 1000;
 }
@@ -56,9 +48,13 @@
 }
 
 :global(body) {
-  font-family: "Poppins", "Mona Sans Expanded", sans-serif !important;
+  font-family: "Mono Sans Expanded", sans-serif !important;
   color: white !important;
   position: relative;
+}
+
+.exLight {
+  font-family: "Mono Sans Expanded Extra Light" !important;
 }
 
 @media (max-width: 1023px) {

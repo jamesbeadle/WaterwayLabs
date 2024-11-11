@@ -35,8 +35,6 @@
     <link crossorigin="anonymous" href="/manifest.webmanifest" rel="manifest" />
 
     <link rel="preload" href="/logo.png" as="image" />
-    <link rel="preload" href="/logo_black.png" as="image" />
-
     <link rel="preload" href="/team/dfd.jpg" as="image" />
     <link rel="preload" href="/team/george.jpg" as="image" />
     <link rel="preload" href="/team/james.jpg" as="image" />
@@ -88,13 +86,32 @@
 
       @font-face {
         font-display: swap;
-        font-family: "Rubik";
+        font-family: "Mono Sans Expanded";
         font-style: normal;
-        font-weight: 400;
-        src: url("%sveltekit.assets%/Rubik-Regular.woff2") format("woff2");
+        font-weight: 600;
+        src: url("%sveltekit.assets%/MonaSansExpanded-Regular.woff2")
+          format("woff2");
+      }
+
+      @font-face {
+        font-display: swap;
+        font-family: "Mono Sans Expanded Semi";
+        font-style: normal;
+        font-weight: 600;
+        src: url("%sveltekit.assets%/MonaSansExpanded-SemiBold.woff2")
+          format("woff2");
+      }
+
+      @font-face {
+        font-display: swap;
+        font-family: "Mono Sans Expanded Extra Light";
+        font-style: normal;
+        font-weight: 600;
+        src: url("%sveltekit.assets%/MonaSansExpanded-ExtraLight.woff2")
+          format("woff2");
       }
       body {
-        font-family: "Rubik", sans-serif !important;
+        font-family: "Mono Sans Expanded", sans-serif !important;
         color: white !important;
         height: 100vh;
         margin: 0;

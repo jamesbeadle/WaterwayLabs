@@ -83,7 +83,8 @@
     }
 
     .status-badge {
-        @apply px-3 py-1 translate-y-2 text-xs text-[#272727] bg-white rounded-full mb-6;
+        @apply px-4 py-2 translate-y-2 text-xs text-[#272727] bg-white rounded-full mb-6;
+        font-family: 'Mono Sans Expanded Semi'
     }
 
     .title {

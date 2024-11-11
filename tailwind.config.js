@@ -28,6 +28,7 @@ export default {
     },
     extend: {
       colors: {
+        WaterwayGray: "#272727",
         WaterwayBlue: "#2D5F73",
         WaterwayTeal: "#4F91A6",
         WaterwayRipple: "#88C9D0",
@@ -37,7 +38,7 @@ export default {
         WaterwayBrown: "#1A202C",
       },
       fontFamily: {
-        mona: ['"Mona Sans Expanded"', "sans-serif"],
+        mona: ['"Mono Sans Expanded"', "sans-serif"],
         inter: ["Inter", "sans-serif"],
       },
       fontWeight: {
