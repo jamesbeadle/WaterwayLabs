@@ -9,7 +9,6 @@
   import { ProjectService } from "$lib/services/project-service";
   
   import Layout from './Layout.svelte';
-  import ProjectSection from "$lib/components/home/project/project-section.svelte";
   import IconsRow from '$lib/components/home/icons-row.svelte';
   import WaterwayLabsIcon from "$lib/icons/svgs/waterway-labs-icon.svelte";
   import FootballGodIcon from "$lib/icons/svgs/football-god-icon.svelte";
@@ -22,6 +21,7 @@
   import ICPFAIcon from "$lib/icons/svgs/icpfa-icon.svelte";
   import OpenCareIcon from "$lib/icons/svgs/opencare-icon.svelte";
   
+  export let isMenuOpen: boolean;
   let projects: Project[] = [];
   let selectedProject: Project | null = null;
   const projectService = new ProjectService();
@@ -29,6 +29,7 @@
   onMount(async () => {
     await storeManager.syncStores();
     loadProjects();
+    setDefaultProject();
     updateGlobalColor(selectedProject?.backgroundColor ?? '#2CE3A6');
   });
 
@@ -139,25 +140,17 @@
 
   
 
-  export let isMenuOpen: boolean;
 </script>
 
 <Layout bind:isMenuOpen>
-  <main class="flex flex-col">
     {#if selectedProjectData}
-      <div class="hidden min-h-screen px-10 pt-20 lg:flex lg:flex-row lg:items-start lg:overflow-x-hidden">
-        <div class="transition-opacity duration-500 z-100">
-            <ProjectSection {...selectedProjectData} />
-        </div>
-      </div>
-
-      <div class="block lg:hidden">
-        <div class="transition-opacity duration-500 z-100">
-            <ProjectSection {...selectedProjectData} />
-        </div>
-      </div>
-    {/if}
+    <main class="flex flex-col" style={`background-color: ${selectedProjectData.backgroundColor}`}>
+    <div class="relative mx-auto w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] xl:w-[50%] aspect-[3/2] rounded-2xl border-4 border-WaterwayGray overflow-hidden shadow-lg transform translate-y-6 lg:translate-y-0">
+      <img src={selectedProjectData.screenshot} alt="Main feature" />
+    </div>
   </main>
+  <p>test</p>
+  {/if}
 
   <IconsRow 
     {projects} 
@@ -165,18 +158,3 @@
     on:select={event => selectProject(event.detail)} 
   />
 </Layout>
-
-<style>
-  @media (min-width: 1024px) { 
-    :global(body) {
-      @apply bg-gradient-to-r from-[#272727] from-50% to-[var(--selectedProject-bg-color,#2ce3a6)] to-50%;
-    }
-  }
-
-  @media (max-width: 1023px) { 
-    :global(body) {
-      @apply bg-[#272727];
-    }
-  }
-</style>
-

@@ -1,104 +1,72 @@
 <script lang="ts">
-	import { authStore, type AuthStoreData } from './../lib/stores/auth-store';
-  import { onMount, afterUpdate } from "svelte";
+  import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { browser } from "$app/environment";
-  import Header from "$lib/shared/Header.svelte";
-  import "../app.css";
   import { page } from "$app/stores";
-  import Footer from "$lib/shared/Footer.svelte";
-  import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
 
   import { initAuthWorker } from "$lib/services/worker-auth-service";
-  import { storeManager } from '$lib/manager/store-manager.js';
-  
-  interface $$Slots {
-    default: {
-      isMenuOpen: boolean;
-    };
-  }
+  import { authStore, type AuthStoreData } from "$lib/stores/auth-store";
+  import { storeManager } from "$lib/manager/store-manager.js";
+
+  import Header from "$lib/shared/Header.svelte";
+  import Footer from "$lib/shared/Footer.svelte";
+  import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
+  import "../app.css";
   
   export let isMenuOpen = false;
-  
   export let overrideBackground = false;
-
-  const init = async () => await Promise.all([syncAuthStore()]);
-
-  const syncAuthStore = async () => {
-    if (!browser) {
-      return;
-    }
-
-    try {
-      await authStore.sync();
-    } catch (err: unknown) {
-      console.error(err);
-    }
-  };
 
   let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined;
 
-  onMount(async () => (worker = await initAuthWorker()));
+  const syncAuthStore = async () => {
+    if (!browser) return;
+    try {
+      await authStore.sync();
+    } catch (err) {
+      console.error("Error syncing auth store:", err);
+    }
+  };
+
+  const init = async () => {
+    await syncAuthStore();
+  };
 
   onMount(async () => {
-    try {
-      await storeManager.syncStores();
-    } catch (error) {
-      console.error("Error mounting application data:", error);
-    } finally {
-    }
-  });
-
-  $: worker, $authStore, (() => worker?.syncAuthIdle($authStore))();
-  $: isHomePage = $page.url.pathname === '/';
-  $: (() => {
-    if (!browser) {
-      return;
-    }
-
-    if ($authStore === undefined) {
-      return;
-    }
-
-    const spinner = document.querySelector("body > #app-spinner");
-    spinner?.remove();
-  })();
-  
-  afterUpdate(() => {
     if (browser) {
-      document.body.style.height = '100%';
-      setTimeout(() => {
-        document.body.style.height = 'auto';
-      }, 0);
+      worker = await initAuthWorker();
+      await storeManager.syncStores();
     }
   });
+
+  $: worker, $authStore, worker?.syncAuthIdle($authStore);
+  $: isHomePage = $page.url.pathname === '/';  
+  $: (() => {
+    if (browser && $authStore) {
+      const spinner = document.querySelector("body > #app-spinner");
+      spinner?.remove();
+    }
+  })();
+
 </script>
 
 <svelte:window on:storage={syncAuthStore} />
+
 {#await init()}
   <div in:fade>
     <LocalSpinner />
   </div>
 {:then _}
   <div class="flex flex-col min-h-screen" class:override-bg={overrideBackground}>
-    <Header bind:isMenuOpen />
-    <main class="flex-1">
-      <slot {isMenuOpen} />
-    </main>
+    <div class="px-4 lg:flex">
+      <div class="w-full lg:w-1/2">
+        <Header />
+      </div>
+      <div class="w-full lg:w-1/2">
+        <slot></slot>
+      </div>
+    </div>
     {#if !isHomePage}
-      <Footer/>
+      <Footer />
     {/if}
   </div>
 {/await}
-
-<style>
-  :global(body) {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-
-  .override-bg {
-    background-color: #272727;
-  }
-</style>
