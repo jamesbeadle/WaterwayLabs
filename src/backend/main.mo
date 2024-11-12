@@ -9,6 +9,8 @@ import Base "types/base_types";
 import DTOs "dtos/app_dtos";
 import Environment "environment";
 import Cycles "mo:base/ExperimentalCycles";
+import Timer "mo:base/Timer";
+import Int "mo:base/Int";
 import Utilities "utilities";
 import Management "management";
 
@@ -379,6 +381,19 @@ actor Self {
         let IC : Management.Management = actor (Environment.Default);
         let _ = await Utilities.topup_canister_(canister_actor, IC, cycles);
         return #ok();
+    };
+
+
+    system func preupgrade() {
+    };
+
+    system func postupgrade() {
+      
+      ignore Timer.setTimer<system>(#nanoseconds(Int.abs(1)), postUpgradeCallback); 
+    };
+
+    private func postUpgradeCallback() : async (){
+        logs := [];
     };
 
 }

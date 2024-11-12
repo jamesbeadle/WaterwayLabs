@@ -35,8 +35,6 @@
     <link crossorigin="anonymous" href="/manifest.webmanifest" rel="manifest" />
 
     <link rel="preload" href="/logo.png" as="image" />
-    <link rel="preload" href="/logo_black.png" as="image" />
-
     <link rel="preload" href="/team/dfd.jpg" as="image" />
     <link rel="preload" href="/team/george.jpg" as="image" />
     <link rel="preload" href="/team/james.jpg" as="image" />
@@ -45,7 +43,27 @@
     <link rel="preload" href="/team/zoe.jpg" as="image" />
     <link rel="preload" href="/team/thilly.jpg" as="image" />
 
-    <!-- Favicon -->
+    <link rel="preload" href="/project-images/2-background.png" as="image" />
+    <link rel="preload" href="/project-images/2-screenshot.jpg" as="image" />
+    <link rel="preload" href="/project-images/3-background.png" as="image" />
+    <link rel="preload" href="/project-images/3-screenshot.jpg" as="image" />
+    <link rel="preload" href="/project-images/4-background.png" as="image" />
+    <link rel="preload" href="/project-images/4-screenshot.jpg" as="image" />
+    <link rel="preload" href="/project-images/5-background.png" as="image" />
+    <link rel="preload" href="/project-images/5-screenshot.jpg" as="image" />
+    <link rel="preload" href="/project-images/6-background.png" as="image" />
+    <link rel="preload" href="/project-images/6-screenshot.jpg" as="image" />
+    <link rel="preload" href="/project-images/7-background.png" as="image" />
+    <link rel="preload" href="/project-images/7-screenshot.jpg" as="image" />
+    <link rel="preload" href="/project-images/8-background.png" as="image" />
+    <link rel="preload" href="/project-images/8-screenshot.jpg" as="image" />
+    <link rel="preload" href="/project-images/9-background.png" as="image" />
+    <link rel="preload" href="/project-images/8-screenshot.jpg" as="image" />
+    <link rel="preload" href="/project-images/10-background.png" as="image" />
+    <link rel="preload" href="/project-images/10-screenshot.jpg" as="image" />
+    <link rel="preload" href="/project-images/11-background.png" as="image" />
+    <link rel="preload" href="/project-images/11-screenshot.jpg" as="image" />
+
     <link
       rel="icon"
       type="image/png"
@@ -60,43 +78,64 @@
     />
     <link rel="shortcut icon" href="/favicons/favicon.ico" />
 
-    <!-- iOS meta tags & icons -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="#2CE3A6" />
     <meta name="apple-mobile-web-app-title" content="Waterway Labs" />
-    <link rel="apple-touch-icon" href="/favicons/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      href="/favicons/apple-touch-icon.png"
+    />
 
-    <!-- MS -->
     <meta name="msapplication-TileColor" content="#101111" />
-    <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
+    <meta
+      name="msapplication-config"
+      content="/favicons/browserconfig.xml"
+    />
 
     <meta content="#2CE3A6" name="theme-color" />
-
-    <link href="/_app/immutable/assets/index.Dw9thoXK.css" rel="stylesheet" />
-    <link rel="modulepreload" href="/_app/immutable/entry/start.BBBc2UMJ.js" />
-    <link rel="modulepreload" href="/_app/immutable/chunks/index.Cm4qnxSY.js" />
-    <link
-      rel="modulepreload"
-      href="/_app/immutable/chunks/vendor.D5RPyfkM.js"
-    />
-    <link rel="modulepreload" href="/_app/immutable/entry/app.DzVxSptU.js" />
+    
+		<link href="/_app/immutable/assets/index.BjanMI3p.css" rel="stylesheet">
+		<link rel="modulepreload" href="/_app/immutable/entry/start.LP19Htzx.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/index.CzxBZdWf.js">
+		<link rel="modulepreload" href="/_app/immutable/chunks/vendor.CqE1V66K.js">
+		<link rel="modulepreload" href="/_app/immutable/entry/app.Cpq92i-7.js">
 
     <style>
       html,
       body {
         height: 100%;
         margin: 0;
+        background-color: #272727;
       }
 
       @font-face {
         font-display: swap;
-        font-family: "Rubik";
+        font-family: "Mono Sans Expanded";
         font-style: normal;
-        font-weight: 400;
-        src: url("/Rubik-Regular.woff2") format("woff2");
+        font-weight: 600;
+        src: url("/MonaSansExpanded-Regular.woff2")
+          format("woff2");
+      }
+
+      @font-face {
+        font-display: swap;
+        font-family: "Mono Sans Expanded Semi";
+        font-style: normal;
+        font-weight: 600;
+        src: url("/MonaSansExpanded-SemiBold.woff2")
+          format("woff2");
+      }
+
+      @font-face {
+        font-display: swap;
+        font-family: "Mono Sans Expanded Extra Light";
+        font-style: normal;
+        font-weight: 600;
+        src: url("/MonaSansExpanded-ExtraLight.woff2")
+          format("woff2");
       }
       body {
-        font-family: "Rubik", sans-serif !important;
+        font-family: "Mono Sans Expanded", sans-serif !important;
         color: white !important;
         height: 100vh;
         margin: 0;
@@ -222,23 +261,23 @@
   </head>
   <body data-sveltekit-preload-data="hover">
     <div style="display: contents">
-      <script>
-        {
-          __sveltekit_nk0989 = {
-            base: "",
-          };
+			<script>
+				{
+					__sveltekit_jwyy4c = {
+						base: ""
+					};
 
-          const element = document.currentScript.parentElement;
+					const element = document.currentScript.parentElement;
 
-          Promise.all([
-            import("/_app/immutable/entry/start.BBBc2UMJ.js"),
-            import("/_app/immutable/entry/app.DzVxSptU.js"),
-          ]).then(([kit, app]) => {
-            kit.start(app, element);
-          });
-        }
-      </script>
-    </div>
+					Promise.all([
+						import("/_app/immutable/entry/start.LP19Htzx.js"),
+						import("/_app/immutable/entry/app.Cpq92i-7.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element);
+					});
+				}
+			</script>
+		</div>
 
     <svg
       id="app-spinner"
