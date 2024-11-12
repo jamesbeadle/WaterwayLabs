@@ -1,8 +1,5 @@
 <script lang="ts">
   import { page } from "$app/stores";
-
-
-  import Header from "$lib/shared/Header.svelte";
   import Footer from "$lib/shared/Footer.svelte";
 
   $: isHomePage = $page.url.pathname === '/';  
