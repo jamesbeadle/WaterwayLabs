@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { Component } from "svelte";
+  import { writable } from "svelte/store";
   import type { Project } from "$lib/types/projects";
   import type { ProjectStatus } from "../../../declarations/backend/backend.did";
 
@@ -25,17 +26,26 @@
   
   export let isMenuOpen: boolean;
   let projects: Project[] = [];
+  let selectedProjectId = writable(0);
   let selectedProject: Project | null = null;
   const projectService = new ProjectService();
 
   type ProjectData = ReturnType<typeof transformProjectData>;
   let selectedProjectData: ProjectData | null = null;
 
+
+  $: if($selectedProjectId > 0) {
+    selectedProject = projects.find(x => x.id == $selectedProjectId) ?? selectedProject;
+    if(selectedProject){
+      selectedProjectData = transformProjectData(selectedProject);
+    }
+  }
+
+
   onMount(async () => {
     await storeManager.syncStores();
     loadProjects();
     setDefaultProject();
-    updateGlobalColor(selectedProject?.backgroundColor ?? '#2CE3A6');
   });
 
   async function loadProjects() {
@@ -74,11 +84,6 @@
     } catch (error) {
       console.error('Failed to load projects:', error);
     }
-  }
-
-  function updateGlobalColor(color: string) {
-    document.body.style.setProperty('--selectedProject-bg-color', color);
-    document.documentElement.style.setProperty('--selectedProject-bg-color', color);
   }
 
   function getStatusString(status: ProjectStatus): string {
@@ -126,7 +131,7 @@
   }
 
 
-  function selectProject(project: Project) {
+  function selectProject(project: Project) {    
     if (!project) return;
     selectedProject = project;
     selectedProjectData = transformProjectData(project);
@@ -134,7 +139,6 @@
       ...p,
       selected: p.id === project.id
     }));
-    updateGlobalColor(project.mainColour);
   }
 
   function setDefaultProject() {
@@ -193,7 +197,6 @@
 
   <IconsRow 
     {projects} 
-    selectedProjectId={selectedProject?.id ?? 0} 
-    on:select={event => selectProject(event.detail)} 
+    {selectedProjectId}
   />
 </Layout>
