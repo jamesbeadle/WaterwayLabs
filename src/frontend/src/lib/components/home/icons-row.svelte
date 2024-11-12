@@ -1,6 +1,6 @@
 <script lang="ts">
+  import type { Writable } from "svelte/store";
   import type { Project } from "$lib/types/projects";
-    import type { Writable } from "svelte/store";
 
   export let projects: Project[] = [];
   export let selectedProjectId: Writable<number>;

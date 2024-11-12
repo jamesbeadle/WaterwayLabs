@@ -3,13 +3,15 @@
   import type { Component } from "svelte";
   import { writable } from "svelte/store";
   import type { Project } from "$lib/types/projects";
-  import type { ProjectStatus } from "../../../declarations/backend/backend.did";
 
   import { storeManager } from "$lib/manager/store-manager";
   import { projectStore } from "$lib/stores/project-store";
   import { ProjectService } from "$lib/services/project-service";
   
   import Layout from './Layout.svelte';
+  import Header from "$lib/shared/Header.svelte";
+  import ProjectDetail from "$lib/components/project/project-detail.svelte";
+
   import IconsRow from '$lib/components/home/icons-row.svelte';
   import WaterwayLabsIcon from "$lib/icons/svgs/waterway-labs-icon.svelte";
   import FootballGodIcon from "$lib/icons/svgs/football-god-icon.svelte";
@@ -21,32 +23,31 @@
   import OpenChefIcon from "$lib/icons/svgs/openchef-icon.svelte";
   import ICPFAIcon from "$lib/icons/svgs/icpfa-icon.svelte";
   import OpenCareIcon from "$lib/icons/svgs/opencare-icon.svelte";
-  import Header from "$lib/shared/Header.svelte";
-  import ProjectDetail from "$lib/components/project/project-detail.svelte";
   
-  export let isMenuOpen: boolean;
+  import { getStatusString } from "$lib/utils/Helpers";
+  
+  type ProjectData = ReturnType<typeof transformProjectData>;
+  
+  const projectService = new ProjectService();
+  
   let projects: Project[] = [];
   let selectedProjectId = writable(0);
-  let selectedProject: Project | null = null;
-  const projectService = new ProjectService();
-
-  type ProjectData = ReturnType<typeof transformProjectData>;
+  let selectedProject: Project | null = null;  
   let selectedProjectData: ProjectData | null = null;
-
+  
+  export let isMenuOpen: boolean;
+  
+  onMount(async () => {
+    await storeManager.syncStores();
+    loadProjects();
+  });
 
   $: if($selectedProjectId > 0) {
     selectedProject = projects.find(x => x.id == $selectedProjectId) ?? selectedProject;
     if(selectedProject){
-      selectedProjectData = transformProjectData(selectedProject);
+      selectProject(selectedProject)
     }
   }
-
-
-  onMount(async () => {
-    await storeManager.syncStores();
-    loadProjects();
-    setDefaultProject();
-  });
 
   async function loadProjects() {
     try {
@@ -86,12 +87,14 @@
     }
   }
 
-  function getStatusString(status: ProjectStatus): string {
-    if ('Development' in status) return 'DEVELOPMENT';
-    if ('Design' in status) return 'DESIGN';
-    if ('Decentralised' in status) return 'DECENTRALISED';
-    if ('OnHold' in status) return 'ON HOLD';
-    return 'UNKNOWN';
+  function selectProject(project: Project) {    
+    if (!project) return;
+    selectedProject = project;
+    selectedProjectData = transformProjectData(project);
+    projects = projects.map(p => ({
+      ...p,
+      selected: p.id === project.id
+    }));
   }
 
   function getComponentByName(name: string): Component {
@@ -129,24 +132,6 @@
       screenshot: `/project-images/${project.id}-screenshot.jpg`
     };
   }
-
-
-  function selectProject(project: Project) {    
-    if (!project) return;
-    selectedProject = project;
-    selectedProjectData = transformProjectData(project);
-    projects = projects.map(p => ({
-      ...p,
-      selected: p.id === project.id
-    }));
-  }
-
-  function setDefaultProject() {
-    const defaultProject = projects.find(p => p.name === "OpenFPL") || projects[0];
-    selectProject(defaultProject);
-  }
-
-  
 
 </script>
 <Layout bind:isMenuOpen>

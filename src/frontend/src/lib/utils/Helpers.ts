@@ -1,3 +1,5 @@
+import type { ProjectStatus } from "../../../../declarations/backend/backend.did";
+
 export function formatUnixDateToReadable(unixNano: number) {
   const date = new Date(unixNano / 1000000);
   const options: Intl.DateTimeFormatOptions = {
@@ -71,4 +73,14 @@ export function isError(response: any): response is ErrorResponse {
 
 export function isSuccess(response: any): response is SuccessResponse {
   return response && response.ok !== undefined;
+}
+
+
+
+export function getStatusString(status: ProjectStatus): string {
+  if ('Development' in status) return 'DEVELOPMENT';
+  if ('Design' in status) return 'DESIGN';
+  if ('Decentralised' in status) return 'DECENTRALISED';
+  if ('OnHold' in status) return 'ON HOLD';
+  return 'UNKNOWN';
 }
