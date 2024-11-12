@@ -23,7 +23,7 @@
   import OpenChefIcon from "$lib/icons/svgs/openchef-icon.svelte";
   import ICPFAIcon from "$lib/icons/svgs/icpfa-icon.svelte";
   import OpenCareIcon from "$lib/icons/svgs/opencare-icon.svelte";
-  
+
   import { getStatusString } from "$lib/utils/Helpers";
   
   type ProjectData = ReturnType<typeof transformProjectData>;
@@ -168,7 +168,7 @@
         
         <div class="relative z-0" style={`background-color: ${selectedProjectData.backgroundColor}`}>
           
-          <div class="mx-auto w-[50%] sm:w-[60%] rounded-2xl border-4 border-WaterwayGray overflow-hidden shadow-lg transform mt-2">
+          <div class="mx-auto w-[90%] xs:w-[40%] lg:w-[60%] rounded-2xl border-4 border-WaterwayGray overflow-hidden shadow-lg transform mt-2">
             <img src={selectedProjectData.screenshot} alt="Main feature" class="object-cover rounded" />
           </div>
         </div>
