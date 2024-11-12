@@ -162,7 +162,7 @@
         <div class="w-1/2 relative flex justify-center items-center" style={`background-color: ${selectedProjectData.backgroundColor}`}>
           <div
             class="absolute inset-0 z-0 bg-center bg-no-repeat"
-            style={`background-image: url('/project-images/${selectedProjectData.id}-background.png); background-size: cover;`}
+            style={`background-image: url('${selectedProjectData.backgroundImage}'); background-size: cover;`}
           ></div>
       
           <div class="relative z-10">
