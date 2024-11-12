@@ -20,14 +20,16 @@
   import OpenChefIcon from "$lib/icons/svgs/openchef-icon.svelte";
   import ICPFAIcon from "$lib/icons/svgs/icpfa-icon.svelte";
   import OpenCareIcon from "$lib/icons/svgs/opencare-icon.svelte";
-    import GithubIcon from "$lib/icons/GithubIcon.svelte";
-    import XIcon from "$lib/icons/XIcon.svelte";
-    import Header from "$lib/shared/Header.svelte";
+  import Header from "$lib/shared/Header.svelte";
+  import ProjectDetail from "$lib/components/project/project-detail.svelte";
   
   export let isMenuOpen: boolean;
   let projects: Project[] = [];
   let selectedProject: Project | null = null;
   const projectService = new ProjectService();
+
+  type ProjectData = ReturnType<typeof transformProjectData>;
+  let selectedProjectData: ProjectData | null = null;
 
   onMount(async () => {
     await storeManager.syncStores();
@@ -107,6 +109,7 @@
 
   function transformProjectData(project: Project) {
     return {
+      id: project.id,
       title: project.name,
       description: project.description,
       summary: project.summary,
@@ -122,8 +125,6 @@
     };
   }
 
-  type ProjectData = ReturnType<typeof transformProjectData>;
-  let selectedProjectData: ProjectData | null = null;
 
   function selectProject(project: Project) {
     if (!project) return;
@@ -154,33 +155,18 @@
         <div class="w-full lg:w-1/2 flex flex-col bg-WaterwayGray p-6 lg:min-h-screen">
           <Header />
           <div class="mt-8">
-            <div class="inline-block bg-white text-black semi-bold text-xs px-4 py-1 rounded-full shadow-md mb-4">
-              {selectedProjectData.status}
-            </div>
-            <h1 class="text-3xl mb-2">FOOTBALL GOD</h1>
-            <p class="text-sm semi-bold mb-4">DECENTRALISED FOOTBALL BETTING</p>
-            <p class="text-xs mb-12">
-              {selectedProjectData.description}
-            </p>
-            <div class="flex space-x-4">
-              <a href="https://github.com" target="_blank">
-                <GithubIcon className="h-6 w-6" />
-              </a>
-              <a href="https://twitter.com" target="_blank">
-                <XIcon className="h-6 w-6" />
-              </a>
-            </div>
+            <ProjectDetail title={selectedProjectData.title} status={selectedProjectData.status} summary={selectedProjectData.summary} description={selectedProjectData.description} />
           </div>
         </div>
 
         <div class="w-1/2 relative flex justify-center items-center" style={`background-color: ${selectedProjectData.backgroundColor}`}>
           <div
-            class="absolute inset-0 z-0 bg-center bg-no-repeat opacity-50"
-            style="background-image: url('/project-images/2-background.png'); background-size: cover;"
+            class="absolute inset-0 z-0 bg-center bg-no-repeat"
+            style={`background-image: url('/project-images/${selectedProjectData.id}-background.png); background-size: cover;`}
           ></div>
       
           <div class="relative z-10">
-            <div class="mx-auto w-[90%] rounded-2xl border-4 border-WaterwayGray shadow-lg ">
+            <div class="mx-auto w-[90%] rounded-2xl border-4 border-WaterwayGray shadow-lg">
               <img src={selectedProjectData.screenshot} alt="Main feature" class="rounded" />
             </div>
           </div>
@@ -189,43 +175,17 @@
 
     </div>
     <div class="lg:hidden">
-      <main class="flex flex-col items-center"  style={`background-color: ${selectedProjectData.backgroundColor}`} >
+      <main class="flex flex-col items-center">
         
-        <div class="relative mt- lg:mt-12 z-0" style={`background-color: ${selectedProjectData.backgroundColor}`}>
+        <div class="relative z-0" style={`background-color: ${selectedProjectData.backgroundColor}`}>
           
-          <div class="mx-auto w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] xl:w-[50%] aspect-[3/2] rounded-2xl border-4 border-WaterwayGray overflow-hidden shadow-lg transform mt-2">
+          <div class="mx-auto w-[50%] sm:w-[60%] rounded-2xl border-4 border-WaterwayGray overflow-hidden shadow-lg transform mt-2">
             <img src={selectedProjectData.screenshot} alt="Main feature" class="object-cover rounded" />
           </div>
         </div>
   
         <div class="relative z-20 bg-WaterwayGray -mt-8 w-[101%] px-[1%] -mb-[1px]"> 
-          <div class="flex justify-between items-center my-4">
-            
-            <div class="inline-block bg-white text-black semi-bold text-xs px-4 py-1 rounded-full shadow-md">
-              {selectedProjectData.status}
-            </div>
-            
-            <div class="flex space-x-4 pr-2">
-              <a href="https://github.com" target="_blank">
-                <GithubIcon className="h-6 w-6" />
-              </a>
-              <a href="https://twitter.com" target="_blank">
-                <XIcon className="h-6 w-6" />
-              </a>
-            </div>
-          </div>
-  
-          <h1 class="text-3xl">FOOTBALL GOD</h1>
-  
-          <p class="text-sm semi-bold mb-2">
-            DECENTRALISED FOOTBALL BETTING 
-          </p>
-        
-          <p class="text-xxs mb-12 exLight">
-            {selectedProjectData.description}
-          </p>
-        
-  
+          <ProjectDetail title={selectedProjectData.title} status={selectedProjectData.status} summary={selectedProjectData.summary} description={selectedProjectData.description} />
         </div>
       </main>
     </div>
