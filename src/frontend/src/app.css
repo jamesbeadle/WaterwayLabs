@@ -57,6 +57,10 @@
   font-family: "Mono Sans Expanded Extra Light" !important;
 }
 
+.semi-bold {
+  font-family: "Mono Sans Expanded Semi" !important;
+}
+
 .thin-border {
   border: 0.5px solid rgba(255, 255, 255, 0.3);
 }

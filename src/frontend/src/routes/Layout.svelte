@@ -8,14 +8,13 @@
   import { authStore, type AuthStoreData } from "$lib/stores/auth-store";
   import { storeManager } from "$lib/manager/store-manager.js";
 
+  import DesktopLayout from "./DesktopLayout.svelte";
+  import MobileLayout from "./MobileLayout.svelte";
   import Header from "$lib/shared/Header.svelte";
   import Footer from "$lib/shared/Footer.svelte";
   import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
   import "../app.css";
   
-  export let isMenuOpen = false;
-  export let overrideBackground = false;
-
   let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined;
 
   const syncAuthStore = async () => {
@@ -56,17 +55,17 @@
     <LocalSpinner />
   </div>
 {:then _}
-  <div class="flex flex-col min-h-screen" class:override-bg={overrideBackground}>
-    <div class="px-4 lg:flex">
-      <div class="w-full lg:w-1/2">
-        <Header />
-      </div>
-      <div class="w-full lg:w-1/2">
-        <slot></slot>
-      </div>
+  <div>
+    <div class="block lg:hidden">
+      <MobileLayout>
+        <slot />
+      </MobileLayout>
     </div>
-    {#if !isHomePage}
-      <Footer />
-    {/if}
+
+    <div class="hidden lg:block">
+      <DesktopLayout>
+        <slot />
+      </DesktopLayout>
+    </div>
   </div>
 {/await}

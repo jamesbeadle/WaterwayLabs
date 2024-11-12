@@ -20,6 +20,9 @@
   import OpenChefIcon from "$lib/icons/svgs/openchef-icon.svelte";
   import ICPFAIcon from "$lib/icons/svgs/icpfa-icon.svelte";
   import OpenCareIcon from "$lib/icons/svgs/opencare-icon.svelte";
+    import GithubIcon from "$lib/icons/GithubIcon.svelte";
+    import XIcon from "$lib/icons/XIcon.svelte";
+    import Header from "$lib/shared/Header.svelte";
   
   export let isMenuOpen: boolean;
   let projects: Project[] = [];
@@ -141,15 +144,91 @@
   
 
 </script>
-
 <Layout bind:isMenuOpen>
-    {#if selectedProjectData}
-    <main class="flex flex-col" style={`background-color: ${selectedProjectData.backgroundColor}`}>
-    <div class="relative mx-auto w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] xl:w-[50%] aspect-[3/2] rounded-2xl border-4 border-WaterwayGray overflow-hidden shadow-lg transform translate-y-6 lg:translate-y-0">
-      <img src={selectedProjectData.screenshot} alt="Main feature" />
+  {#if selectedProjectData}
+    <div class="hidden lg:flex w-full ">
+
+      <div class="flex flex-col lg:flex-row w-full min-h-screen">
+
+      
+        <div class="w-full lg:w-1/2 flex flex-col bg-WaterwayGray p-6 lg:min-h-screen">
+          <Header />
+          <div class="mt-8">
+            <div class="inline-block bg-white text-black semi-bold text-xs px-4 py-1 rounded-full shadow-md mb-4">
+              {selectedProjectData.status}
+            </div>
+            <h1 class="text-3xl mb-2">FOOTBALL GOD</h1>
+            <p class="text-sm semi-bold mb-4">DECENTRALISED FOOTBALL BETTING</p>
+            <p class="text-xs mb-12">
+              {selectedProjectData.description}
+            </p>
+            <div class="flex space-x-4">
+              <a href="https://github.com" target="_blank">
+                <GithubIcon className="h-6 w-6" />
+              </a>
+              <a href="https://twitter.com" target="_blank">
+                <XIcon className="h-6 w-6" />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-1/2 relative flex justify-center items-center" style={`background-color: ${selectedProjectData.backgroundColor}`}>
+          <div
+            class="absolute inset-0 z-0 bg-center bg-no-repeat opacity-50"
+            style="background-image: url('/project-images/2-background.png'); background-size: cover;"
+          ></div>
+      
+          <div class="relative z-10">
+            <div class="mx-auto w-[90%] rounded-2xl border-4 border-WaterwayGray shadow-lg ">
+              <img src={selectedProjectData.screenshot} alt="Main feature" class="rounded" />
+            </div>
+          </div>
+        </div>
+      </div>  
+
     </div>
-  </main>
-  <p>test</p>
+    <div class="lg:hidden">
+      <main class="flex flex-col items-center"  style={`background-color: ${selectedProjectData.backgroundColor}`} >
+        
+        <div class="relative mt- lg:mt-12 z-0" style={`background-color: ${selectedProjectData.backgroundColor}`}>
+          
+          <div class="mx-auto w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] xl:w-[50%] aspect-[3/2] rounded-2xl border-4 border-WaterwayGray overflow-hidden shadow-lg transform mt-2">
+            <img src={selectedProjectData.screenshot} alt="Main feature" class="object-cover rounded" />
+          </div>
+        </div>
+  
+        <div class="relative z-20 bg-WaterwayGray -mt-8 w-[101%] px-[1%] -mb-[1px]"> 
+          <div class="flex justify-between items-center my-4">
+            
+            <div class="inline-block bg-white text-black semi-bold text-xs px-4 py-1 rounded-full shadow-md">
+              {selectedProjectData.status}
+            </div>
+            
+            <div class="flex space-x-4 pr-2">
+              <a href="https://github.com" target="_blank">
+                <GithubIcon className="h-6 w-6" />
+              </a>
+              <a href="https://twitter.com" target="_blank">
+                <XIcon className="h-6 w-6" />
+              </a>
+            </div>
+          </div>
+  
+          <h1 class="text-3xl">FOOTBALL GOD</h1>
+  
+          <p class="text-sm semi-bold mb-2">
+            DECENTRALISED FOOTBALL BETTING 
+          </p>
+        
+          <p class="text-xxs mb-12 exLight">
+            {selectedProjectData.description}
+          </p>
+        
+  
+        </div>
+      </main>
+    </div>
   {/if}
 
   <IconsRow 
