@@ -65,6 +65,17 @@
   border: 0.5px solid rgba(255, 255, 255, 0.3);
 }
 
+.header-text{
+  @apply text-sm xs:text-base lg:text-xxs;
+}
+
+
+
+
+
+
+
+
 
 @media (max-width: 1023px) {
   :global(body) {

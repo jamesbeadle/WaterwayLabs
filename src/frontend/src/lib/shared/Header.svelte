@@ -23,20 +23,20 @@
   }
 </script>
 
-<header class="bg-WaterwayGray py-2">
+<header class="bg-WaterwayGray py-4 lg:py-0">
   <div class="flex justify-between items-center w-full lg:max-w-1/2">
     <div class="flex items-center space-x-2">
-      <img src="logo.png" class="h-4" alt="Waterway Labs Logo" />
-      <span class="text-base">WATERWAY <span class="exLight">LABS</span></span>      
+      <img src="logo.png" class="h-5 lg:h-4" alt="Waterway Labs Logo" />
+      <span class="header-text">WATERWAY <span class="exLight">LABS</span></span>      
     </div>
 
-    <nav class="hidden sm:flex space-x-4 text-sm lg:mr-4">
+    <nav class="hidden sm:flex space-x-4 header-text lg:mr-4">
       <a href="#about" class="hover:underline">ABOUT</a>
       <a href="#team" class="hover:underline">TEAM</a>
     </nav>
 
     <div class="sm:hidden">
-      <DotsIcon className="w-4" />
+      <DotsIcon className="w-5" />
     </div>
   </div>
 </header>

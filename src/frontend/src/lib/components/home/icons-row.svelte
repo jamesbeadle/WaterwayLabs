@@ -32,16 +32,16 @@
   <div class="relative flex overflow-x-auto space-x-2 md:space-x-4 py-1 scrollbar-hide">
     {#each projects as project}
 
-    <button class="w-full" on:click={() => handleProjectSelect(project)}>
-          
-      <div class="flex-none w-10 h-10 md:w-20 md:h-20 rounded-lg my-2 flex items-center justify-center text-white text-2xl" style={`background-color: ${project.backgroundColor}`}>
-        <svelte:component 
-                this={project.component} 
-                className={getTailwindSize(project.name)} 
-              />
-      </div>
+      <button class="w-full" on:click={() => handleProjectSelect(project)}>
+            
+        <div class="flex-none w-10 h-10 md:w-20 md:h-20 rounded-lg my-2 flex items-center justify-center text-white text-2xl" style={`background-color: ${project.backgroundColor}`}>
+          <svelte:component 
+                  this={project.component} 
+                  className={getTailwindSize(project.name)} 
+                />
+        </div>
 
-    </button>
+      </button>
     {/each}
   </div>
 </div>

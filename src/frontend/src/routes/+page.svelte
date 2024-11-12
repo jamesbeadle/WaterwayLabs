@@ -141,7 +141,7 @@
       <div class="flex flex-col lg:flex-row w-full min-h-screen">
 
       
-        <div class="w-full lg:w-1/2 flex flex-col bg-WaterwayGray p-6 lg:min-h-screen">
+        <div class="w-full lg:w-1/2 flex flex-col bg-WaterwayGray p-6 lg:p-2 lg:min-h-screen">
           <Header />
           <div class="mt-8">
             <ProjectDetail title={selectedProjectData.title} status={selectedProjectData.status} summary={selectedProjectData.summary} description={selectedProjectData.description} />
