@@ -34,7 +34,7 @@
 
       <button class="w-full" on:click={() => handleProjectSelect(project)}>
             
-        <div class="flex-none w-10 h-10 md:w-20 md:h-20 rounded-lg my-2 flex items-center justify-center text-white text-2xl" style={`background-color: ${project.backgroundColor}`}>
+        <div class="w-10 h-10 md:w-20 md:h-20 rounded-lg my-2 flex items-center justify-center" style={`background-color: ${project.backgroundColor}`}>
           <svelte:component 
                   this={project.component} 
                   className={getTailwindSize(project.name)} 
