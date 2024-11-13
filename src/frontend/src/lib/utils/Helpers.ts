@@ -75,12 +75,10 @@ export function isSuccess(response: any): response is SuccessResponse {
   return response && response.ok !== undefined;
 }
 
-
-
 export function getStatusString(status: ProjectStatus): string {
-  if ('Development' in status) return 'DEVELOPMENT';
-  if ('Design' in status) return 'DESIGN';
-  if ('Decentralised' in status) return 'DECENTRALISED';
-  if ('OnHold' in status) return 'ON HOLD';
-  return 'UNKNOWN';
+  if ("Development" in status) return "DEVELOPMENT";
+  if ("Design" in status) return "DESIGN";
+  if ("Decentralised" in status) return "DECENTRALISED";
+  if ("OnHold" in status) return "ON HOLD";
+  return "UNKNOWN";
 }

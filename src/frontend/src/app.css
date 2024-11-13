@@ -65,17 +65,9 @@
   border: 0.5px solid rgba(255, 255, 255, 0.3);
 }
 
-.header-text{
+.header-text {
   @apply text-sm xs:text-base lg:text-xxs;
 }
-
-
-
-
-
-
-
-
 
 @media (max-width: 1023px) {
   :global(body) {
@@ -95,6 +87,9 @@
   display: flex;
   width: 100%;
   max-width: 100vw;
+}
+.status {
+  @apply inline-block px-3 py-1 text-xs font-semibold bg-white rounded-full shadow-md text-WaterwayGray;
 }
 
 .left-side {
@@ -125,8 +120,7 @@
 }
 
 .horizontal-divider {
-  min-height: 2px;
-  @apply self-stretch flex-shrink-0 h-px bg-WaterwayBlue;
+  @apply mx-auto border-t-2 border-[#4E4E4E] w-full lg:my-12 lg:w-[1375px] my-4;
 }
 
 .vertical-divider {
@@ -145,4 +139,31 @@
 }
 .badge-decentralised {
   @apply text-white bg-WaterwayGreen;
+}
+.form-label {
+  @apply block mb-2 text-sm font-medium text-gray-300;
+}
+.form-input,
+.form-textarea {
+  @apply w-[90%] p-3 text-gray-900 transition bg-gray-100 rounded-md font-inter 
+         focus:ring-2 focus:ring-blue-500 focus:outline-none 
+         lg:w-full lg:max-w-md;
+}
+.ellipse-1 {
+  @apply absolute w-[256px] h-[256px] bg-[rgba(79,168,246,0.2)] blur-[240px] top-[10%] left-[25%];
+}
+.ellipse-2 {
+  @apply absolute w-[240px] h-[240px] bg-[rgba(244,223,253,0.2)] blur-[320px] bottom-[20%] right-[30%];
+}
+.mobile-menu {
+  @apply fixed inset-0 z-50 flex flex-col transition-opacity duration-300 bg-WaterwayGray;
+}
+.mobile-menu-header {
+  @apply flex items-center justify-between h-16 px-4;
+}
+.mobile-menu-links {
+  @apply flex flex-col items-start px-4 pt-6;
+}
+.mobile-menu-item {
+  @apply flex items-center justify-between w-full py-8 text-2xl;
 }

@@ -6,7 +6,6 @@
   import { TeamService } from "$lib/services/team-service";
   import Layout from "../Layout.svelte";
   import TitleDisplay from "$lib/components/shared/title-display.svelte";
-  import Divider from "$lib/components/shared/divider.svelte";
   import GridDisplay from "$lib/components/team/grid-display.svelte";
 
   let headingText = "A TEAM OF <br> WEB3 EXPERTS";
@@ -31,17 +30,9 @@
 </script>
 
 <Layout overrideBackground={true}>
-  <main>
+  <div class="mx-auto">
     <TitleDisplay title={headingText} subtitle={subtitleText} description={descriptionText} />
-    <Divider />
+    <div class="horizontal-divider"></div>
     <GridDisplay teamMembers={teamMembers} />
-  </main>
+  </div>
 </Layout>
-
-<style>
-  @media (max-width: 1023px) {
-    .container {
-      padding: 0;
-    }
-  }
-</style>
