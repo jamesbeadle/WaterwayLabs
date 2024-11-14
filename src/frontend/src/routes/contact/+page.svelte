@@ -1,7 +1,6 @@
 <script lang="ts">
     import Layout from "../Layout.svelte";
     import TitleDisplay from "$lib/components/shared/title-display.svelte";
-    import Divider from "$lib/components/shared/divider.svelte";
     import ContactPage from "$lib/components/contact/contact-page.svelte";
     
     let headingText = "WE'D LOVE TO HEAR FROM YOU!";
@@ -10,17 +9,10 @@
 </script>
 
 <Layout overrideBackground={true}>
-    <main>
+    <div class="mx-auto mb-10">
         <TitleDisplay title={headingText} subtitle={subtitleText} description={descriptionText} />
-        
-        <Divider />
-
+        <div class="horizontal-divider"></div>
         <ContactPage />
-    </main>
+    </div>
 </Layout>
 
-<style>
-    body {
-        overflow-x: hidden;
-    }
-</style>

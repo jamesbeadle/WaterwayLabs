@@ -1,18 +1,3 @@
-import OpenfplIcon from "$lib/icons/svgs/golfpad-icon.svelte";
-
-export type Project = {
-  component: typeof OpenfplIcon;
-  id: number;
-  buttonText: string;
-  backgroundImage: string;
-  previewImage: string;
-  mobilePreviewImage: string;
-  translateX: string;
-  selected?: boolean;
-  status: string;
-  summaryClass?: string;
-};
-
 export type CanisterType =
   | { SNS: null }
   | { Dapp: null }

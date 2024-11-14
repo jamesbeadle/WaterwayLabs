@@ -1,7 +1,6 @@
 <script lang="ts">
     import Layout from "../Layout.svelte";
     import TitleDisplay from "$lib/components/shared/title-display.svelte";
-    import Divider from "$lib/components/shared/divider.svelte";
     import Panel from "$lib/components/about/panel.svelte";
     
     export let descriptionText = "At Waterway Labs, we are committed to pioneering the next generation of decentralized solutions. Our mission is to create secure, innovative, and user-friendly blockchain products that empower individuals and businesses. We believe in a future where technology fosters transparency, freedom, and collaboration, allowing everyone to participate in the decentralized economy.";
@@ -19,62 +18,39 @@
 </script>
 
 <Layout overrideBackground={true}>
-<div>
-    <TitleDisplay title={headingText} subtitle={subtitleText} description={descriptionText} />
-    <Divider />
+  <div class="mx-auto">
+    <div>
+      <TitleDisplay title={headingText} subtitle={subtitleText} description={descriptionText} />
+      <div class="horizontal-divider"></div>
 
-    <div class="px-4 mx-auto lg:mb-10 lg:w-4/5">
-        <img 
-            src="about-mobile-page.png" 
-            alt="Waterway Labs Mission" 
-            class="block lg:hidden object-contain w-full h-[500px] rounded-lg"
-        >
-        <img 
-            src="about-page.png" 
-            alt="Waterway Labs Mission" 
-            class="hidden object-contain w-full h-auto rounded-lg lg:block"
-        >
+      <div class="px-4 mx-auto lg:mb-10 lg:w-4/5">
+          <img 
+              src="about-mobile-page.png" 
+              alt="Waterway Labs Mission" 
+              class="block lg:hidden object-contain w-full h-[500px] rounded-lg"
+          >
+          <img 
+              src="about-page.png" 
+              alt="Waterway Labs Mission" 
+              class="hidden object-contain w-full h-auto rounded-lg lg:block"
+          >
+      </div>
+      <div class="horizontal-divider"></div>
+
+      <div>
+
+        <Panel title="VISION" text={visionText} />
+        <div class="horizontal-divider"></div>
+
+        <Panel title="VALUES" text={valuesText} isHTML={true} />
+        <div class="horizontal-divider"></div>
+
+        <Panel title="OUR JOURNEY" text={journeyText} />
+        <div class="horizontal-divider"></div>
+        
+        <Panel title="FUTURE GOALS" text={goalsText} />
+        <div class="horizontal-divider"></div>
+      </div>
     </div>
-    <Divider />
-
-    <Panel title="VISION" text={visionText} />
-    <Divider />
-
-    <Panel title="VALUES" text={valuesText} isHTML={true} />
-    <Divider />
-
-    <Panel title="OUR JOURNEY" text={journeyText} />
-    <Divider />
-    
-    <Panel title="FUTURE GOALS" text={goalsText} />
-    <Divider />
-</div>
+  </div>
 </Layout>
-
-<style>
-  h1, h2 {
-    font-family: "Inter", sans-serif;
-  }
-  
-  p {
-    font-family: "Inter", sans-serif;
-    font-size: 16px;
-    line-height: 25px;
-    font-weight: 300;
-  }
-  
-  p strong {
-    font-weight: 700;
-  }
-  
-  .container {
-    max-width: 1500px;
-    margin: 0 auto;
-  }
-  
-  @media (max-width: 1023px) {
-    p {
-      padding-right: 0;
-    }
-  }
-</style>
