@@ -29,7 +29,7 @@
   <div class="absolute inset-0 backdrop-blur bg-opacity-70 rounded-2xl thin-border"></div>
   <div class="relative flex py-2 space-x-2 overflow-x-auto md:space-x-4 scrollbar-hide">
     {#each projects as project}
-      <button class="w-full" on:click={() => handleProjectSelect(project)}><<<<<<< v0.4
+      <button class="w-full" on:click={() => handleProjectSelect(project)}>
         <div class="flex justify-center w-20 h-20 my-2 rounded-2xl translate-z-0" style={`background-color: ${project.backgroundColor}`}>
           <svelte:component 
             this={project.component} 
