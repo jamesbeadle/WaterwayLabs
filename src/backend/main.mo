@@ -12,8 +12,10 @@ import Cycles "mo:base/ExperimentalCycles";
 import Timer "mo:base/Timer";
 import Int "mo:base/Int";
 import Time "mo:base/Time";
+import Iter "mo:base/Iter";
 import Utilities "utilities";
 import Management "management";
+import SHA224 "./lib/SHA224";
 
 actor Self {
 
@@ -198,8 +200,8 @@ actor Self {
             },
         { 
             id = 8; name = "OpenBeats"; 
-            backendCanisterId = ""; 
-            frontendCanisterId=""; 
+            backendCanisterId = "27l52-5aaaa-aaaal-qr6ta-cai"; 
+            frontendCanisterId="2yk3o-qyaaa-aaaal-qr6tq-cai"; 
             websiteURL="openbeats.xyz"; 
             githubLink=""; 
             socialLinks=[]; 
@@ -394,6 +396,26 @@ actor Self {
         return Option.isSome(foundManager);
     };
 
+    private func updateDataHash(category : Text) : async () {
+      let hashBuffer = Buffer.fromArray<Base.DataHash>([]);
+      var updated = false;
+
+      for (hashObj in Iter.fromArray(dataHashes)) {
+        if (hashObj.category == category) {
+          let randomHash = await SHA224.getRandomHash();
+          hashBuffer.add({ category = hashObj.category; hash = randomHash });
+          updated := true;
+        } else { hashBuffer.add(hashObj) };
+      };
+
+      if(not updated){
+          let randomHash = await SHA224.getRandomHash();
+          hashBuffer.add({ category = category; hash = randomHash });
+      };
+
+      dataHashes := Buffer.toArray<Base.DataHash>(hashBuffer);
+    };
+
 
     system func preupgrade() {
     };
@@ -404,7 +426,7 @@ actor Self {
     };
 
     private func postUpgradeCallback() : async (){
-        logs := [];
+        await updateDataHash("projects");
     };
 
 }
