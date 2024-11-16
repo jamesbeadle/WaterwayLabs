@@ -10,8 +10,6 @@
 
   import DesktopLayout from "./DesktopLayout.svelte";
   import MobileLayout from "./MobileLayout.svelte";
-  import Header from "$lib/shared/Header.svelte";
-  import Footer from "$lib/shared/Footer.svelte";
   import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
   import "../app.css";
   
@@ -28,21 +26,23 @@
 
   const init = async () => {
     await syncAuthStore();
+    await storeManager.syncStores();
   };
 
   onMount(async () => {
     if (browser) {
       worker = await initAuthWorker();
-      await storeManager.syncStores();
     }
   });
 
   $: worker, $authStore, worker?.syncAuthIdle($authStore);
-  $: isHomePage = $page.url.pathname === '/';  
   $: (() => {
     if (browser && $authStore) {
+      console.log("D")
       const spinner = document.querySelector("body > #app-spinner");
+      console.log("E")
       spinner?.remove();
+      console.log("F")
     }
   })();
 

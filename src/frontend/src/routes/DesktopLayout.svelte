@@ -7,18 +7,14 @@
 
 </script>
 
-<div class="flex flex-col min-h-screen">
+<div class="full-screen-flex">
   {#if !isHomePage}
-    <div class="mx-10 mt-4">
+    <div class="mx-4 mt-2">
       <Header />
     </div>
   {/if}
-  <div class="lg:flex">
-    <slot></slot>
-  </div>
+  <slot></slot>
   {#if !isHomePage}
-    <div class="mx-10">
-      <Footer />
-    </div>
+    <Footer />
   {/if}
 </div>

@@ -15,13 +15,15 @@
       case "OpenFPL":
       case "OpenWSL":
       case "OpenBook":
-        return "w-8 "
+        return "w-6 xs:w-8 "
       case "OpenBeats":
-        return "w-8 md:w-10"
+        return "w-6 xs:w-8 md:w-9"
       case "Transfer Kings":
-        return "w-12"
+        return "w-6 xs:w-12"
+      case "GolfPad":
+        return "w-6 xs:w-12";
     }
-    return "w-12";
+    return "w-6 xs:w-12";
   }
 </script>
 
@@ -30,7 +32,7 @@
   <div class="relative flex py-2 space-x-2 overflow-x-auto md:space-x-4 scrollbar-hide">
     {#each projects as project}
       <button class="w-full" on:click={() => handleProjectSelect(project)}>
-        <div class="flex justify-center w-20 h-20 my-2 rounded-2xl translate-z-0" style={`background-color: ${project.backgroundColor}`}>
+        <div class="flex items-center justify-center w-14 xs:w-20 h-14 xs:h-20 my-2 rounded-lg xs:rounded-2xl translate-z-0" style={`background-color: ${project.backgroundColor}`}>
           <svelte:component 
             this={project.component} 
             className={getTailwindSize(project.name)} 

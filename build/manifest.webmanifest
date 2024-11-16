@@ -1,33 +1,23 @@
 {
-  "background_color": "#1a1a1d",
-  "theme_color": "#1a1a1d",
-  "description": "Technology Company",
+  "name": "Waterway Labs",
+  "short_name": "Waterway Labs",
+  "start_url": ".",
   "display": "standalone",
+  "theme_color": "#1a1a1d",
+  "background_color": "#1a1a1d",
+  "description": "Web33 software development.",
+  "orientation": "landscape-primary",
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "apple-touch-icon.png",
-      "purpose": "any",
+      "src": "https://qm6x5-qqaaa-aaaal-qcnea-cai.raw.icp0.io/favicons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "apple-touch-icon.png",
-      "purpose": "maskable",
-      "sizes": "192x192",
+      "src": "https://qm6x5-qqaaa-aaaal-qcnea-cai.raw.icp0.io/favicons/icon-512x512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "name": "Waterway Labs",
-  "short_name": "Waterway Labs",
-  "scope": "/",
-  "start_url": "/",
-  "share_target": {
-    "action": "/share/",
-    "method": "GET",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url"
-    }
-  }
+  ]
 }

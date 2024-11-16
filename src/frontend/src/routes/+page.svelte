@@ -24,7 +24,9 @@
   import ICPFAIcon from "$lib/icons/svgs/icpfa-icon.svelte";
   import OpenCareIcon from "$lib/icons/svgs/opencare-icon.svelte";
 
-  import { getStatusString } from "$lib/utils/Helpers";
+  import { getStatusString } from "$lib/utils/helpers";
+    import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
+    import WidgetSpinner from "$lib/components/shared/widget-spinner.svelte";
   
   type ProjectData = ReturnType<typeof transformProjectData>;
   
@@ -34,12 +36,21 @@
   let selectedProjectId = writable(0);
   let selectedProject: Project | null = null;  
   let selectedProjectData: ProjectData | null = null;
+  let isLoading = true;
+  let loadingProject = true;
   
   export let isMenuOpen: boolean;
   
   onMount(async () => {
-    await storeManager.syncStores();
-    loadProjects();
+    try{
+      await storeManager.syncStores();
+      await loadProjects();
+    } catch(error){
+      console.error("Error loading homepage projects");
+    } finally {
+      isLoading = false;
+      loadingProject = false;
+    }
   });
 
   $: if($selectedProjectId > 0) {
@@ -85,24 +96,25 @@
     } catch (error) {
       console.error('Failed to load projects:', error);
     }
-
-    console.log(projects);
   }
 
-  function selectProject(project: Project) {    
+  function selectProject(project: Project) {   
+    
+    loadingProject = true; 
     if (!project) return;
     selectedProject = project;
-    selectedProjectData = project;
+    selectedProjectData = transformProjectData(project);
     projects = projects.map(p => ({
       ...p,
       selected: p.id === project.id
     }));
+    loadingProject = false;
   }
 
   function getComponentByName(name: string): Component {
     const componentMap: Record<string, Component> = {
       'OpenFPL': OpenFPLIcon,
-      'Football God': FootballGodIcon,
+      'FootballGod': FootballGodIcon,
       'GolfPad': GolfPadIcon,
       'Transfer Kings': TransferKingsIcon,
       'OpenBook': OpenBookIcon,
@@ -116,71 +128,95 @@
 
     return componentMap[name as string] || WaterwayLabsIcon;
   }
+
+  function transformProjectData(project: Project) {
+    return {
+      id: project.id,
+      title: project.name,
+      description: project.description,
+      summary: project.summary,
+      buttonText: "Visit Site",
+      buttonLink: project.websiteURL,
+      status: project.status,
+      websiteURL: project.websiteURL,
+      twitter: project.twitter,
+      githubLink: project.githubLink,
+      mainColour: project.mainColour,
+      backgroundColor: project.mainColour,
+      backgroundImage: `/project-images/${project.id}-background.png`,
+      screenshot: `/project-images/${project.id}-screenshot.jpg`
+    };
+  }
   
 </script>
 <Layout bind:isMenuOpen>
-  {#if selectedProjectData}
-    <div class="hidden w-full lg:flex">
-      <div class="flex flex-col w-full min-h-screen lg:flex-row">
-        <div class="flex flex-col w-full p-6 lg:w-1/2 bg-WaterwayGray lg:p-2 lg:min-h-screen">
-          <Header />
-          <div class="mt-8">
-            <ProjectDetail 
-              title={selectedProjectData.name} 
-              status={selectedProjectData.status} 
-              summary={selectedProjectData.summary} 
-              description={selectedProjectData.description} 
-              backgroundColor={selectedProjectData.backgroundColor} 
-              websiteURL={selectedProjectData.websiteURL}
-              github={selectedProjectData.github}
-              twitter={selectedProjectData.twitter}
-            />
-          </div>
-        </div>
-
-        <div class="relative flex items-center justify-center w-1/2" style={`background-color: ${selectedProjectData.backgroundColor}`}>
-          <div
-            class="absolute inset-0 z-0 bg-center bg-no-repeat"
-            style={`background-image: url('${selectedProjectData.backgroundImage}'); background-size: cover;`}
-          ></div>
-      
-          <div class="relative z-10">
-            <div class="mx-auto w-[95%] overflow-hidden rounded-2xl border-4 border-WaterwayGray shadow-lg transform translate-x-[30%] -translate-y-4">
-              <img src={selectedProjectData.screenshot} alt="Main feature" class="rounded" />
+  {#if isLoading}
+    <LocalSpinner />
+  {:else}
+    {#if loadingProject}
+      <WidgetSpinner />
+    {:else}
+      {#if selectedProjectData}
+        <div class="hidden w-full lg:flex">
+          <div class="full-screen-flex-row">
+            <div class="flex flex-col w-1/2 bg-WaterwayGray py-2 px-4 min-h-screen">
+              <Header />
+              <div class="mt-8">
+                <ProjectDetail 
+                  title={selectedProjectData.title} 
+                  status={selectedProjectData.status} 
+                  summary={selectedProjectData.summary} 
+                  description={selectedProjectData.description} 
+                  backgroundColor={selectedProjectData.backgroundColor} 
+                  websiteURL={selectedProjectData.websiteURL}
+                  github={selectedProjectData.githubLink}
+                  twitter={selectedProjectData.twitter ?? ""}
+                />
+              </div>
             </div>
-          </div>
-        </div>
-      </div>  
 
-    </div>
-    <div class="mb-60 lg:hidden lg:mb-0">
-      <main class="flex flex-col items-center">
-        
-        <div class="relative z-0" style={`background-color: ${selectedProjectData.backgroundColor}`}>
+            <div class="relative flex items-center justify-center w-1/2" style={`background-color: ${selectedProjectData.backgroundColor}`}>
+              <div
+                class="absolute inset-0 z-0 bg-center bg-no-repeat"
+                style={`background-image: url('${selectedProjectData.backgroundImage}'); background-size: cover;`}
+              ></div>
           
-          <div class="mx-auto w-[90%] xs:w-[40%] lg:w-[60%] rounded-2xl border-4 border-WaterwayGray overflow-hidden translate-y-[10%] shadow-lg transform mt-2">
-            <img src={selectedProjectData.screenshot} alt="Main feature" class="object-top rounded" />
-          </div>
-        </div>
-  
-        <div class="relative z-20 bg-WaterwayGray -mt-8 w-[101%] px-[1%] -mb-[1px]"> 
-          <ProjectDetail 
-              title={selectedProjectData.name} 
-              status={selectedProjectData.status} 
-              summary={selectedProjectData.summary} 
-              description={selectedProjectData.description} 
-              backgroundColor={selectedProjectData.backgroundColor} 
-              websiteURL={selectedProjectData.websiteURL}
-              github={selectedProjectData.github}
-              twitter={selectedProjectData.twitter}
-            />
-        </div>
-      </main>
-    </div>
-  {/if}
+              <div class="relative z-10 flex justify-center items-center w-full h-full overflow-hidden">
+                <div class="w-[95%] rounded-2xl border-8 border-WaterwayGray shadow-lg transform translate-x-[20%]">
+                  <img src={selectedProjectData.screenshot} alt="Main feature" class="rounded max-w-full max-h-full object-contain" />
+                </div>
+              </div>
+              
+            </div>
+          </div>  
 
-  <IconsRow 
-    {projects} 
-    {selectedProjectId}
-  />
+        </div>
+        <div class="lg:hidden lg:mb-0">
+          <main class="flex flex-col items-center">
+            
+            <div class="relative z-0" style={`background-color: ${selectedProjectData.backgroundColor}`}>
+              
+              <div class="mx-auto w-[70%] xs:w-[40%] lg:w-[60%] rounded-2xl border-4 border-WaterwayGray overflow-hidden translate-y-[10%] shadow-lg transform mt-2">
+                <img src={selectedProjectData.screenshot} alt="Main feature" class="object-top rounded" />
+              </div>
+            </div>
+      
+            <div class="relative z-20 bg-WaterwayGray -mt-8 w-[101%] px-[1%] -mb-[1px]"> 
+              <ProjectDetail 
+                  title={selectedProjectData.title} 
+                  status={selectedProjectData.status} 
+                  summary={selectedProjectData.summary} 
+                  description={selectedProjectData.description} 
+                  backgroundColor={selectedProjectData.backgroundColor} 
+                  websiteURL={selectedProjectData.websiteURL}
+                  github={selectedProjectData.githubLink}
+                  twitter={selectedProjectData.twitter ?? ""}
+                />
+            </div>
+          </main>
+        </div>
+      {/if}
+    {/if}
+    <IconsRow {projects} {selectedProjectId} />
+  {/if}
 </Layout>

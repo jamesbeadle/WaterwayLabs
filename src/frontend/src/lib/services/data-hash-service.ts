@@ -1,13 +1,13 @@
-/* import { idlFactory } from "../../../../declarations/backend";
+import { idlFactory } from "../../../../declarations/backend";
 import { ActorFactory } from "../../utils/ActorFactory";
 import type { DataHashDTO } from "../../../../declarations/backend/backend.did";
-import { isError } from "$lib/utils/Helpers";
+import { isError } from "$lib/utils/helpers";
 
 export class DataHashService {
   private readonly actor: any;
 
   constructor() {
-    const canisterId = process.env.OPENFPL_BACKEND_CANISTER_ID;
+    const canisterId = process.env.BACKEND_CANISTER_ID;
     if (!canisterId) {
       throw new Error("Backend canister ID not found in environment variables");
     }
@@ -21,4 +21,3 @@ export class DataHashService {
     return result.ok;
   }
 }
- */

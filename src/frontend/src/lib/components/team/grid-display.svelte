@@ -18,8 +18,8 @@
               <span class="status">
                 {member.title}
               </span>
-              <h3 class="mb-2 text-lg lg:text-base font-med font-mona">{member.name}</h3>
-              <p class="text-base font-light lg:text-sm font-inter">{member.bio}</p>
+              <h3 class="mb-2 text-lg lg:text-base">{member.name}</h3>
+              <p class="text-base  exLight lg:text-sm">{member.bio}</p>
             </div>
           </div>
         {/each}

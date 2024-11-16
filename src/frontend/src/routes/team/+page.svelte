@@ -1,38 +1,45 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { isLoading } from "$lib/stores/global-stores";
+  import { storeManager } from "$lib/manager/store-manager";
   import { teamStore } from "$lib/stores/team-store";
-  import type { TeamMemberDTO } from "../../../../declarations/backend/backend.did";
-  import { TeamService } from "$lib/services/team-service";
   import Layout from "../Layout.svelte";
-  import TitleDisplay from "$lib/components/shared/title-display.svelte";
   import GridDisplay from "$lib/components/team/grid-display.svelte";
 
-  let headingText = "A TEAM OF <br> WEB3 EXPERTS";
-  let subtitleText = "THE TEAM";
-  let descriptionText = "At Waterway Labs, we are passionate about building innovative Web3 products that champion decentralization. Our team is dedicated to developing cutting-edge solutions that empower users, offering transparency, security, and freedom. With a shared belief in the transformative potential of blockchain technology, we are committed to pushing the boundaries of what's possible in decentralized applications, fostering an open and collaborative ecosystem.";
 
-  let teamMembers: TeamMemberDTO[] = [];
-  const teamService = new TeamService();
+  onMount(async () => {
+    loadTeamMembers();  
+  });
 
   async function loadTeamMembers() {
     try {
-      const teamMembersDTOs = await teamService.getTeamMembers();
-      teamMembers = teamMembersDTOs;
-      teamStore.setTeamMembers(teamMembers);
+      await storeManager.syncStores();
     } catch (error) {
       console.error("Error fetching team members:", error);
     }
   }
-  onMount(async () => {
-    loadTeamMembers();  
-  });
 </script>
 
-<Layout overrideBackground={true}>
+<Layout>
   <div class="mx-auto">
-    <TitleDisplay title={headingText} subtitle={subtitleText} description={descriptionText} />
+    <div class="responsive-row-col">
+      <div class="text-left lg:w-1/2">
+        <span class="status">THE TEAM</span>
+        <h1 class="mt-6 mb-4 text-4xl leading-tight lg:mt-2 lg:mb-0 lg:text-5xl xl:text-6xl">
+          A TEAM OF WEB3 EXPERTS
+        </h1>
+      </div>
+      <div class="lg:w-1/2 lg:pl-12">
+        <p class="main-paragraph">
+          At Waterway Labs, we are passionate about building innovative Web3 products that champion decentralisation. 
+          Our team are passionate about building more equitable services for people through the use of new and exciting blockchain technologies. 
+          We are committed to pushing the boundaries of what's possible with decentralised applications, 
+          aiming to build an open and collaborative ecosystem.          
+        </p>
+      </div>
+    </div>
+  
     <div class="horizontal-divider"></div>
-    <GridDisplay teamMembers={teamMembers} />
+    
+    <GridDisplay teamMembers={$teamStore} />
   </div>
 </Layout>

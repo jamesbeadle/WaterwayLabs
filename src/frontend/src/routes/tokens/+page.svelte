@@ -32,12 +32,8 @@
             });
 
             sns_parameters = await nervousSystemParameters({ certified: false});
-            console.log("sns_parameters")
-            console.log(sns_parameters)
             const params: SnsGetNeuronParams = { neuronId: { id: hexStringToUint8Array(neuronIdInput) } };
             const response = await getNeuron(params);
-            console.log("response")
-            console.log(response)
             neuron = response ?? null;
             if (!neuron) {
                 errorMessage = "Neuron not found.";

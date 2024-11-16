@@ -4,6 +4,7 @@ module AppTypes {
 
     public type Error = {
         #NotFound;
+        #AlreadyExists;
     };
 
     public type ProjectId = Nat16;
@@ -41,6 +42,7 @@ module AppTypes {
         contact: Text;
         status: QueryStatus;
         submittedBy: Base.PrincipalId;
+        submittedOn: Int;
     };
 
     public type QueryStatus = {

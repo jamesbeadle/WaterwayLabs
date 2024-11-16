@@ -1,4 +1,4 @@
-import { isError } from "$lib/utils/Helpers";
+import { isError } from "$lib/utils/helpers";
 import { idlFactory } from "../../../../declarations/backend";
 import type { TeamMemberDTO } from "../../../../declarations/backend/backend.did";
 import { ActorFactory } from "../../utils/ActorFactory";

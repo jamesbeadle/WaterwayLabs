@@ -2,7 +2,7 @@ import {
   AUTH_MAX_TIME_TO_LIVE,
   AUTH_POPUP_HEIGHT,
   AUTH_POPUP_WIDTH,
-} from "$lib/components/constants/app.constants";
+} from "$lib/constants/app.constants";
 import type { OptionIdentity } from "$lib/types/identity";
 import { createAuthClient } from "$lib/utils/auth.utils";
 import { popupCenter } from "$lib/utils/window.utils";
@@ -14,10 +14,11 @@ export interface AuthStoreData {
 }
 
 let authClient: AuthClient | undefined | null;
+55;
 
 const NNS_IC_ORG_ALTERNATIVE_ORIGIN = "https://waterwaylabs.xyz";
 const NNS_IC_APP_DERIVATION_ORIGIN =
-  "https://bgpwv-eqaaa-aaaal-qb6eq-cai.icp0.io";
+  "https://qm6x5-qqaaa-aaaal-qcnea-cai.icp0.io";
 
 const isNnsAlternativeOrigin = () => {
   return window.location.origin === NNS_IC_ORG_ALTERNATIVE_ORIGIN;
@@ -51,7 +52,6 @@ const initAuthStore = (): AuthStore => {
     },
 
     signIn: ({ domain }: AuthSignInParams) =>
-      // eslint-disable-next-line no-async-promise-executor
       new Promise<void>(async (resolve, reject) => {
         authClient = authClient ?? (await createAuthClient());
         const identityProvider = domain;

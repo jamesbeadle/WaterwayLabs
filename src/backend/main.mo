@@ -11,31 +11,21 @@ import Environment "environment";
 import Cycles "mo:base/ExperimentalCycles";
 import Timer "mo:base/Timer";
 import Int "mo:base/Int";
+import Time "mo:base/Time";
 import Utilities "utilities";
 import Management "management";
 
 actor Self {
 
-    var logs: [Base.SystemLog] = [];
-    var formSubmissions: [T.FormSubmission] = [];
-
-    let admins = [
-        "" //James Beadle
-    ];
-
-    let managers = [
-        "", //Zoe Duffy
-        "", //Kelly Howlett
-        "", //George Brennan
-        "", //Josh Wray
-        "", //Thilly T
-    ];
+    private stable var logs: [Base.SystemLog] = [];
+    private stable var formSubmissions: [T.FormSubmission] = [];
      
-    private var dataHashes : [Base.DataHash] = [
-      { category = "projects"; hash = "DEFAULT" }
+    private stable var dataHashes : [Base.DataHash] = [
+      { category = "projects"; hash = "DEFAULT" },
+      { category = "team_members"; hash = "DEFAULT" }
     ];
 
-    private stable var teamMembers: [T.TeamMember] = [
+    private var teamMembers: [T.TeamMember] = [
         { 
             name = "Zoe Duffy";
             title = "Managing Director"; 
@@ -86,7 +76,7 @@ actor Self {
         },
     ];
 
-    private stable var projects: [T.Project] = [
+    private var projects: [T.Project] = [
         { 
             id = 1; 
             name = "Waterway Labs"; 
@@ -96,23 +86,26 @@ actor Self {
             githubLink="https://github.com/jamesbeadle/WaterwayLabs"; 
             socialLinks=[]; 
             status=#Development; 
-            description="Web3 Technology Company.";
-            summary="Waterway Labs is a Web3 Technology Company decentralising services using blockchain technology.";
+            description="Web3 Technology Company";
+            summary="Waterway Labs is a Web3 Technology Company decentralising web services using blockchain technology. Our mission is to build a more equitable world by introducing users to the concept of owning the services they use.";
             mainColour="#272727";
             secondaryColour="";
             thirdColour="";
         },
         { 
             id = 2; 
-            name = "Football God"; 
+            name = "FootballGod"; 
             backendCanisterId = "44kin-waaaa-aaaal-qbxra-cai"; 
             frontendCanisterId="43loz-3yaaa-aaaal-qbxrq-cai"; 
             websiteURL="footballgod.xyz"; 
             githubLink="https://github.com/jamesbeadle/football_god"; 
             socialLinks=[];
             status=#Development;
-            description="Web3 betting governed by a DAO.";
-            summary="FootballGod will be a fixed odds betting platform funded by the OpenFPL DAO. Data managed to run OpenFPL and Transfer Kings will be used to offer odds on worldwide football matches. Algorithms for FootballGod will be managed by the OpenFPL DAO, allowing FootballGod to be used as a useful tool for controlling the FPL token supply. FootballGod has been designed to take advantage of the highly profitable nature of betting platforms to benefit OpenFPL token holders. FootballGod will send all profits to the OpenFPL DAO FPL Treasury, with the DAO able to burn these profit at it's discretion.";
+            description="Web3 Sports Governed by the Fans";
+            summary=
+                "FootballGod is the brain of our footballing ecosystem, with real time football data governed by football fans through the FootballGod data explorers. 
+                Fans earn FPL whilst helping maintain our valuable dataset, allowing us to drive football related apps with real time, verified data. 
+                FootballGod will be home to our fixed odds football betting service, offering fans the only way to bet on every professional football game in the world.";
             mainColour="#7F56F1";
             secondaryColour="";
             thirdColour=""; 
@@ -126,8 +119,11 @@ actor Self {
             githubLink="https://github.com/jamesbeadle/OpenFPL"; 
             socialLinks=[("X", "https://x.com/OpenFPL_DAO")];
              status=#Decentralised;
-            description="Decentralised fantasy football.";
-            summary="OpenFPL is a Decentralised fantasy football game for the Premier League hosted through the Internet Computer's Network Nervous System. OpenFPL token holders reach community consensus for player valuations, data validation, and more to ensure the entire platform operates entirely on the blockchain without third party dependencies.";
+            description="Decentralised Fantasy Football";
+            summary="OpenFPL is a decentralised fantasy football game for the Premier League built to reward football fans frequently for their footballing knowledge.
+                OpenFPL's unique gameplay rules are designed to engage fans year round, creating a unique experience enhanced by token related features. 
+                OpenFPL has the world's first community based player valuations, showcasing the valuable utility of a governance backed dataset. 
+                OpenFPL operates entirely on the blockchain without third party dependencies.";
             mainColour="#2CE3A6";
             secondaryColour="";
             thirdColour="";
@@ -141,8 +137,10 @@ actor Self {
             githubLink="https://github.com/jamesbeadle/OpenWSL"; 
             socialLinks=[("X", "https://x.com/OpenFPL_DAO")];
             status=#Development;
-            description="Decentralised fantasy football.";
-            summary="OpenWSL is a Decentralised fantasy football game for the Women's Super League, hosted through the Internet Computer's Network Nervous System. OpenWSL operates alongside OpenFPL with the aim of increasing WSL popularity along with introducing more women to  blockchain technology.";
+            description="Decentralised fantasy football";
+            summary="OpenWSL is decentralised fantasy football based on the Women's Super League. 
+            OpenWSL has been created to enhance women's football by providing the same incentives for participation as our flagship Premier League fantasy football game. 
+            OpenWSL operates alongside OpenFPL to increase WSL popularity along with introducing more women to  blockchain technology.";
             mainColour="#F156D2";
             secondaryColour="";
             thirdColour="";
@@ -156,8 +154,11 @@ actor Self {
             githubLink="https://github.com/jamesbeadle/transferkings"; 
             socialLinks=[]; 
             status=#Design;
-            description="Become a football agent today.";
-            summary="Transfer Kings is our upcoming purchase to play football agency game. Groups of friends will be able to setup their own agency, competing against each other for custom reward pools. Transfer Kings is designed to span multiple seasons and international tournaments, allowing your contracted players to achieve their expected career goals. Designed for the football expert that can spot prospects around the world, Transfer Kings is the worldwide football game Web3 has been waiting for.";
+            description="Become a football agent today";
+            summary="Transfer Kings is our upcoming purchase to play football agency game. 
+            Groups of friends will be able to setup their own agency, competing against each other for custom reward pools. 
+            Transfer Kings is designed to span multiple seasons and international tournaments, allowing your contracted players to achieve their expected career goals. 
+            Designed for the football expert that can spot prospects around the world, Transfer Kings is the worldwide football game Web3 has been waiting for.";
             mainColour="#2D64E3";
             secondaryColour="";
             thirdColour="";
@@ -171,8 +172,10 @@ actor Self {
             githubLink="https://github.com/jamesbeadle/GolfPad"; 
             socialLinks=[("X", "https://x.com/GolfPadDAO")]; 
             status=#Development;
-            description="Golf meets Web3.";
-            summary="GolfPad gives golfers of all levels a new dimension to their game. GolfPad focuses on individual achievements throughout your round rather than a single round's total score. This allows you to compete against your friends within a new framework, training your golf game for new scenarios.";
+            description="Golf meets Web3";
+            summary="GolfPad gives golfers of all levels a new dimension to their game. 
+            GolfPad focuses on individual achievements throughout your round rather than a single round's total score. 
+            This allows you to compete against your friends within a new framework, training your golf game for new scenarios.";
             mainColour="#F4C802";
             secondaryColour="";
             thirdColour="";
@@ -185,8 +188,10 @@ actor Self {
             githubLink=""; 
             socialLinks=[]; 
             status=#Development;
-            description="Decentralised business management.";
-            summary="OpenBook is evolving into a comprehensive, 100% on-chain business management platform. OpenBook's initial offering of sales, accountancy, recruitment, timesheet and task management are just the first step on delivering the perfect single SaaS for businesses at the lowest possible price.";
+            description="Decentralised business management";
+            summary="OpenBook is evolving into a comprehensive, 100% on-chain business management platform. 
+            OpenBook's initial offering of sales, accountancy, recruitment, timesheet and task management 
+            are just the first step on delivering the perfect single SaaS for businesses at the lowest possible price.";
             mainColour="#66E094";
             secondaryColour="";
             thirdColour="";
@@ -199,8 +204,9 @@ actor Self {
             githubLink=""; 
             socialLinks=[]; 
             status=#Design;
-            description="Decentralised Audio Production.";
-            summary="OpenBeats is a decentralised audio production platform allowing artists to earn as producers collaborate. Create tracks using audio samples from the OpenBeats library, earning creators of samples a share the monthly subscription revenue.";
+            description="Decentralised Audio Production";
+            summary="OpenBeats is a decentralised audio production platform allowing artists to earn as producers collaborate. 
+            Create tracks using audio samples from the OpenBeats library, earning creators of samples a share the monthly subscription revenue.";
             mainColour="#FF8D7D";
             secondaryColour="";
             thirdColour="";
@@ -214,8 +220,10 @@ actor Self {
             githubLink=""; 
             socialLinks=[]; 
             status=#Design;
-            description="Build your own cooking community.";
-            summary="OpenChef is designed to enable chefs to earn as they help people within their local community. Chefs will create projects that receive funding through sponsorship, charitable donations and a share of premium content subscriptions. This funding will be used to feed the community, giving a chef the opportunity to show off their passion for cooking through charitable content. The DAO will vote on rewards for chefs that help the most people, ensuring as much good as possible can be done.";
+            description="Build Your Cooking Community";
+            summary="OpenChef is designed to enable chefs to earn as they help people within their local community. 
+            Chefs will create projects that receive funding through sponsorship, charitable donations and a share of premium content subscriptions. 
+            This funding will be used to feed the community, giving a chef the opportunity to show off their passion for cooking through charitable content.";
             mainColour="#F55454";
             secondaryColour="";
             thirdColour="";
@@ -229,7 +237,7 @@ actor Self {
             githubLink=""; 
             socialLinks=[]; 
             status=#Development;
-            description="Supporting community football.";
+            description="Supporting community football";
             summary="The ICPFA has been setup to support community grassroots football causes, funded by revenue from our football related applications.";
             mainColour="#FFFFFF";
             secondaryColour="";
@@ -244,7 +252,7 @@ actor Self {
             githubLink="";
              socialLinks=[]; 
              status=#Design;
-            description="The Future Of Social Care.";
+            description="The Future Of Social Care";
             summary="OpenCare has been designed with care professionals and families who have elderly relatives in care-homes. Caring for the elderly will be a huge challenge for society going forwards and OpenCare will provide a caring, efficient and secure solution to help all stakeholders involved.";
             mainColour="#FF69B4";
             secondaryColour="";
@@ -269,14 +277,7 @@ actor Self {
     };
 
     public shared ({ caller }) func submitForm(dto: DTOs.SubmitContactFormDTO) : async Result.Result<(), T.Error> {
-        assert not Principal.isAnonymous(caller);
-        
         let submittedById = Principal.toText(caller);
-
-        let existingOutstandingForm = Array.find<T.FormSubmission>(formSubmissions, func(submission: T.FormSubmission) : Bool {
-            submission.submittedBy == submittedById;
-        });
-        assert Option.isNull(existingOutstandingForm);
 
         let newSubmission: T.FormSubmission = {
             contact = dto.contact;
@@ -284,7 +285,7 @@ actor Self {
             name = dto.name;
             status = #Unread;
             submittedBy = submittedById;
-
+            submittedOn = Time.now();
         };
 
         let formSubmissionsBuffer = Buffer.fromArray<T.FormSubmission>(formSubmissions);
@@ -292,6 +293,11 @@ actor Self {
         formSubmissions := Buffer.toArray(formSubmissionsBuffer);
 
         return #ok();
+    };
+
+    public shared ({ caller }) func getFormSubmissions() : async Result.Result<[T.FormSubmission], T.Error>{
+        assert isManager(Principal.toText(caller));
+        return #ok(formSubmissions);
     };
 
     public shared ({ caller }) func logSystemEvent(dto: DTOs.SystemEventDTO) : async () {
@@ -309,7 +315,6 @@ actor Self {
     };
 
     private func isCallerApproved(callerPrincipalId: Base.CanisterId) : Bool {
-        return true; //REMOVE ALLOW ANY LOG
         let approvedCaller = Array.find<Base.CanisterId>(Environment.APPROVED_CANISTERS, func(canisterId: Base.CanisterId) : Bool {
             canisterId == callerPrincipalId;
         });
@@ -318,8 +323,7 @@ actor Self {
     };
 
     private func isCallerAdmin(callerPrincipalId: Base.CanisterId) : Bool {
-        return true; //REMOVE ALLOW ANY LOG
-        let approvedCaller = Array.find<Base.CanisterId>(admins, func(principalId: Base.CanisterId) : Bool {
+        let approvedCaller = Array.find<Base.CanisterId>([Environment.MASTER_PRINCIPAL_ID], func(principalId: Base.CanisterId) : Bool {
             principalId == callerPrincipalId;
         });
 
@@ -381,6 +385,13 @@ actor Self {
         let IC : Management.Management = actor (Environment.Default);
         let _ = await Utilities.topup_canister_(canister_actor, IC, cycles);
         return #ok();
+    };
+
+    private func isManager(principalId: Base.PrincipalId) : Bool {
+        let foundManager = Array.find<Base.PrincipalId>(Environment.MANAGER_PRINCIPAL_IDS, func(foundPrincipalId: Base.PrincipalId) : Bool {
+            foundPrincipalId == principalId;
+        });
+        return Option.isSome(foundManager);
     };
 
 
