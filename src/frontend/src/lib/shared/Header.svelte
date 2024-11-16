@@ -25,7 +25,7 @@
 </script>
 
 <header class="py-4 bg-WaterwayGray lg:py-2">
-  <div class="flex items-center justify-between w-full lg:max-w-1/2">
+  <div class="flex items-center justify-between w-full lg:w-1/2">
     <a href="/">
       <div class="flex items-center space-x-2">
         <img src="logo.png" class="h-5" alt="Waterway Labs Logo" />

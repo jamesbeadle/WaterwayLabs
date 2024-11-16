@@ -187,8 +187,8 @@ actor Self {
             backendCanisterId = "eur5j-5iaaa-aaaal-qcrva-cai"; 
             frontendCanisterId="etq35-qqaaa-aaaal-qcrvq-cai"; 
             websiteURL="openbook.services"; 
-            githubLink=""; 
-            socialLinks=[]; 
+            githubLink="https://github.com/jamesbeadle/OpenBook"; 
+            socialLinks=[("X", "https://x.com/OpenBookDAO")]; 
             status=#Development;
             description="Decentralised business management";
             summary="OpenBook is evolving into a comprehensive, 100% on-chain business management platform. 
@@ -203,7 +203,7 @@ actor Self {
             backendCanisterId = "27l52-5aaaa-aaaal-qr6ta-cai"; 
             frontendCanisterId="2yk3o-qyaaa-aaaal-qr6tq-cai"; 
             websiteURL="openbeats.xyz"; 
-            githubLink=""; 
+            githubLink="https://github.com/jamesbeadle/OpenBeats"; 
             socialLinks=[]; 
             status=#Design;
             description="Decentralised Audio Production";
@@ -219,7 +219,7 @@ actor Self {
             backendCanisterId = "h3scj-4iaaa-aaaal-qjfpq-cai"; 
             frontendCanisterId="chjym-xaaaa-aaaal-qjfqa-cai"; 
             websiteURL="openchef.xyz"; 
-            githubLink=""; 
+            githubLink="https://github.com/jamesbeadle/OpenChef"; 
             socialLinks=[]; 
             status=#Design;
             description="Build Your Cooking Community";
@@ -236,7 +236,7 @@ actor Self {
             backendCanisterId = "qxz7x-niaaa-aaaal-qdidq-cai"; 
             frontendCanisterId="r2x3z-caaaa-aaaal-qdiea-cai"; 
             websiteURL="https://icpfa.org"; 
-            githubLink=""; 
+            githubLink="https://github.com/jamesbeadle/ICPFA"; 
             socialLinks=[]; 
             status=#Development;
             description="Supporting community football";
@@ -251,9 +251,9 @@ actor Self {
             backendCanisterId = "cai6y-2yaaa-aaaal-qjfqq-cai"; 
             frontendCanisterId="coktq-biaaa-aaaal-qjfrq-cai"; 
             websiteURL="opencare.services"; 
-            githubLink="";
-             socialLinks=[]; 
-             status=#Design;
+            githubLink="https://github.com/jamesbeadle/OpenCare";
+            socialLinks=[]; 
+            status=#Design;
             description="The Future Of Social Care";
             summary="OpenCare has been designed with care professionals and families who have elderly relatives in care-homes. Caring for the elderly will be a huge challenge for society going forwards and OpenCare will provide a caring, efficient and secure solution to help all stakeholders involved.";
             mainColour="#FF69B4";
