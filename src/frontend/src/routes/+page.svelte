@@ -196,7 +196,7 @@
             
             <div class="relative z-0" style={`background-color: ${selectedProjectData.backgroundColor}`}>
               
-              <div class="mx-auto w-[70%] xs:w-[40%] lg:w-[60%] rounded-2xl border-4 border-WaterwayGray overflow-hidden translate-y-[10%] shadow-lg transform mt-2">
+              <div class="mx-auto w-[50%] xs:w-[40%] lg:w-[60%] rounded-2xl border-4 border-WaterwayGray overflow-hidden translate-y-[10%] shadow-lg transform mt-2">
                 <img src={selectedProjectData.screenshot} alt="Main feature" class="object-top rounded" />
               </div>
             </div>
