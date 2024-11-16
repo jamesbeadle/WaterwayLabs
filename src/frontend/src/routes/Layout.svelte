@@ -38,11 +38,8 @@
   $: worker, $authStore, worker?.syncAuthIdle($authStore);
   $: (() => {
     if (browser && $authStore) {
-      console.log("D")
       const spinner = document.querySelector("body > #app-spinner");
-      console.log("E")
       spinner?.remove();
-      console.log("F")
     }
   })();
 
