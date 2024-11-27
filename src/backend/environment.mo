@@ -6,7 +6,7 @@ module Environment {
     public let OPENFPL_BACKEND_CANISTER_ID = "y22zx-giaaa-aaaal-qmzpq-cai";
     public let OPENWSL_BACKEND_CANISTER_ID = "5bafg-ayaaa-aaaal-qmzqq-cai";
     public let FOOTBALL_GOD_BACKEND_CANISTER_ID = "44kin-waaaa-aaaal-qbxra-cai";
-
+    public let OPENFPL_GOVERNANCE_CANISTER_ID = "detjl-sqaaa-aaaaq-aacqa-cai";
     public let APPROVED_CANISTERS = [
         OPENFPL_BACKEND_CANISTER_ID,
         OPENWSL_BACKEND_CANISTER_ID,

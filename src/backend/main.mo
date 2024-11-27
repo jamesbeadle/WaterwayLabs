@@ -16,6 +16,7 @@ import Iter "mo:base/Iter";
 import Utilities "utilities";
 import Management "management";
 import SHA224 "./lib/SHA224";
+import OpenFplGovernance "interfaces/OpenFPLGovernance";
 
 actor Self {
 
@@ -364,7 +365,7 @@ actor Self {
                 switch(frontendCanisterStatusResult){
                     case(?frontendCanisterStatus){
                         canisterBuffer.add({
-                            canisterId = project.backendCanisterId;
+                            canisterId = project.frontendCanisterId;
                             canisterName = "Frontend";
                             computeAllocation = frontendCanisterStatus.settings.compute_allocation;
                             cycles = frontendCanisterStatus.cycles;
@@ -426,7 +427,6 @@ actor Self {
     };
 
     private func postUpgradeCallback() : async (){
-        await updateDataHash("projects");
     };
 
 }

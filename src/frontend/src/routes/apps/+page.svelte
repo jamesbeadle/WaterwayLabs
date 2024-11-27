@@ -63,11 +63,17 @@
     }
 
     async function topupCanister(){
-        isLoading = true;
-        await projectStore.topupCanister(selectedCanisterId, BigInt(trillionCycles * 1_000_000_000_000));
-        waterwayLabsCanisterSummary = await projectStore.getProjectCanisterInfo(1);
-        await loadCanisterInfo();
-        isLoading = false;
+        try{
+            isLoading = true;
+            await projectStore.topupCanister(selectedCanisterId, BigInt(trillionCycles * 1_000_000_000_000));
+            waterwayLabsCanisterSummary = await projectStore.getProjectCanisterInfo(1);
+            await loadCanisterInfo();    
+            closeCanisterTopup();
+        } catch (error) {
+            console.error("Error topping up canister", error);
+        } finally {
+            isLoading = false;
+        }
     }
 </script>
 

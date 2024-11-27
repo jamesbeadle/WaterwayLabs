@@ -123,6 +123,9 @@
   @apply flex items-center justify-between w-full py-8 text-2xl;
 }
 
+.brand-button {
+}
+
 .brand-dropdown {
   background-color: transparent !important;
   border: none;
