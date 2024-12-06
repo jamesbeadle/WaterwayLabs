@@ -159,9 +159,11 @@
       {#if selectedProjectData}
         <div class="hidden w-full lg:flex">
           <div class="full-screen-flex-row">
-            <div class="flex flex-col w-1/2 bg-WaterwayGray py-2 px-4 min-h-screen">
-              <Header />
-              <div class="mt-8">
+            <div class="flex flex-col w-1/2 min-h-screen bg-BrandGray">
+              <div class="mx-4 mt-2">
+                <Header halfWidth={true} bind:isMenuOpen />
+              </div>
+              <div class="px-4 mt-8">
                 <ProjectDetail 
                   title={selectedProjectData.title} 
                   status={selectedProjectData.status} 
@@ -181,9 +183,9 @@
                 style={`background-image: url('${selectedProjectData.backgroundImage}'); background-size: cover;`}
               ></div>
           
-              <div class="relative z-10 flex justify-center items-center w-full h-full overflow-hidden">
-                <div class="w-[95%] rounded-2xl border-8 border-WaterwayGray shadow-lg transform translate-x-[20%]">
-                  <img src={selectedProjectData.screenshot} alt="Main feature" class="rounded max-w-full max-h-full object-contain" />
+              <div class="relative z-10 flex items-center justify-center w-full h-full overflow-hidden">
+                <div class="w-[95%] rounded-2xl border-8 border-BrandGray shadow-lg transform translate-x-[20%]">
+                  <img src={selectedProjectData.screenshot} alt="Main feature" class="object-contain max-w-full max-h-full rounded" />
                 </div>
               </div>
               
@@ -196,12 +198,12 @@
             
             <div class="relative z-0" style={`background-color: ${selectedProjectData.backgroundColor}`}>
               
-              <div class="mx-auto w-[50%] xs:w-[40%] lg:w-[60%] rounded-2xl border-4 border-WaterwayGray overflow-hidden translate-y-[10%] shadow-lg transform mt-2">
+              <div class="mx-auto w-[50%] xs:w-[40%] lg:w-[60%] rounded-2xl border-4 border-BrandGray overflow-hidden translate-y-[10%] shadow-lg transform mt-2">
                 <img src={selectedProjectData.screenshot} alt="Main feature" class="object-top rounded" />
               </div>
             </div>
       
-            <div class="relative z-20 bg-WaterwayGray -mt-8 w-[101%] px-[1%] -mb-[1px]"> 
+            <div class="relative z-20 bg-BrandGray -mt-8 w-[101%] px-[1%] -mb-[1px]"> 
               <ProjectDetail 
                   title={selectedProjectData.title} 
                   status={selectedProjectData.status} 
