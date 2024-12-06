@@ -44,7 +44,7 @@
 }
 
 .status {
-  @apply inline-block px-3 py-1 text-xs semi-bold bg-white rounded-full shadow-md text-WaterwayGray;
+  @apply inline-block px-3 py-1 text-xs bg-white rounded-full shadow-md semi-bold text-BrandGray;
 }
 
 .left-side {
@@ -71,7 +71,7 @@
 }
 
 .btn {
-  @apply px-4 py-2 text-white rounded-md bg-WaterwayTeal hover:bg-WaterwayGreen hover:text-white;
+  @apply px-4 py-2 text-white rounded-md bg-BrandTeal hover:bg-BrandGreen hover:text-white;
 }
 
 .horizontal-divider {
@@ -84,16 +84,16 @@
 }
 
 .badge-design {
-  @apply bg-WaterwayLightBlue text-WaterwayBrown;
+  @apply bg-BrandLightBlue text-BrandGreen;
 }
 .badge-development {
-  @apply text-white bg-WaterwayBlue;
+  @apply text-white bg-BrandBlue;
 }
 .badge-live {
-  @apply text-white bg-WaterwayBlue;
+  @apply text-white bg-BrandBlue;
 }
 .badge-decentralised {
-  @apply text-white bg-WaterwayGreen;
+  @apply text-white bg-BrandGreen;
 }
 .form-label {
   @apply block mb-2 text-sm font-medium text-gray-300;
@@ -111,7 +111,7 @@
   @apply absolute w-[240px] h-[240px] bg-[rgba(244,223,253,0.2)] blur-[320px] bottom-[20%] right-[30%];
 }
 .mobile-menu {
-  @apply fixed inset-0 z-50 flex flex-col transition-opacity duration-300 bg-WaterwayGray;
+  @apply fixed inset-0 z-50 flex flex-col transition-opacity duration-300 bg-BrandGray;
 }
 .mobile-menu-header {
   @apply flex items-center justify-between h-16 px-4;
@@ -121,9 +121,6 @@
 }
 .mobile-menu-item {
   @apply flex items-center justify-between w-full py-8 text-2xl;
-}
-
-.brand-button {
 }
 
 .brand-dropdown {
