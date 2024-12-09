@@ -1,13 +1,21 @@
 <script lang="ts">
+  import { page } from '$app/stores';
   import DotsIcon from '$lib/icons/DotsIcon.svelte';
   import CloseIcon from '$lib/icons/CloseIcon.svelte';
   import ArrowIcon from '$lib/icons/ArrowIcon.svelte';
   import { authStore } from '$lib/stores/auth-store';
   import { onMount } from 'svelte';
+  
   export let isMenuOpen = false;
+  export let halfWidth = false;
 
   let isLoggedIn = false;
-  
+  $: currentPath = $page.url.pathname;
+
+  function isActivePage(path: string): boolean {
+    return currentPath === '/' + path;
+  }
+
   onMount(async () => {
     try {
       authStore.subscribe((store) => {
@@ -24,26 +32,26 @@
   }
 </script>
 
-<header class="py-4 bg-WaterwayGray lg:py-2">
-  <div class="flex items-center justify-between w-full lg:w-1/2">
-    <a href="/">
+<header class="py-4 px-4 bg-BrandGray lg:py-4 {halfWidth ? '' : 'w-full'} {!halfWidth && 'sm:mx-auto lg:container lg:mx-auto'}">
+  <div class="flex items-center justify-between w-full mx-auto max-w-screen-2xl">
+    <a href="/" class="flex-shrink-0">
       <div class="flex items-center space-x-2">
         <img src="logo.png" class="h-5" alt="Waterway Labs Logo" />
-        <span>WATERWAY <span class="exLight">LABS</span></span>      
+        <span class="lg:text-sm xl:text-base">WATERWAY <span class="exLight">LABS</span></span>      
       </div>
     </a>
 
-    <nav class="hidden space-x-4 sm:flex lg:mr-2">
-      <a href="about" class="hover:underline">ABOUT</a>
-      <a href="team" class="hover:underline">TEAM</a>
-      <a href="contact" class="hover:underline">CONTACT</a>
+    <nav class="hidden space-x-4 lg:space-x-3 xl:space-x-6 sm:flex">
+      <a href="about" class="hover:underline lg:text-sm xl:text-base {isActivePage('about') ? 'text-BrandTurquoise' : ''}">ABOUT</a>
+      <a href="team" class="hover:underline lg:text-sm xl:text-base {isActivePage('team') ? 'text-BrandTurquoise' : ''}">TEAM</a>
+      <a href="contact" class="hover:underline lg:text-sm xl:text-base {isActivePage('contact') ? 'text-BrandTurquoise' : ''}">CONTACT</a>
       {#if isLoggedIn}
-        <a href="account" class="hover:underline">ACCOUNT</a>
+        <a href="account" class="hover:underline lg:text-sm xl:text-base {isActivePage('account') ? 'text-BrandTurquoise' : ''}">ACCOUNT</a>
       {/if}
     </nav>
 
     <button
-      class="sm:hidden"
+      class="flex-shrink-0 sm:hidden"
       aria-label="Menu"
       on:click={toggleMenu}
     >
@@ -91,6 +99,16 @@
       </div>
 
       <div class="horizontal-divider"></div>
+
+      {#if isLoggedIn}
+        <div class="mobile-menu-item">
+          <a href="/account" class="mobile-nav-link" on:click={toggleMenu}>ACCOUNT</a>
+          <a href="/account" on:click={toggleMenu}>
+            <ArrowIcon className="w-7 h-7" />
+          </a>
+        </div>
+        <div class="horizontal-divider"></div>
+      {/if}
     </div>
   </div>
 {/if}
