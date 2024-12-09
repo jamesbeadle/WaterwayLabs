@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from '$app/stores';
   import DotsIcon from '$lib/icons/DotsIcon.svelte';
   import CloseIcon from '$lib/icons/CloseIcon.svelte';
   import ArrowIcon from '$lib/icons/ArrowIcon.svelte';
@@ -9,7 +10,12 @@
   export let halfWidth = false;
 
   let isLoggedIn = false;
-  
+  $: currentPath = $page.url.pathname;
+
+  function isActivePage(path: string): boolean {
+    return currentPath === '/' + path;
+  }
+
   onMount(async () => {
     try {
       authStore.subscribe((store) => {
@@ -26,7 +32,7 @@
   }
 </script>
 
-<header class="py-4 px-4 bg-BrandGray lg:py-2 {halfWidth ? '' : 'w-full'} {!halfWidth && 'sm:mx-auto lg:container lg:mx-auto'}">
+<header class="py-4 px-4 bg-BrandGray lg:py-4 {halfWidth ? '' : 'w-full'} {!halfWidth && 'sm:mx-auto lg:container lg:mx-auto'}">
   <div class="flex items-center justify-between w-full mx-auto max-w-screen-2xl">
     <a href="/" class="flex-shrink-0">
       <div class="flex items-center space-x-2">
@@ -36,11 +42,11 @@
     </a>
 
     <nav class="hidden space-x-4 lg:space-x-3 xl:space-x-6 sm:flex">
-      <a href="about" class="hover:underline lg:text-sm xl:text-base">ABOUT</a>
-      <a href="team" class="hover:underline lg:text-sm xl:text-base">TEAM</a>
-      <a href="contact" class="hover:underline lg:text-sm xl:text-base">CONTACT</a>
+      <a href="about" class="hover:underline lg:text-sm xl:text-base {isActivePage('about') ? 'text-BrandTurquoise' : ''}">ABOUT</a>
+      <a href="team" class="hover:underline lg:text-sm xl:text-base {isActivePage('team') ? 'text-BrandTurquoise' : ''}">TEAM</a>
+      <a href="contact" class="hover:underline lg:text-sm xl:text-base {isActivePage('contact') ? 'text-BrandTurquoise' : ''}">CONTACT</a>
       {#if isLoggedIn}
-        <a href="account" class="hover:underline lg:text-sm xl:text-base">ACCOUNT</a>
+        <a href="account" class="hover:underline lg:text-sm xl:text-base {isActivePage('account') ? 'text-BrandTurquoise' : ''}">ACCOUNT</a>
       {/if}
     </nav>
 
