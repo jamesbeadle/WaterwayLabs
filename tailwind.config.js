@@ -30,6 +30,7 @@ export default {
       colors: {
         BrandGray: "#272727",
         BrandBlue: "#2D5F73",
+        BrandTurquoise: "#4FD9FD",
         BrandTeal: "#4F91A6",
         BrandRipple: "#88C9D0",
         BrandLightBlue: "#D4F1F9",
@@ -59,6 +60,22 @@ export default {
         body: ["16px", { lineHeight: "22.4px" }],
         bodysmall: ["14px", { lineHeight: "20px" }],
       },
+      keyframes: {
+        'ring-pulse': {
+          '0%': {
+            boxShadow: '0 0 0 0 rgba(255, 255, 255, 0.4)'
+          },
+          '70%': {
+            boxShadow: '0 0 0 10px rgba(255, 255, 255, 0)'
+          },
+          '100%': {
+            boxShadow: '0 0 0 0 rgba(255, 255, 255, 0)'
+          }
+        }
+      },
+      animation: {
+        'ring-pulse': 'ring-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+      }
     },
   },
   plugins: [],
