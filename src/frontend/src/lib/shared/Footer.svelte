@@ -27,7 +27,7 @@
 
 </script>
 
-<footer class="relative py-8 overflow-hidden bg-WaterwayGray">
+<footer class="relative py-8 overflow-hidden bg-BrandGray">
   <div class="absolute ellipse-1"></div>
   <div class="absolute ellipse-2"></div>
   <div class="relative z-10">
@@ -43,7 +43,7 @@
         </a>
       </div>
 
-      <div class="flex flex-col text-sm  exLight uppercase lg:mb-0 lg:flex-row">
+      <div class="flex flex-col text-sm uppercase exLight lg:mb-0 lg:flex-row">
         <a href="/" class="mb-4 lg:mb-0 lg:mx-4 hover:text-blue-400">Products</a>
         <a href="/about" class="mb-4 lg:mb-0 lg:mx-4 hover:text-blue-400">About Us</a>
         <a href="/team" class="mb-4 lg:mb-0 lg:mx-4 hover:text-blue-400">The Team</a>
@@ -60,7 +60,7 @@
           <button on:click={handleLogin}>LET'S CONNECT</button>
         {/if}
       </div>
-      <div class="flex flex-col text-sm  exLight uppercase lg:flex-row ">
+      <div class="flex flex-col text-sm uppercase exLight lg:flex-row ">
         <a href="https://github.com" target="_blank" class="mb-4 lg:mb-0 lg:mx-2 hover:text-blue-400">GitHub</a>
         <a href="https://twitter.com" target="_blank" class="mb-4 lg:mb-0 lg:mx-2 hover:text-blue-400">Twitter</a>
       </div>
