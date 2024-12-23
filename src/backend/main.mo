@@ -17,6 +17,9 @@ import Utilities "utilities";
 import Management "management";
 import SHA224 "./lib/SHA224";
 import OpenFplGovernance "interfaces/OpenFPLGovernance";
+import FootballTypes "types/football_types";
+import FootballDTOs "dtos/football_dtos";
+import AIDTOs "dtos/ai_dtos";
 
 actor Self {
 
@@ -333,6 +336,14 @@ actor Self {
         return Option.isSome(approvedCaller);
     };
 
+
+    private func isAITeam(principalId: Base.PrincipalId) : Bool {
+        let foundManager = Array.find<Base.PrincipalId>(Environment.AI_DEVELOPER_PRINCIPAL_IDS, func(foundPrincipalId: Base.PrincipalId) : Bool {
+            foundPrincipalId == principalId;
+        });
+        return Option.isSome(foundManager);
+    };
+    
     public shared ({ caller }) func getProjectCanisterInfo(projectId: T.ProjectId) : async Result.Result<[DTOs.CanisterDTO], T.Error> {
         assert isCallerAdmin(Principal.toText(caller));
         
@@ -388,6 +399,102 @@ actor Self {
         let IC : Management.Management = actor (Environment.Default);
         let _ = await Utilities.topup_canister_(canister_actor, IC, cycles);
         return #ok();
+    };
+
+    //Functions to get raw ai data
+
+    public shared ({ caller }) func getOpenFPLFantasyTeamSnapshots() : async [AIDTOs.ManagerSnapshotDTO] {
+        assert isAITeam(Principal.toText(caller));
+        let openfpl_backend_canister = actor (Environment.OPENFPL_BACKEND_CANISTER_ID) : actor {
+            getManagerSnapshotData : () -> async [FootballTypes.FantasyTeamSnapshot];
+        };
+
+        Debug.print("test");
+
+        return await openfpl_backend_canister.getManagerSnapshotData();        
+    };
+
+    public shared ({ caller }) func getLivePlayers() : async [AIDTOs.PlayerDTO] {
+        assert isAITeam(Principal.toText(caller));
+        let data_canister = actor (Environment.DATA_CANISTER_ID) : actor {
+            getLeagues : shared query () -> async Result.Result<[FootballDTOs.FootballLeagueDTO], T.Error>;
+            getPlayers : shared query (leagueId: FootballTypes.LeagueId) -> async Result.Result<[FootballDTOs.PlayerDTO], T.Error>;
+        };
+
+        let leaguesResult = await data_canister.getLeagues();
+        
+        let allPlayersBuffer = Buffer.fromArray<AIDTOs.PlayerDTO>([]);
+        switch(leaguesResult){
+            case (#ok leagues){
+                for(league in Iter.fromArray(leagues)){
+                    if(league.relatedGender == #Male){
+                        let response = await data_canister.getPlayers(league.id);
+                        switch(response) {
+                            case(#ok players) { 
+                                allPlayersBuffer.append(Buffer.fromArray(
+                                    Array.map<FootballDTOs.PlayerDTO, AIDTOs.PlayerDTO>(players, func(player: FootballDTOs.PlayerDTO) {
+                                        return {
+                                            clubId = player.clubId;
+                                            dateOfBirth = player.dateOfBirth;
+                                            firstName = player.firstName;
+                                            id = player.id;
+                                            lastName = player.lastName;
+                                            nationality = player.nationality;
+                                            position = debug_show player.position;
+                                            shirtNumber = player.shirtNumber;
+                                            status = debug_show player.status;
+                                            valueQuarterMillions = player.valueQuarterMillions
+                                        }
+                                    })
+                                ));
+                            };
+                            case(#err _) {  };
+                        };
+                    };
+                }
+            };
+            case (#err _){};
+        };
+
+        return Buffer.toArray(allPlayersBuffer);
+    };
+
+    public shared ({ caller }) func getSeasonFixtures() : async [AIDTOs.FixtureDTO] {
+        assert isAITeam(Principal.toText(caller));
+        let data_canister = actor (Environment.DATA_CANISTER_ID) : actor {
+            getFixtures : shared query (leagueId: FootballTypes.LeagueId) -> async Result.Result<[FootballDTOs.FixtureDTO], T.Error>;
+        };
+        
+        let response = await data_canister.getFixtures(1);
+        switch(response) {
+            case(#ok fixtures) { 
+                return Array.map<FootballDTOs.FixtureDTO, AIDTOs.FixtureDTO>(fixtures, func(fixture: FootballDTOs.FixtureDTO) {
+                    return {
+                        awayClubId = fixture.awayClubId;
+                        awayGoals = fixture.awayGoals;
+                        events = Array.map<FootballTypes.PlayerEventData, AIDTOs.PlayerEventDataDTO>(fixture.events, func(fixtureEvent: FootballTypes.PlayerEventData){
+                            return {
+                                clubId = fixtureEvent.clubId;
+                                eventEndMinute = fixtureEvent.eventEndMinute;
+                                eventStartMinute = fixtureEvent.eventStartMinute;
+                                eventType = debug_show fixtureEvent.eventType;
+                                fixtureId = fixtureEvent.fixtureId;
+                                playerId = fixtureEvent.playerId
+                            }
+                        });
+                        gameweek = fixture.gameweek;
+                        highestScoringPlayerId = fixture.highestScoringPlayerId;
+                        homeClubId = fixture.homeClubId;
+                        homeGoals = fixture.homeGoals;
+                        id = fixture.id;
+                        kickOff = fixture.kickOff;
+                        seasonId = fixture.seasonId;
+                        status = debug_show fixture.status;
+                    }
+                });
+             };
+            case(#err _) { return [] };
+        };
     };
 
     private func isManager(principalId: Base.PrincipalId) : Bool {

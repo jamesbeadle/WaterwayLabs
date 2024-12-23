@@ -61,21 +61,21 @@ export default {
         bodysmall: ["14px", { lineHeight: "20px" }],
       },
       keyframes: {
-        'ring-pulse': {
-          '0%': {
-            boxShadow: '0 0 0 0 rgba(255, 255, 255, 0.4)'
+        "ring-pulse": {
+          "0%": {
+            boxShadow: "0 0 0 0 rgba(255, 255, 255, 0.4)",
           },
-          '70%': {
-            boxShadow: '0 0 0 10px rgba(255, 255, 255, 0)'
+          "70%": {
+            boxShadow: "0 0 0 10px rgba(255, 255, 255, 0)",
           },
-          '100%': {
-            boxShadow: '0 0 0 0 rgba(255, 255, 255, 0)'
-          }
-        }
+          "100%": {
+            boxShadow: "0 0 0 0 rgba(255, 255, 255, 0)",
+          },
+        },
       },
       animation: {
-        'ring-pulse': 'ring-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-      }
+        "ring-pulse": "ring-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      },
     },
   },
   plugins: [],
