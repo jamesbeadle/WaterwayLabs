@@ -59,19 +59,16 @@
 
     async function fetchSnapshots(): Promise<any[]> {
         let result = await aiStore.getOpenFPLFantasyTeamSnapshots();
-        console.log(result);
         return result;
     }
 
     async function fetchLivePlayersData(): Promise<any[]> {
         let result = await  aiStore.getLivePlayers();
-        console.log(result);
         return result;
     }
 
     async function getSeasonFixtures(): Promise<any[]> {
         let result = await  aiStore.getSeasonFixtures();
-        console.log(result);
         return result;
     }
 

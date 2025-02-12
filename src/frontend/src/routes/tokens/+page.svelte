@@ -36,8 +36,6 @@
             const params: SnsGetNeuronParams = { neuronId: { id: hexStringToUint8Array(neuronIdInput) } };
             const response = await getNeuron(params);
             neuron = response ?? null;
-            console.log("Found neuron")
-            console.log(neuron)
             if (!neuron) {
                 errorMessage = "Neuron not found.";
             }
@@ -46,16 +44,9 @@
             let latestProposals = await listProposals(listParams);
             let latestProposal = latestProposals.proposals[0];
             let totalVotes = Number(latestProposal.latest_tally[0]?.total) / 100_000_000;
-            console.log("total votes")
-            console.log(totalVotes)
             let neuronVotingPower = getVotingPower(neuron);
-            console.log("neuron voting power")
-            console.log(neuronVotingPower)
             let yourPercentage = neuronVotingPower / Number(totalVotes);
             votePercentage = yourPercentage;
-            console.log(yourPercentage)
-            console.log(`This neuron holds ${((yourPercentage) * 100).toFixed(4)}% of the vote.`)
-
         } catch (error) {
             console.error(error);
             errorMessage = "Error fetching neuron.";

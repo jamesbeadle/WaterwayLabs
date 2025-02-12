@@ -133,3 +133,7 @@
   background-color: black;
   border: none;
 }
+
+.bg-frontend-update {
+  @apply bg-BrandLightBlue;
+}

@@ -3,6 +3,7 @@
 	import { toasts } from '$lib/stores/toasts-store';
 	import type { Toast } from '$lib/stores/toasts-store';
     import { appStore } from '$lib/stores/app-store';
+    import ArrowIcon from '$lib/icons/ArrowIcon.svelte';
 
 	export let toast: Toast;
 
@@ -23,10 +24,18 @@
 	}
 </script>
 
-<div class={`fixed top-0 left-0 right-0 z-[9999] p-4 text-white shadow-md flex justify-between items-center bg-${toast.type}`}>
+<div class={`fixed top-0 left-0 right-0 z-[9999] p-4 text-black shadow-md flex justify-between items-center bg-${toast.type}`}>
   <span>{toast.message}</span>
   {#if toast.type == "frontend-update"}
-	<button on:click={updateFrontend} class="brand-button">Update FootballGod</button>
+	<button 
+		class="p-1 transition-colors border border-white rounded-full group hover:bg-white hover:text-black flex flex-row items-center" 
+		on:click={updateFrontend}>
+		
+		<span class="flex-1 text-xs semi-bold tracking-wide text-center lg:px-4">UPDATE SITE</span>
+		<span class="w-8 h-8 flex items-center justify-center">
+		  <ArrowIcon className="w-8 h-8" />
+		</span>
+	</button>
   {/if}
   <button class="font-bold ml-4" on:click={closeToast}>
     &times;
