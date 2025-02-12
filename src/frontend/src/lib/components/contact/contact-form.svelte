@@ -26,12 +26,13 @@
       const alreadyExists = Object.keys(submitErr)[0] == "AlreadyExists";
 
       if (alreadyExists) {
-        toasts.error({
-          text: "A submission for your contact information already exists and is pending a response." 
+        toasts.addToast({
+          message: "A submission for your contact information already exists and is pending a response.",
+          type: 'error'
         });
         console.error("Form already submitted: ", submitErr);
       } else {
-        toasts.error({ text: "There was an error submitting your form." });
+        toasts.addToast({ message: "There was an error submitting your form.", type: 'error' });
         console.error("Error submitting form: ", submitErr);
       }
 
@@ -40,7 +41,7 @@
     }
 
     clearForm();
-    toasts.success("Form successfully submitted!");
+    toasts.addToast({message: "Form successfully submitted!", type: 'success'} );
     isLoading = false;
   }
 

@@ -51,5 +51,10 @@ module AppDTOs {
         canisterName: Text;
         cycles: Nat;
         computeAllocation: Nat;
-    }
+    };
+
+    public type AppStatusDTO = {
+        onHold : Bool;
+        version : Text;
+    };
 }

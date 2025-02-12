@@ -8,7 +8,6 @@ import T "types/app_types";
 import Base "types/base_types";
 import DTOs "dtos/app_dtos";
 import Environment "environment";
-import Cycles "mo:base/ExperimentalCycles";
 import Timer "mo:base/Timer";
 import Int "mo:base/Int";
 import Time "mo:base/Time";
@@ -16,12 +15,21 @@ import Iter "mo:base/Iter";
 import Utilities "utilities";
 import Management "management";
 import SHA224 "./lib/SHA224";
-import OpenFplGovernance "interfaces/OpenFPLGovernance";
 import FootballTypes "types/football_types";
 import FootballDTOs "dtos/football_dtos";
 import AIDTOs "dtos/ai_dtos";
+import AppDTOs "dtos/app_dtos";
 
 actor Self {
+        
+    private var appStatus: Base.AppStatus = { 
+        onHold = false;
+        version = "0.0.1";
+    };  
+    
+    public shared query func getAppStatus() : async Result.Result<AppDTOs.AppStatusDTO, T.Error> {
+        return #ok(appStatus);
+    };
 
     private stable var logs: [Base.SystemLog] = [];
     private stable var formSubmissions: [T.FormSubmission] = [];

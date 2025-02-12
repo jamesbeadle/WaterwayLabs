@@ -7,12 +7,13 @@
   import { initAuthWorker } from "$lib/services/worker-auth-service";
   import { authStore, type AuthStoreData } from "$lib/stores/auth-store";
   import { storeManager } from "$lib/manager/store-manager.js";
-  import Toast from "$lib/components/ui/toasts.svelte";
   import DesktopLayout from "./DesktopLayout.svelte";
   import MobileLayout from "./MobileLayout.svelte";
   import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
 
   import "../app.css";
+    import { appStore } from "$lib/stores/app-store";
+    import Toasts from "$lib/components/toasts/toasts.svelte";
   
   let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined;
 
@@ -28,6 +29,7 @@
   const init = async () => {
     await syncAuthStore();
     await storeManager.syncStores();
+    await appStore.checkServerVersion();
   };
 
   onMount(async () => {
@@ -54,7 +56,7 @@
   </div>
 {:then _}
   <div>
-    <Toast />
+    <Toasts />
     <div class="block lg:hidden">
       <MobileLayout>
         <slot />

@@ -1,37 +1,30 @@
-import type { ToastMsg } from "$lib/types/toast";
-import { errorDetailToString } from "$lib/utils/error.utils";
 import { writable } from "svelte/store";
 
-const initToastsStore = () => {
-  const { subscribe, update } = writable<ToastMsg[]>([]);
+export interface Toast {
+  id: number;
+  message: string;
+  type?: "info" | "success" | "error" | "frontend-update";
+  duration?: number;
+}
+
+function createToastsStore() {
+  const { subscribe, update } = writable<Toast[]>([]);
+  let idCounter = 0;
+
+  function addToast(toast: Omit<Toast, "id">) {
+    update((toasts) => [...toasts, { ...toast, id: ++idCounter }]);
+  }
+
+  function removeToast(id: number) {
+    update((toasts) => toasts.filter((toast) => toast.id !== id));
+  }
 
   return {
     subscribe,
-
-    error({ text, detail }: { text: string; detail?: unknown }) {
-      console.error(text, detail);
-      update((messages: ToastMsg[]) => [
-        ...messages,
-        { text, level: "error", detail: errorDetailToString(detail) },
-      ]);
-    },
-
-    show(msg: ToastMsg) {
-      update((messages: ToastMsg[]) => [...messages, msg]);
-    },
-
-    success(text: string) {
-      this.show({
-        text,
-        level: "info",
-        duration: 2000,
-      });
-    },
-
-    hide() {
-      update((messages: ToastMsg[]) => messages.slice(1));
-    },
+    addToast,
+    removeToast,
   };
-};
+}
 
-export const toasts = initToastsStore();
+export const toasts = createToastsStore();
+export const { addToast } = toasts;
