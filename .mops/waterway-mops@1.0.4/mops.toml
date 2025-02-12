@@ -1,0 +1,11 @@
+[package]
+name = "waterway-mops"
+version = "1.0.4"
+description = "Types used across Waterway Labs Products"
+repository = "https://github.com/jamesbeadle/waterway-mops"
+keywords = [ "footbal-types", "base-types" ]
+license = "Apache-2.0"
+
+[dependencies]
+base = "0.14.0"
+waterway-mops = "1.0.1"

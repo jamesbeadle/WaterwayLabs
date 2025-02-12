@@ -1,6 +1,5 @@
-import Base "../types/base_types";
-import T "../types/app_types";
-import FootballTypes "../types/football_types";
+import BaseTypes "mo:waterway-mops/BaseTypes";
+import FootballTypes "mo:waterway-mops/FootballTypes";
 
 module DTOs {
 
@@ -14,7 +13,7 @@ module DTOs {
     shirtNumber : Nat8;
     valueQuarterMillions : Nat16;
     dateOfBirth : Int;
-    nationality : Base.CountryId;
+    nationality : BaseTypes.CountryId;
     status : FootballTypes.PlayerStatus;
   };
 
@@ -39,10 +38,10 @@ module DTOs {
       name: Text;
       abbreviation: Text;
       teamCount: Nat8;
-      relatedGender: Base.Gender;
+      relatedGender: BaseTypes.Gender;
       governingBody: Text;
       formed: Int;
-      countryId: Base.CountryId;
+      countryId: BaseTypes.CountryId;
       logo: Blob;
     };
 };

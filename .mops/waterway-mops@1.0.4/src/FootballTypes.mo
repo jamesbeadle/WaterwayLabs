@@ -1,4 +1,4 @@
-import Base "base_types";
+import Base "BaseTypes";
 import List "mo:base/List";
 module FootballTypes {
 

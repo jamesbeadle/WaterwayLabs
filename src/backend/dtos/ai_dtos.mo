@@ -1,5 +1,5 @@
-import Base "../types/base_types";
-import FootballTypes "../types/football_types";
+import BaseTypes "mo:waterway-mops/BaseTypes";
+import FootballTypes "mo:waterway-mops/FootballTypes";
 
 module AIDTOs {
 
@@ -13,7 +13,7 @@ module AIDTOs {
         shirtNumber : Nat8;
         valueQuarterMillions : Nat16;
         dateOfBirth : Int;
-        nationality : Base.CountryId;
+        nationality : BaseTypes.CountryId;
         status : Text;
     };
 
@@ -64,7 +64,7 @@ module AIDTOs {
         captainFantasticGameweek : FootballTypes.GameweekNumber;
         captainFantasticPlayerId : FootballTypes.PlayerId;
         oneNationGameweek : FootballTypes.GameweekNumber;
-        oneNationCountryId : Base.CountryId;
+        oneNationCountryId : BaseTypes.CountryId;
         prospectsGameweek : FootballTypes.GameweekNumber;
         braceBonusGameweek : FootballTypes.GameweekNumber;
         hatTrickHeroGameweek : FootballTypes.GameweekNumber;
@@ -72,7 +72,7 @@ module AIDTOs {
         monthlyPoints : Int16;
         seasonPoints : Int16;
         transferWindowGameweek : FootballTypes.GameweekNumber;
-        month : Base.CalendarMonth;
+        month : BaseTypes.CalendarMonth;
         seasonId: FootballTypes.SeasonId;
     };
 };

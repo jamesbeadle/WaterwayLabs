@@ -1,4 +1,4 @@
-import Base "../types/base_types";
+import BaseTypes "mo:waterway-mops/BaseTypes";
 import T "../types/app_types";
 
 module AppDTOs {
@@ -17,7 +17,7 @@ module AppDTOs {
     public type SystemEventDTO = {
         eventId: Nat;
         eventTime: Int;
-        eventType: Base.LogEntryType;
+        eventType: BaseTypes.LogEntryType;
         eventTitle: Text;
         eventDetail: Text;
     };
@@ -26,8 +26,8 @@ module AppDTOs {
     public type ProjectDTO = {
         id: T.ProjectId;
         name: Text;
-        backendCanisterId: Base.CanisterId;
-        frontendCanisterId: Base.CanisterId;
+        backendCanisterId: BaseTypes.CanisterId;
+        frontendCanisterId: BaseTypes.CanisterId;
         websiteURL: Text;
         githubLink: Text;
         socialLinks: [(Text,Text)];
@@ -47,7 +47,7 @@ module AppDTOs {
     };
 
     public type CanisterDTO = {
-        canisterId: Base.CanisterId;
+        canisterId: BaseTypes.CanisterId;
         canisterName: Text;
         cycles: Nat;
         computeAllocation: Nat;

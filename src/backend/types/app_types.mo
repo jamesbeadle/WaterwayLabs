@@ -1,5 +1,4 @@
-import Base "base_types";
-
+import BaseTypes "mo:waterway-mops/BaseTypes";
 module AppTypes {
 
     public type Error = {
@@ -12,8 +11,8 @@ module AppTypes {
     public type Project = {
         id: ProjectId;
         name: Text;
-        backendCanisterId: Base.CanisterId;
-        frontendCanisterId: Base.CanisterId;
+        backendCanisterId: BaseTypes.CanisterId;
+        frontendCanisterId: BaseTypes.CanisterId;
         websiteURL: Text;
         githubLink: Text;
         socialLinks: [(Text,Text)];
@@ -41,7 +40,7 @@ module AppTypes {
         message: Text;
         contact: Text;
         status: QueryStatus;
-        submittedBy: Base.PrincipalId;
+        submittedBy: BaseTypes.PrincipalId;
         submittedOn: Int;
     };
 

@@ -5,7 +5,7 @@ import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
 import Principal "mo:base/Principal";
 import T "types/app_types";
-import Base "types/base_types";
+import BaseTypes "mo:waterway-mops/BaseTypes";
 import DTOs "dtos/app_dtos";
 import Environment "environment";
 import Timer "mo:base/Timer";
@@ -15,14 +15,14 @@ import Iter "mo:base/Iter";
 import Utilities "utilities";
 import Management "management";
 import SHA224 "./lib/SHA224";
-import FootballTypes "types/football_types";
+import FootballTypes "mo:waterway-mops/FootballTypes";
 import FootballDTOs "dtos/football_dtos";
 import AIDTOs "dtos/ai_dtos";
 import AppDTOs "dtos/app_dtos";
 
 actor Self {
         
-    private var appStatus: Base.AppStatus = { 
+    private var appStatus: BaseTypes.AppStatus = { 
         onHold = false;
         version = "0.0.2";
     };  
@@ -31,10 +31,10 @@ actor Self {
         return #ok(appStatus);
     };
 
-    private stable var logs: [Base.SystemLog] = [];
+    private stable var logs: [BaseTypes.SystemLog] = [];
     private stable var formSubmissions: [T.FormSubmission] = [];
      
-    private stable var dataHashes : [Base.DataHash] = [
+    private stable var dataHashes : [BaseTypes.DataHash] = [
       { category = "projects"; hash = "DEFAULT" },
       { category = "team_members"; hash = "DEFAULT" }
     ];
@@ -286,7 +286,7 @@ actor Self {
         return #ok(teamMembers);
     };
 
-    public shared query func getLogs() : async Result.Result<[Base.SystemLog], T.Error>{
+    public shared query func getLogs() : async Result.Result<[BaseTypes.SystemLog], T.Error>{
         return #ok(logs);
     };
 
@@ -317,7 +317,7 @@ actor Self {
     public shared ({ caller }) func logSystemEvent(dto: DTOs.SystemEventDTO) : async () {
         assert isCallerApproved(Principal.toText(caller));
         
-        let logsBuffer = Buffer.fromArray<Base.SystemLog>(logs);
+        let logsBuffer = Buffer.fromArray<BaseTypes.SystemLog>(logs);
         logsBuffer.add({
             eventDetail = dto.eventDetail;
             eventId = dto.eventId;
@@ -328,16 +328,16 @@ actor Self {
         logs := Buffer.toArray(logsBuffer);
     };
 
-    private func isCallerApproved(callerPrincipalId: Base.CanisterId) : Bool {
-        let approvedCaller = Array.find<Base.CanisterId>(Environment.APPROVED_CANISTERS, func(canisterId: Base.CanisterId) : Bool {
+    private func isCallerApproved(callerPrincipalId: BaseTypes.CanisterId) : Bool {
+        let approvedCaller = Array.find<BaseTypes.CanisterId>(Environment.APPROVED_CANISTERS, func(canisterId: BaseTypes.CanisterId) : Bool {
             canisterId == callerPrincipalId;
         });
 
         return Option.isSome(approvedCaller);
     };
 
-    private func isCallerAdmin(callerPrincipalId: Base.CanisterId) : Bool {
-        let approvedCaller = Array.find<Base.CanisterId>([Environment.MASTER_PRINCIPAL_ID], func(principalId: Base.CanisterId) : Bool {
+    private func isCallerAdmin(callerPrincipalId: BaseTypes.CanisterId) : Bool {
+        let approvedCaller = Array.find<BaseTypes.CanisterId>([Environment.MASTER_PRINCIPAL_ID], func(principalId: BaseTypes.CanisterId) : Bool {
             principalId == callerPrincipalId;
         });
 
@@ -345,8 +345,8 @@ actor Self {
     };
 
 
-    private func isAITeam(principalId: Base.PrincipalId) : Bool {
-        let foundManager = Array.find<Base.PrincipalId>(Environment.AI_DEVELOPER_PRINCIPAL_IDS, func(foundPrincipalId: Base.PrincipalId) : Bool {
+    private func isAITeam(principalId: BaseTypes.PrincipalId) : Bool {
+        let foundManager = Array.find<BaseTypes.PrincipalId>(Environment.AI_DEVELOPER_PRINCIPAL_IDS, func(foundPrincipalId: BaseTypes.PrincipalId) : Bool {
             foundPrincipalId == principalId;
         });
         return Option.isSome(foundManager);
@@ -400,7 +400,7 @@ actor Self {
         return #err(#NotFound);
     };
 
-    public shared ({ caller }) func topupCanister(canisterId: Base.CanisterId, cycles: Nat) : async Result.Result<(), T.Error> {
+    public shared ({ caller }) func topupCanister(canisterId: BaseTypes.CanisterId, cycles: Nat) : async Result.Result<(), T.Error> {
         assert isCallerAdmin(Principal.toText(caller));
         let canister_actor = actor (canisterId) : actor {};
              
@@ -505,15 +505,15 @@ actor Self {
         };
     };
 
-    private func isManager(principalId: Base.PrincipalId) : Bool {
-        let foundManager = Array.find<Base.PrincipalId>(Environment.MANAGER_PRINCIPAL_IDS, func(foundPrincipalId: Base.PrincipalId) : Bool {
+    private func isManager(principalId: BaseTypes.PrincipalId) : Bool {
+        let foundManager = Array.find<BaseTypes.PrincipalId>(Environment.MANAGER_PRINCIPAL_IDS, func(foundPrincipalId: BaseTypes.PrincipalId) : Bool {
             foundPrincipalId == principalId;
         });
         return Option.isSome(foundManager);
     };
 
     private func updateDataHash(category : Text) : async () {
-      let hashBuffer = Buffer.fromArray<Base.DataHash>([]);
+      let hashBuffer = Buffer.fromArray<BaseTypes.DataHash>([]);
       var updated = false;
 
       for (hashObj in Iter.fromArray(dataHashes)) {
@@ -529,7 +529,7 @@ actor Self {
           hashBuffer.add({ category = category; hash = randomHash });
       };
 
-      dataHashes := Buffer.toArray<Base.DataHash>(hashBuffer);
+      dataHashes := Buffer.toArray<BaseTypes.DataHash>(hashBuffer);
     };
 
 
