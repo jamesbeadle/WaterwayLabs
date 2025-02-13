@@ -18,3 +18,5 @@ node_modules/
 dist/
 
 .svelte-kit/
+
+.mops/
