@@ -1,6 +1,5 @@
 import type { AppStatusDTO } from "../../../../declarations/backend/backend.did";
 import { ActorFactory } from "../../utils/ActorFactory";
-import { authStore } from "../stores/auth-store";
 import { isError } from "../utils/helpers";
 import { idlFactory as backend_canister } from "../../../../declarations/backend";
 
