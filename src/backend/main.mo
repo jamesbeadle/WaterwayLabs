@@ -108,13 +108,33 @@ actor Self {
         },
         { 
             id = 2; 
+            name = "ICFC"; 
+            backendCanisterId = "cfalf-4yaaa-aaaal-qshrq-cai"; 
+            frontendCanisterId="cqh2i-5qaaa-aaaal-qshsa-cai"; 
+            websiteURL="icfc.app";  
+            githubLink="https://github.com/jamesbeadle/icfc"; 
+            socialLinks=[];
+            status=#Decentralised;
+            description="The World Football Club";
+            summary=
+                "
+                ICFC is on a mission to transform how football clubs are run by using the power of blockchain to decentralise club ownership and decision-making. 
+                Our platform is designed to drive local community engagement with a football club, building a foundation for future success.
+                Token holders play a key role in shifting power from centralised ownership to local fans and supporters, ensuring they have a say in scouting, management, and key decisions.
+                .";
+            mainColour="#1979F2";
+            secondaryColour="";
+            thirdColour=""; 
+            },
+        { 
+            id = 3; 
             name = "FootballGod"; 
             backendCanisterId = "44kin-waaaa-aaaal-qbxra-cai"; 
             frontendCanisterId="43loz-3yaaa-aaaal-qbxrq-cai"; 
             websiteURL="footballgod.xyz"; 
             githubLink="https://github.com/jamesbeadle/football_god"; 
             socialLinks=[];
-            status=#Development;
+            status=#Decentralised;
             description="Web3 Sports Governed by the Fans";
             summary=
                 "FootballGod is the brain of our footballing ecosystem, with real time football data governed by football fans through the FootballGod data explorers. 
@@ -125,7 +145,7 @@ actor Self {
             thirdColour=""; 
             },
         { 
-            id = 3; 
+            id = 4; 
             name = "OpenFPL"; 
             backendCanisterId = "y22zx-giaaa-aaaal-qmzpq-cai"; 
             frontendCanisterId="5gbds-naaaa-aaaal-qmzqa-cai"; 
@@ -143,7 +163,7 @@ actor Self {
             thirdColour="";
             },
         { 
-            id = 4; 
+            id = 5; 
             name = "OpenWSL"; 
             backendCanisterId = "5bafg-ayaaa-aaaal-qmzqq-cai"; 
             frontendCanisterId="5ido2-wqaaa-aaaal-qmzra-cai"; 
@@ -160,7 +180,41 @@ actor Self {
             thirdColour="";
         },
         { 
-            id = 5; 
+            id = 6; 
+            name = "Jeff Bets"; 
+            backendCanisterId = "cmdaz-kqaaa-aaaal-qshqa-cai"; 
+            frontendCanisterId="hqy24-byaaa-aaaal-qshpq-cai"; 
+            websiteURL="jeffbets.com"; 
+            githubLink="https://github.com/jamesbeadle/jeffbets"; 
+            socialLinks=[];
+            status=#Decentralised;
+            description="Decentralised fantasy football";
+            summary="Jeff Bets is our decentralised football betting site centered around your own personalised AI Agent, Jeff.
+            Jeff introduces the world to a new form of conversational betting, letting Jeff know rules for when to place bets on your behalf. 
+            User can now sit back, enjoying a game knowing bets happen automatically. 
+            Jeff understands complex patterns, placing these bets based on in-game events. Jeff works away in the background, ensuring you never miss a winning opportunity.
+            ";
+            mainColour="#0D0D0D";
+            secondaryColour="#D7FE49";
+            thirdColour="#D7FE49";
+        },
+        { 
+            id = 7; 
+            name = "ICPFA"; 
+            backendCanisterId = "qxz7x-niaaa-aaaal-qdidq-cai"; 
+            frontendCanisterId="r2x3z-caaaa-aaaal-qdiea-cai"; 
+            websiteURL="https://icpfa.org"; 
+            githubLink="https://github.com/jamesbeadle/ICPFA"; 
+            socialLinks=[]; 
+            status=#Development;
+            description="Supporting community football";
+            summary="The ICPFA has been setup to support community grassroots football causes, funded by revenue from our football related applications.";
+            mainColour="#FFFFFF";
+            secondaryColour="";
+            thirdColour="";
+            },
+        { 
+            id = 8; 
             name = "Transfer Kings"; 
             backendCanisterId = "fpmh5-ziaaa-aaaal-qjfbq-cai"; 
             frontendCanisterId="f2lwq-yaaaa-aaaal-qjfca-cai"; 
@@ -178,7 +232,7 @@ actor Self {
             thirdColour="";
             },
         { 
-            id = 6; 
+            id = 9; 
             name = "GolfPad"; 
             backendCanisterId = "elbip-aiaaa-aaaal-qjfhq-cai"; 
             frontendCanisterId="gw4gh-taaaa-aaaal-qjfia-cai"; 
@@ -195,7 +249,7 @@ actor Self {
             thirdColour="";
             },
         { 
-            id = 7; name = "OpenBook"; 
+            id = 10; name = "OpenBook"; 
             backendCanisterId = "eur5j-5iaaa-aaaal-qcrva-cai"; 
             frontendCanisterId="etq35-qqaaa-aaaal-qcrvq-cai"; 
             websiteURL="openbook.services"; 
@@ -211,7 +265,7 @@ actor Self {
             thirdColour="";
             },
         { 
-            id = 8; name = "OpenBeats"; 
+            id = 11; name = "OpenBeats"; 
             backendCanisterId = "27l52-5aaaa-aaaal-qr6ta-cai"; 
             frontendCanisterId="2yk3o-qyaaa-aaaal-qr6tq-cai"; 
             websiteURL="openbeats.xyz"; 
@@ -226,7 +280,7 @@ actor Self {
             thirdColour="";
             },
         { 
-            id = 9; 
+            id = 12; 
             name = "OpenChef"; 
             backendCanisterId = "h3scj-4iaaa-aaaal-qjfpq-cai"; 
             frontendCanisterId="chjym-xaaaa-aaaal-qjfqa-cai"; 
@@ -243,22 +297,7 @@ actor Self {
             thirdColour="";
             },
         { 
-            id = 10; 
-            name = "ICPFA"; 
-            backendCanisterId = "qxz7x-niaaa-aaaal-qdidq-cai"; 
-            frontendCanisterId="r2x3z-caaaa-aaaal-qdiea-cai"; 
-            websiteURL="https://icpfa.org"; 
-            githubLink="https://github.com/jamesbeadle/ICPFA"; 
-            socialLinks=[]; 
-            status=#Development;
-            description="Supporting community football";
-            summary="The ICPFA has been setup to support community grassroots football causes, funded by revenue from our football related applications.";
-            mainColour="#FFFFFF";
-            secondaryColour="";
-            thirdColour="";
-            },
-        { 
-            id = 11; 
+            id = 13; 
             name = "OpenCare"; 
             backendCanisterId = "cai6y-2yaaa-aaaal-qjfqq-cai"; 
             frontendCanisterId="coktq-biaaa-aaaal-qjfrq-cai"; 

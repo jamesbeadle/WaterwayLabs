@@ -13,15 +13,22 @@
   import ProjectDetail from "$lib/components/project/project-detail.svelte";
 
   import IconsRow from '$lib/components/home/icons-row.svelte';
+
   import WaterwayLabsIcon from "$lib/icons/svgs/waterway-labs-icon.svelte";
+  
+  import ICFCIcon from "$lib/icons/svgs/icfc-icon.svelte";
   import FootballGodIcon from "$lib/icons/svgs/football-god-icon.svelte";
   import OpenFPLIcon from "$lib/icons/svgs/openfpl-icon.svelte";
+  import OpenWSLIcon from "$lib/icons/svgs/openwsl-icon.svelte";
+  import JeffBetsIcon from "$lib/icons/svgs/jeff-bets-icon.svelte";
+  import ICPFAIcon from "$lib/icons/svgs/icpfa-icon.svelte";
+
+  
   import GolfPadIcon from "$lib/icons/svgs/golfpad-icon.svelte";
   import TransferKingsIcon from "$lib/icons/svgs/transfer-kings-icon.svelte"; 
   import OpenBookIcon from "$lib/icons/svgs/openbook-icon.svelte";
   import OpenBeatsIcon from "$lib/icons/svgs/openbeats-icon.svelte";
   import OpenChefIcon from "$lib/icons/svgs/openchef-icon.svelte";
-  import ICPFAIcon from "$lib/icons/svgs/icpfa-icon.svelte";
   import OpenCareIcon from "$lib/icons/svgs/opencare-icon.svelte";
 
   import { getStatusString } from "$lib/utils/helpers";
@@ -113,17 +120,19 @@
 
   function getComponentByName(name: string): Component {
     const componentMap: Record<string, Component> = {
-      'OpenFPL': OpenFPLIcon,
+      'Waterway Labs': WaterwayLabsIcon,
+      'ICFC' : ICFCIcon,
       'FootballGod': FootballGodIcon,
+      'OpenFPL': OpenFPLIcon,
+      'OpenWSL': OpenWSLIcon,
+      'Jeff Bets': JeffBetsIcon,
+      'ICPFA': ICPFAIcon,
       'GolfPad': GolfPadIcon,
       'Transfer Kings': TransferKingsIcon,
       'OpenBook': OpenBookIcon,
       'OpenBeats': OpenBeatsIcon,
       'OpenChef': OpenChefIcon,
-      'ICPFA': ICPFAIcon,
-      'OpenCare': OpenCareIcon,
-      'Waterway Labs': WaterwayLabsIcon,
-      'OpenWSL': OpenFPLIcon,
+      'OpenCare': OpenCareIcon
     };
 
     return componentMap[name as string] || WaterwayLabsIcon;

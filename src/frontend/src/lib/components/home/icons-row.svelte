@@ -22,6 +22,8 @@
       case "OpenFPL":
       case "OpenWSL":
       case "OpenBook":
+      case "Jeff Bets":
+      case "ICFC":
         return "w-6 xs:w-8 "
       case "OpenBeats":
         return "w-6 xs:w-8 md:w-9"
