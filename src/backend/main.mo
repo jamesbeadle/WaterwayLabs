@@ -121,7 +121,7 @@ actor Self {
                 ICFC is on a mission to transform how football clubs are run by using the power of blockchain to decentralise club ownership and decision-making. 
                 Our platform is designed to drive local community engagement with a football club, building a foundation for future success.
                 Token holders play a key role in shifting power from centralised ownership to local fans and supporters, ensuring they have a say in scouting, management, and key decisions.
-                .";
+                ";
             mainColour="#1979F2";
             secondaryColour="";
             thirdColour=""; 
