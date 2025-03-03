@@ -42,9 +42,9 @@ actor Self {
     private var teamMembers: [T.TeamMember] = [
         { 
             name = "Zoe Duffy";
-            title = "Managing Director"; 
+            title = "CEO"; 
             image = "zoe.jpg"; 
-            bio = "Zoe runs many tech companies through her management consultancy, providing expert advice to ensure compliance with various legal frameworks.";
+            bio = "As the CEO of Waterway Labs, Zoe is passionate about leveraging technology to build a fairer, decentralised world. A strong advocate for women in tech, she leads with a vision of equity, innovation, and empowerment, ensuring that blockchain and Web3 solutions create real-world impact. With a deep commitment to tech-driven change, she is shaping the future of decentralised services, making them more accessible, inclusive, and transformative for all.";
         },
         { 
             name = "Kelly Howlett";
