@@ -1,12 +1,16 @@
 import BaseTypes "mo:waterway-mops/BaseTypes";
 module AppTypes {
 
-    public type Error = {
-        #NotFound;
-        #AlreadyExists;
-    };
-
     public type ProjectId = Nat16;
+    
+    public type TeamMemberId = Nat16;
+
+    public type LogEntryType = {
+        #Warning;
+        #Error;
+        #Information;
+        #Success;
+    };
 
     public type Project = {
         id: ProjectId;
@@ -57,5 +61,22 @@ module AppTypes {
         title: Text;
         image: Text;
         bio: Text;
+    };
+
+    public type WaterwayLabsApp = {
+        #WaterwayLabs;
+        #ICFC;
+        #FootballGod;
+        #OpenFPL;
+        #OpenWSL;
+        #TransferKings;
+        #JeffBets;
+        #ICPFA;
+        #ICGC;
+        #ICF1;
+        #OpenBook;
+        #OpenChef;
+        #ICPCasino;
+        #OpenCare;
     };
 };

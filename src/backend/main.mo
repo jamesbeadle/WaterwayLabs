@@ -1,4 +1,3 @@
-import Debug "mo:base/Debug";
 import Result "mo:base/Result";
 import Option "mo:base/Option";
 import Array "mo:base/Array";
@@ -6,7 +5,6 @@ import Buffer "mo:base/Buffer";
 import Principal "mo:base/Principal";
 import T "types/app_types";
 import BaseTypes "mo:waterway-mops/BaseTypes";
-import DTOs "dtos/app_dtos";
 import Environment "environment";
 import Timer "mo:base/Timer";
 import Int "mo:base/Int";
@@ -15,10 +13,10 @@ import Iter "mo:base/Iter";
 import Utilities "utilities";
 import Management "management";
 import SHA224 "./lib/SHA224";
-import FootballTypes "mo:waterway-mops/FootballTypes";
-import FootballDTOs "dtos/football_dtos";
-import AIDTOs "dtos/ai_dtos";
-import AppDTOs "dtos/app_dtos";
+import Base "types/base_types";
+import BaseQueries "queries/base_queries";
+import AppCommands "commands/app_commands";
+import AppQueries "queries/app_queries";
 
 actor Self {
         
@@ -27,7 +25,7 @@ actor Self {
         version = "0.0.2";
     };  
     
-    public shared query func getAppStatus() : async Result.Result<AppDTOs.AppStatusDTO, T.Error> {
+    public shared query func getAppStatus() : async Result.Result<BaseQueries.AppStatus, Base.Error> {
         return #ok(appStatus);
     };
 
@@ -313,23 +311,23 @@ actor Self {
         },
     ];
 
-    public shared composite query func getDataHashes() : async Result.Result<[DTOs.DataHashDTO], T.Error> {
+    public shared composite query func getDataHashes() : async Result.Result<[BaseQueries.DataHash], Base.Error> {
       return #ok(dataHashes);
     };
     
-    public shared query func getProjects() : async Result.Result<[DTOs.ProjectDTO], T.Error>{
+    public shared query func getProjects() : async Result.Result<[AppQueries.Project], Base.Error>{
         return #ok(projects);
     };
 
-    public shared query func getTeamMembers() : async Result.Result<[DTOs.TeamMemberDTO], T.Error>{
+    public shared query func getTeamMembers() : async Result.Result<[AppQueries.TeamMember], Base.Error>{
         return #ok(teamMembers);
     };
 
-    public shared query func getLogs() : async Result.Result<[BaseTypes.SystemLog], T.Error>{
+    public shared query func getLogs() : async Result.Result<[BaseTypes.SystemLog], Base.Error>{
         return #ok(logs);
     };
 
-    public shared ({ caller }) func submitForm(dto: DTOs.SubmitContactFormDTO) : async Result.Result<(), T.Error> {
+    public shared ({ caller }) func submitForm(dto: AppCommands.SubmitContactForm) : async Result.Result<(), Base.Error> {
         let submittedById = Principal.toText(caller);
 
         let newSubmission: T.FormSubmission = {
@@ -348,12 +346,12 @@ actor Self {
         return #ok();
     };
 
-    public shared ({ caller }) func getFormSubmissions() : async Result.Result<[T.FormSubmission], T.Error>{
+    public shared ({ caller }) func getFormSubmissions() : async Result.Result<[T.FormSubmission], Base.Error>{
         assert isManager(Principal.toText(caller));
         return #ok(formSubmissions);
     };
 
-    public shared ({ caller }) func logSystemEvent(dto: DTOs.SystemEventDTO) : async () {
+    public shared ({ caller }) func logSystemEvent(dto: AppCommands.LogSystemEvent) : async () {
         assert isCallerApproved(Principal.toText(caller));
         
         let logsBuffer = Buffer.fromArray<BaseTypes.SystemLog>(logs);
@@ -391,7 +389,7 @@ actor Self {
         return Option.isSome(foundManager);
     };
     
-    public shared ({ caller }) func getProjectCanisterInfo(projectId: T.ProjectId) : async Result.Result<[DTOs.CanisterDTO], T.Error> {
+    public shared ({ caller }) func getProjectCanisterInfo(projectId: T.ProjectId) : async Result.Result<[AppQueries.Canister], Base.Error> {
         assert isCallerAdmin(Principal.toText(caller));
         
         let projectResult = Array.find<T.Project>(projects, func(foundProject: T.Project) : Bool {
@@ -400,7 +398,7 @@ actor Self {
 
         switch(projectResult){
             case (?project){
-                let canisterBuffer = Buffer.fromArray<DTOs.CanisterDTO>([]);
+                let canisterBuffer = Buffer.fromArray<AppQueries.Canister>([]);
                 
                 let IC : Management.Management = actor (Environment.Default);
                 let backend_canister_actor = actor (project.backendCanisterId) : actor {};
@@ -439,109 +437,13 @@ actor Self {
         return #err(#NotFound);
     };
 
-    public shared ({ caller }) func topupCanister(canisterId: BaseTypes.CanisterId, cycles: Nat) : async Result.Result<(), T.Error> {
+    public shared ({ caller }) func topupCanister(canisterId: BaseTypes.CanisterId, cycles: Nat) : async Result.Result<(), Base.Error> {
         assert isCallerAdmin(Principal.toText(caller));
         let canister_actor = actor (canisterId) : actor {};
              
         let IC : Management.Management = actor (Environment.Default);
         let _ = await Utilities.topup_canister_(canister_actor, IC, cycles);
         return #ok();
-    };
-
-    //Functions to get raw ai data
-
-    public shared ({ caller }) func getOpenFPLFantasyTeamSnapshots() : async [AIDTOs.ManagerSnapshotDTO] {
-        assert isAITeam(Principal.toText(caller));
-        let openfpl_backend_canister = actor (Environment.OPENFPL_BACKEND_CANISTER_ID) : actor {
-            getManagerSnapshotData : () -> async [FootballTypes.FantasyTeamSnapshot];
-        };
-
-        Debug.print("test");
-
-        return await openfpl_backend_canister.getManagerSnapshotData();        
-    };
-
-    public shared ({ caller }) func getLivePlayers() : async [AIDTOs.PlayerDTO] {
-        assert isAITeam(Principal.toText(caller));
-        let data_canister = actor (Environment.DATA_CANISTER_ID) : actor {
-            getLeagues : shared query () -> async Result.Result<[FootballDTOs.FootballLeagueDTO], T.Error>;
-            getPlayers : shared query (leagueId: FootballTypes.LeagueId) -> async Result.Result<[FootballDTOs.PlayerDTO], T.Error>;
-        };
-
-        let leaguesResult = await data_canister.getLeagues();
-        
-        let allPlayersBuffer = Buffer.fromArray<AIDTOs.PlayerDTO>([]);
-        switch(leaguesResult){
-            case (#ok leagues){
-                for(league in Iter.fromArray(leagues)){
-                    if(league.relatedGender == #Male){
-                        let response = await data_canister.getPlayers(league.id);
-                        switch(response) {
-                            case(#ok players) { 
-                                allPlayersBuffer.append(Buffer.fromArray(
-                                    Array.map<FootballDTOs.PlayerDTO, AIDTOs.PlayerDTO>(players, func(player: FootballDTOs.PlayerDTO) {
-                                        return {
-                                            clubId = player.clubId;
-                                            dateOfBirth = player.dateOfBirth;
-                                            firstName = player.firstName;
-                                            id = player.id;
-                                            lastName = player.lastName;
-                                            nationality = player.nationality;
-                                            position = debug_show player.position;
-                                            shirtNumber = player.shirtNumber;
-                                            status = debug_show player.status;
-                                            valueQuarterMillions = player.valueQuarterMillions
-                                        }
-                                    })
-                                ));
-                            };
-                            case(#err _) {  };
-                        };
-                    };
-                }
-            };
-            case (#err _){};
-        };
-
-        return Buffer.toArray(allPlayersBuffer);
-    };
-
-    public shared ({ caller }) func getSeasonFixtures() : async [AIDTOs.FixtureDTO] {
-        assert isAITeam(Principal.toText(caller));
-        let data_canister = actor (Environment.DATA_CANISTER_ID) : actor {
-            getFixtures : shared query (leagueId: FootballTypes.LeagueId) -> async Result.Result<[FootballDTOs.FixtureDTO], T.Error>;
-        };
-        
-        let response = await data_canister.getFixtures(1);
-        switch(response) {
-            case(#ok fixtures) { 
-                return Array.map<FootballDTOs.FixtureDTO, AIDTOs.FixtureDTO>(fixtures, func(fixture: FootballDTOs.FixtureDTO) {
-                    return {
-                        awayClubId = fixture.awayClubId;
-                        awayGoals = fixture.awayGoals;
-                        events = Array.map<FootballTypes.PlayerEventData, AIDTOs.PlayerEventDataDTO>(fixture.events, func(fixtureEvent: FootballTypes.PlayerEventData){
-                            return {
-                                clubId = fixtureEvent.clubId;
-                                eventEndMinute = fixtureEvent.eventEndMinute;
-                                eventStartMinute = fixtureEvent.eventStartMinute;
-                                eventType = debug_show fixtureEvent.eventType;
-                                fixtureId = fixtureEvent.fixtureId;
-                                playerId = fixtureEvent.playerId
-                            }
-                        });
-                        gameweek = fixture.gameweek;
-                        highestScoringPlayerId = fixture.highestScoringPlayerId;
-                        homeClubId = fixture.homeClubId;
-                        homeGoals = fixture.homeGoals;
-                        id = fixture.id;
-                        kickOff = fixture.kickOff;
-                        seasonId = fixture.seasonId;
-                        status = debug_show fixture.status;
-                    }
-                });
-             };
-            case(#err _) { return [] };
-        };
     };
 
     private func isManager(principalId: BaseTypes.PrincipalId) : Bool {
@@ -573,6 +475,7 @@ actor Self {
 
 
     system func preupgrade() {
+        
     };
 
     system func postupgrade() {
