@@ -4,10 +4,8 @@ import MopsEnums "cleanup/mops_enums";
 
 //TODO - John we use these in each project so mops?
 import Environment "environment";
-import Management "management";
 
 //We can justify app specific utilities but global should be mops
-import Utilities "utilities";
 
 
 /* ----- Mops Packages ----- */
@@ -53,6 +51,8 @@ import ApplicationLogsManager "Managers/application_logs_manager";
 import AppTypes "types/app_types";
 import MopsTypes "cleanup/mops_types";
 import MopsIds "cleanup/mops_ids";
+import Management "cleanup/management";
+import Utilities "utilities";
 
 actor Self {
 

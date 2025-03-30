@@ -5,10 +5,10 @@ import AppTypes "../types/app_types";
 import ProjectQueries "../queries/project_queries";
 import ProjectCommands "../commands/project_commands";
 import CanisterQueries "../queries/canister_queries";
-import Management "../management";
 import Utilities "../utilities";
 import Environment "../environment";
 import MopsEnums "../cleanup/mops_enums";
+import Management "../cleanup/management";
 
 module {
     public class CanistersManager() {
