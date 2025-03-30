@@ -25,6 +25,10 @@ module {
             return #err(#NotFound);
         };
 
+        public func updateProject(dto: ProjectCommands.UpdateProject) : async Result.Result<(), MopsEnums.Error> {
+            return #err(#NotFound);
+        };
+
         public func setProjectOnHold(dto: ProjectCommands.SetProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
             return #err(#NotFound);
         };
@@ -33,7 +37,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func updateVersion(dto: ProjectCommands.UpdateProjectVersion) : async Result.Result<(), MopsEnums.Error> {
+        public func updateProjectVersion(dto: ProjectCommands.UpdateProjectVersion) : async Result.Result<(), MopsEnums.Error> {
             return #err(#NotFound);
         };
 

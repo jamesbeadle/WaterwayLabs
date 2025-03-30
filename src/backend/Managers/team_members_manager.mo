@@ -25,5 +25,9 @@ module {
         public func addTeamMember(dto: TeamMemberCommands.AddTeamMember) : async Result.Result<(), MopsEnums.Error> {
             return #err(#NotFound);
         };
+
+        public func removeTeamMember(dto: TeamMemberCommands.RemoveTeamMember) : async Result.Result<(), MopsEnums.Error> {
+            return #err(#NotFound);
+        };
     };
 };

@@ -17,6 +17,7 @@ module AppTypes {
         mainColour: Text;
         secondaryColour: Text;
         thirdColour: Text;
+        app: Enums.WaterwayLabsApp;
     };
 
     public type SupportQuery = {

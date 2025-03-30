@@ -4,9 +4,13 @@ import MopsIds "../types/mops_ids";
 
 module CanisterQueries {
 
-    public type GetCanisterInfo = {
+    public type GetProjectCanisters = {
         app: Enums.WaterwayLabsApp;
         canisterId: MopsIds.CanisterId;
+    };
+
+    public type ProjectCanisters = {
+        entries: [CanisterInfo];
     };
 
     public type CanisterInfo = {

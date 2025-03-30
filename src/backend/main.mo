@@ -1,21 +1,15 @@
 import Array "mo:base/Array";
-import Buffer "mo:base/Buffer";
 import Int "mo:base/Int";
-import Iter "mo:base/Iter";
 import Option "mo:base/Option";
 import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Timer "mo:base/Timer";
-import Time "mo:base/Time";
 
 //TODO Better folder organisation required
 import Environment "environment";
 import Management "management";
-import SHA224 "./lib/SHA224";
 import Utilities "utilities";
 
-import AppQueries "queries/app_queries";
-import CanisterQueries "queries/canister_queries";
 
 //Remove and import correct mops package
 import MopsQueries "queries/mops_queries";
@@ -23,22 +17,31 @@ import MopsEnums "enums/mops_enums";
 import MopsTypes "types/mops_types";
 import MopsIds "types/mops_ids";
 
-//Only Stable Variables Should Use Application Types
-//Refactor infto managers to remove 
-import AppTypes "types/app_types";
+//Queries
+import ProjectQueries "queries/project_queries";
 import TeamMemberQueries "queries/team_member_queries";
 import ApplicationLogQueries "queries/application_log_queries";
+import CanisterQueries "queries/canister_queries";
+
+//Commands
 import SupportQueryCommands "commands/support_query_commands";
 import SupportQueryQueries "queries/support_query_queries";
 import ApplicationLogCommands "commands/application_log_commands";
 import ApplicationLogsManager "Managers/application_logs_manager";
+
+//Managers
 import DataHashesManager "Managers/data_hashes_manager";
 import TeamMembersManager "Managers/team_members_manager";
 import ProjectsManager "Managers/projects_manager";
 import SupportQueriesManager "Managers/support_queries_manager";
-import ProjectQueries "queries/project_queries";
+import CanistersManager "Managers/canisters_manager";
+
+
 import ProjectCommands "commands/project_commands";
 import TeamMemberCommands "commands/team_member_commands";
+ 
+//Only Stable Variables Should Use Types
+import AppTypes "types/app_types";
 
 actor Self {
 
@@ -63,6 +66,7 @@ actor Self {
     let teamMembersManager = TeamMembersManager.TeamMembersManager();
     let applicationLogsManager = ApplicationLogsManager.ApplicationLogsManager();
     let supportQueriesManager = SupportQueriesManager.SupportQueriesManager();
+    let canistersManager = CanistersManager.CanistersManager();
     
 
     /* ----- General App Queries ----- */
@@ -129,52 +133,9 @@ actor Self {
 
     /* ----- Canisters Queries ----- */
     
-    public shared ({ caller }) func getProjectCanisterInfo(projectId: MopsIds.ProjectId) : async Result.Result<[CanisterQueries.CanisterInfo], MopsEnums.Error> {
+    public shared ({ caller }) func getProjectCanisters(dto: CanisterQueries.GetProjectCanisters) : async Result.Result<CanisterQueries.ProjectCanisters, MopsEnums.Error> {
         assert isCallerAdmin(Principal.toText(caller));
-        
-        let projectResult = Array.find<T.Project>(projects, func(foundProject: T.Project) : Bool {
-            foundProject.id == projectId;
-        });
-
-        switch(projectResult){
-            case (?project){
-                let canisterBuffer = Buffer.fromArray<CanisterQueries.CanisterInfo>([]);
-                
-                let IC : Management.Management = actor (Environment.Default);
-                let backend_canister_actor = actor (project.backendCanisterId) : actor {};
-                let frontend_canister_actor = actor (project.frontendCanisterId) : actor {};
-
-                let backendCanisterStatusResult = await Utilities.getCanisterStatus_(backend_canister_actor, IC);
-                switch(backendCanisterStatusResult){
-                    case(?backendCanisterStatus){
-                        canisterBuffer.add({
-                            canisterId = project.backendCanisterId;
-                            canisterName = "Backend";
-                            computeAllocation = backendCanisterStatus.settings.compute_allocation;
-                            cycles = backendCanisterStatus.cycles;
-                        })
-                    };
-                    case (null){}
-                };
-                
-                let frontendCanisterStatusResult = await Utilities.getCanisterStatus_(frontend_canister_actor, IC);
-                switch(frontendCanisterStatusResult){
-                    case(?frontendCanisterStatus){
-                        canisterBuffer.add({
-                            canisterId = project.frontendCanisterId;
-                            canisterName = "Frontend";
-                            computeAllocation = frontendCanisterStatus.settings.compute_allocation;
-                            cycles = frontendCanisterStatus.cycles;
-                        })
-                    };
-                    case (null){}
-                };
-
-                return #ok(Buffer.toArray(canisterBuffer));      
-            };
-            case (null){}
-        };        
-        return #err(#NotFound);
+        return await canistersManager.getProjectCanisters(dto);
     };
 
 
@@ -198,46 +159,26 @@ actor Self {
 
 
     /* ----- Application Log Commands ----- */
-    public shared ({ caller }) func addApplicationLog(dto: ApplicationLogCommands.AddApplicationLog) : async () {
-        assert isCallerApproved(Principal.toText(caller));
-        
-        let logsBuffer = Buffer.fromArray<BaseTypes.SystemLog>(logs);
-        logsBuffer.add({
-            eventDetail = dto.eventDetail;
-            eventId = dto.eventId;
-            eventTime = dto.eventTime;
-            eventTitle = dto.eventTitle;
-            eventType = dto.eventType;
-        });
-        logs := Buffer.toArray(logsBuffer);
+
+    public shared ({ caller }) func addApplicationLog(dto: ApplicationLogCommands.AddApplicationLog) : async Result.Result<(), MopsEnums.Error> {
+        assert isApprovedCanister(Principal.toText(caller));
+        let _ = await applicationLogsManager.addApplicationLog(dto);
+        return #ok();
     };
 
     
     /* ----- Support Query Queries ----- */
 
     public shared ({ caller }) func getSupportQueries(dto: SupportQueryQueries.GetSupportQueries) : async Result.Result<SupportQueryQueries.GetSupportQueries, MopsEnums.Error>{
-        assert isManager(Principal.toText(caller));
-        return #ok(supportQueries);
+        assert isCallerAdmin(Principal.toText(caller));
+        return await supportQueriesManager.getSupportQueries(dto);
     };
 
     /* ----- Support Query Commands ----- */
 
     public shared ({ caller }) func createSupportQuery(dto: SupportQueryCommands.CreateSupportQuery) : async Result.Result<(), MopsEnums.Error> {
         let submittedById = Principal.toText(caller);
-
-        let newSubmission: T.FormSubmission = {
-            contact = dto.contact;
-            message = dto.message;
-            name = dto.name;
-            status = #Unread;
-            submittedBy = submittedById;
-            submittedOn = Time.now();
-        };
-
-        let formSubmissionsBuffer = Buffer.fromArray<T.FormSubmission>(formSubmissions);
-        formSubmissionsBuffer.add(newSubmission);
-        formSubmissions := Buffer.toArray(formSubmissionsBuffer);
-
+        let _ = await supportQueriesManager.createSupportQuery(dto);
         return #ok();
     };
 
@@ -245,7 +186,7 @@ actor Self {
     /* ----- Private Motoko Actor Functions ----- */
 
     private func isApprovedCanister(callerPrincipalId: MopsIds.CanisterId) : Bool {
-        let approvedCaller = Array.find<BaseTypes.CanisterId>(Environment.APPROVED_CANISTERS, func(canisterId: BaseTypes.CanisterId) : Bool {
+        let approvedCaller = Array.find<MopsIds.CanisterId>(Environment.APPROVED_CANISTERS, func(canisterId: MopsIds.CanisterId) : Bool {
             canisterId == callerPrincipalId;
         });
 
@@ -253,7 +194,7 @@ actor Self {
     };
 
     private func isCallerAdmin(callerPrincipalId: MopsIds.CanisterId) : Bool {
-        let approvedCaller = Array.find<MopsIds.CanisterId>([Environment.MASTER_PRINCIPAL_ID], func(principalId: BaseTypes.CanisterId) : Bool {
+        let approvedCaller = Array.find<MopsIds.CanisterId>([Environment.MASTER_PRINCIPAL_ID], func(principalId: MopsIds.CanisterId) : Bool {
             principalId == callerPrincipalId;
         });
 
