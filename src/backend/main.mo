@@ -1,9 +1,10 @@
 //TODO - Remove and import correct mops package
-import MopsQueries "cleanup/mops_queries";
+import MopsCanisterIds "cleanup/mops_canister_ids";
 import MopsEnums "cleanup/mops_enums";
 import MopsIds "cleanup/mops_ids";
 import Management "cleanup/management";
-import MopsCanisterIds "cleanup/mops_canister_ids";
+import MopsQueries "cleanup/mops_queries";
+import MopsUtilities "cleanup/mops_utilities";
 
 /* ----- Mops Packages ----- */
 
@@ -17,30 +18,30 @@ import Timer "mo:base/Timer";
 
 /* ----- Queries ----- */
 
-import ProjectQueries "queries/project_queries";
-import TeamMemberQueries "queries/team_member_queries";
 import ApplicationLogQueries "queries/application_log_queries";
 import CanisterQueries "queries/canister_queries";
 import DataHashQueries "queries/data_hash_queries";
+import ProjectQueries "queries/project_queries";
+import SupportQueryQueries "queries/support_query_queries";
+import TeamMemberQueries "queries/team_member_queries";
 
 
 /* ----- Commands ----- */
 
-import SupportQueryCommands "commands/support_query_commands";
-import SupportQueryQueries "queries/support_query_queries";
 import ApplicationLogCommands "commands/application_log_commands";
+import SupportQueryCommands "commands/support_query_commands";
 import ProjectCommands "commands/project_commands";
 import TeamMemberCommands "commands/team_member_commands";
 
 
 /* ----- Managers ----- */
 
+import ApplicationLogsManager "Managers/application_logs_manager";
+import CanistersManager "Managers/canisters_manager";
 import DataHashesManager "Managers/data_hashes_manager";
-import TeamMembersManager "Managers/team_members_manager";
 import ProjectsManager "Managers/projects_manager";
 import SupportQueriesManager "Managers/support_queries_manager";
-import CanistersManager "Managers/canisters_manager";
-import ApplicationLogsManager "Managers/application_logs_manager";
+import TeamMembersManager "Managers/team_members_manager";
 
  
 /* ----- Only Stable Variables Should Use Types ----- */
@@ -52,7 +53,6 @@ import MopsTypes "cleanup/mops_types";
 /* ----- Application Environment & Utility Files ----- */ 
 
 import Environment "environment";
-import Utilities "utilities";
 
 
 actor Self {
@@ -158,7 +158,7 @@ actor Self {
         let canister_actor = actor (canisterId) : actor {};
              
         let IC : Management.Management = actor (MopsCanisterIds.Default);
-        let _ = await Utilities.topup_canister_(canister_actor, IC, cycles);
+        let _ = await MopsUtilities.topup_canister_(canister_actor, IC, cycles);
         return #ok();
     };
 

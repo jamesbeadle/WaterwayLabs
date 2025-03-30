@@ -1,6 +1,7 @@
-import Management "cleanup/management";
+
 import Principal "mo:base/Principal";
 import Cycles "mo:base/ExperimentalCycles";
+import Management "management";
 
 module Utilitiles {
 

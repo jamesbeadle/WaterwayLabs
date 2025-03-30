@@ -5,11 +5,11 @@ import AppTypes "../types/app_types";
 import ProjectQueries "../queries/project_queries";
 import ProjectCommands "../commands/project_commands";
 import CanisterQueries "../queries/canister_queries";
-import Utilities "../utilities";
 import Environment "../environment";
 import MopsEnums "../cleanup/mops_enums";
 import Management "../cleanup/management";
 import MopsCanisterIds "../cleanup/mops_canister_ids";
+import MopsUtilities "../cleanup/mops_utilities";
 
 module {
     public class CanistersManager() {
@@ -34,7 +34,7 @@ module {
                     let backend_canister_actor = actor (project.backendCanisterId) : actor {};
                     let frontend_canister_actor = actor (project.frontendCanisterId) : actor {};
 
-                    let backendCanisterStatusResult = await Utilities.getCanisterStatus_(backend_canister_actor, IC);
+                    let backendCanisterStatusResult = await MopsUtilities.getCanisterStatus_(backend_canister_actor, IC);
                     switch(backendCanisterStatusResult){
                         case(?backendCanisterStatus){
                             /*
@@ -55,7 +55,7 @@ module {
                         case (null){}
                     };
                     
-                    let frontendCanisterStatusResult = await Utilities.getCanisterStatus_(frontend_canister_actor, IC);
+                    let frontendCanisterStatusResult = await MopsUtilities.getCanisterStatus_(frontend_canister_actor, IC);
                     switch(frontendCanisterStatusResult){
                         case(?frontendCanisterStatus){
                             /* TODO
