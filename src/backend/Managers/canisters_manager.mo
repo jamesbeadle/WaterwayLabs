@@ -9,6 +9,7 @@ import Utilities "../utilities";
 import Environment "../environment";
 import MopsEnums "../cleanup/mops_enums";
 import Management "../cleanup/management";
+import MopsCanisterIds "../cleanup/mops_canister_ids";
 
 module {
     public class CanistersManager() {
@@ -29,7 +30,7 @@ module {
                 case (?project){
                     let canisterBuffer = Buffer.fromArray<CanisterQueries.CanisterInfo>([]);
                     
-                    let IC : Management.Management = actor (Environment.Default);
+                    let IC : Management.Management = actor (MopsCanisterIds.Default);
                     let backend_canister_actor = actor (project.backendCanisterId) : actor {};
                     let frontend_canister_actor = actor (project.frontendCanisterId) : actor {};
 

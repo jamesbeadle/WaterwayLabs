@@ -1,12 +1,9 @@
 //TODO - Remove and import correct mops package
 import MopsQueries "cleanup/mops_queries";
 import MopsEnums "cleanup/mops_enums";
-
-//TODO - John we use these in each project so mops?
-import Environment "environment";
-
-//We can justify app specific utilities but global should be mops
-
+import MopsIds "cleanup/mops_ids";
+import Management "cleanup/management";
+import MopsCanisterIds "cleanup/mops_canister_ids";
 
 /* ----- Mops Packages ----- */
 
@@ -50,9 +47,13 @@ import ApplicationLogsManager "Managers/application_logs_manager";
 
 import AppTypes "types/app_types";
 import MopsTypes "cleanup/mops_types";
-import MopsIds "cleanup/mops_ids";
-import Management "cleanup/management";
+
+
+/* ----- Application Environment & Utility Files ----- */ 
+
+import Environment "environment";
 import Utilities "utilities";
+
 
 actor Self {
 
@@ -156,7 +157,7 @@ actor Self {
         assert isCallerAdmin(Principal.toText(caller));
         let canister_actor = actor (canisterId) : actor {};
              
-        let IC : Management.Management = actor (Environment.Default);
+        let IC : Management.Management = actor (MopsCanisterIds.Default);
         let _ = await Utilities.topup_canister_(canister_actor, IC, cycles);
         return #ok();
     };
