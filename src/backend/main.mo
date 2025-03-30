@@ -5,13 +5,12 @@ import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Timer "mo:base/Timer";
 
-//TODO Better folder organisation required
+//TODO - John we use these in each project so mops?
 import Environment "environment";
 import Management "management";
 import Utilities "utilities";
 
-
-//Remove and import correct mops package
+//TODO - Remove and import correct mops package
 import MopsQueries "queries/mops_queries";
 import MopsEnums "enums/mops_enums";
 import MopsTypes "types/mops_types";
