@@ -42,6 +42,7 @@ import TeamMemberCommands "commands/team_member_commands";
 
 actor Self {
 
+
     /* ----- Stable Canister Variables ----- */ 
 
     private stable var dataHashes : [MopsTypes.DataHash] = [];
@@ -111,14 +112,17 @@ actor Self {
         return #ok(teamMembers);
     };
 
+
     /* ----- Team Member Commands ----- */
 
     public shared func addTeamMember(dto: TeamMemberCommands.AddTeamMember) : async Result.Result<(), MopsEnums.Error> {
         return await teamMembersManager.addTeamMember(dto);
     };
 
+    public shared func removeTeamMember(dto: TeamMemberCommands.RemoveTeamMember) : async Result.Result<(), MopsEnums.Error> {
+        return await teamMembersManager.removeTeamMember(dto);
+    };
 
-    
 
     /* ----- Canisters Queries ----- */
     
@@ -170,6 +174,7 @@ actor Self {
         return #err(#NotFound);
     };
 
+
     /* ----- Canisters Commands ----- */
 
     public shared ({ caller }) func topupCanister(canisterId: MopsIds.CanisterId, cycles: Nat) : async Result.Result<(), MopsEnums.Error> {
@@ -187,6 +192,7 @@ actor Self {
     public shared query func getApplicationLogs(dto: ApplicationLogQueries.GetApplicationLogs) : async Result.Result<ApplicationLogQueries.ApplicationLogs, MopsEnums.Error>{
         return applicationLogsManager.getApplicationLogs(dto);
     };
+
 
     /* ----- Application Log Commands ----- */
     public shared ({ caller }) func addApplicationLog(dto: ApplicationLogCommands.AddApplicationLog) : async () {
@@ -232,6 +238,7 @@ actor Self {
         return #ok();
     };
 
+
     /* ----- Private Motoko Actor Functions ----- */
 
     private func isApprovedCanister(callerPrincipalId: MopsIds.CanisterId) : Bool {
@@ -249,14 +256,6 @@ actor Self {
 
         return Option.isSome(approvedCaller);
     };
-
-
-
-
-
-    
-
-
 
 
     /* ----- Canister Lifecycle Management ----- */
