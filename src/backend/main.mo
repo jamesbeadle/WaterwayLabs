@@ -21,6 +21,7 @@ import CanisterQueries "queries/canister_queries";
 import MopsQueries "queries/mops_queries";
 import MopsEnums "enums/mops_enums";
 import MopsTypes "types/mops_types";
+import MopsIds "types/mops_ids";
 
 //Only Stable Variables Should Use Application Types
 //Refactor infto managers to remove 
@@ -30,7 +31,6 @@ import ApplicationLogQueries "queries/application_log_queries";
 import SupportQueryCommands "commands/support_query_commands";
 import SupportQueryQueries "queries/support_query_queries";
 import ApplicationLogCommands "commands/application_log_commands";
-import MopsIds "types/mops_ids";
 import ApplicationLogsManager "Managers/application_logs_manager";
 import DataHashesManager "Managers/data_hashes_manager";
 import TeamMembersManager "Managers/team_members_manager";
