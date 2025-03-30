@@ -26,7 +26,8 @@ import CanisterQueries "queries/canister_queries";
 import SupportQueryCommands "commands/support_query_commands";
 import SupportQueryQueries "queries/support_query_queries";
 import ApplicationLogCommands "commands/application_log_commands";
-import ApplicationLogsManager "Managers/application_logs_manager";
+import ProjectCommands "commands/project_commands";
+import TeamMemberCommands "commands/team_member_commands";
 
 //Managers
 import DataHashesManager "Managers/data_hashes_manager";
@@ -34,10 +35,8 @@ import TeamMembersManager "Managers/team_members_manager";
 import ProjectsManager "Managers/projects_manager";
 import SupportQueriesManager "Managers/support_queries_manager";
 import CanistersManager "Managers/canisters_manager";
+import ApplicationLogsManager "Managers/application_logs_manager";
 
-
-import ProjectCommands "commands/project_commands";
-import TeamMemberCommands "commands/team_member_commands";
  
 //Only Stable Variables Should Use Types
 import AppTypes "types/app_types";
