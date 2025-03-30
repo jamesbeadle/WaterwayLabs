@@ -129,6 +129,7 @@ actor Self {
     public shared ({ caller }) func getProjectCanisterInfo(projectId: MopsIds.ProjectId) : async Result.Result<[CanisterQueries.CanisterInfo], MopsEnums.Error> {
         assert isCallerAdmin(Principal.toText(caller));
         
+        
         let projectResult = Array.find<T.Project>(projects, func(foundProject: T.Project) : Bool {
             foundProject.id == projectId;
         });
