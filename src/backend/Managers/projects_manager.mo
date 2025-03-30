@@ -25,15 +25,15 @@ module {
             return #err(#NotFound);
         };
 
-        public func setProjectOnHold(dto: ProjectCommands.SetOnHold) : async Result.Result<(), MopsEnums.Error> {
+        public func setProjectOnHold(dto: ProjectCommands.SetProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
             return #err(#NotFound);
         };
 
-        public func removeProjectOnHold(dto: ProjectCommands.RemoveOnHold) : async Result.Result<(), MopsEnums.Error> {
+        public func removeProjectOnHold(dto: ProjectCommands.RemoveProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
             return #err(#NotFound);
         };
 
-        public func updateVersion(dto: ProjectCommands.UpdateVersion) : async Result.Result<(), MopsEnums.Error> {
+        public func updateVersion(dto: ProjectCommands.UpdateProjectVersion) : async Result.Result<(), MopsEnums.Error> {
             return #err(#NotFound);
         };
 
