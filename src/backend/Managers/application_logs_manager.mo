@@ -8,8 +8,8 @@ module {
     public class ApplicationLogsManager() {
 
         private var applicationLogs: [MopsTypes.ApplicationLog] = [];
-        public func getStableLogs() : [MopsTypes.ApplicationLog] { applicationLogs; };
-        public func setStableLogs(stable_application_logs: [MopsTypes.ApplicationLog]) { applicationLogs := stable_application_logs; };
+        public func getStableApplicationLogs() : [MopsTypes.ApplicationLog] { applicationLogs; };
+        public func setStableApplicationLogs(stable_application_logs: [MopsTypes.ApplicationLog]) { applicationLogs := stable_application_logs; };
 
         public func getApplicationLogs(dto: ApplicationLogQueries.GetApplicationLogs) : Result.Result<ApplicationLogQueries.ApplicationLogs, MopsEnums.Error> {
             return #ok({

@@ -216,15 +216,15 @@ actor Self {
         dataHashes := dataHashesManager.getStableDataHashes();
         projects := projectsManager.getStableProjects();
         teamMembers := teamMembersManager.getStableTeamMembers();
-        applicationLogs := applicationLogs.getStableApplicationLogs();
-        supportQueries := supportQueries.getStableSupportQueries();
+        applicationLogs := applicationLogsManager.getStableApplicationLogs();
+        supportQueries := supportQueriesManager.getStableSupportQueries();
     };
 
     private func setManagerStableVariables(){
         dataHashesManager.setStableDataHashes(dataHashes);
         projectsManager.setStableProjects(projects);
         teamMembersManager.setStableTeamMembers(teamMembers);
-        applicationLogsManager.setStableApplicationLogs(logs);
+        applicationLogsManager.setStableApplicationLogs(applicationLogs);
         supportQueriesManager.setStableSupportQueries(supportQueries);
     };
 
