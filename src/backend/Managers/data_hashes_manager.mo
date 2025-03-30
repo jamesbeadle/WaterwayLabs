@@ -1,9 +1,7 @@
-import MopsTypes "../types/mops_types";
 import Result "mo:base/Result";
-import MopsQueries "../queries/mops_queries";
-import MopsEnums "../enums/mops_enums";
-import AppQueries "../queries/app_queries";
 import DataHashQueries "../queries/data_hash_queries";
+import MopsTypes "../cleanup/mops_types";
+import MopsEnums "../cleanup/mops_enums";
 
 module {
     public class DataHashesManager() {
@@ -13,7 +11,7 @@ module {
         public func getStableDataHashes() : [MopsTypes.DataHash] { dataHashes; };
         public func setStableDataHashes(stable_data_hashes: [MopsTypes.DataHash]) { dataHashes := stable_data_hashes; };
 
-        public func getDataHashes() : async Result.Result<DataHashQueries.DataHashes, MopsEnums.Error> {
+        public func getDataHashes(dto: DataHashQueries.GetDataHashes) : Result.Result<DataHashQueries.DataHashes, MopsEnums.Error> {
             return #ok({
                 //TODO 
             });

@@ -1,4 +1,4 @@
-import MopsIds "../types/mops_ids";
+import MopsIds "../cleanup/mops_ids";
 module TeamMemberCommands = {
 
     public type AddTeamMember = {

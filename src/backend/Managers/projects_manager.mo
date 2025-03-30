@@ -1,11 +1,9 @@
-import MopsTypes "../types/mops_types";
 import Result "mo:base/Result";
-import MopsQueries "../queries/mops_queries";
-import MopsEnums "../enums/mops_enums";
 import AppQueries "../queries/app_queries";
 import AppTypes "../types/app_types";
 import ProjectQueries "../queries/project_queries";
 import ProjectCommands "../commands/project_commands";
+import MopsEnums "../cleanup/mops_enums";
 
 module {
     public class ProjectsManager() {

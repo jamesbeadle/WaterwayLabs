@@ -1,10 +1,11 @@
-import MopsIds "mops_ids";
 import Enums "../enums/enums";
+import MopsWwlIds "../cleanup/mops_wwl_ids";
+import MopsIds "../cleanup/mops_ids";
 module AppTypes {
 
 
     public type Project = {
-        id: MopsIds.ProjectId;
+        id: MopsWwlIds.ProjectId;
         name: Text;
         backendCanisterId: MopsIds.CanisterId;
         frontendCanisterId: MopsIds.CanisterId;
@@ -21,6 +22,7 @@ module AppTypes {
     };
 
     public type SupportQuery = {
+        id: MopsWwlIds.SupportQueryId;
         name: Text;
         message: Text;
         contact: Text;
@@ -31,7 +33,7 @@ module AppTypes {
     };
     
     public type TeamMember = {
-        principalId: MopsIds.PrincipalId;
+        id: MopsWwlIds.TeamMemberId;
         name: Text;
         title: Text;
         image: Text;

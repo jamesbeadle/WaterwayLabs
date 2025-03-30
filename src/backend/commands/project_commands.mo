@@ -1,5 +1,5 @@
-import MopsIds "../types/mops_ids";
 import Enums "../enums/enums";
+import MopsIds "../cleanup/mops_ids";
 
 module ProjectCommands {
 

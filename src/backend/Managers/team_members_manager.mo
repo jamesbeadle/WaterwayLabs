@@ -1,10 +1,8 @@
-import MopsTypes "../types/mops_types";
 import Result "mo:base/Result";
-import MopsQueries "../queries/mops_queries";
-import MopsEnums "../enums/mops_enums";
 import AppTypes "../types/app_types";
 import TeamMemberQueries "../queries/team_member_queries";
 import TeamMemberCommands "../commands/team_member_commands";
+import MopsEnums "../cleanup/mops_enums";
 
 module {
     public class TeamMembersManager() {

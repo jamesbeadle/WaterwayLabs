@@ -1,5 +1,5 @@
-import MopsEnums "../enums/mops_enums";
 import MopsIds "mops_ids";
+import MopsEnums "mops_enums";
 
 module MopsTypes {
 

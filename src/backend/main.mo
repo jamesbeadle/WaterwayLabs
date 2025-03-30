@@ -1,3 +1,17 @@
+//TODO - Remove and import correct mops package
+import MopsQueries "cleanup/mops_queries";
+import MopsEnums "cleanup/mops_enums";
+
+//TODO - John we use these in each project so mops?
+import Environment "environment";
+import Management "management";
+
+//We can justify app specific utilities but global should be mops
+import Utilities "utilities";
+
+
+/* ----- Mops Packages ----- */
+
 import Array "mo:base/Array";
 import Int "mo:base/Int";
 import Option "mo:base/Option";
@@ -5,31 +19,27 @@ import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Timer "mo:base/Timer";
 
-//TODO - John we use these in each project so mops?
-import Environment "environment";
-import Management "management";
-import Utilities "utilities";
 
-//TODO - Remove and import correct mops package
-import MopsQueries "queries/mops_queries";
-import MopsEnums "enums/mops_enums";
-import MopsTypes "types/mops_types";
-import MopsIds "types/mops_ids";
+/* ----- Queries ----- */
 
-//Queries
 import ProjectQueries "queries/project_queries";
 import TeamMemberQueries "queries/team_member_queries";
 import ApplicationLogQueries "queries/application_log_queries";
 import CanisterQueries "queries/canister_queries";
+import DataHashQueries "queries/data_hash_queries";
 
-//Commands
+
+/* ----- Commands ----- */
+
 import SupportQueryCommands "commands/support_query_commands";
 import SupportQueryQueries "queries/support_query_queries";
 import ApplicationLogCommands "commands/application_log_commands";
 import ProjectCommands "commands/project_commands";
 import TeamMemberCommands "commands/team_member_commands";
 
-//Managers
+
+/* ----- Managers ----- */
+
 import DataHashesManager "Managers/data_hashes_manager";
 import TeamMembersManager "Managers/team_members_manager";
 import ProjectsManager "Managers/projects_manager";
@@ -38,20 +48,23 @@ import CanistersManager "Managers/canisters_manager";
 import ApplicationLogsManager "Managers/application_logs_manager";
 
  
-//Only Stable Variables Should Use Types
+/* ----- Only Stable Variables Should Use Types ----- */
+
 import AppTypes "types/app_types";
+import MopsTypes "cleanup/mops_types";
+import MopsIds "cleanup/mops_ids";
 
 actor Self {
 
 
     /* ----- Stable Canister Variables ----- */ 
 
-    private stable var dataHashes : [MopsTypes.DataHash] = [];
-    private stable var projects: [AppTypes.Project] = [];
-    private stable var teamMembers: [AppTypes.TeamMember] = [];
-    private stable var applicationLogs: [MopsTypes.ApplicationLog] = [];
-    private stable var supportQueries: [AppTypes.SupportQuery] = [];
-    private stable var appStatus: MopsTypes.AppStatus = { 
+    private stable var stable_data_hashes : [MopsTypes.DataHash] = [];
+    private stable var stable_projects: [AppTypes.Project] = [];
+    private stable var stable_team_members: [AppTypes.TeamMember] = [];
+    private stable var stable_application_logs: [MopsTypes.ApplicationLog] = [];
+    private stable var stable_support_queries: [AppTypes.SupportQuery] = [];
+    private stable var stable_app_status: MopsTypes.AppStatus = { 
         onHold = true; 
         version = ""; 
     };  
@@ -70,14 +83,14 @@ actor Self {
     /* ----- General App Queries ----- */
 
     public shared query func getAppStatus() : async Result.Result<MopsQueries.AppStatus, MopsEnums.Error> {
-        return #ok(appStatus);
+        return #ok(stable_app_status);
     };
 
 
     /* ----- Data Hash Queries ----- */
 
-    public shared composite query func getDataHashes() : async Result.Result<[MopsTypes.DataHash], MopsEnums.Error> {
-      return #ok(dataHashes);
+    public shared query func getDataHashes(dto: DataHashQueries.GetDataHashes) : async Result.Result<DataHashQueries.DataHashes, MopsEnums.Error> {
+      return dataHashesManager.getDataHashes(dto);
     };
 
 
@@ -114,7 +127,7 @@ actor Self {
     /* ----- Team Member Queries ----- */
 
     public shared query func getTeamMembers() : async Result.Result<[TeamMemberQueries.TeamMember], MopsEnums.Error>{
-        return #ok(teamMembers);
+        return #ok(stable_team_members);
     };
 
 
@@ -212,19 +225,19 @@ actor Self {
     };
 
     private func getManagerStableVariables(){
-        dataHashes := dataHashesManager.getStableDataHashes();
-        projects := projectsManager.getStableProjects();
-        teamMembers := teamMembersManager.getStableTeamMembers();
-        applicationLogs := applicationLogsManager.getStableApplicationLogs();
-        supportQueries := supportQueriesManager.getStableSupportQueries();
+        stable_data_hashes := dataHashesManager.getStableDataHashes();
+        stable_projects := projectsManager.getStableProjects();
+        stable_team_members := teamMembersManager.getStableTeamMembers();
+        stable_application_logs := applicationLogsManager.getStableApplicationLogs();
+        stable_support_queries := supportQueriesManager.getStableSupportQueries();
     };
 
     private func setManagerStableVariables(){
-        dataHashesManager.setStableDataHashes(dataHashes);
-        projectsManager.setStableProjects(projects);
-        teamMembersManager.setStableTeamMembers(teamMembers);
-        applicationLogsManager.setStableApplicationLogs(applicationLogs);
-        supportQueriesManager.setStableSupportQueries(supportQueries);
+        dataHashesManager.setStableDataHashes(stable_data_hashes);
+        projectsManager.setStableProjects(stable_projects);
+        teamMembersManager.setStableTeamMembers(stable_team_members);
+        applicationLogsManager.setStableApplicationLogs(stable_application_logs);
+        supportQueriesManager.setStableSupportQueries(stable_support_queries);
     };
 
     private func postUpgradeCallback() : async (){

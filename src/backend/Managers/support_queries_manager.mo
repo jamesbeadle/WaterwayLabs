@@ -1,8 +1,8 @@
 import Result "mo:base/Result";
 import AppTypes "../types/app_types";
-import MopsEnums "../enums/mops_enums";
 import SupportQueryQueries "../queries/support_query_queries";
 import SupportQueryCommands "../commands/support_query_commands";
+import MopsEnums "../cleanup/mops_enums";
 
 module {
     public class SupportQueriesManager() {

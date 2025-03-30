@@ -1,6 +1,6 @@
 
 import Enums "../enums/enums";
-import MopsIds "../types/mops_ids";
+import MopsIds "../cleanup/mops_ids";
 
 module CanisterQueries {
 

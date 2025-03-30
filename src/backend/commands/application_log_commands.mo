@@ -1,5 +1,5 @@
 import Enums "../enums/enums";
-import MopsEnums "../enums/mops_enums";
+import MopsEnums "../cleanup/mops_enums";
 
 module ApplicationLogCommands {
     public type AddApplicationLog = {

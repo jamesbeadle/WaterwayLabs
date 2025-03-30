@@ -1,8 +1,8 @@
-import MopsTypes "../types/mops_types";
 import Result "mo:base/Result";
-import MopsEnums "../enums/mops_enums";
 import ApplicationLogQueries "../queries/application_log_queries";
 import ApplicationLogCommands "../commands/application_log_commands";
+import MopsTypes "../cleanup/mops_types";
+import MopsEnums "../cleanup/mops_enums";
 
 module {
     public class ApplicationLogsManager() {

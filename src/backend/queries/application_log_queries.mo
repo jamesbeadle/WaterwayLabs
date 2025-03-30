@@ -1,6 +1,6 @@
 import Enums "../enums/enums";
-import MopsIds "../types/mops_ids";
-import MopsEnums "../enums/mops_enums";
+import MopsIds "../cleanup/mops_ids";
+import MopsEnums "../cleanup/mops_enums";
 
 module ApplicationLogQueries {
 
