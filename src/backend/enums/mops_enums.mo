@@ -1,7 +1,13 @@
-import Base "mo:waterway-mops/BaseTypes";
-module BaseTypes {
-
-    //TODO Move to mops
+module MopsEnums {
+    public type LogEntryType = {
+        #Warning;
+        #Error;
+        #Information;
+        #Success;
+        #SystemCheck;
+        #CanisterTopup;
+        #CanisterCreated;
+    };
 
     public type Error = {
         #AlreadyExists;
@@ -22,13 +28,5 @@ module BaseTypes {
         #CreateError;
         #UpdateError;
         #DeleteError;
-    };
-
-    public type SystemEvent = {
-        eventId: Nat;
-        eventTime: Int;
-        eventType: Base.LogEntryType;
-        eventTitle: Text;
-        eventDetail: Text;
     };
 }

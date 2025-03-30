@@ -1,29 +1,36 @@
-import AppTypes "../types/app_types";
-import Base "mo:waterway-mops/BaseTypes";
+import MopsIds "../types/mops_ids";
+import Enums "../enums/enums";
 
 module AppCommands {
 
     public type CreateSupportQuery = {
-
+        createdBy: MopsIds.PrincipalId;
+        contact : Text;
+        message : Text;
+        name : Text;
     };
 
     public type ArchiveSupportQuery = {
-
+        //TODO
     };
 
     public type AssignSupportQueryToTeamMember = {
-
+        supportQueryId: MopsIds.SupportQueryId;
+        teamMemberId: MopsIds.TeamMemberId;
+        assignedOn: Int;
     };
 
     public type UpdateSupportQueryStatus = {
-        
+        supportQueryId: MopsIds.SupportQueryId;
+        updatedStatus: Enums.SupportQueryStatus;
     };
 
     public type AddSupportQueryComment = {
-
+        supportQueryId: MopsIds.SupportQueryId;
+        comment: Text;
     };
 
     public type RemoveSupportQueryComment = {
-
+        supportQueryId: MopsIds.SupportQueryId;
     };
 }

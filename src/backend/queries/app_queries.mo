@@ -1,89 +1,49 @@
-import AppTypes "../types/app_types";
-import BaseTypes "../types/base_types"; //TODO mops
-import Base "mo:waterway-mops/BaseTypes";
+import Enums "../enums/enums";
+import MopsIds "../types/mops_ids";
+import MopsEnums "../enums/mops_enums";
 
 module AppQueries {
 
-    public type GetCanisterInfo = {
-        app: AppTypes.WaterwayLabsApp;
-        canisterId: Base.CanisterId;
-    };
-
-    public type CanisterInfo = {
-        app: AppTypes.WaterwayLabsApp;
-        canisterId: Base.CanisterId;
-        cycles: Nat;
-        computeAllocation: Nat;
-        freezeThreshold: Nat;
-        memoryAllocation: Nat;
-        controllers: [Base.PrincipalId];
-        memoryUsage: Nat;
-        //TODO: Others
-
-    };
-
-    public type GetSupportQueries = {
-
-        app: ?AppTypes.WaterwayLabsApp;
-    };
-
-    public type SupportQueries = {
-
-    };
-
-    public type GetProjects = {
-
-    };
-
-    public type Projects = {
-
-    };
-
     public type GetApplicationLogs = {
-        app: AppTypes.WaterwayLabsApp;
+        app: Enums.WaterwayLabsApp;
         page: Nat;
     };
 
     public type ApplicationLogs = {
-        app: AppTypes.WaterwayLabsApp;
-        logs: [BaseTypes.SystemEvent];
+        app: Enums.WaterwayLabsApp;
+        logs: [SystemEvent];
         page: Nat;
         totalEntries: Nat;
     };
 
+    public type SystemEvent = {
+        eventId: Nat;
+        eventTime: Int;
+        eventType: MopsEnums.LogEntryType;
+        eventTitle: Text;
+        eventDetail: Text;
+    };
+
     public type GetCanisterSnapshots = {
-        app: AppTypes.WaterwayLabsApp;
-        canisterId: Base.CanisterId;
+        app: Enums.WaterwayLabsApp;
+        canisterId: MopsIds.CanisterId;
         page: Nat;
     };
 
- public type Project = {
-        id: AppTypes.ProjectId;
+    public type Project = {
+        id: MopsIds.ProjectId;
         name: Text;
-        backendCanisterId: Base.CanisterId;
-        frontendCanisterId: Base.CanisterId;
+        backendCanisterId: MopsIds.CanisterId;
+        frontendCanisterId: MopsIds.CanisterId;
         websiteURL: Text;
         githubLink: Text;
         socialLinks: [(Text,Text)];
-        status: AppTypes.ProjectStatus;
+        status: Enums.ProjectStatus;
         description: Text;
         summary: Text;
         mainColour: Text;
         secondaryColour: Text;
         thirdColour: Text;
-    };
-
-    public type TeamMember = {
-        name: Text;
-        title: Text;
-        image: Text;
-        bio: Text;
-    };
-
-    public type Canister = {
-        canisterId: Base.CanisterId;
-        canisterName: Text;
-        cycles: Nat;
-        computeAllocation: Nat;
+        onHold: Bool;
     };
 }

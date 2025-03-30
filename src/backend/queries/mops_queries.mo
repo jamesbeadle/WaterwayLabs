@@ -1,6 +1,6 @@
 //TODO Move to mops
 
-module BaseQueries {
+module MopsQueries {
     public type DataHash = {
         category : Text;
         hash : Text;

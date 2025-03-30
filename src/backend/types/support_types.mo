@@ -1,10 +1,7 @@
 
 module SupportTypes {
-    public type QueryStatus = {
-        #Unread;
-        #Read;
-        #Resolved;
-        #Ignored;
-        #Flagged;
-    };
+
+    public type SupportQueryComment = {
+        comment: Text;
+    };  
 };

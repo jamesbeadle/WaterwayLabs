@@ -1,26 +1,17 @@
-import BaseTypes "mo:waterway-mops/BaseTypes";
+import MopsIds "mops_ids";
+import Enums "../enums/enums";
 module AppTypes {
 
-    public type ProjectId = Nat16;
-    
-    public type TeamMemberId = Nat16;
-
-    public type LogEntryType = {
-        #Warning;
-        #Error;
-        #Information;
-        #Success;
-    };
 
     public type Project = {
-        id: ProjectId;
+        id: MopsIds.ProjectId;
         name: Text;
-        backendCanisterId: BaseTypes.CanisterId;
-        frontendCanisterId: BaseTypes.CanisterId;
+        backendCanisterId: MopsIds.CanisterId;
+        frontendCanisterId: MopsIds.CanisterId;
         websiteURL: Text;
         githubLink: Text;
         socialLinks: [(Text,Text)];
-        status: ProjectStatus;
+        status: Enums.ProjectStatus;
         description: Text;
         summary: Text;
         mainColour: Text;
@@ -28,55 +19,21 @@ module AppTypes {
         thirdColour: Text;
     };
 
-    public type ProjectStatus = {
-        #Design;
-        #Development;
-        #Beta;
-        #Live;
-        #Decentralised;
-        #OnHold;
-        #Cancelled;
-        #Complete;
-    };
-
-    public type FormSubmission = {
+    public type SupportQuery = {
         name: Text;
         message: Text;
         contact: Text;
-        status: QueryStatus;
-        submittedBy: BaseTypes.PrincipalId;
+        status: Enums.QueryStatus;
+        submittedBy: MopsIds.PrincipalId;
         submittedOn: Int;
-    };
-
-    public type QueryStatus = {
-        #Unread;
-        #Read;
-        #Resolved;
-        #Ignored;
-        #Flagged;
+        assignedTo: TeamMember;
     };
     
     public type TeamMember = {
+        principalId: MopsIds.PrincipalId;
         name: Text;
         title: Text;
         image: Text;
         bio: Text;
-    };
-
-    public type WaterwayLabsApp = {
-        #WaterwayLabs;
-        #ICFC;
-        #FootballGod;
-        #OpenFPL;
-        #OpenWSL;
-        #TransferKings;
-        #JeffBets;
-        #ICPFA;
-        #ICGC;
-        #ICF1;
-        #OpenBook;
-        #OpenChef;
-        #ICPCasino;
-        #OpenCare;
     };
 };

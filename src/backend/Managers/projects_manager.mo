@@ -1,0 +1,43 @@
+import MopsTypes "../types/mops_types";
+import Result "mo:base/Result";
+import MopsQueries "../queries/mops_queries";
+import MopsEnums "../enums/mops_enums";
+import AppQueries "../queries/app_queries";
+import AppTypes "../types/app_types";
+import ProjectQueries "../queries/project_queries";
+import ProjectCommands "../commands/project_commands";
+
+module {
+    public class ProjectsManager() {
+
+
+        private var projects: [AppTypes.Project] = [];  
+        public func getStableProjects() : [AppTypes.Project] { projects; };
+        public func setStableProjects(stable_projects: [AppTypes.Project]) { projects := stable_projects; };
+
+        public func getProjects(dto: ProjectQueries.GetProjects) : Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
+            return #ok({
+                //TODO 
+            });
+        };
+
+        public func createProject(dto: ProjectCommands.CreateProject) : async Result.Result<(), MopsEnums.Error> {
+            return #err(#NotFound);
+        };
+
+        public func setProjectOnHold(dto: ProjectCommands.SetOnHold) : async Result.Result<(), MopsEnums.Error> {
+            return #err(#NotFound);
+        };
+
+        public func removeProjectOnHold(dto: ProjectCommands.RemoveOnHold) : async Result.Result<(), MopsEnums.Error> {
+            return #err(#NotFound);
+        };
+
+        public func updateVersion(dto: ProjectCommands.UpdateVersion) : async Result.Result<(), MopsEnums.Error> {
+            return #err(#NotFound);
+        };
+
+        //update version
+    
+    };
+};

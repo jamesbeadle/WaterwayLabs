@@ -1,0 +1,41 @@
+import MopsTypes "../types/mops_types";
+import Result "mo:base/Result";
+import MopsEnums "../enums/mops_enums";
+import AppQueries "../queries/app_queries";
+import ApplicationLogCommands "../commands/application_log_commands";
+
+module {
+    public class ApplicationLogsManager() {
+
+        private var applicationLogs: [MopsTypes.ApplicationLog] = [];
+        public func getStableLogs() : [MopsTypes.ApplicationLog] { applicationLogs; };
+        public func setStableLogs(stable_application_logs: [MopsTypes.ApplicationLog]) { applicationLogs := stable_application_logs; };
+
+        public func getApplicationLogs(dto: AppQueries.GetApplicationLogs) : async Result.Result<AppQueries.ApplicationLogs, MopsEnums.Error> {
+            return #ok({
+                app = dto.app;
+                logs = []; //todo add logs
+                page = dto.page;
+                totalEntries = 0; //TODO get
+            });
+        };
+
+        public func addApplicationLog(dto: ApplicationLogCommands.AddApplicationLog) : async Result.Result<(), MopsEnums.Error> {
+            let valid = validate(dto);
+            switch(valid){
+                case (#ok valid){
+                    //todo create
+                    return #ok();
+                };
+                case (#err error){
+                    return #err(error);
+                }
+            };
+        };
+
+        private func validate(dto: ApplicationLogCommands.AddApplicationLog) : Result.Result<(), MopsEnums.Error> {
+            return #err(#NotFound)
+            //TODO Validate
+        };
+    };
+};
