@@ -11,7 +11,7 @@ module {
         public func getStableLogs() : [MopsTypes.ApplicationLog] { applicationLogs; };
         public func setStableLogs(stable_application_logs: [MopsTypes.ApplicationLog]) { applicationLogs := stable_application_logs; };
 
-        public func getApplicationLogs(dto: AppQueries.GetApplicationLogs) : async Result.Result<AppQueries.ApplicationLogs, MopsEnums.Error> {
+        public func getApplicationLogs(dto: AppQueries.GetApplicationLogs) : Result.Result<AppQueries.ApplicationLogs, MopsEnums.Error> {
             return #ok({
                 app = dto.app;
                 logs = []; //todo add logs

@@ -1,20 +1,47 @@
 import MopsIds "../types/mops_ids";
+import Enums "../enums/enums";
 
 module ProjectCommands {
 
     public type CreateProject = {
-        //TODO 
+        name: Text;
+        backendCanisterId: MopsIds.CanisterId;
+        frontendCanisterId: MopsIds.CanisterId;
+        websiteURL: Text;
+        githubLink: Text;
+        socialLinks: [(Text,Text)];
+        status: Enums.ProjectStatus;
+        description: Text;
+        summary: Text;
+        mainColour: Text;
+        secondaryColour: Text;
+        thirdColour: Text;
     };
 
-    public type SetOnHold = {
+    public type UpdateProject = {
+        name: Text;
+        backendCanisterId: MopsIds.CanisterId;
+        frontendCanisterId: MopsIds.CanisterId;
+        websiteURL: Text;
+        githubLink: Text;
+        socialLinks: [(Text,Text)];
+        status: Enums.ProjectStatus;
+        description: Text;
+        summary: Text;
+        mainColour: Text;
+        secondaryColour: Text;
+        thirdColour: Text;
+    };
+
+    public type SetProjectOnHold = {
         projectId: MopsIds.ProjectId;
     };
 
-    public type RemoveOnHold = {
+    public type RemoveProjectOnHold = {
         projectId: MopsIds.ProjectId;
     };
 
-    public type UpdateVersion = {
+    public type UpdateProjectVersion = {
         projectId: MopsIds.ProjectId;
         version: Text;
     };
