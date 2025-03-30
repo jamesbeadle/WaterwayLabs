@@ -50,7 +50,7 @@ actor Self {
     private stable var dataHashes : [MopsTypes.DataHash] = [];
     private stable var projects: [AppTypes.Project] = [];
     private stable var teamMembers: [AppTypes.TeamMember] = [];
-    private stable var logs: [MopsTypes.ApplicationLog] = [];
+    private stable var applicationLogs: [MopsTypes.ApplicationLog] = [];
     private stable var supportQueries: [AppTypes.SupportQuery] = [];
     private stable var appStatus: MopsTypes.AppStatus = { 
         onHold = true; 
@@ -204,16 +204,28 @@ actor Self {
     /* ----- Canister Lifecycle Management ----- */
 
     system func preupgrade() {
-        dataHashes := dataHashesManager.getStableDataHashes();
-        projects := [];
-        teamMembers := [];
-        logs := [];
-        supportQueries := [];
+        getManagerStableVariables();
     };
 
     system func postupgrade() {
-      
-      ignore Timer.setTimer<system>(#nanoseconds(Int.abs(1)), postUpgradeCallback); 
+        setManagerStableVariables();
+        ignore Timer.setTimer<system>(#nanoseconds(Int.abs(1)), postUpgradeCallback); 
+    };
+
+    private func getManagerStableVariables(){
+        dataHashes := dataHashesManager.getStableDataHashes();
+        projects := projectsManager.getStableProjects();
+        teamMembers := teamMembersManager.getStableTeamMembers();
+        applicationLogs := applicationLogs.getStableApplicationLogs();
+        supportQueries := supportQueries.getStableSupportQueries();
+    };
+
+    private func setManagerStableVariables(){
+        dataHashesManager.setStableDataHashes(dataHashes);
+        projectsManager.setStableProjects(projects);
+        teamMembersManager.setStableTeamMembers(teamMembers);
+        applicationLogsManager.setStableApplicationLogs(logs);
+        supportQueriesManager.setStableSupportQueries(supportQueries);
     };
 
     private func postUpgradeCallback() : async (){
