@@ -39,4 +39,8 @@ module AppTypes {
         image: Text;
         bio: Text;
     };
+    
+    public type SupportQueryComment = {
+        comment: Text;
+    };  
 };
