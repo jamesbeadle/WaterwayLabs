@@ -147,7 +147,7 @@ actor Self {
     
     public shared ({ caller }) func getProjectCanisters(dto: CanisterQueries.GetProjectCanisters) : async Result.Result<CanisterQueries.ProjectCanisters, MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        // assert Principal.isAnonymous(caller);
         return await canistersManager.getProjectCanisters(dto);
     };
 

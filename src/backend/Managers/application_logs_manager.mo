@@ -1,7 +1,6 @@
 import Result "mo:base/Result";
 import ApplicationLogQueries "../queries/application_log_queries";
 import ApplicationLogCommands "../commands/application_log_commands";
-import Enums "../enums/enums";
 import MopsTypes "mo:waterway-mops/BaseTypes";
 import MopsEnums "mo:waterway-mops/Enums";
 
