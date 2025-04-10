@@ -1,28 +1,28 @@
-
 import Enums "../enums/enums";
-import MopsIds "../cleanup/mops_ids";
+import MopsIds "mo:waterway-mops/Ids";
+import MopsEnums "mo:waterway-mops/Enums";
 
 module CanisterQueries {
 
     public type GetProjectCanisters = {
-        app: Enums.WaterwayLabsApp;
-        canisterId: MopsIds.CanisterId;
+        app : Enums.WaterwayLabsApp;
     };
 
     public type ProjectCanisters = {
-        entries: [CanisterInfo];
+        entries : [CanisterInfo];
     };
 
     public type CanisterInfo = {
-        app: Enums.WaterwayLabsApp;
-        canisterName: Text;
-        canisterId: MopsIds.CanisterId;
-        cycles: Nat;
-        computeAllocation: Nat;
-        freezeThreshold: Nat;
-        memoryAllocation: Nat;
-        controllers: [MopsIds.PrincipalId];
-        memoryUsage: Nat;
-        //TODO: Others
+        app : Enums.WaterwayLabsApp;
+        canisterName : Text;
+        canisterId : MopsIds.CanisterId;
+        cycles : Nat;
+        computeAllocation : Nat;
+        freezeThreshold : Nat;
+        memoryAllocation : Nat;
+        controllers : [MopsIds.PrincipalId];
+        memoryUsage : Nat;
+        canisterType : MopsEnums.CanisterType;
+        canisterStatus : MopsEnums.CanisterStatus;
     };
-}
+};

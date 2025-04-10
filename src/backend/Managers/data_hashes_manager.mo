@@ -1,15 +1,15 @@
 import Result "mo:base/Result";
+import BaseTypes "mo:waterway-mops/BaseTypes";
 import DataHashQueries "../queries/data_hash_queries";
-import MopsTypes "../cleanup/mops_types";
-import MopsEnums "../cleanup/mops_enums";
+import MopsEnums "mo:waterway-mops/Enums";
 
 module {
     public class DataHashesManager() {
 
 
-        private var dataHashes: [MopsTypes.DataHash] = [];  
-        public func getStableDataHashes() : [MopsTypes.DataHash] { dataHashes; };
-        public func setStableDataHashes(stable_data_hashes: [MopsTypes.DataHash]) { dataHashes := stable_data_hashes; };
+        private var dataHashes: [BaseTypes.DataHash] = [];  
+        public func getStableDataHashes() : [BaseTypes.DataHash] { dataHashes; };
+        public func setStableDataHashes(stable_data_hashes: [BaseTypes.DataHash]) { dataHashes := stable_data_hashes; };
 
         public func getDataHashes(dto: DataHashQueries.GetDataHashes) : Result.Result<DataHashQueries.DataHashes, MopsEnums.Error> {
             return #ok({

@@ -1,6 +1,7 @@
 import Environment "../environment";
+import CanisterIds "mo:waterway-mops/CanisterIds";
 module {
-  public let CANISTER_ID : Text = Environment.OPENFPL_GOVERNANCE_CANISTER_ID;
+  public let CANISTER_ID : Text = CanisterIds.ICFC_SNS_GOVERNANCE_CANISTER_ID;
 
     type Account = { owner : ?Principal; subaccount : ?Subaccount };
     type Action = {

@@ -1,107 +1,81 @@
 import Result "mo:base/Result";
 import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
+import Principal "mo:base/Principal";
 import AppTypes "../types/app_types";
 import ProjectQueries "../queries/project_queries";
 import ProjectCommands "../commands/project_commands";
 import CanisterQueries "../queries/canister_queries";
 import Environment "../environment";
-import MopsEnums "../cleanup/mops_enums";
-import Management "../cleanup/management";
-import MopsCanisterIds "../cleanup/mops_canister_ids";
-import MopsUtilities "../cleanup/mops_utilities";
+import MopsEnums "mo:waterway-mops/Enums";
+import Management "mo:waterway-mops/Management";
+import MopsCanisterIds "mo:waterway-mops/CanisterIds";
+import CanisterUtilities "mo:waterway-mops/CanisterUtilities";
+import Ids "mo:waterway-mops/Ids";
 
 module {
     public class CanistersManager() {
 
+        private var projects : [AppTypes.Project] = [];
+        public func getStableProjects() : [AppTypes.Project] { projects };
+        public func setStableProjects(stable_projects : [AppTypes.Project]) {
+            projects := stable_projects;
+        };
 
-        private var projects: [AppTypes.Project] = [];  
-        public func getStableProjects() : [AppTypes.Project] { projects; };
-        public func setStableProjects(stable_projects: [AppTypes.Project]) { projects := stable_projects; };
+        public func getProjectCanisters(dto : CanisterQueries.GetProjectCanisters) : async Result.Result<CanisterQueries.ProjectCanisters, MopsEnums.Error> {
 
+            let projectResult = Array.find<AppTypes.Project>(
+                projects,
+                func(foundProject : AppTypes.Project) : Bool {
+                    foundProject.app == dto.app;
+                },
+            );
 
-            public func getProjectCanisters(dto: CanisterQueries.GetProjectCanisters) : async Result.Result<CanisterQueries.ProjectCanisters, MopsEnums.Error> {
-            
-            let projectResult = Array.find<AppTypes.Project>(projects, func(foundProject: AppTypes.Project) : Bool {
-                foundProject.app == dto.app;
-            });
-
-            switch(projectResult){
-                case (?project){
-                    let canisterBuffer = Buffer.fromArray<CanisterQueries.CanisterInfo>([]);
-                    
-                    let IC : Management.Management = actor (MopsCanisterIds.Default);
-                    let backend_canister_actor = actor (project.backendCanisterId) : actor {};
-                    let frontend_canister_actor = actor (project.frontendCanisterId) : actor {};
-
-                    let backendCanisterStatusResult = await MopsUtilities.getCanisterStatus_(backend_canister_actor, IC);
-                    switch(backendCanisterStatusResult){
-                        case(?backendCanisterStatus){
-                            /*
-                            //TOOD
-                            canisterBuffer.add({
-                                app = project.app;
-                                canisterId = project.backendCanisterId;
-                                canisterName = "Backend";
-                                cycles = backendCanisterStatus.cycles;
-                                computeAllocation = backendCanisterStatus.compute_allocation;
-                                controllers = backendCanisterStatus.contollers;
-                                freezeThreshold = backendCanisterStatus.freezeThreshold;
-                                memoryAllocation = backendCanisterStatus.memoryAllocation;
-                                memoryUsage = backendCanisterStatus.memoryUsage;
-                            })
-                            */
-                        };
-                        case (null){}
+            switch (projectResult) {
+                case (?project) {
+                    let appCanister = actor (project.backendCanisterId) : actor {
+                        getCanistersInfo : () -> async Result.Result<CanisterQueries.ProjectCanisters, MopsEnums.Error>;
                     };
-                    
-                    let frontendCanisterStatusResult = await MopsUtilities.getCanisterStatus_(frontend_canister_actor, IC);
-                    switch(frontendCanisterStatusResult){
-                        case(?frontendCanisterStatus){
-                            /* TODO
-                            canisterBuffer.add({
-                                canisterId = project.frontendCanisterId;
-                                canisterName = "Frontend";
-                                computeAllocation = frontendCanisterStatus.settings.compute_allocation;
-                                cycles = frontendCanisterStatus.cycles;
-                            })
-                            */
+                    let canistersResult = await appCanister.getCanistersInfo();
+                    switch (canistersResult) {
+                        case (#ok(canisters)) {
+                            return #ok({
+                                entries = canisters.entries;
+                            });
                         };
-                        case (null){}
+                        case (#err(err)) {
+                            return #err(err);
+                        };
                     };
-
-                    return #ok({
-                        entries = Buffer.toArray<CanisterQueries.CanisterInfo>(canisterBuffer);
-                    });      
                 };
-                case (null){}
-            };        
+                case (null) {};
+            };
             return #err(#NotFound);
         };
 
-        public func getProjects(dto: ProjectQueries.GetProjects) : Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
+        public func getProjects(dto : ProjectQueries.GetProjects) : Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
             return #ok({
-                //TODO 
+                projects = projects;
             });
         };
 
-        public func createProject(dto: ProjectCommands.CreateProject) : async Result.Result<(), MopsEnums.Error> {
+        public func createProject(dto : ProjectCommands.CreateProject) : async Result.Result<(), MopsEnums.Error> {
             return #err(#NotFound);
         };
 
-        public func setProjectOnHold(dto: ProjectCommands.SetProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
+        public func setProjectOnHold(dto : ProjectCommands.SetProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
             return #err(#NotFound);
         };
 
-        public func removeProjectOnHold(dto: ProjectCommands.RemoveProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
+        public func removeProjectOnHold(dto : ProjectCommands.RemoveProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
             return #err(#NotFound);
         };
 
-        public func updateVersion(dto: ProjectCommands.UpdateProjectVersion) : async Result.Result<(), MopsEnums.Error> {
+        public func updateVersion(dto : ProjectCommands.UpdateProjectVersion) : async Result.Result<(), MopsEnums.Error> {
             return #err(#NotFound);
         };
 
         //update version
-    
+
     };
 };

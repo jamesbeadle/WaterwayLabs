@@ -1,10 +1,12 @@
 //TODO - Remove and import correct mops package
-import MopsCanisterIds "cleanup/mops_canister_ids";
-import MopsEnums "cleanup/mops_enums";
-import MopsIds "cleanup/mops_ids";
-import Management "cleanup/management";
-import MopsQueries "cleanup/mops_queries";
-import MopsUtilities "cleanup/mops_utilities";
+import MopsCanisterIds "mo:waterway-mops/CanisterIds";
+import MopsEnums "mo:waterway-mops/Enums";
+import MopsIds "mo:waterway-mops/Ids";
+import Management "mo:waterway-mops/Management";
+import MopsTypes "mo:waterway-mops/BaseTypes";
+import MopsUtilities "mo:waterway-mops/BaseUtilities";
+import BaseTypes "mo:waterway-mops/BaseTypes";
+import CanisterUtilities "mo:waterway-mops/CanisterUtilities";
 
 /* ----- Mops Packages ----- */
 
@@ -47,8 +49,6 @@ import TeamMembersManager "Managers/team_members_manager";
 /* ----- Only Stable Variables Should Use Types ----- */
 
 import AppTypes "types/app_types";
-import MopsTypes "cleanup/mops_types";
-
 
 /* ----- Application Environment & Utility Files ----- */ 
 
@@ -83,7 +83,7 @@ actor Self {
 
     /* ----- General App Queries ----- */
 
-    public shared query func getAppStatus() : async Result.Result<MopsQueries.AppStatus, MopsEnums.Error> {
+    public shared query func getAppStatus() : async Result.Result<BaseTypes.AppStatus, MopsEnums.Error> {
         return #ok(stable_app_status);
     };
 
@@ -146,7 +146,8 @@ actor Self {
     /* ----- Canisters Queries ----- */
     
     public shared ({ caller }) func getProjectCanisters(dto: CanisterQueries.GetProjectCanisters) : async Result.Result<CanisterQueries.ProjectCanisters, MopsEnums.Error> {
-        assert isCallerAdmin(Principal.toText(caller));
+        // assert isCallerAdmin(Principal.toText(caller));
+        assert Principal.isAnonymous(caller);
         return await canistersManager.getProjectCanisters(dto);
     };
 
@@ -158,7 +159,7 @@ actor Self {
         let canister_actor = actor (canisterId) : actor {};
              
         let IC : Management.Management = actor (MopsCanisterIds.Default);
-        let _ = await MopsUtilities.topup_canister_(canister_actor, IC, cycles);
+        let _ = await CanisterUtilities.topup_canister_(canister_actor, IC, cycles);
         return #ok();
     };
 

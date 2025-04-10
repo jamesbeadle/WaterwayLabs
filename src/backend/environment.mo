@@ -1,4 +1,4 @@
-import MopsCanisterIds "cleanup/mops_canister_ids";
+import MopsCanisterIds "mo:waterway-mops/CanisterIds";
 module Environment {
     
     public let APPROVED_CANISTERS = [
@@ -8,7 +8,7 @@ module Environment {
         MopsCanisterIds.OPENWSL_BACKEND_CANISTER_ID,
         MopsCanisterIds.JEFF_BETS_BACKEND_CANISTER_ID,
         MopsCanisterIds.OPENBOOK_BACKEND_CANISTER_ID,
-        MopsCanisterIds.TRANSFER_KINGS_BACKEND_ID,
+        MopsCanisterIds.TRANSFER_KINGS_BACKEND_CANISTER_ID,
         MopsCanisterIds.ICFC_DATA_CANISTER_ID
     ];
 

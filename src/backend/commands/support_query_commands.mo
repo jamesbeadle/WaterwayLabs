@@ -1,6 +1,5 @@
 import Enums "../enums/enums";
-import MopsIds "../cleanup/mops_ids";
-
+import MopsIds "mo:waterway-mops/Ids";
 module AppCommands {
 
     public type CreateSupportQuery = {
