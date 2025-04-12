@@ -6,10 +6,11 @@ import ProjectCommands "../commands/project_commands";
 import CanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
 import MopsEnums "mo:waterway-mops/Enums";
 import CanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
+import WWLCanisterManager "mo:waterway-mops/canister-management/CanisterManager";
 
 module {
     public class CanistersManager() {
-
+        let wwlCanisterManager = WWLCanisterManager.CanisterManager();
         private var projects : [AppTypes.Project] = [{
             id = 0;
             name = "ICFC";
@@ -72,12 +73,9 @@ module {
             );
 
             switch (projectResult) {
-                case (?project) {
-                    let appCanister = actor (project.backendCanisterId) : actor {
-                        listCanisterSnapshots : (dto : CanisterQueries.ListCanisterSnapshots) -> async Result.Result<[CanisterQueries.CanisterSnapshot], MopsEnums.Error>;
-                    };
-                    let snapshotsResult = await appCanister.listCanisterSnapshots(dto);
-                    switch (snapshotsResult) {
+                case (?_) {
+                    let res = await wwlCanisterManager.listCanisterSnapshots(dto);
+                    switch (res) {
                         case (#ok(snapshots)) {
                             return #ok(snapshots);
                         };
@@ -100,12 +98,9 @@ module {
             );
 
             switch (projectResult) {
-                case (?project) {
-                    let appCanister = actor (project.backendCanisterId) : actor {
-                        deleteCanister : (dto : CanisterCommands.DeleteCanister) -> async Result.Result<(), MopsEnums.Error>;
-                    };
-                    let deleteResult = await appCanister.deleteCanister(dto);
-                    switch (deleteResult) {
+                case (?_) {
+                    let res = await wwlCanisterManager.deleteCanister(dto);
+                    switch (res) {
                         case (#ok(())) {
                             return #ok(());
                         };
@@ -128,12 +123,9 @@ module {
             );
 
             switch (projectResult) {
-                case (?project) {
-                    let appCanister = actor (project.backendCanisterId) : actor {
-                        takeCanisterSnapshot : (dto : CanisterCommands.TakeCanisterSnapshot) -> async Result.Result<CanisterCommands.CanisterSnapshot, MopsEnums.Error>;
-                    };
-                    let snapshotResult = await appCanister.takeCanisterSnapshot(dto);
-                    switch (snapshotResult) {
+                case (?_) {
+                    let res = await wwlCanisterManager.takeCanisterSnapshot(dto);
+                    switch (res) {
                         case (#ok(snapshot)) {
                             return #ok(snapshot);
                         };
@@ -156,12 +148,9 @@ module {
             );
 
             switch (projectResult) {
-                case (?project) {
-                    let appCanister = actor (project.backendCanisterId) : actor {
-                        loadCanisterSnapshot : (dto : CanisterCommands.LoadCanisterSnapshot) -> async Result.Result<(), MopsEnums.Error>;
-                    };
-                    let loadResult = await appCanister.loadCanisterSnapshot(dto);
-                    switch (loadResult) {
+                case (?_) {
+                    let res = await wwlCanisterManager.loadCanisterSnapshot(dto);
+                    switch (res) {
                         case (#ok(())) {
                             return #ok(());
                         };
@@ -184,12 +173,9 @@ module {
             );
 
             switch (projectResult) {
-                case (?project) {
-                    let appCanister = actor (project.backendCanisterId) : actor {
-                        deleteCanisterSnapshot : (dto : CanisterCommands.DeleteCanisterSnapshot) -> async Result.Result<(), MopsEnums.Error>;
-                    };
-                    let deleteResult = await appCanister.deleteCanisterSnapshot(dto);
-                    switch (deleteResult) {
+                case (?_) {
+                    let res = await wwlCanisterManager.deleteCanisterSnapshot(dto);
+                    switch (res) {
                         case (#ok(())) {
                             return #ok(());
                         };
@@ -212,12 +198,9 @@ module {
             );
 
             switch (projectResult) {
-                case (?project) {
-                    let appCanister = actor (project.backendCanisterId) : actor {
-                        startCanister : (dto : CanisterCommands.StartCanister) -> async Result.Result<(), MopsEnums.Error>;
-                    };
-                    let startResult = await appCanister.startCanister(dto);
-                    switch (startResult) {
+                case (?_) {
+                    let res = await wwlCanisterManager.startCanister(dto);
+                    switch (res) {
                         case (#ok(())) {
                             return #ok(());
                         };
@@ -240,12 +223,9 @@ module {
             );
 
             switch (projectResult) {
-                case (?project) {
-                    let appCanister = actor (project.backendCanisterId) : actor {
-                        stopCanister : (dto : CanisterCommands.StopCanister) -> async Result.Result<(), MopsEnums.Error>;
-                    };
-                    let stopResult = await appCanister.stopCanister(dto);
-                    switch (stopResult) {
+                case (?_) {
+                    let res = await wwlCanisterManager.stopCanister(dto);
+                    switch (res) {
                         case (#ok(())) {
                             return #ok(());
                         };
@@ -322,12 +302,9 @@ module {
             );
 
             switch (projectResult) {
-                case (?project) {
-                    let appCanister = actor (project.backendCanisterId) : actor {
-                        setComputeAllocation : (dto : CanisterCommands.SetComputeAllocation) -> async Result.Result<(), MopsEnums.Error>;
-                    };
-                    let allocationResult = await appCanister.setComputeAllocation(dto);
-                    switch (allocationResult) {
+                case (?_) {
+                    let res = await wwlCanisterManager.setComputeAllocation(dto);
+                    switch (res) {
                         case (#ok(())) {
                             return #ok(());
                         };
@@ -349,12 +326,9 @@ module {
             );
 
             switch (projectResult) {
-                case (?project) {
-                    let appCanister = actor (project.backendCanisterId) : actor {
-                        setMemoryAllocation : (dto : CanisterCommands.SetMemoryAllocation) -> async Result.Result<(), MopsEnums.Error>;
-                    };
-                    let allocationResult = await appCanister.setMemoryAllocation(dto);
-                    switch (allocationResult) {
+                case (?_) {
+                    let res = await wwlCanisterManager.setMemoryAllocation(dto);
+                    switch (res) {
                         case (#ok(())) {
                             return #ok(());
                         };
@@ -376,12 +350,9 @@ module {
             );
 
             switch (projectResult) {
-                case (?project) {
-                    let appCanister = actor (project.backendCanisterId) : actor {
-                        setFreezingThreshold : (dto : CanisterCommands.SetFreezingThreshold) -> async Result.Result<(), MopsEnums.Error>;
-                    };
-                    let thresholdResult = await appCanister.setFreezingThreshold(dto);
-                    switch (thresholdResult) {
+                case (?_) {
+                    let res = await wwlCanisterManager.setFreezingThreshold(dto);
+                    switch (res) {
                         case (#ok(())) {
                             return #ok(());
                         };
@@ -403,12 +374,9 @@ module {
             );
 
             switch (projectResult) {
-                case (?project) {
-                    let appCanister = actor (project.backendCanisterId) : actor {
-                        topupCanister : (dto : CanisterCommands.TopupCanister) -> async Result.Result<(), MopsEnums.Error>;
-                    };
-                    let topupResult = await appCanister.topupCanister(dto);
-                    switch (topupResult) {
+                case (?_) {
+                    let res = await wwlCanisterManager.topupCanister(dto);
+                    switch (res) {
                         case (#ok(())) {
                             return #ok(());
                         };

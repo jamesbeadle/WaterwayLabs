@@ -220,6 +220,12 @@ actor Self {
         return await canistersManager.stopCanister(dto);
     };
 
+    public shared ({ caller }) func deleteCanister(dto: CanisterCommands.DeleteCanister) : async Result.Result<(), MopsEnums.Error> {
+        // assert isCallerAdmin(Principal.toText(caller));
+        // assert Principal.isAnonymous(caller);
+        return await canistersManager.deleteCanister(dto);
+    };
+
 
     /* ----- Application Log Queries ----- */
 
