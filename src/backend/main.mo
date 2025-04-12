@@ -1,4 +1,3 @@
-//TODO - Remove and import correct mops package
 import MopsCanisterIds "mo:waterway-mops/CanisterIds";
 import MopsEnums "mo:waterway-mops/Enums";
 import MopsIds "mo:waterway-mops/Ids";
@@ -21,7 +20,8 @@ import Timer "mo:base/Timer";
 /* ----- Queries ----- */
 
 import ApplicationLogQueries "queries/application_log_queries";
-import CanisterQueries "queries/canister_queries";
+import CanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
+import CanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
 import DataHashQueries "queries/data_hash_queries";
 import ProjectQueries "queries/project_queries";
 import SupportQueryQueries "queries/support_query_queries";
@@ -151,16 +151,73 @@ actor Self {
         return await canistersManager.getProjectCanisters(dto);
     };
 
+    public shared ({caller}) func listCanisterSnapshots(dto: CanisterQueries.ListCanisterSnapshots) : async Result.Result<[CanisterQueries.CanisterSnapshot], MopsEnums.Error> {
+        // assert isCallerAdmin(Principal.toText(caller));
+        // assert Principal.isAnonymous(caller);
+        return await canistersManager.listCanisterSnapshots(dto);
+    };
+
 
     /* ----- Canisters Commands ----- */
 
-    public shared ({ caller }) func topupCanister(canisterId: MopsIds.CanisterId, cycles: Nat) : async Result.Result<(), MopsEnums.Error> {
-        assert isCallerAdmin(Principal.toText(caller));
-        let canister_actor = actor (canisterId) : actor {};
-             
-        let IC : Management.Management = actor (MopsCanisterIds.Default);
-        let _ = await CanisterUtilities.topup_canister_(canister_actor, IC, cycles);
-        return #ok();
+    public shared ({ caller }) func topupCanister(dto: CanisterCommands.TopupCanister) : async Result.Result<(), MopsEnums.Error> {
+        // assert isCallerAdmin(Principal.toText(caller));
+        // assert Principal.isAnonymous(caller);
+        return await canistersManager.topupCanister(dto);
+    };
+    
+    public shared ({ caller }) func setCanisterComputeAllocation(dto: CanisterCommands.SetComputeAllocation) : async Result.Result<(), MopsEnums.Error> {
+        // assert isCallerAdmin(Principal.toText(caller));
+        // assert Principal.isAnonymous(caller);
+        return await canistersManager.setComputeAllocation(dto);
+    };
+
+    public shared ({ caller }) func setCanisterMemoryAllocation(dto: CanisterCommands.SetMemoryAllocation) : async Result.Result<(), MopsEnums.Error> {
+        // assert isCallerAdmin(Principal.toText(caller));
+        // assert Principal.isAnonymous(caller);
+        return await canistersManager.setMemoryAllocation(dto);
+    };
+
+    public shared ({ caller }) func setCanisterFreezeThreshold(dto: CanisterCommands.SetFreezingThreshold) : async Result.Result<(), MopsEnums.Error> {
+        // assert isCallerAdmin(Principal.toText(caller));
+        // assert Principal.isAnonymous(caller);
+        return await canistersManager.setFreezingThreshold(dto);
+    };
+
+    public shared ({ caller }) func addCanisterController(dto: CanisterCommands.AddController) : async Result.Result<(), MopsEnums.Error> {
+        // assert isCallerAdmin(Principal.toText(caller));
+        // assert Principal.isAnonymous(caller);
+        return await canistersManager.addController(dto);
+    };
+
+    public shared ({ caller }) func takeCanisterSnapshot(dto: CanisterCommands.TakeCanisterSnapshot) : async Result.Result<CanisterCommands.CanisterSnapshot, MopsEnums.Error> {
+        // assert isCallerAdmin(Principal.toText(caller));
+        // assert Principal.isAnonymous(caller);
+        return await canistersManager.takeCanisterSnapshot(dto);
+    };
+
+    public shared ({ caller }) func loadCanisterSnapshot(dto: CanisterCommands.LoadCanisterSnapshot) : async Result.Result<(), MopsEnums.Error> {
+        // assert isCallerAdmin(Principal.toText(caller));
+        // assert Principal.isAnonymous(caller);
+        return await canistersManager.loadCanisterSnapshot(dto);
+    };
+
+    public shared ({ caller }) func deleteCanisterSnapshot(dto: CanisterCommands.DeleteCanisterSnapshot) : async Result.Result<(), MopsEnums.Error> {
+        // assert isCallerAdmin(Principal.toText(caller));
+        // assert Principal.isAnonymous(caller);
+        return await canistersManager.deleteCanisterSnapshot(dto);
+    };
+
+    public shared ({ caller }) func startCanister(dto: CanisterCommands.StartCanister) : async Result.Result<(), MopsEnums.Error> {
+        // assert isCallerAdmin(Principal.toText(caller));
+        // assert Principal.isAnonymous(caller);
+        return await canistersManager.startCanister(dto);
+    };
+
+    public shared ({ caller }) func stopCanister(dto: CanisterCommands.StopCanister) : async Result.Result<(), MopsEnums.Error> {
+        // assert isCallerAdmin(Principal.toText(caller));
+        // assert Principal.isAnonymous(caller);
+        return await canistersManager.stopCanister(dto);
     };
 
 
