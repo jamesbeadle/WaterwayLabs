@@ -1,8 +1,6 @@
 import Result "mo:base/Result";
 import Array "mo:base/Array";
 import AppTypes "../types/app_types";
-import ProjectQueries "../queries/project_queries";
-import ProjectCommands "../commands/project_commands";
 import CanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
 import MopsEnums "mo:waterway-mops/Enums";
 import CanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
@@ -11,12 +9,6 @@ import WWLCanisterManager "mo:waterway-mops/canister-management/CanisterManager"
 module {
     public class CanistersManager() {
         let wwlCanisterManager = WWLCanisterManager.CanisterManager();
-        private var projects : [AppTypes.Project] = [];
-
-        public func getStableProjects() : [AppTypes.Project] { projects };
-        public func setStableProjects(stable_projects : [AppTypes.Project]) {
-            projects := stable_projects;
-        };
 
         public func getCanisterInfo(dto_query : CanisterQueries.GetCanisterInfo) : async Result.Result<CanisterQueries.CanisterInfo, MopsEnums.Error> {
 
@@ -50,7 +42,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func getProjectCanisters(dto : CanisterQueries.GetProjectCanisters) : async Result.Result<CanisterQueries.ProjectCanisters, MopsEnums.Error> {
+        public func getProjectCanisters(dto : CanisterQueries.GetProjectCanisters, projects : [AppTypes.Project]) : async Result.Result<CanisterQueries.ProjectCanisters, MopsEnums.Error> {
 
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
@@ -81,7 +73,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func listCanisterSnapshots(dto : CanisterQueries.ListCanisterSnapshots) : async Result.Result<[CanisterQueries.CanisterSnapshot], MopsEnums.Error> {
+        public func listCanisterSnapshots(dto : CanisterQueries.ListCanisterSnapshots, projects : [AppTypes.Project]) : async Result.Result<[CanisterQueries.CanisterSnapshot], MopsEnums.Error> {
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
                 func(foundProject : AppTypes.Project) : Bool {
@@ -106,7 +98,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func deleteCanister(dto : CanisterCommands.DeleteCanister) : async Result.Result<(), MopsEnums.Error> {
+        public func deleteCanister(dto : CanisterCommands.DeleteCanister, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
                 func(foundProject : AppTypes.Project) : Bool {
@@ -131,7 +123,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func takeCanisterSnapshot(dto : CanisterCommands.TakeCanisterSnapshot) : async Result.Result<CanisterCommands.CanisterSnapshot, MopsEnums.Error> {
+        public func takeCanisterSnapshot(dto : CanisterCommands.TakeCanisterSnapshot, projects : [AppTypes.Project]) : async Result.Result<CanisterCommands.CanisterSnapshot, MopsEnums.Error> {
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
                 func(foundProject : AppTypes.Project) : Bool {
@@ -156,7 +148,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func loadCanisterSnapshot(dto : CanisterCommands.LoadCanisterSnapshot) : async Result.Result<(), MopsEnums.Error> {
+        public func loadCanisterSnapshot(dto : CanisterCommands.LoadCanisterSnapshot, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
                 func(foundProject : AppTypes.Project) : Bool {
@@ -181,7 +173,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func deleteCanisterSnapshot(dto : CanisterCommands.DeleteCanisterSnapshot) : async Result.Result<(), MopsEnums.Error> {
+        public func deleteCanisterSnapshot(dto : CanisterCommands.DeleteCanisterSnapshot, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
                 func(foundProject : AppTypes.Project) : Bool {
@@ -206,7 +198,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func startCanister(dto : CanisterCommands.StartCanister) : async Result.Result<(), MopsEnums.Error> {
+        public func startCanister(dto : CanisterCommands.StartCanister, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
                 func(foundProject : AppTypes.Project) : Bool {
@@ -231,7 +223,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func stopCanister(dto : CanisterCommands.StopCanister) : async Result.Result<(), MopsEnums.Error> {
+        public func stopCanister(dto : CanisterCommands.StopCanister, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
                 func(foundProject : AppTypes.Project) : Bool {
@@ -256,7 +248,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func addController(dto : CanisterCommands.AddController) : async Result.Result<(), MopsEnums.Error> {
+        public func addController(dto : CanisterCommands.AddController, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
                 func(foundProject : AppTypes.Project) : Bool {
@@ -283,7 +275,7 @@ module {
             };
             return #err(#NotFound);
         };
-        public func removeController(dto : CanisterCommands.RemoveController) : async Result.Result<(), MopsEnums.Error> {
+        public func removeController(dto : CanisterCommands.RemoveController, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
                 func(foundProject : AppTypes.Project) : Bool {
@@ -310,7 +302,7 @@ module {
             };
             return #err(#NotFound);
         };
-        public func setComputeAllocation(dto : CanisterCommands.SetComputeAllocation) : async Result.Result<(), MopsEnums.Error> {
+        public func setComputeAllocation(dto : CanisterCommands.SetComputeAllocation, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
                 func(foundProject : AppTypes.Project) : Bool {
@@ -334,7 +326,7 @@ module {
             };
             return #err(#NotFound);
         };
-        public func setMemoryAllocation(dto : CanisterCommands.SetMemoryAllocation) : async Result.Result<(), MopsEnums.Error> {
+        public func setMemoryAllocation(dto : CanisterCommands.SetMemoryAllocation, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
                 func(foundProject : AppTypes.Project) : Bool {
@@ -358,7 +350,7 @@ module {
             };
             return #err(#NotFound);
         };
-        public func setFreezingThreshold(dto : CanisterCommands.SetFreezingThreshold) : async Result.Result<(), MopsEnums.Error> {
+        public func setFreezingThreshold(dto : CanisterCommands.SetFreezingThreshold, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
                 func(foundProject : AppTypes.Project) : Bool {
@@ -382,7 +374,7 @@ module {
             };
             return #err(#NotFound);
         };
-        public func topupCanister(dto : CanisterCommands.TopupCanister) : async Result.Result<(), MopsEnums.Error> {
+        public func topupCanister(dto : CanisterCommands.TopupCanister, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = Array.find<AppTypes.Project>(
                 projects,
                 func(foundProject : AppTypes.Project) : Bool {
@@ -406,30 +398,6 @@ module {
             };
             return #err(#NotFound);
         };
-
-        public func getProjects(_ : ProjectQueries.GetProjects) : Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
-            return #ok({
-                projects = projects;
-            });
-        };
-
-        public func createProject(_ : ProjectCommands.CreateProject) : async Result.Result<(), MopsEnums.Error> {
-            return #err(#NotFound);
-        };
-
-        public func setProjectOnHold(_ : ProjectCommands.SetProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
-            return #err(#NotFound);
-        };
-
-        public func removeProjectOnHold(_ : ProjectCommands.RemoveProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
-            return #err(#NotFound);
-        };
-
-        public func updateVersion(_ : ProjectCommands.UpdateProjectVersion) : async Result.Result<(), MopsEnums.Error> {
-            return #err(#NotFound);
-        };
-
-        //update version
 
     };
 };
