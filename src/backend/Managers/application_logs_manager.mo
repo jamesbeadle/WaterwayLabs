@@ -7,11 +7,15 @@ import MopsEnums "mo:waterway-mops/Enums";
 module {
     public class ApplicationLogsManager() {
 
-        private var applicationLogs: [MopsTypes.ApplicationLog] = [];
-        public func getStableApplicationLogs() : [MopsTypes.ApplicationLog] { applicationLogs; };
-        public func setStableApplicationLogs(stable_application_logs: [MopsTypes.ApplicationLog]) { applicationLogs := stable_application_logs; };
+        private var applicationLogs : [MopsTypes.ApplicationLog] = [];
+        public func getStableApplicationLogs() : [MopsTypes.ApplicationLog] {
+            applicationLogs;
+        };
+        public func setStableApplicationLogs(stable_application_logs : [MopsTypes.ApplicationLog]) {
+            applicationLogs := stable_application_logs;
+        };
 
-        public func getApplicationLogs(dto: ApplicationLogQueries.GetApplicationLogs) : Result.Result<ApplicationLogQueries.ApplicationLogs, MopsEnums.Error> {
+        public func getApplicationLogs(dto : ApplicationLogQueries.GetApplicationLogs) : Result.Result<ApplicationLogQueries.ApplicationLogs, MopsEnums.Error> {
             return #ok({
                 app = dto.app;
                 logs = []; //todo add logs
@@ -20,10 +24,10 @@ module {
             });
         };
 
-        public func addApplicationLog(dto: ApplicationLogCommands.AddApplicationLog) : async Result.Result<(), MopsEnums.Error> {
+        public func addApplicationLog(dto : ApplicationLogCommands.AddApplicationLog) : async Result.Result<(), MopsEnums.Error> {
             let valid = validate(dto);
-            switch(valid){
-                case (#ok valid){
+            switch (valid) {
+                case (#ok valid) {
                     //todo create
                     /*
                     let logsBuffer = Buffer.fromArray<BaseTypes.SystemLog>(logs);
@@ -38,13 +42,13 @@ module {
                     */
                     return #ok();
                 };
-                case (#err error){
+                case (#err error) {
                     return #err(error);
-                }
+                };
             };
         };
 
-        private func validate(dto: ApplicationLogCommands.AddApplicationLog) : Result.Result<(), MopsEnums.Error> {
+        private func validate(_ : ApplicationLogCommands.AddApplicationLog) : Result.Result<(), MopsEnums.Error> {
             return #err(#NotFound)
             //TODO Validate
         };

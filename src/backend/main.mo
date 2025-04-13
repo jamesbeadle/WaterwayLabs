@@ -1,11 +1,7 @@
-import MopsCanisterIds "mo:waterway-mops/CanisterIds";
 import MopsEnums "mo:waterway-mops/Enums";
 import MopsIds "mo:waterway-mops/Ids";
-import Management "mo:waterway-mops/Management";
 import MopsTypes "mo:waterway-mops/BaseTypes";
-import MopsUtilities "mo:waterway-mops/BaseUtilities";
 import BaseTypes "mo:waterway-mops/BaseTypes";
-import CanisterUtilities "mo:waterway-mops/CanisterUtilities";
 
 /* ----- Mops Packages ----- */
 
@@ -21,7 +17,6 @@ import Timer "mo:base/Timer";
 import ApplicationLogQueries "queries/application_log_queries";
 import CanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
 import CanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
-import Ids "mo:waterway-mops/Ids";
 import DataHashQueries "queries/data_hash_queries";
 import ProjectQueries "queries/project_queries";
 import SupportQueryQueries "queries/support_query_queries";
@@ -51,7 +46,7 @@ import AppTypes "types/app_types";
 
 import Environment "environment";
 
-actor Self {
+actor class Self() {
 
     /* ----- Stable Canister Variables ----- */
 
@@ -88,13 +83,15 @@ actor Self {
 
     /* ----- Projects Queries ----- */
 
-    public shared func getProjects(dto : ProjectQueries.GetProjects) : async Result.Result<ProjectQueries.GetProjects, MopsEnums.Error> {
+    public shared ({ caller }) func getProjects(dto : ProjectQueries.GetProjects) : async Result.Result<ProjectQueries.GetProjects, MopsEnums.Error> {
+        assert Principal.isAnonymous(caller);
         return projectsManager.getProjects(dto);
     };
 
     /* ----- Projects Commands ----- */
 
-    public shared func createProject(dto : ProjectCommands.CreateProject) : async Result.Result<(), MopsEnums.Error> {
+    public shared ({ caller }) func createProject(dto : ProjectCommands.CreateProject) : async Result.Result<(), MopsEnums.Error> {
+        assert Principal.isAnonymous(caller);
         return await projectsManager.createProject(dto);
     };
 
@@ -264,7 +261,7 @@ actor Self {
     /* ----- Support Query Commands ----- */
 
     public shared ({ caller }) func createSupportQuery(dto : SupportQueryCommands.CreateSupportQuery) : async Result.Result<(), MopsEnums.Error> {
-        let submittedById = Principal.toText(caller);
+        let _ = Principal.toText(caller);
         let _ = await supportQueriesManager.createSupportQuery(dto);
         return #ok();
     };

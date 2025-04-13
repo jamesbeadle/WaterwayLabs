@@ -1,25 +1,18 @@
 import Result "mo:base/Result";
-import Array "mo:base/Array";
-import Nat "mo:base/Nat";
-import Nat16 "mo:base/Nat16";
 import Option "mo:base/Option";
 import TrieMap "mo:base/TrieMap";
-import Text "mo:base/Text";
 import Iter "mo:base/Iter";
-import AppQueries "../queries/app_queries";
 import AppTypes "../types/app_types";
 import ProjectQueries "../queries/project_queries";
 import ProjectCommands "../commands/project_commands";
-import Ids "mo:waterway-mops/Ids";
 import MopsEnums "mo:waterway-mops/Enums";
-import BaseUtilities "mo:waterway-mops/BaseUtilities";
 import Utils "../lib/Utils";
 
 module {
     public class ProjectsManager() {
         private var projects : TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project> = TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project>(Utils.appEquals, Utils.appHash);
 
-        public func getProjects(dto : ProjectQueries.GetProjects) : Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
+        public func getProjects(_ : ProjectQueries.GetProjects) : Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
             return #ok({
                 projects = Iter.toArray(projects.vals());
             });

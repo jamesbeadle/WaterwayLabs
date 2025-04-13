@@ -7,24 +7,27 @@ import MopsEnums "mo:waterway-mops/Enums";
 module {
     public class TeamMembersManager() {
 
-
-        private var teamMembers: [AppTypes.TeamMember] = [];  
-        public func getStableTeamMembers() : [AppTypes.TeamMember] { teamMembers; };
-        public func setStableTeamMembers(stable_team_members: [AppTypes.TeamMember]) { teamMembers := stable_team_members; };
-
-        public func getTeamMembers(dto: TeamMemberQueries.GetTeamMembers) : async Result.Result<TeamMemberQueries.TeamMembers, MopsEnums.Error> {
-            return #ok({
-                page = dto.page; 
-                teamMember = []; //TODO 
-                totalEntries = 0; //TODO
-            }); 
+        private var teamMembers : [AppTypes.TeamMember] = [];
+        public func getStableTeamMembers() : [AppTypes.TeamMember] {
+            teamMembers;
+        };
+        public func setStableTeamMembers(stable_team_members : [AppTypes.TeamMember]) {
+            teamMembers := stable_team_members;
         };
 
-        public func addTeamMember(dto: TeamMemberCommands.AddTeamMember) : async Result.Result<(), MopsEnums.Error> {
+        public func getTeamMembers(dto : TeamMemberQueries.GetTeamMembers) : async Result.Result<TeamMemberQueries.TeamMembers, MopsEnums.Error> {
+            return #ok({
+                page = dto.page;
+                teamMember = []; //TODO
+                totalEntries = 0; //TODO
+            });
+        };
+
+        public func addTeamMember(_ : TeamMemberCommands.AddTeamMember) : async Result.Result<(), MopsEnums.Error> {
             return #err(#NotFound);
         };
 
-        public func removeTeamMember(dto: TeamMemberCommands.RemoveTeamMember) : async Result.Result<(), MopsEnums.Error> {
+        public func removeTeamMember(_ : TeamMemberCommands.RemoveTeamMember) : async Result.Result<(), MopsEnums.Error> {
             return #err(#NotFound);
         };
     };
