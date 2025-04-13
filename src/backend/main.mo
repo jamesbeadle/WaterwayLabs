@@ -46,7 +46,7 @@ import AppTypes "types/app_types";
 
 import Environment "environment";
 
-actor class Self() {
+actor Self{
 
     /* ----- Stable Canister Variables ----- */
 
