@@ -20,7 +20,7 @@ module ProjectCommands {
     };
 
     public type UpdateProject = {
-        projectId : MopsIds.ProjectId;
+        app : Enums.WaterwayLabsApp;
         name : ?Text;
         backendCanisterId : ?MopsIds.CanisterId;
         frontendCanisterId : ?MopsIds.CanisterId;
@@ -36,15 +36,15 @@ module ProjectCommands {
     };
 
     public type SetProjectOnHold = {
-        projectId : MopsIds.ProjectId;
+        app : Enums.WaterwayLabsApp;
     };
 
     public type RemoveProjectOnHold = {
-        projectId : MopsIds.ProjectId;
+        app : Enums.WaterwayLabsApp;
     };
 
     public type UpdateProjectVersion = {
-        projectId : MopsIds.ProjectId;
+        app : Enums.WaterwayLabsApp;
         version : Text;
     };
 };

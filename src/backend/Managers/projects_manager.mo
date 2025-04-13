@@ -3,81 +3,81 @@ import Array "mo:base/Array";
 import Nat "mo:base/Nat";
 import Nat16 "mo:base/Nat16";
 import Option "mo:base/Option";
+import TrieMap "mo:base/TrieMap";
+import Text "mo:base/Text";
+import Iter "mo:base/Iter";
 import AppQueries "../queries/app_queries";
 import AppTypes "../types/app_types";
 import ProjectQueries "../queries/project_queries";
 import ProjectCommands "../commands/project_commands";
-import MopsEnums "mo:waterway-mops/Enums"
+import Ids "mo:waterway-mops/Ids";
+import MopsEnums "mo:waterway-mops/Enums";
+import BaseUtilities "mo:waterway-mops/BaseUtilities";
+import Utils "../lib/Utils";
 
 module {
     public class ProjectsManager() {
-
-        private var projects : [AppTypes.Project] = [];
-        public func getStableProjects() : [AppTypes.Project] { projects };
-        public func setStableProjects(stable_projects : [AppTypes.Project]) {
-            projects := stable_projects;
-        };
+        private var projects : TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project> = TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project>(Utils.appEquals, Utils.appHash);
 
         public func getProjects(dto : ProjectQueries.GetProjects) : Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
             return #ok({
-                projects = projects;
+                projects = Iter.toArray(projects.vals());
             });
         };
 
         public func createProject(dto : ProjectCommands.CreateProject) : async Result.Result<(), MopsEnums.Error> {
 
-            let project : AppTypes.Project = {
-                id = Nat16.fromNat(Array.size(projects));
-                name = dto.name;
-                backendCanisterId = dto.backendCanisterId;
-                frontendCanisterId = dto.frontendCanisterId;
-                websiteURL = dto.websiteURL;
-                githubLink = dto.githubLink;
-                socialLinks = dto.socialLinks;
-                status = dto.status;
-                description = dto.description;
-                summary = dto.summary;
-                mainColour = dto.mainColour;
-                secondaryColour = dto.secondaryColour;
-                thirdColour = dto.thirdColour;
-                app = dto.app;
+            let existing = projects.get(dto.app);
+            switch (existing) {
+                case (?_) {
+                    return #err(#AlreadyExists);
+                };
+                case (null) {
+                    let project : AppTypes.Project = {
+                        name = dto.name;
+                        backendCanisterId = dto.backendCanisterId;
+                        frontendCanisterId = dto.frontendCanisterId;
+                        websiteURL = dto.websiteURL;
+                        githubLink = dto.githubLink;
+                        socialLinks = dto.socialLinks;
+                        status = dto.status;
+                        description = dto.description;
+                        summary = dto.summary;
+                        mainColour = dto.mainColour;
+                        secondaryColour = dto.secondaryColour;
+                        thirdColour = dto.thirdColour;
+                        app = dto.app;
+                    };
+                    projects.put(dto.app, project);
+
+                    return #ok(());
+                };
             };
 
-            projects := Array.append(projects, [project]);
-            return #ok(());
         };
 
         public func updateProject(dto : ProjectCommands.UpdateProject) : async Result.Result<(), MopsEnums.Error> {
-            let projectId = dto.projectId;
-            let projectIndex = Option.map<Nat, Nat>(
-                Array.find<Nat>(
-                    Array.tabulate<Nat>(Array.size(projects), func(i : Nat) : Nat { i }),
-                    func(i : Nat) : Bool { projects[i].id == projectId },
-                ),
-                func(i : Nat) : Nat { i },
-            );
+            let project = projects.get(dto.app);
 
-            switch (projectIndex) {
-                case (?index) {
+            switch (project) {
+                case (?existingProject) {
                     let updatedProject : AppTypes.Project = {
-                        id = projectId;
-                        name = Option.get(dto.name, projects[index].name);
-                        backendCanisterId = Option.get(dto.backendCanisterId, projects[index].backendCanisterId);
-                        frontendCanisterId = Option.get(dto.frontendCanisterId, projects[index].frontendCanisterId);
-                        websiteURL = Option.get(dto.websiteURL, projects[index].websiteURL);
-                        githubLink = Option.get(dto.githubLink, projects[index].githubLink);
-                        socialLinks = Option.get(dto.socialLinks, projects[index].socialLinks);
-                        status = Option.get(dto.status, projects[index].status);
-                        description = Option.get(dto.description, projects[index].description);
-                        summary = Option.get(dto.summary, projects[index].summary);
-                        mainColour = Option.get(dto.mainColour, projects[index].mainColour);
-                        secondaryColour = Option.get(dto.secondaryColour, projects[index].secondaryColour);
-                        thirdColour = Option.get(dto.thirdColour, projects[index].thirdColour);
-                        app = projects[index].app;
+                        name = Option.get(dto.name, existingProject.name);
+                        backendCanisterId = Option.get(dto.backendCanisterId, existingProject.backendCanisterId);
+                        frontendCanisterId = Option.get(dto.frontendCanisterId, existingProject.frontendCanisterId);
+                        websiteURL = Option.get(dto.websiteURL, existingProject.websiteURL);
+                        githubLink = Option.get(dto.githubLink, existingProject.githubLink);
+                        socialLinks = Option.get(dto.socialLinks, existingProject.socialLinks);
+                        status = Option.get(dto.status, existingProject.status);
+                        description = Option.get(dto.description, existingProject.description);
+                        summary = Option.get(dto.summary, existingProject.summary);
+                        mainColour = Option.get(dto.mainColour, existingProject.mainColour);
+                        secondaryColour = Option.get(dto.secondaryColour, existingProject.secondaryColour);
+                        thirdColour = Option.get(dto.thirdColour, existingProject.thirdColour);
+                        app = existingProject.app;
                     };
 
-                    projects := Array.filter<AppTypes.Project>(projects, func(p) { p.id != projectId });
-                    projects := Array.append(projects, [updatedProject]);
+                    projects.put(dto.app, updatedProject);
 
                     return #ok(());
                 };
@@ -85,39 +85,30 @@ module {
                     return #err(#NotFound);
                 };
             };
+
         };
 
         public func setProjectOnHold(dto : ProjectCommands.SetProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
-            let projectId = dto.projectId;
-            let projectIndex = Option.map<Nat, Nat>(
-                Array.find<Nat>(
-                    Array.tabulate<Nat>(Array.size(projects), func(i : Nat) : Nat { i }),
-                    func(i : Nat) : Bool { projects[i].id == projectId },
-                ),
-                func(i : Nat) : Nat { i },
-            );
-
-            switch (projectIndex) {
-                case (?index) {
+            let project = projects.get(dto.app);
+            switch (project) {
+                case (?existingProject) {
                     let updatedProject : AppTypes.Project = {
-                        id = projectId;
-                        name = projects[index].name;
-                        backendCanisterId = projects[index].backendCanisterId;
-                        frontendCanisterId = projects[index].frontendCanisterId;
-                        websiteURL = projects[index].websiteURL;
-                        githubLink = projects[index].githubLink;
-                        socialLinks = projects[index].socialLinks;
+                        name = existingProject.name;
+                        backendCanisterId = existingProject.backendCanisterId;
+                        frontendCanisterId = existingProject.frontendCanisterId;
+                        websiteURL = existingProject.websiteURL;
+                        githubLink = existingProject.githubLink;
+                        socialLinks = existingProject.socialLinks;
                         status = #OnHold;
-                        description = projects[index].description;
-                        summary = projects[index].summary;
-                        mainColour = projects[index].mainColour;
-                        secondaryColour = projects[index].secondaryColour;
-                        thirdColour = projects[index].thirdColour;
-                        app = projects[index].app;
+                        description = existingProject.description;
+                        summary = existingProject.summary;
+                        mainColour = existingProject.mainColour;
+                        secondaryColour = existingProject.secondaryColour;
+                        thirdColour = existingProject.thirdColour;
+                        app = existingProject.app;
                     };
 
-                    projects := Array.filter<AppTypes.Project>(projects, func(p) { p.id != projectId });
-                    projects := Array.append(projects, [updatedProject]);
+                    projects.put(dto.app, updatedProject);
 
                     return #ok(());
                 };
@@ -128,36 +119,26 @@ module {
         };
 
         public func removeProjectOnHold(dto : ProjectCommands.RemoveProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
-            let projectId = dto.projectId;
-            let projectIndex = Option.map<Nat, Nat>(
-                Array.find<Nat>(
-                    Array.tabulate<Nat>(Array.size(projects), func(i : Nat) : Nat { i }),
-                    func(i : Nat) : Bool { projects[i].id == projectId },
-                ),
-                func(i : Nat) : Nat { i },
-            );
-
-            switch (projectIndex) {
-                case (?index) {
+            let project = projects.get(dto.app);
+            switch (project) {
+                case (?existingProject) {
                     let updatedProject : AppTypes.Project = {
-                        id = projectId;
-                        name = projects[index].name;
-                        backendCanisterId = projects[index].backendCanisterId;
-                        frontendCanisterId = projects[index].frontendCanisterId;
-                        websiteURL = projects[index].websiteURL;
-                        githubLink = projects[index].githubLink;
-                        socialLinks = projects[index].socialLinks;
+                        name = existingProject.name;
+                        backendCanisterId = existingProject.backendCanisterId;
+                        frontendCanisterId = existingProject.frontendCanisterId;
+                        websiteURL = existingProject.websiteURL;
+                        githubLink = existingProject.githubLink;
+                        socialLinks = existingProject.socialLinks;
                         status = #Live;
-                        description = projects[index].description;
-                        summary = projects[index].summary;
-                        mainColour = projects[index].mainColour;
-                        secondaryColour = projects[index].secondaryColour;
-                        thirdColour = projects[index].thirdColour;
-                        app = projects[index].app;
+                        description = existingProject.description;
+                        summary = existingProject.summary;
+                        mainColour = existingProject.mainColour;
+                        secondaryColour = existingProject.secondaryColour;
+                        thirdColour = existingProject.thirdColour;
+                        app = existingProject.app;
                     };
 
-                    projects := Array.filter<AppTypes.Project>(projects, func(p) { p.id != projectId });
-                    projects := Array.append(projects, [updatedProject]);
+                    projects.put(dto.app, updatedProject);
 
                     return #ok(());
                 };
@@ -167,11 +148,16 @@ module {
             };
         };
 
-        public func updateProjectVersion(dto : ProjectCommands.UpdateProjectVersion) : async Result.Result<(), MopsEnums.Error> {
-            return #err(#NotFound);
+        public func getStableProjects() : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)] {
+            return Iter.toArray(projects.entries());
         };
-
-        //update version
+        public func setStableProjects(stable_projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) {
+            let stable_projects_map : TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project> = TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project>(Utils.appEquals, Utils.appHash);
+            for (project in Iter.fromArray(stable_projects)) {
+                stable_projects_map.put(project);
+            };
+            projects := stable_projects_map;
+        };
 
     };
 };
