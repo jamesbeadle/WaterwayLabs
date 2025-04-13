@@ -21,6 +21,7 @@ import Timer "mo:base/Timer";
 import ApplicationLogQueries "queries/application_log_queries";
 import CanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
 import CanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
+import Ids "mo:waterway-mops/Ids";
 import DataHashQueries "queries/data_hash_queries";
 import ProjectQueries "queries/project_queries";
 import SupportQueryQueries "queries/support_query_queries";
@@ -55,7 +56,7 @@ actor Self {
     /* ----- Stable Canister Variables ----- */
 
     private stable var stable_data_hashes : [MopsTypes.DataHash] = [];
-    private stable var stable_projects : [AppTypes.Project] = [];
+    private stable var stable_projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)] = [];
     private stable var stable_team_members : [AppTypes.TeamMember] = [];
     private stable var stable_application_logs : [MopsTypes.ApplicationLog] = [];
     private stable var stable_support_queries : [AppTypes.SupportQuery] = [];
@@ -87,7 +88,7 @@ actor Self {
 
     /* ----- Projects Queries ----- */
 
-    public shared query func getProjects(dto : ProjectQueries.GetProjects) : async Result.Result<ProjectQueries.GetProjects, MopsEnums.Error> {
+    public shared func getProjects(dto : ProjectQueries.GetProjects) : async Result.Result<ProjectQueries.GetProjects, MopsEnums.Error> {
         return projectsManager.getProjects(dto);
     };
 
@@ -107,10 +108,6 @@ actor Self {
 
     public shared func removeProjectOnHold(dto : ProjectCommands.RemoveProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
         return await projectsManager.removeProjectOnHold(dto);
-    };
-
-    public shared func updateProjectVersion(dto : ProjectCommands.UpdateProjectVersion) : async Result.Result<(), MopsEnums.Error> {
-        return await projectsManager.updateProjectVersion(dto);
     };
 
     /* ----- Team Member Queries ----- */

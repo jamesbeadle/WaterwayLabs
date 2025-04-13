@@ -1,10 +1,12 @@
 import Result "mo:base/Result";
-import Array "mo:base/Array";
+import TrieMap "mo:base/TrieMap";
 import AppTypes "../types/app_types";
 import CanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
 import MopsEnums "mo:waterway-mops/Enums";
 import CanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
 import WWLCanisterManager "mo:waterway-mops/canister-management/CanisterManager";
+import Iter "mo:base/Iter";
+import Utils "../lib/Utils";
 
 module {
     public class CanistersManager() {
@@ -42,14 +44,8 @@ module {
             return #err(#NotFound);
         };
 
-        public func getProjectCanisters(dto : CanisterQueries.GetProjectCanisters, projects : [AppTypes.Project]) : async Result.Result<CanisterQueries.ProjectCanisters, MopsEnums.Error> {
-
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
+        public func getProjectCanisters(dto : CanisterQueries.GetProjectCanisters, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<CanisterQueries.ProjectCanisters, MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
 
             switch (projectResult) {
                 case (?project) {
@@ -73,13 +69,8 @@ module {
             return #err(#NotFound);
         };
 
-        public func listCanisterSnapshots(dto : CanisterQueries.ListCanisterSnapshots, projects : [AppTypes.Project]) : async Result.Result<[CanisterQueries.CanisterSnapshot], MopsEnums.Error> {
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
+        public func listCanisterSnapshots(dto : CanisterQueries.ListCanisterSnapshots, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<[CanisterQueries.CanisterSnapshot], MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
 
             switch (projectResult) {
                 case (?_) {
@@ -98,13 +89,8 @@ module {
             return #err(#NotFound);
         };
 
-        public func deleteCanister(dto : CanisterCommands.DeleteCanister, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
+        public func deleteCanister(dto : CanisterCommands.DeleteCanister, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
 
             switch (projectResult) {
                 case (?_) {
@@ -123,13 +109,8 @@ module {
             return #err(#NotFound);
         };
 
-        public func takeCanisterSnapshot(dto : CanisterCommands.TakeCanisterSnapshot, projects : [AppTypes.Project]) : async Result.Result<CanisterCommands.CanisterSnapshot, MopsEnums.Error> {
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
+        public func takeCanisterSnapshot(dto : CanisterCommands.TakeCanisterSnapshot, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<CanisterCommands.CanisterSnapshot, MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
 
             switch (projectResult) {
                 case (?_) {
@@ -148,14 +129,8 @@ module {
             return #err(#NotFound);
         };
 
-        public func loadCanisterSnapshot(dto : CanisterCommands.LoadCanisterSnapshot, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
-
+        public func loadCanisterSnapshot(dto : CanisterCommands.LoadCanisterSnapshot, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
             switch (projectResult) {
                 case (?_) {
                     let res = await wwlCanisterManager.loadCanisterSnapshot(dto);
@@ -173,14 +148,8 @@ module {
             return #err(#NotFound);
         };
 
-        public func deleteCanisterSnapshot(dto : CanisterCommands.DeleteCanisterSnapshot, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
-
+        public func deleteCanisterSnapshot(dto : CanisterCommands.DeleteCanisterSnapshot, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
             switch (projectResult) {
                 case (?_) {
                     let res = await wwlCanisterManager.deleteCanisterSnapshot(dto);
@@ -198,13 +167,8 @@ module {
             return #err(#NotFound);
         };
 
-        public func startCanister(dto : CanisterCommands.StartCanister, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
+        public func startCanister(dto : CanisterCommands.StartCanister, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
 
             switch (projectResult) {
                 case (?_) {
@@ -223,14 +187,8 @@ module {
             return #err(#NotFound);
         };
 
-        public func stopCanister(dto : CanisterCommands.StopCanister, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
-
+        public func stopCanister(dto : CanisterCommands.StopCanister, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
             switch (projectResult) {
                 case (?_) {
                     let res = await wwlCanisterManager.stopCanister(dto);
@@ -248,13 +206,8 @@ module {
             return #err(#NotFound);
         };
 
-        public func addController(dto : CanisterCommands.AddController, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
+        public func addController(dto : CanisterCommands.AddController, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
 
             switch (projectResult) {
                 case (?project) {
@@ -275,14 +228,8 @@ module {
             };
             return #err(#NotFound);
         };
-        public func removeController(dto : CanisterCommands.RemoveController, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
-
+        public func removeController(dto : CanisterCommands.RemoveController, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
             switch (projectResult) {
                 case (?project) {
                     let appCanister = actor (project.backendCanisterId) : actor {
@@ -302,13 +249,8 @@ module {
             };
             return #err(#NotFound);
         };
-        public func setComputeAllocation(dto : CanisterCommands.SetComputeAllocation, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
+        public func setComputeAllocation(dto : CanisterCommands.SetComputeAllocation, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
 
             switch (projectResult) {
                 case (?_) {
@@ -326,13 +268,8 @@ module {
             };
             return #err(#NotFound);
         };
-        public func setMemoryAllocation(dto : CanisterCommands.SetMemoryAllocation, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
+        public func setMemoryAllocation(dto : CanisterCommands.SetMemoryAllocation, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
 
             switch (projectResult) {
                 case (?_) {
@@ -350,14 +287,8 @@ module {
             };
             return #err(#NotFound);
         };
-        public func setFreezingThreshold(dto : CanisterCommands.SetFreezingThreshold, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
-
+        public func setFreezingThreshold(dto : CanisterCommands.SetFreezingThreshold, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
             switch (projectResult) {
                 case (?_) {
                     let res = await wwlCanisterManager.setFreezingThreshold(dto);
@@ -374,14 +305,8 @@ module {
             };
             return #err(#NotFound);
         };
-        public func topupCanister(dto : CanisterCommands.TopupCanister, projects : [AppTypes.Project]) : async Result.Result<(), MopsEnums.Error> {
-            let projectResult = Array.find<AppTypes.Project>(
-                projects,
-                func(foundProject : AppTypes.Project) : Bool {
-                    foundProject.app == dto.app;
-                },
-            );
-
+        public func topupCanister(dto : CanisterCommands.TopupCanister, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+            let projectResult = getProject(dto.app, projects);
             switch (projectResult) {
                 case (?_) {
                     let res = await wwlCanisterManager.topupCanister(dto);
@@ -397,6 +322,16 @@ module {
                 case (null) {};
             };
             return #err(#NotFound);
+        };
+
+        private func getProject(app : MopsEnums.WaterwayLabsApp, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : ?AppTypes.Project {
+            let projectsMap : TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project> = TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project>(Utils.appEquals, Utils.appHash);
+
+            for (project in Iter.fromArray(projects)) {
+                projectsMap.put(project);
+            };
+
+            return projectsMap.get(app);
         };
 
     };

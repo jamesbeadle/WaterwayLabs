@@ -1,4 +1,6 @@
-import AppTypes "../types/app_types";
+import MopsIds "mo:waterway-mops/Ids";
+import Enums "../enums/enums";
+
 module ProjectQueries {
 
     public type GetProjects = {
@@ -6,10 +8,22 @@ module ProjectQueries {
     };
 
     public type Projects = {
-        projects : [AppTypes.Project];
+        projects : [Project];
     };
 
-    public type CreateProject = {
-
+    public type Project = {
+        name : Text;
+        backendCanisterId : MopsIds.CanisterId;
+        frontendCanisterId : MopsIds.CanisterId;
+        websiteURL : Text;
+        githubLink : Text;
+        socialLinks : [(Text, Text)];
+        status : Enums.ProjectStatus;
+        description : Text;
+        summary : Text;
+        mainColour : Text;
+        secondaryColour : Text;
+        thirdColour : Text;
+        app : Enums.WaterwayLabsApp;
     };
 };
