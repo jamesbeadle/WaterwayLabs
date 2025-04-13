@@ -11,26 +11,43 @@ import WWLCanisterManager "mo:waterway-mops/canister-management/CanisterManager"
 module {
     public class CanistersManager() {
         let wwlCanisterManager = WWLCanisterManager.CanisterManager();
-        private var projects : [AppTypes.Project] = [{
-            id = 0;
-            name = "ICFC";
-            backendCanisterId = "bkyz2-fmaaa-aaaaa-qaaaq-cai";
-            frontendCanisterId = "";
-            websiteURL = "https://icfc.xyz";
-            githubLink = "";
-            socialLinks = [];
-            status = #Live;
-            description = "ICFC is a fantasy football game that allows users to create their own teams and compete against each other.";
-            summary = "ICFC is a fantasy football game that allows users to create their own teams and compete against each other.";
-            mainColour = "#FF0000";
-            secondaryColour = "#00FF00";
-            thirdColour = "#0000FF";
-            app = #ICFC;
-        }];
+        private var projects : [AppTypes.Project] = [];
 
         public func getStableProjects() : [AppTypes.Project] { projects };
         public func setStableProjects(stable_projects : [AppTypes.Project]) {
             projects := stable_projects;
+        };
+
+        public func getCanisterInfo(dto_query : CanisterQueries.GetCanisterInfo) : async Result.Result<CanisterQueries.CanisterInfo, MopsEnums.Error> {
+
+            let dto : CanisterQueries.GetCanisterInfo = {
+                canisterId = dto_query.canisterId;
+                canisterType = #Dynamic;
+                canisterName = "Custom Canister";
+            };
+            let result = await wwlCanisterManager.getCanisterInfo(dto, #WaterwayLabs);
+            switch (result) {
+                case (#ok(canisters)) {
+                    return #ok({
+                        app = #WaterwayLabs;
+                        canisterId = dto.canisterId;
+                        canisterName = dto.canisterName;
+                        canisterType = dto.canisterType;
+                        cycles = canisters.cycles;
+                        computeAllocation = canisters.computeAllocation;
+                        controllers = canisters.controllers;
+                        freezeThreshold = canisters.freezeThreshold;
+                        memoryAllocation = canisters.memoryAllocation;
+                        memoryUsage = canisters.memoryUsage;
+                        canisterStatus = canisters.canisterStatus;
+                    });
+                };
+                case (#err(err)) {
+                    return #err(err);
+                };
+            };
+
+            return #err(#NotFound);
         };
 
         public func getProjectCanisters(dto : CanisterQueries.GetProjectCanisters) : async Result.Result<CanisterQueries.ProjectCanisters, MopsEnums.Error> {
