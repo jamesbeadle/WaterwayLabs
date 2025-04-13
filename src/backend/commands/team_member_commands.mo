@@ -1,4 +1,4 @@
-import MopsIds "../cleanup/mops_ids";
+import MopsIds "mo:waterway-mops/Ids";
 module TeamMemberCommands = {
 
     public type AddTeamMember = {

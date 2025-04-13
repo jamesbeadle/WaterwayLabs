@@ -2,7 +2,7 @@ import Result "mo:base/Result";
 import AppTypes "../types/app_types";
 import SupportQueryQueries "../queries/support_query_queries";
 import SupportQueryCommands "../commands/support_query_commands";
-import MopsEnums "../cleanup/mops_enums";
+import MopsEnums "mo:waterway-mops/Enums"
 
 module {
     public class SupportQueriesManager() {
@@ -35,9 +35,6 @@ module {
             return #err(#NotFound)
             //TODO Validate
         };
-
-
-
 
     };
 };

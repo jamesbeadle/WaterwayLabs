@@ -2,7 +2,7 @@ import Result "mo:base/Result";
 import AppTypes "../types/app_types";
 import TeamMemberQueries "../queries/team_member_queries";
 import TeamMemberCommands "../commands/team_member_commands";
-import MopsEnums "../cleanup/mops_enums";
+import MopsEnums "mo:waterway-mops/Enums";
 
 module {
     public class TeamMembersManager() {
