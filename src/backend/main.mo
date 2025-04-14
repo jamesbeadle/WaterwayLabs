@@ -46,7 +46,7 @@ import AppTypes "types/app_types";
 
 import Environment "environment";
 
-actor Self{
+actor Self {
 
     /* ----- Stable Canister Variables ----- */
 
@@ -55,10 +55,12 @@ actor Self{
     private stable var stable_team_members : [AppTypes.TeamMember] = [];
     private stable var stable_application_logs : [MopsTypes.ApplicationLog] = [];
     private stable var stable_support_queries : [AppTypes.SupportQuery] = [];
+    private stable var stable_canisters_cycles_topups : [AppTypes.CanisterCyclesTopup] = [];
     private stable var stable_app_status : MopsTypes.AppStatus = {
         onHold = true;
         version = "";
     };
+    private stable var stable_canisters_check_timer_id : Nat = 0;
 
     /* ----- Domain Object Managers ----- */
 
@@ -84,14 +86,14 @@ actor Self{
     /* ----- Projects Queries ----- */
 
     public shared ({ caller }) func getProjects(dto : ProjectQueries.GetProjects) : async Result.Result<ProjectQueries.GetProjects, MopsEnums.Error> {
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
         return projectsManager.getProjects(dto);
     };
 
     /* ----- Projects Commands ----- */
 
     public shared ({ caller }) func createProject(dto : ProjectCommands.CreateProject) : async Result.Result<(), MopsEnums.Error> {
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
         return await projectsManager.createProject(dto);
     };
 
@@ -127,21 +129,21 @@ actor Self{
 
     public shared func getProjectCanisters(dto : CanisterQueries.GetProjectCanisters) : async Result.Result<CanisterQueries.ProjectCanisters, MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        // assert Principal.isAnonymous(caller);
+        // assert not Principal.isAnonymous(caller);
         let projects = projectsManager.getStableProjects();
         return await canistersManager.getProjectCanisters(dto, projects);
     };
 
     public shared ({ caller }) func getCanisterInfo(dto : CanisterQueries.GetCanisterInfo) : async Result.Result<CanisterQueries.CanisterInfo, MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
 
         return await canistersManager.getCanisterInfo(dto);
     };
 
     public shared ({ caller }) func listCanisterSnapshots(dto : CanisterQueries.ListCanisterSnapshots) : async Result.Result<[CanisterQueries.CanisterSnapshot], MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
 
         let projects = projectsManager.getStableProjects();
         return await canistersManager.listCanisterSnapshots(dto, projects);
@@ -151,7 +153,7 @@ actor Self{
 
     public shared ({ caller }) func topupCanister(dto : CanisterCommands.TopupCanister) : async Result.Result<(), MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
 
         let projects = projectsManager.getStableProjects();
         return await canistersManager.topupCanister(dto, projects);
@@ -159,7 +161,7 @@ actor Self{
 
     public shared ({ caller }) func setCanisterComputeAllocation(dto : CanisterCommands.SetComputeAllocation) : async Result.Result<(), MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
 
         let projects = projectsManager.getStableProjects();
         return await canistersManager.setComputeAllocation(dto, projects);
@@ -167,7 +169,7 @@ actor Self{
 
     public shared ({ caller }) func setCanisterMemoryAllocation(dto : CanisterCommands.SetMemoryAllocation) : async Result.Result<(), MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
 
         let projects = projectsManager.getStableProjects();
         return await canistersManager.setMemoryAllocation(dto, projects);
@@ -175,7 +177,7 @@ actor Self{
 
     public shared ({ caller }) func setCanisterFreezeThreshold(dto : CanisterCommands.SetFreezingThreshold) : async Result.Result<(), MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
 
         let projects = projectsManager.getStableProjects();
         return await canistersManager.setFreezingThreshold(dto, projects);
@@ -183,7 +185,7 @@ actor Self{
 
     public shared ({ caller }) func addCanisterController(dto : CanisterCommands.AddController) : async Result.Result<(), MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
 
         let projects = projectsManager.getStableProjects();
         return await canistersManager.addController(dto, projects);
@@ -191,7 +193,7 @@ actor Self{
 
     public shared ({ caller }) func takeCanisterSnapshot(dto : CanisterCommands.TakeCanisterSnapshot) : async Result.Result<CanisterCommands.CanisterSnapshot, MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
 
         let projects = projectsManager.getStableProjects();
         return await canistersManager.takeCanisterSnapshot(dto, projects);
@@ -199,7 +201,7 @@ actor Self{
 
     public shared ({ caller }) func loadCanisterSnapshot(dto : CanisterCommands.LoadCanisterSnapshot) : async Result.Result<(), MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
 
         let projects = projectsManager.getStableProjects();
         return await canistersManager.loadCanisterSnapshot(dto, projects);
@@ -207,7 +209,7 @@ actor Self{
 
     public shared ({ caller }) func deleteCanisterSnapshot(dto : CanisterCommands.DeleteCanisterSnapshot) : async Result.Result<(), MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
 
         let projects = projectsManager.getStableProjects();
         return await canistersManager.deleteCanisterSnapshot(dto, projects);
@@ -215,7 +217,7 @@ actor Self{
 
     public shared ({ caller }) func startCanister(dto : CanisterCommands.StartCanister) : async Result.Result<(), MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
 
         let projects = projectsManager.getStableProjects();
         return await canistersManager.startCanister(dto, projects);
@@ -223,7 +225,7 @@ actor Self{
 
     public shared ({ caller }) func stopCanister(dto : CanisterCommands.StopCanister) : async Result.Result<(), MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
 
         let projects = projectsManager.getStableProjects();
         return await canistersManager.stopCanister(dto, projects);
@@ -231,7 +233,7 @@ actor Self{
 
     public shared ({ caller }) func deleteCanister(dto : CanisterCommands.DeleteCanister) : async Result.Result<(), MopsEnums.Error> {
         // assert isCallerAdmin(Principal.toText(caller));
-        assert Principal.isAnonymous(caller);
+        assert not Principal.isAnonymous(caller);
 
         let projects = projectsManager.getStableProjects();
         return await canistersManager.deleteCanister(dto, projects);
@@ -294,10 +296,15 @@ actor Self{
 
     system func preupgrade() {
         getManagerStableVariables();
+
+        if (stable_canisters_check_timer_id != 0) {
+            Timer.cancelTimer(stable_canisters_check_timer_id);
+        };
     };
 
     system func postupgrade() {
         setManagerStableVariables();
+        // stable_canisters_check_timer_id := Timer.recurringTimer<system>(#seconds(86_400), checkCanisters);
         ignore Timer.setTimer<system>(#nanoseconds(Int.abs(1)), postUpgradeCallback);
     };
 
@@ -307,6 +314,7 @@ actor Self{
         stable_team_members := teamMembersManager.getStableTeamMembers();
         stable_application_logs := applicationLogsManager.getStableApplicationLogs();
         stable_support_queries := supportQueriesManager.getStableSupportQueries();
+        stable_canisters_cycles_topups := canistersManager.getStableCanisterCyclesTopups();
     };
 
     private func setManagerStableVariables() {
@@ -315,10 +323,15 @@ actor Self{
         teamMembersManager.setStableTeamMembers(stable_team_members);
         applicationLogsManager.setStableApplicationLogs(stable_application_logs);
         supportQueriesManager.setStableSupportQueries(stable_support_queries);
+        canistersManager.setStableCanisterCyclesTopups(stable_canisters_cycles_topups);
     };
 
     private func postUpgradeCallback() : async () {
 
+    };
+
+    private func checkCanisters() : async () {
+        await canistersManager.checkCanisters(stable_projects);
     };
 
 };
