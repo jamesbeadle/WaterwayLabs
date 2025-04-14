@@ -362,7 +362,7 @@ module {
             let projectsMap : TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project> = TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project>(Utils.appEquals, Utils.appHash);
 
             for (project in Iter.fromArray(projects)) {
-
+                projectsMap.put(project);
             };
 
             return projectsMap.get(app);
