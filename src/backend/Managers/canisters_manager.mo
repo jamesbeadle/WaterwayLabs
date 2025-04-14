@@ -7,11 +7,13 @@ import CanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
 import WWLCanisterManager "mo:waterway-mops/canister-management/CanisterManager";
 import Iter "mo:base/Iter";
 import Debug "mo:base/Debug";
+import Array "mo:base/Array";
 import Utils "../lib/Utils";
 
 module {
     public class CanistersManager() {
         let wwlCanisterManager = WWLCanisterManager.CanisterManager();
+        private var canistersCyclesTopups : [AppTypes.CanisterCyclesTopup] = [];
 
         public func getCanisterInfo(dto_query : CanisterQueries.GetCanisterInfo) : async Result.Result<CanisterQueries.CanisterInfo, MopsEnums.Error> {
 
@@ -313,15 +315,54 @@ module {
             return #err(#NotFound);
         };
 
-        public func checkCanisters() : async () {
+        public func checkCanisters(projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async () {
+            var canisters : [CanisterQueries.CanisterInfo] = [];
             Debug.print("Checking canisters");
+            for (project in Iter.fromArray(projects)) {
+                let res = await getProjectCanisters({ app = project.0 }, projects);
+                switch (res) {
+                    case (#ok(canistersResult)) {
+                        let projectCanisters = canistersResult.entries;
+                        canisters := Array.append(canisters, projectCanisters);
+                    };
+                    case (#err(_)) {
+                        Debug.print("Error getting canisters");
+                    };
+                };
+            };
+
+            for (canister in Iter.fromArray(canisters)) {
+                // check the canister status
+                let canisterStatus = canister.canisterStatus;
+                switch (canisterStatus) {
+                    case (#running) {
+                        let idleCyclesBurnedPerDay = canister.idleCyclesBurnedPerDay;
+                        let cycles = canister.cycles;
+                        let freezeThreshold = canister.freezeThreshold;
+                        let computeAllocation = canister.computeAllocation;
+
+                        let min_cycles_required = Utils.secondsToDays(freezeThreshold) * idleCyclesBurnedPerDay;
+
+                    };
+                    case (_) {};
+                };
+            };
+
+        };
+
+        public func getStableCanisterCyclesTopups() : [AppTypes.CanisterCyclesTopup] {
+            return canistersCyclesTopups;
+        };
+
+        public func setStableCanisterCyclesTopups(stable_canisters_cycles_topups : [AppTypes.CanisterCyclesTopup]) {
+            canistersCyclesTopups := stable_canisters_cycles_topups;
         };
 
         private func getProject(app : MopsEnums.WaterwayLabsApp, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : ?AppTypes.Project {
             let projectsMap : TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project> = TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project>(Utils.appEquals, Utils.appHash);
 
             for (project in Iter.fromArray(projects)) {
-                projectsMap.put(project);
+
             };
 
             return projectsMap.get(app);

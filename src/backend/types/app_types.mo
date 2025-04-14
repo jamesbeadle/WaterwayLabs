@@ -40,4 +40,11 @@ module AppTypes {
     public type SupportQueryComment = {
         comment : Text;
     };
+
+    public type CanisterCyclesTopup = {
+        app : Enums.WaterwayLabsApp;
+        canisterId : MopsIds.CanisterId;
+        amount : Nat;
+        time : Int;
+    };
 };
