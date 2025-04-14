@@ -85,7 +85,7 @@ actor Self {
 
     /* ----- Projects Queries ----- */
 
-    public shared ({ caller }) func getProjects(dto : ProjectQueries.GetProjects) : async Result.Result<ProjectQueries.GetProjects, MopsEnums.Error> {
+    public shared ({ caller }) func getProjects(dto : ProjectQueries.GetProjects) : async Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
         assert not Principal.isAnonymous(caller);
         return projectsManager.getProjects(dto);
     };
@@ -97,16 +97,24 @@ actor Self {
         return await projectsManager.createProject(dto);
     };
 
-    public shared func updateProject(dto : ProjectCommands.UpdateProject) : async Result.Result<(), MopsEnums.Error> {
+    public shared ({ caller }) func updateProject(dto : ProjectCommands.UpdateProject) : async Result.Result<(), MopsEnums.Error> {
+        assert not Principal.isAnonymous(caller);
         return await projectsManager.updateProject(dto);
     };
 
-    public shared func setProjectOnHold(dto : ProjectCommands.SetProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
+    public shared ({ caller }) func setProjectOnHold(dto : ProjectCommands.SetProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
+        assert not Principal.isAnonymous(caller);
         return await projectsManager.setProjectOnHold(dto);
     };
 
-    public shared func removeProjectOnHold(dto : ProjectCommands.RemoveProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
+    public shared ({ caller }) func removeProjectOnHold(dto : ProjectCommands.RemoveProjectOnHold) : async Result.Result<(), MopsEnums.Error> {
+        assert not Principal.isAnonymous(caller);
         return await projectsManager.removeProjectOnHold(dto);
+    };
+
+    public shared ({ caller }) func deleteProject(dto : ProjectCommands.DeleteProject) : async Result.Result<(), MopsEnums.Error> {
+        assert not Principal.isAnonymous(caller);
+        return await projectsManager.deleteProject(dto);
     };
 
     /* ----- Team Member Queries ----- */

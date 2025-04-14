@@ -13,8 +13,9 @@ module {
         private var projects : TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project> = TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project>(Utils.appEquals, Utils.appHash);
 
         public func getProjects(_ : ProjectQueries.GetProjects) : Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
+            let projects_arr = Iter.toArray(projects.vals());
             return #ok({
-                projects = Iter.toArray(projects.vals());
+                projects = projects_arr;
             });
         };
 
@@ -47,6 +48,19 @@ module {
                 };
             };
 
+        };
+
+        public func deleteProject(dto : ProjectCommands.DeleteProject) : async Result.Result<(), MopsEnums.Error> {
+            let project = projects.get(dto.app);
+            switch (project) {
+                case (?_) {
+                    projects.delete(dto.app);
+                    return #ok(());
+                };
+                case (null) {
+                    return #err(#NotFound);
+                };
+            };
         };
 
         public func updateProject(dto : ProjectCommands.UpdateProject) : async Result.Result<(), MopsEnums.Error> {

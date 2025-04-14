@@ -47,4 +47,8 @@ module ProjectCommands {
         app : Enums.WaterwayLabsApp;
         version : Text;
     };
+
+    public type DeleteProject = {
+        app : Enums.WaterwayLabsApp;
+    };
 };
