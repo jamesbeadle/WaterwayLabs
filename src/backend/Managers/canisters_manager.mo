@@ -323,7 +323,7 @@ module {
                 switch (res) {
                     case (#ok(canistersResult)) {
                         let projectCanisters = canistersResult.entries;
-                        canisters := Array.append(canisters, projectCanisters);
+                        // canisters := Array.append(canisters, projectCanisters);
                     };
                     case (#err(_)) {
                         Debug.print("Error getting canisters");
