@@ -17,12 +17,7 @@ module {
 
         public func getCanisterInfo(dto_query : CanisterQueries.GetCanisterInfo) : async Result.Result<CanisterQueries.CanisterInfo, MopsEnums.Error> {
 
-            let dto : CanisterQueries.GetCanisterInfo = {
-                canisterId = dto_query.canisterId;
-                canisterType = #Dynamic;
-                canisterName = "Custom Canister";
-            };
-            let result = await wwlCanisterManager.getCanisterInfo(dto, #WaterwayLabs);
+            let result = await wwlCanisterManager.getCanisterInfo(dto_query, dto_query.app);
             switch (result) {
                 case (#ok(canister)) {
                     return #ok(canister);
