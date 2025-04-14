@@ -46,7 +46,7 @@ import AppTypes "types/app_types";
 
 import Environment "environment";
 
-actor Self{
+actor Self {
 
     /* ----- Stable Canister Variables ----- */
 
@@ -59,6 +59,7 @@ actor Self{
         onHold = true;
         version = "";
     };
+    private stable var stable_canisters_check_timer_id : Nat = 0;
 
     /* ----- Domain Object Managers ----- */
 
@@ -294,10 +295,15 @@ actor Self{
 
     system func preupgrade() {
         getManagerStableVariables();
+
+        if (stable_canisters_check_timer_id != 0) {
+            Timer.cancelTimer(stable_canisters_check_timer_id);
+        };
     };
 
     system func postupgrade() {
         setManagerStableVariables();
+        stable_canisters_check_timer_id := Timer.recurringTimer<system>(#seconds(86_400), checkCanisters);
         ignore Timer.setTimer<system>(#nanoseconds(Int.abs(1)), postUpgradeCallback);
     };
 
@@ -319,6 +325,10 @@ actor Self{
 
     private func postUpgradeCallback() : async () {
 
+    };
+
+    private func checkCanisters() : async () {
+        await canistersManager.checkCanisters();
     };
 
 };

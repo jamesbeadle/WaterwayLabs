@@ -6,6 +6,7 @@ import MopsEnums "mo:waterway-mops/Enums";
 import CanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
 import WWLCanisterManager "mo:waterway-mops/canister-management/CanisterManager";
 import Iter "mo:base/Iter";
+import Debug "mo:base/Debug";
 import Utils "../lib/Utils";
 
 module {
@@ -21,20 +22,8 @@ module {
             };
             let result = await wwlCanisterManager.getCanisterInfo(dto, #WaterwayLabs);
             switch (result) {
-                case (#ok(canisters)) {
-                    return #ok({
-                        app = #WaterwayLabs;
-                        canisterId = dto.canisterId;
-                        canisterName = dto.canisterName;
-                        canisterType = dto.canisterType;
-                        cycles = canisters.cycles;
-                        computeAllocation = canisters.computeAllocation;
-                        controllers = canisters.controllers;
-                        freezeThreshold = canisters.freezeThreshold;
-                        memoryAllocation = canisters.memoryAllocation;
-                        memoryUsage = canisters.memoryUsage;
-                        canisterStatus = canisters.canisterStatus;
-                    });
+                case (#ok(canister)) {
+                    return #ok(canister);
                 };
                 case (#err(err)) {
                     return #err(err);
@@ -322,6 +311,10 @@ module {
                 case (null) {};
             };
             return #err(#NotFound);
+        };
+
+        public func checkCanisters() : async () {
+            Debug.print("Checking canisters");
         };
 
         private func getProject(app : MopsEnums.WaterwayLabsApp, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : ?AppTypes.Project {
