@@ -3,8 +3,9 @@ import TrieMap "mo:base/TrieMap";
 import AppTypes "../types/app_types";
 import CanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
 import MopsEnums "mo:waterway-mops/Enums";
-import CanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
+import WWLCanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
 import WWLCanisterManager "mo:waterway-mops/canister-management/CanisterManager";
+import CanisterCommands "../commands/canister_management_commands";
 import Iter "mo:base/Iter";
 import Debug "mo:base/Debug";
 import Array "mo:base/Array";
@@ -75,7 +76,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func deleteCanister(dto : CanisterCommands.DeleteCanister, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+        public func deleteCanister(dto : WWLCanisterCommands.DeleteCanister, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = getProject(dto.app, projects);
 
             switch (projectResult) {
@@ -95,7 +96,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func takeCanisterSnapshot(dto : CanisterCommands.TakeCanisterSnapshot, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<CanisterCommands.CanisterSnapshot, MopsEnums.Error> {
+        public func takeCanisterSnapshot(dto : WWLCanisterCommands.TakeCanisterSnapshot, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<WWLCanisterCommands.CanisterSnapshot, MopsEnums.Error> {
             let projectResult = getProject(dto.app, projects);
 
             switch (projectResult) {
@@ -115,7 +116,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func loadCanisterSnapshot(dto : CanisterCommands.LoadCanisterSnapshot, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+        public func loadCanisterSnapshot(dto : WWLCanisterCommands.LoadCanisterSnapshot, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = getProject(dto.app, projects);
             switch (projectResult) {
                 case (?_) {
@@ -134,7 +135,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func deleteCanisterSnapshot(dto : CanisterCommands.DeleteCanisterSnapshot, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+        public func deleteCanisterSnapshot(dto : WWLCanisterCommands.DeleteCanisterSnapshot, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = getProject(dto.app, projects);
             switch (projectResult) {
                 case (?_) {
@@ -153,7 +154,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func startCanister(dto : CanisterCommands.StartCanister, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+        public func startCanister(dto : WWLCanisterCommands.StartCanister, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = getProject(dto.app, projects);
 
             switch (projectResult) {
@@ -173,7 +174,7 @@ module {
             return #err(#NotFound);
         };
 
-        public func stopCanister(dto : CanisterCommands.StopCanister, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+        public func stopCanister(dto : WWLCanisterCommands.StopCanister, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = getProject(dto.app, projects);
             switch (projectResult) {
                 case (?_) {
@@ -197,16 +198,34 @@ module {
 
             switch (projectResult) {
                 case (?project) {
-                    let appCanister = actor (project.backendCanisterId) : actor {
-                        addController : (dto : CanisterCommands.AddController) -> async Result.Result<(), MopsEnums.Error>;
+                    let command : WWLCanisterCommands.AddController = {
+                        app = dto.app;
+                        canisterId = dto.canisterId;
+                        controller = dto.controller;
                     };
-                    let addResult = await appCanister.addController(dto);
-                    switch (addResult) {
-                        case (#ok(())) {
-                            return #ok(());
+                    if (dto.canisterType == #Static) {
+                        let res = await wwlCanisterManager.addController(command);
+                        switch (res) {
+                            case (#ok(())) {
+                                return #ok(());
+                            };
+                            case (#err(err)) {
+                                return #err(err);
+                            };
                         };
-                        case (#err(err)) {
-                            return #err(err);
+                    } else if (dto.canisterType == #Dynamic) {
+                        let appCanister = actor (project.backendCanisterId) : actor {
+                            addController : (dto : WWLCanisterCommands.AddController) -> async Result.Result<(), MopsEnums.Error>;
+                        };
+
+                        let addResult = await appCanister.addController(command);
+                        switch (addResult) {
+                            case (#ok(())) {
+                                return #ok(());
+                            };
+                            case (#err(err)) {
+                                return #err(err);
+                            };
                         };
                     };
                 };
@@ -218,16 +237,34 @@ module {
             let projectResult = getProject(dto.app, projects);
             switch (projectResult) {
                 case (?project) {
-                    let appCanister = actor (project.backendCanisterId) : actor {
-                        removeController : (dto : CanisterCommands.RemoveController) -> async Result.Result<(), MopsEnums.Error>;
+                    let command : WWLCanisterCommands.RemoveController = {
+                        app = dto.app;
+                        canisterId = dto.canisterId;
+                        controller = dto.controller;
                     };
-                    let removeResult = await appCanister.removeController(dto);
-                    switch (removeResult) {
-                        case (#ok(())) {
-                            return #ok(());
+                    if (dto.canisterType == #Static) {
+                        let res = await wwlCanisterManager.removeController(command);
+                        switch (res) {
+                            case (#ok(())) {
+                                return #ok(());
+                            };
+                            case (#err(err)) {
+                                return #err(err);
+                            };
                         };
-                        case (#err(err)) {
-                            return #err(err);
+                    } else if (dto.canisterType == #Dynamic) {
+                        let appCanister = actor (project.backendCanisterId) : actor {
+                            removeController : (dto : WWLCanisterCommands.RemoveController) -> async Result.Result<(), MopsEnums.Error>;
+                        };
+
+                        let removeResult = await appCanister.removeController(command);
+                        switch (removeResult) {
+                            case (#ok(())) {
+                                return #ok(());
+                            };
+                            case (#err(err)) {
+                                return #err(err);
+                            };
                         };
                     };
                 };
@@ -235,7 +272,7 @@ module {
             };
             return #err(#NotFound);
         };
-        public func setComputeAllocation(dto : CanisterCommands.SetComputeAllocation, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+        public func setComputeAllocation(dto : WWLCanisterCommands.SetComputeAllocation, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = getProject(dto.app, projects);
 
             switch (projectResult) {
@@ -254,7 +291,7 @@ module {
             };
             return #err(#NotFound);
         };
-        public func setMemoryAllocation(dto : CanisterCommands.SetMemoryAllocation, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+        public func setMemoryAllocation(dto : WWLCanisterCommands.SetMemoryAllocation, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = getProject(dto.app, projects);
 
             switch (projectResult) {
@@ -273,7 +310,7 @@ module {
             };
             return #err(#NotFound);
         };
-        public func setFreezingThreshold(dto : CanisterCommands.SetFreezingThreshold, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+        public func setFreezingThreshold(dto : WWLCanisterCommands.SetFreezingThreshold, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = getProject(dto.app, projects);
             switch (projectResult) {
                 case (?_) {
@@ -291,7 +328,7 @@ module {
             };
             return #err(#NotFound);
         };
-        public func topupCanister(dto : CanisterCommands.TopupCanister, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
+        public func topupCanister(dto : WWLCanisterCommands.TopupCanister, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<(), MopsEnums.Error> {
             let projectResult = getProject(dto.app, projects);
             switch (projectResult) {
                 case (?_) {
