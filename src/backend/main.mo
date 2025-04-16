@@ -285,13 +285,13 @@ actor Self {
         return Option.isSome(approvedCaller);
     };
 
-    private func isCallerAdmin(callerPrincipalId : MopsIds.CanisterId) : Bool {
+    private func isCallerAdmin(callerPrincipalId : MopsIds.PrincipalId) : Bool {
         if (Principal.isAnonymous(Principal.fromText(callerPrincipalId))) {
             return false;
         };
-        let approvedCaller = Array.find<MopsIds.CanisterId>(
+        let approvedCaller = Array.find<MopsIds.PrincipalId>(
             Environment.ADMIN_PRINCIPAL_IDS,
-            func(principalId : MopsIds.CanisterId) : Bool {
+            func(principalId : MopsIds.PrincipalId) : Bool {
                 principalId == callerPrincipalId;
             },
         );
