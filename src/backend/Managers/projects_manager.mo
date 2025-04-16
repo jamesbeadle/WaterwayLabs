@@ -2,6 +2,7 @@ import Result "mo:base/Result";
 import Option "mo:base/Option";
 import TrieMap "mo:base/TrieMap";
 import Iter "mo:base/Iter";
+import Nat16 "mo:base/Nat16";
 import AppTypes "../types/app_types";
 import ProjectQueries "../queries/project_queries";
 import ProjectCommands "../commands/project_commands";
@@ -11,6 +12,7 @@ import Utils "../lib/Utils";
 module {
     public class ProjectsManager() {
         private var projects : TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project> = TrieMap.TrieMap<MopsEnums.WaterwayLabsApp, AppTypes.Project>(Utils.appEquals, Utils.appHash);
+        private var project_id : Nat16 = 0;
 
         public func getProjects(_ : ProjectQueries.GetProjects) : Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
             let projects_arr = Iter.toArray(projects.vals());
@@ -28,6 +30,7 @@ module {
                 };
                 case (null) {
                     let project : AppTypes.Project = {
+                        id = project_id;
                         name = dto.name;
                         backendCanisterId = dto.backendCanisterId;
                         frontendCanisterId = dto.frontendCanisterId;
@@ -43,6 +46,7 @@ module {
                         app = dto.app;
                     };
                     projects.put(dto.app, project);
+                    project_id := project_id + 1;
 
                     return #ok(());
                 };
@@ -69,6 +73,7 @@ module {
             switch (project) {
                 case (?existingProject) {
                     let updatedProject : AppTypes.Project = {
+                        id = existingProject.id;
                         name = Option.get(dto.name, existingProject.name);
                         backendCanisterId = Option.get(dto.backendCanisterId, existingProject.backendCanisterId);
                         frontendCanisterId = Option.get(dto.frontendCanisterId, existingProject.frontendCanisterId);
@@ -100,6 +105,7 @@ module {
             switch (project) {
                 case (?existingProject) {
                     let updatedProject : AppTypes.Project = {
+                        id = existingProject.id;
                         name = existingProject.name;
                         backendCanisterId = existingProject.backendCanisterId;
                         frontendCanisterId = existingProject.frontendCanisterId;
@@ -130,6 +136,7 @@ module {
             switch (project) {
                 case (?existingProject) {
                     let updatedProject : AppTypes.Project = {
+                        id = existingProject.id;
                         name = existingProject.name;
                         backendCanisterId = existingProject.backendCanisterId;
                         frontendCanisterId = existingProject.frontendCanisterId;
@@ -164,6 +171,13 @@ module {
                 stable_projects_map.put(project);
             };
             projects := stable_projects_map;
+        };
+
+        public func getStableProjectId() : Nat16 {
+            return project_id;
+        };
+        public func setStableProjectId(stable_project_id : Nat16) {
+            project_id := stable_project_id;
         };
 
     };
