@@ -12,6 +12,7 @@ module ProjectQueries {
     };
 
     public type Project = {
+        id : MopsIds.ProjectId;
         name : Text;
         backendCanisterId : MopsIds.CanisterId;
         frontendCanisterId : MopsIds.CanisterId;

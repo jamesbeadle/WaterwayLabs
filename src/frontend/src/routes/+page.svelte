@@ -70,7 +70,8 @@
   async function loadProjects() {
     try {
       const projectDTOs = await projectService.getProjects();
-      projects = projectDTOs
+      if(!projectDTOs) { return }
+      projects = projectDTOs?.projects
         .filter(dto => dto.id !== 1)
         .map(dto => {
           const socialLinks = dto.socialLinks || [];
@@ -93,7 +94,7 @@
           };
           return project;
         });
-      projectStore.setProjects(projectDTOs);
+      projectStore.setProjects(projectDTOs.projects);
       
       const initialProject = projects.find(p => p.id === 1) || projects[0];
       if (initialProject) {

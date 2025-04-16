@@ -21,6 +21,7 @@
     if (!browser) return;
     try {
       await authStore.sync();
+      console.log($authStore.identity?.getPrincipal().toString() ?? "Not found")
     } catch (err) {
       console.error("Error syncing auth store:", err);
     }
