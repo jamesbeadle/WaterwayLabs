@@ -68,43 +68,44 @@
   }
 
   async function loadProjects() {
-    try {
-      const projectDTOs = await projectService.getProjects();
-      if(!projectDTOs) { return }
-      projects = projectDTOs?.projects
-        .filter(dto => dto.id !== 1)
-        .map(dto => {
-          const socialLinks = dto.socialLinks || [];
-          
-          const twitterLink = socialLinks.find(([platform]) => platform === 'X');
-          
-          const project = {
-            ...dto,
-            websiteURL: dto.websiteURL.startsWith('http') ? dto.websiteURL : `https://${dto.websiteURL}`,
-            component: getComponentByName(dto.name),
-            buttonText: "Visit Site",
-            backgroundImage: `/project-images/${dto.id}-background.png`,
-            screenshot: `/project-images/${dto.id}-screenshot.jpg`,
-            twitter: twitterLink && twitterLink[1] ? twitterLink[1] : undefined,
-            github: dto.githubLink || undefined,
-            backgroundColor: dto.mainColour,
-            status: getStatusString(dto.status),
-            selected: false,
-            socialLinks: socialLinks
-          };
-          return project;
-        });
-      projectStore.setProjects(projectDTOs.projects);
-      
-      const initialProject = projects.find(p => p.id === 1) || projects[0];
-      if (initialProject) {
-        selectProject(initialProject);
-      }
-      
-    } catch (error) {
-      console.error('Failed to load projects:', error);
+  try {
+    const projectDTOs = await projectService.getProjects();
+    if (!projectDTOs) { return }
+    
+    projects = projectDTOs?.projects
+      .sort((a, b) => a.id - b.id)
+      .filter(dto => dto.id !== 1)
+      .map(dto => {
+        const socialLinks = dto.socialLinks || [];
+        const twitterLink = socialLinks.find(([platform]) => platform === 'X');
+        
+        const project = {
+          ...dto,
+          websiteURL: dto.websiteURL.startsWith('http') ? dto.websiteURL : `https://${dto.websiteURL}`,
+          component: getComponentByName(dto.name),
+          buttonText: "Visit Site",
+          backgroundImage: `/project-images/${dto.id}-background.png`,
+          screenshot: `/project-images/${dto.id}-screenshot.jpg`,
+          twitter: twitterLink && twitterLink[1] ? twitterLink[1] : undefined,
+          github: dto.githubLink || undefined,
+          backgroundColor: dto.mainColour,
+          status: getStatusString(dto.status),
+          selected: false,
+          socialLinks: socialLinks
+        };
+        return project;
+      });
+    
+    projectStore.setProjects(projectDTOs.projects.sort((a, b) => a.id - b.id));
+    
+    const initialProject = projects.find(p => p.id === 2) || projects[0];
+    if (initialProject) {
+      selectProject(initialProject);
     }
+  } catch (error) {
+    console.error('Failed to load projects:', error);
   }
+}
 
   function selectProject(project: Project) {   
     

@@ -16,6 +16,7 @@ export class ProjectService {
 
   async getProjects(): Promise<Projects | undefined> {
     const result = await this.actor.getProjects({});
+    console.log(result);
     if (isError(result)) throw new Error("Failed to fetch projects");
     return result.ok;
   }
