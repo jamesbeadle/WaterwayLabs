@@ -1,5 +1,6 @@
-import Enums "../enums/enums";
+import MopsEnums "mo:waterway-mops/Enums";
 import MopsIds "mo:waterway-mops/Ids";
+import Enums "../enums/enums";
 
 module ProjectCommands {
 
@@ -17,11 +18,11 @@ module ProjectCommands {
         mainColour : Text;
         secondaryColour : Text;
         thirdColour : Text;
-        app : Enums.WaterwayLabsApp;
+        app : MopsEnums.WaterwayLabsApp;
     };
 
     public type UpdateProject = {
-        app : Enums.WaterwayLabsApp;
+        app : MopsEnums.WaterwayLabsApp;
         name : ?Text;
         backendCanisterId : ?MopsIds.CanisterId;
         frontendCanisterId : ?MopsIds.CanisterId;
@@ -37,19 +38,19 @@ module ProjectCommands {
     };
 
     public type SetProjectOnHold = {
-        app : Enums.WaterwayLabsApp;
+        app : MopsEnums.WaterwayLabsApp;
     };
 
     public type RemoveProjectOnHold = {
-        app : Enums.WaterwayLabsApp;
+        app : MopsEnums.WaterwayLabsApp;
     };
 
     public type UpdateProjectVersion = {
-        app : Enums.WaterwayLabsApp;
+        app : MopsEnums.WaterwayLabsApp;
         version : Text;
     };
 
     public type DeleteProject = {
-        app : Enums.WaterwayLabsApp;
+        app : MopsEnums.WaterwayLabsApp;
     };
 };

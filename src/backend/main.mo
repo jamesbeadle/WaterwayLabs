@@ -88,7 +88,7 @@ actor Self {
 
     /* ----- Projects Queries ----- */
 
-    public shared func getProjects(dto : ProjectQueries.GetProjects) : async Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
+    public shared ({ caller }) func getProjects(dto : ProjectQueries.GetProjects) : async Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
         return projectsManager.getProjects(dto);
     };
 
@@ -613,7 +613,7 @@ actor Self {
 
         stable_projects := projects;
 
-        projectsManager.setStableProjects(stable_projects);
+        projectsManager.setStableProjects(projects);
 
     };
 

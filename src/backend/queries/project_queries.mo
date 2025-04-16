@@ -1,5 +1,6 @@
 import MopsIds "mo:waterway-mops/Ids";
 import Enums "../enums/enums";
+import MopsEnums "mo:waterway-mops/Enums";
 
 module ProjectQueries {
 
@@ -25,6 +26,6 @@ module ProjectQueries {
         mainColour : Text;
         secondaryColour : Text;
         thirdColour : Text;
-        app : Enums.WaterwayLabsApp;
+        app : MopsEnums.WaterwayLabsApp;
     };
 };
