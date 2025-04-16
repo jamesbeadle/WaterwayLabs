@@ -17,6 +17,7 @@ import Timer "mo:base/Timer";
 import ApplicationLogQueries "queries/application_log_queries";
 import WWLCanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
 import WWLCanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
+import Ids "mo:waterway-mops/Ids";
 import DataHashQueries "queries/data_hash_queries";
 import ProjectQueries "queries/project_queries";
 import SupportQueryQueries "queries/support_query_queries";
@@ -57,6 +58,7 @@ actor Self {
     private stable var stable_application_logs : [MopsTypes.ApplicationLog] = [];
     private stable var stable_support_queries : [AppTypes.SupportQuery] = [];
     private stable var stable_canisters_cycles_topups : [AppTypes.CanisterCyclesTopup] = [];
+    private stable var stable_project_id : Ids.ProjectId = 1;
     private stable var stable_app_status : MopsTypes.AppStatus = {
         onHold = true;
         version = "";
@@ -332,6 +334,7 @@ actor Self {
         stable_application_logs := applicationLogsManager.getStableApplicationLogs();
         stable_support_queries := supportQueriesManager.getStableSupportQueries();
         stable_canisters_cycles_topups := canistersManager.getStableCanisterCyclesTopups();
+        stable_project_id := projectsManager.getStableProjectId();
     };
 
     private func setManagerStableVariables() {
@@ -341,6 +344,7 @@ actor Self {
         applicationLogsManager.setStableApplicationLogs(stable_application_logs);
         supportQueriesManager.setStableSupportQueries(stable_support_queries);
         canistersManager.setStableCanisterCyclesTopups(stable_canisters_cycles_topups);
+        projectsManager.setStableProjectId(stable_project_id);
     };
 
     private func postUpgradeCallback() : async () {

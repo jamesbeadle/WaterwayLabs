@@ -4,6 +4,7 @@ import MopsIds "mo:waterway-mops/Ids";
 module ProjectCommands {
 
     public type CreateProject = {
+        id : MopsIds.ProjectId;
         name : Text;
         backendCanisterId : MopsIds.CanisterId;
         frontendCanisterId : MopsIds.CanisterId;

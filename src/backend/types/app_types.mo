@@ -3,6 +3,7 @@ import MopsIds "mo:waterway-mops/Ids";
 module AppTypes {
 
     public type Project = {
+        id : MopsIds.ProjectId;
         name : Text;
         backendCanisterId : MopsIds.CanisterId;
         frontendCanisterId : MopsIds.CanisterId;
