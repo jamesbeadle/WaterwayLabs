@@ -32,8 +32,8 @@
   import OpenCareIcon from "$lib/icons/svgs/opencare-icon.svelte";
 
   import { getStatusString } from "$lib/utils/helpers";
-    import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
-    import WidgetSpinner from "$lib/components/shared/widget-spinner.svelte";
+  import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
+  import WidgetSpinner from "$lib/components/shared/widget-spinner.svelte";
   
   type ProjectData = ReturnType<typeof transformProjectData>;
   
@@ -129,7 +129,7 @@
       'OpenWSL': OpenWSLIcon,
       'Jeff Bets': JeffBetsIcon,
       'ICPFA': ICPFAIcon,
-      'GolfPad': GolfPadIcon,
+      'ICGC': GolfPadIcon,
       'Transfer Kings': TransferKingsIcon,
       'OpenBook': OpenBookIcon,
       'OpenBeats': OpenBeatsIcon,

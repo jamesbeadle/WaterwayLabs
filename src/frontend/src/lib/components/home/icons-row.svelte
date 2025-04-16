@@ -29,7 +29,7 @@
         return "w-6 xs:w-8 md:w-9"
       case "Transfer Kings":
         return "w-6 xs:w-12"
-      case "GolfPad":
+      case "ICGC":
         return "w-6 xs:w-12";
     }
     return "w-6 xs:w-12";
