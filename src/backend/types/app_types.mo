@@ -1,5 +1,6 @@
 import Enums "../enums/enums";
 import MopsIds "mo:waterway-mops/Ids";
+import WaterWayEnums "mo:waterway-mops/Enums";
 module AppTypes {
 
     public type Project = {
@@ -16,7 +17,7 @@ module AppTypes {
         mainColour : Text;
         secondaryColour : Text;
         thirdColour : Text;
-        app : Enums.WaterwayLabsApp;
+        app : WaterWayEnums.WaterwayLabsApp;
     };
 
     public type SupportQuery = {
@@ -43,7 +44,7 @@ module AppTypes {
     };
 
     public type CanisterCyclesTopup = {
-        app : Enums.WaterwayLabsApp;
+        app : WaterWayEnums.WaterwayLabsApp;
         canisterId : MopsIds.CanisterId;
         amount : Nat;
         time : Int;
