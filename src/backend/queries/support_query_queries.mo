@@ -1,8 +1,8 @@
-import Enums "../enums/enums";
+import MopsEnums "mo:waterway-mops/Enums";
 
 module SupportQueries{
     public type GetSupportQueries = {
-        app: ?Enums.WaterwayLabsApp;
+        app: ?MopsEnums.WaterwayLabsApp;
         
     };
 
