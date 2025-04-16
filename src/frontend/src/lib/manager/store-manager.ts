@@ -20,6 +20,7 @@ class StoreManager {
   }
 
   async syncStores(): Promise<void> {
+    /*
     const newHashes = await this.dataHashService.getDataHashes();
 
     let error = isError(newHashes);
@@ -38,17 +39,20 @@ class StoreManager {
         this.loadFromCache(category);
       }
     }
+      */
   }
 
   private async syncCategory(category: string): Promise<void> {
     switch (category) {
       case "projects":
         const updatedProjects = await this.projectService.getProjects();
-        projectStore.setProjects(updatedProjects);
-        localStorage.setItem(
-          "projects",
-          JSON.stringify(updatedProjects, replacer),
-        );
+        if (updatedProjects) {
+          projectStore.setProjects(updatedProjects.projects);
+          localStorage.setItem(
+            "projects",
+            JSON.stringify(updatedProjects, replacer),
+          );
+        }
         break;
       case "team_members":
         const updatedTeamMembers = await this.teamService.getTeamMembers();

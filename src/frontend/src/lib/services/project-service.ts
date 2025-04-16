@@ -1,10 +1,7 @@
 import { authStore } from "$lib/stores/auth-store";
 import { isError } from "$lib/utils/helpers";
 import { idlFactory } from "../../../../declarations/backend";
-import type {
-  CanisterDTO,
-  ProjectDTO,
-} from "../../../../declarations/backend/backend.did";
+import type { Projects } from "../../../../declarations/backend/backend.did";
 import { ActorFactory } from "../../utils/ActorFactory";
 
 export class ProjectService {
@@ -17,23 +14,9 @@ export class ProjectService {
     );
   }
 
-  async getProjects(): Promise<ProjectDTO[]> {
-    const result = await this.actor.getProjects();
+  async getProjects(): Promise<Projects | undefined> {
+    const result = await this.actor.getProjects({});
     if (isError(result)) throw new Error("Failed to fetch projects");
-    return result.ok;
-  }
-
-  async getProjectCanisterInfo(projectId: number): Promise<CanisterDTO[]> {
-    const identityActor = await ActorFactory.createIdentityActor(
-      authStore,
-      process.env.BACKEND_CANISTER_ID ?? "",
-    );
-
-    const result = (await identityActor.getProjectCanisterInfo(
-      projectId,
-    )) as any;
-    if (isError(result))
-      throw new Error("Failed to fetch project canister info");
     return result.ok;
   }
 
