@@ -14,8 +14,9 @@ module Environment {
 
     private let JB_PRINCIPAL_ID = "nc2sn-3ecqa-a4kts-jdbsy-pewiy-uavg4-kaxkf-qftut-sb7hv-6nlyb-2qe";
     private let JBN_PRINCIAPL_ID = "k7emk-fuaz4-svxty-lyunu-iuxix-5evlj-pmcfy-nb6dd-gnval-lpfvl-xae";
+    private let JBN_CANDID_PRINCIPAL_ID = "a3izv-m45np-bt2uv-ys7qz-xo3ag-nscwn-qn3vz-ptpp2-hfzhu-3ffbn-wqe";
 
-    public let ADMIN_PRINCIPAL_IDS = [JB_PRINCIPAL_ID, JBN_PRINCIAPL_ID];
+    public let ADMIN_PRINCIPAL_IDS = [JB_PRINCIPAL_ID, JBN_PRINCIAPL_ID, JBN_CANDID_PRINCIPAL_ID];
 
     public let MASTER_PRINCIPAL_ID = "nc2sn-3ecqa-a4kts-jdbsy-pewiy-uavg4-kaxkf-qftut-sb7hv-6nlyb-2qe";
     public let MANAGER_PRINCIPAL_IDS = [MASTER_PRINCIPAL_ID, "l6og7-wcre5-hpuzu-6l7cs-wzage-23q7o-h4tj5-newmg-feqf4-xnvbc-tqe", "hu7wv-h3szc-cmatb-zq5hd-zbyqs-ubaav-vhr3p-uynin-e2cxh-mhlod-uae", "kmepn-s7fu2-niy7r-qzgne-cwrzh-fm2iz-2d3ph-jcakt-bakuu-ng6i2-2qe"];
