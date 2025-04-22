@@ -14,10 +14,10 @@ import Timer "mo:base/Timer";
 
 /* ----- Queries ----- */
 
-import ApplicationLogQueries "queries/application_log_queries";
 import WWLCanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
 import WWLCanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
 import Ids "mo:waterway-mops/Ids";
+import CanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
 import DataHashQueries "queries/data_hash_queries";
 import ProjectQueries "queries/project_queries";
 import SupportQueryQueries "queries/support_query_queries";
@@ -245,8 +245,8 @@ actor Self {
 
     /* ----- Application Log Queries ----- */
 
-    public shared query func getApplicationLogs(dto : ApplicationLogQueries.GetApplicationLogs) : async Result.Result<ApplicationLogQueries.ApplicationLogs, MopsEnums.Error> {
-        return applicationLogsManager.getApplicationLogs(dto);
+    public shared func getApplicationLogs(dto : CanisterQueries.GetApplicationLogs) : async Result.Result<CanisterQueries.ApplicationLogs, MopsEnums.Error> {
+        return await applicationLogsManager.getApplicationLogs(dto);
     };
 
     /* ----- Application Log Commands ----- */
