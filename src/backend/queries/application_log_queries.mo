@@ -5,13 +5,11 @@ module ApplicationLogQueries {
 
     public type GetApplicationLogs = {
         app : MopsEnums.WaterwayLabsApp;
-        page : Nat;
     };
 
     public type ApplicationLogs = {
         app : MopsEnums.WaterwayLabsApp;
         logs : [ApplicationLog];
-        page : Nat;
         totalEntries : Nat;
     };
 

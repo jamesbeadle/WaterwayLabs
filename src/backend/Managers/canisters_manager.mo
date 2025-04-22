@@ -16,11 +16,7 @@ module {
         private var canistersCyclesTopups : [AppTypes.CanisterCyclesTopup] = [];
 
         public func getCanisterInfo(dto_query : CanisterQueries.GetCanisterInfo) : async Result.Result<CanisterQueries.CanisterInfo, MopsEnums.Error> {
-
-            let #ok(canister) = await wwlCanisterManager.getCanisterInfo(dto_query, dto_query.app) else {
-                return #err(#NotFound);
-            };
-            return #ok(canister);
+            return await wwlCanisterManager.getCanisterInfo(dto_query, dto_query.app);
         };
 
         public func getProjectCanisters(dto : CanisterQueries.GetProjectCanisters, projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async Result.Result<CanisterQueries.ProjectCanisters, MopsEnums.Error> {

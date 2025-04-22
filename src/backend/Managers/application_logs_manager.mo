@@ -3,6 +3,9 @@ import ApplicationLogQueries "../queries/application_log_queries";
 import ApplicationLogCommands "../commands/application_log_commands";
 import MopsTypes "mo:waterway-mops/BaseTypes";
 import MopsEnums "mo:waterway-mops/Enums";
+import MopsUtilities "mo:waterway-mops/BaseUtilities";
+import CanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
+import Enums "mo:waterway-mops/Enums";
 
 module {
     public class ApplicationLogsManager() {
@@ -15,13 +18,16 @@ module {
             applicationLogs := stable_application_logs;
         };
 
-        public func getApplicationLogs(dto : ApplicationLogQueries.GetApplicationLogs) : Result.Result<ApplicationLogQueries.ApplicationLogs, MopsEnums.Error> {
-            return #ok({
-                app = dto.app;
-                logs = []; //todo add logs
-                page = dto.page;
-                totalEntries = 0; //TODO get
-            });
+        public func getApplicationLogs(dto : CanisterQueries.GetApplicationLogs) : async Result.Result<CanisterQueries.ApplicationLogs, MopsEnums.Error> {
+            let app = dto.app;
+            let ?appCanisterId = MopsUtilities.getAppCanisterId(app) else {
+                return #err(#NotFound);
+            };
+            let appActor = actor (appCanisterId) : actor {
+                getAppicationLogs : (dto : CanisterQueries.GetApplicationLogs) -> async Result.Result<CanisterQueries.ApplicationLogs, Enums.Error>;
+            };
+
+            return await appActor.getAppicationLogs(dto);
         };
 
         public func addApplicationLog(dto : ApplicationLogCommands.AddApplicationLog) : async Result.Result<(), MopsEnums.Error> {
