@@ -15,7 +15,7 @@ export class DataHashService {
     this.actor = ActorFactory.createActor(idlFactory, canisterId);
   }
 
-  async getDataHashes(): Promise<DataHashes> {
+  async getDataHashes(): Promise<DataHashes | undefined> {
     const result = await this.actor.getDataHashes({});
     if (isError(result)) throw new Error("Failed to fetch data hashes");
     return result.ok;
