@@ -24,6 +24,8 @@ class StoreManager {
 
     if(!newHashesResult){ return }
 
+    let newHashes = newHashesResult.dataHashes;
+
     let error = isError(newHashes);
     if (error) {
       console.error("Error fetching data hashes.");
