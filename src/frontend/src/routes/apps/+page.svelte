@@ -1,7 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
 
-    import Layout from "../Layout.svelte";
     import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
     import type { Canister, Project } from "../../../../declarations/backend/backend.did";
     import { projectStore } from "$lib/stores/project-store";
@@ -75,7 +74,6 @@
     }
 </script>
 
-<Layout>
     <div class="mx-auto">
         {#if isLoading}
             <LocalSpinner />
@@ -142,5 +140,3 @@
             </div>
         </CanisterTopupModal>
     {/if}
-</Layout>
-

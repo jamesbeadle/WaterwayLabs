@@ -1,7 +1,6 @@
 <script lang="ts">
     import { authStore } from "$lib/stores/auth-store";
     import { onMount } from "svelte";
-    import Layout from "../Layout.svelte";
     import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
     let principalId = "";
     let isLoading = true;
@@ -18,7 +17,6 @@
     });
 </script>
 
-<Layout>
     <div class="mx-auto">
         {#if isLoading}
             <LocalSpinner />
@@ -33,5 +31,3 @@
             </div>
         {/if}
     </div>
-</Layout>
-

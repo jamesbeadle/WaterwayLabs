@@ -13,7 +13,7 @@
       <Header />
     </div>
   {/if}
-  <slot></slot>
+    {@render children()}
   {#if !isHomePage}
     <Footer />
   {/if}

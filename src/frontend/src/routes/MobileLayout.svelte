@@ -4,6 +4,13 @@
   import Header from "$lib/shared/Header.svelte";
   import Footer from "$lib/shared/Footer.svelte";
   import "../app.css";
+    import type { Snippet } from "svelte";
+
+  interface Props {
+    children: Snippet
+  }
+
+  let { children } : Props = $props();
 
   $: isHomePage = $page.url.pathname === '/';  
   
@@ -13,7 +20,7 @@
     <Header />
   </div>
   <div class="w-full">
-    <slot></slot>
+    {@render children()}
   </div>
 </div>
 {#if !isHomePage}

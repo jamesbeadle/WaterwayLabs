@@ -1,6 +1,5 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import Layout from "../Layout.svelte";
     import { storeManager } from "$lib/manager/store-manager";
     import { projectStore } from "$lib/stores/project-store";
     
@@ -12,7 +11,6 @@
     }); 
  </script>
 
-<Layout>
     <div class="flex w-full">
         {#if !isLoading}
             {#each $projectStore as project}
@@ -34,4 +32,3 @@
             {/each}
         {/if}
     </div>
-</Layout>

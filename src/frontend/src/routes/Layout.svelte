@@ -60,13 +60,13 @@
     <Toasts />
     <div class="block lg:hidden">
       <MobileLayout>
-        <slot />
+        {@render children()}
       </MobileLayout>
     </div>
 
     <div class="hidden lg:block">
       <DesktopLayout>
-        <slot />
+        {@render children()}
       </DesktopLayout>
     </div>
   </div>

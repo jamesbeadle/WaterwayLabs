@@ -1,9 +1,7 @@
 <script lang="ts">
-    import Layout from "../Layout.svelte";
     import ContactPage from "$lib/components/contact/contact-page.svelte";
 </script>
 
-<Layout>
     <div class="mx-auto">
 
         <div class="responsive-row-col">
@@ -22,5 +20,4 @@
         <div class="horizontal-divider"></div>
         <ContactPage />
     </div>
-</Layout>
 

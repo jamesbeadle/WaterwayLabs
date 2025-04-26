@@ -1,20 +1,24 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import type { Writable } from "svelte/store";
   import type { Project } from "$lib/types/projects";
+  import type { ProjectId } from '../../../../../declarations/backend/backend.did';
 
-  export let projects: Project[] = [];
-  export let selectedProjectId: Writable<number>;
-
+  interface Props {
+    selectedProjectId: ProjectId;
+    projects: Project[];
+  };
+  
+  let { selectedProjectId, projects } : Props = $props();
+  
   onMount(() => {
     if (projects.length > 0) {
-      $selectedProjectId = projects[0].id;
+      selectedProjectId = projects[0].id;
     }
   });
 
   function handleProjectSelect(project: Project) {
     if (!project) return;
-    $selectedProjectId = project.id;
+    selectedProjectId = project.id;
   }
 
   function getTailwindSize(projectName: string) : string{
@@ -36,12 +40,12 @@
   }
 
   function getProjectClasses(project: Project) {
-    const isSelected = $selectedProjectId === project.id;
+    const isSelected = selectedProjectId === project.id;
     return `w-full transition-transform duration-200 hover:scale-110 ${isSelected ? 'scale-110' : ''}`;
   }
 
   function getIconClasses(project: Project) {
-    const isSelected = $selectedProjectId === project.id;
+    const isSelected = selectedProjectId === project.id;
     return `flex items-center justify-center my-1 rounded-lg w-14 xs:w-20 h-14 xs:h-20 xs:rounded-2xl translate-z-0 ${isSelected ? 'animate-ring-pulse' : ''}`;
   }
 </script>
@@ -52,16 +56,16 @@
     {#each projects as project}
       <button 
         class={getProjectClasses(project)}
-        on:click={() => handleProjectSelect(project)}
+        onclick={() => handleProjectSelect(project)}
       >
         <div 
           class={getIconClasses(project)}
           style={`background-color: ${project.backgroundColor}`}
         >
-          <svelte:component 
+          <project.component 
             this={project.component} 
             className={getTailwindSize(project.name)} 
-          />
+          ></project.component>
         </div>
       </button>
     {/each}

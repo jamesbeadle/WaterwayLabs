@@ -4,7 +4,6 @@
     import type { NervousSystemParameters, Neuron } from "@dfinity/sns/dist/candid/sns_governance";
     import { Principal } from "@dfinity/principal";
     import { hexStringToUint8Array, uint8ArrayToHexString } from "@dfinity/utils";
-    import Layout from "../Layout.svelte";
 
     let neuronIdInput = "";
     let neuron: Neuron | null = null;
@@ -74,72 +73,70 @@
     }
 </script>
 
-<Layout>
-    <div class="p-4">
-        <div class="mb-4 flex flex-col sm:flex-row gap-2">
-            <input
-                type="text"
-                placeholder="Enter Neuron ID"
-                bind:value={neuronIdInput}
-                class="flex-grow p-2 border rounded text-black"
-            />
-            <button
-                on:click={searchNeuron}
-                class="brand-button"
-            >
-                Search
-            </button>
-        </div>
-
-        {#if errorMessage}
-            <p class="text-red-500">{errorMessage}</p>
-        {/if}
-
-        {#if neuron}
-            <div class="bg-BrandGray text-white p-4 rounded-md shadow">
-                <h2 class="text-xl font-bold mb-2">Neuron Details</h2>
-                <p class="text-xxs"><strong>Neuron ID:</strong> {uint8ArrayToHexString(neuron.id[0]?.id ?? [])}</p>
-                <p class="text-xxs"><strong>Neuron Created:</strong> {new Date(Number(neuron.created_timestamp_seconds) * 1000).toLocaleString()}</p>
-                <p>
-                    <strong>Staked FPL:</strong> 
-                    {
-                        (Number(neuron.cached_neuron_stake_e8s) / 100_000_000).toLocaleString("en-US", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                        })
-                    }
-                </p>
-                <p class="text-sm mb-4">
-                    <strong>Staked FPL Maturity:</strong> 
-                    {
-                        ((Number(neuron.staked_maturity_e8s_equivalent[0] ?? 0)) / 100_000_000).toLocaleString("en-US", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                        })
-                    }</p>
-                <p class="text-xs"><strong>VP Multiplier:</strong> {neuron.voting_power_percentage_multiplier}%</p>
-
-                <p  class="text-xs mb-4">Age Bonus: {Date.now() / 1000 - Number(neuron.created_timestamp_seconds) > Number(sns_parameters?.max_neuron_age_for_age_bonus) ? "25" : "0"}%</p>
-
-                <p class="mb-4">Total Voting Power: { getVotingPower(neuron) } ({((votePercentage) * 100).toLocaleString("en-US", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                })}%)</p>
-
-                <p>$BOOK Tokens: {(10_000_000 * votePercentage).toLocaleString("en-US", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                        })}</p>
-                <p>$GOLF Tokens: {(10_000_000 * votePercentage).toLocaleString("en-US", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                })}</p>
-                <p>$BEAT Tokens: {(10_000_000 * votePercentage).toLocaleString("en-US", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                })}</p>
-
-            </div>
-        {/if}
+<div class="p-4">
+    <div class="mb-4 flex flex-col sm:flex-row gap-2">
+        <input
+            type="text"
+            placeholder="Enter Neuron ID"
+            bind:value={neuronIdInput}
+            class="flex-grow p-2 border rounded text-black"
+        />
+        <button
+            on:click={searchNeuron}
+            class="brand-button"
+        >
+            Search
+        </button>
     </div>
-</Layout>
+
+    {#if errorMessage}
+        <p class="text-red-500">{errorMessage}</p>
+    {/if}
+
+    {#if neuron}
+        <div class="bg-BrandGray text-white p-4 rounded-md shadow">
+            <h2 class="text-xl font-bold mb-2">Neuron Details</h2>
+            <p class="text-xxs"><strong>Neuron ID:</strong> {uint8ArrayToHexString(neuron.id[0]?.id ?? [])}</p>
+            <p class="text-xxs"><strong>Neuron Created:</strong> {new Date(Number(neuron.created_timestamp_seconds) * 1000).toLocaleString()}</p>
+            <p>
+                <strong>Staked FPL:</strong> 
+                {
+                    (Number(neuron.cached_neuron_stake_e8s) / 100_000_000).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })
+                }
+            </p>
+            <p class="text-sm mb-4">
+                <strong>Staked FPL Maturity:</strong> 
+                {
+                    ((Number(neuron.staked_maturity_e8s_equivalent[0] ?? 0)) / 100_000_000).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })
+                }</p>
+            <p class="text-xs"><strong>VP Multiplier:</strong> {neuron.voting_power_percentage_multiplier}%</p>
+
+            <p  class="text-xs mb-4">Age Bonus: {Date.now() / 1000 - Number(neuron.created_timestamp_seconds) > Number(sns_parameters?.max_neuron_age_for_age_bonus) ? "25" : "0"}%</p>
+
+            <p class="mb-4">Total Voting Power: { getVotingPower(neuron) } ({((votePercentage) * 100).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            })}%)</p>
+
+            <p>$BOOK Tokens: {(10_000_000 * votePercentage).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })}</p>
+            <p>$GOLF Tokens: {(10_000_000 * votePercentage).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            })}</p>
+            <p>$BEAT Tokens: {(10_000_000 * votePercentage).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            })}</p>
+
+        </div>
+    {/if}
+</div>

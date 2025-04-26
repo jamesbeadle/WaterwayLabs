@@ -1,6 +1,11 @@
-<script>
-  export let className = "";
+
+<script lang="ts">
   import { loadingText } from "$lib/stores/global-stores";
+	interface Props {
+		className: string;
+    };
+    
+    let { className } : Props = $props();
 </script>
 
 <div class="flex justify-center items-center h-screen">

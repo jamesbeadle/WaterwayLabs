@@ -1,6 +1,11 @@
 <script lang="ts">
-    import type { TeamMemberDTO } from "../../../../../declarations/backend/backend.did";
-    export let teamMembers: TeamMemberDTO[] = [];
+    import type { TeamMember } from "../../../../../declarations/backend/backend.did";
+
+    interface Props {
+      teamMembers: TeamMember[]
+    };
+    
+    let { teamMembers } : Props = $props();
 </script>
 
 <div class="container mx-auto">

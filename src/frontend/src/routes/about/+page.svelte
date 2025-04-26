@@ -1,10 +1,8 @@
 <script lang="ts">
-  import Layout from "../Layout.svelte";
     
    export let isMenuOpen: boolean;
 </script>
 
-<Layout bind:isMenuOpen>
   
   <div>
 
@@ -86,4 +84,3 @@
       <div class="horizontal-divider"></div>
     </div>
   </div>
-</Layout>

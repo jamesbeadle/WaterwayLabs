@@ -1,14 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { Component } from "svelte";
-  import { writable } from "svelte/store";
   import type { Project } from "$lib/types/projects";
 
   import { storeManager } from "$lib/manager/store-manager";
   import { projectStore } from "$lib/stores/project-store";
   import { ProjectService } from "$lib/services/project-service";
   
-  import Layout from './Layout.svelte';
   import Header from "$lib/shared/Header.svelte";
   import ProjectDetail from "$lib/components/project/project-detail.svelte";
 
@@ -35,18 +33,24 @@
   import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
   import WidgetSpinner from "$lib/components/shared/widget-spinner.svelte";
   
+	interface Props {
+    isMenuOpen: boolean;
+  };
+  
+  let { isMenuOpen } : Props = $props();
+  
   type ProjectData = ReturnType<typeof transformProjectData>;
   
   const projectService = new ProjectService();
   
   let projects: Project[] = [];
-  let selectedProjectId = writable(0);
+  let selectedProjectId = $state(0);
   let selectedProject: Project | null = null;  
   let selectedProjectData: ProjectData | null = null;
   let isLoading = true;
   let loadingProject = true;
   
-  export let isMenuOpen: boolean;
+
   
   onMount(async () => {
     try{
@@ -60,12 +64,14 @@
     }
   });
 
-  $: if($selectedProjectId > 0) {
-    selectedProject = projects.find(x => x.id == $selectedProjectId) ?? selectedProject;
-    if(selectedProject){
-      selectProject(selectedProject)
+  $effect(() => {
+    if(selectedProjectId > 0) {
+      selectedProject = projects.find(x => x.id == selectedProjectId) ?? selectedProject;
+      if(selectedProject){
+        selectProject(selectedProject)
+      }
     }
-  }
+  });
 
   async function loadProjects() {
   try {
@@ -160,7 +166,6 @@
   }
   
 </script>
-<Layout bind:isMenuOpen>
   {#if isLoading}
     <LocalSpinner />
   {:else}
@@ -176,14 +181,7 @@
               </div>
               <div class="px-4 mt-8">
                 <ProjectDetail 
-                  title={selectedProjectData.title} 
-                  status={selectedProjectData.status} 
-                  summary={selectedProjectData.summary} 
-                  description={selectedProjectData.description} 
-                  backgroundColor={selectedProjectData.backgroundColor} 
-                  websiteURL={selectedProjectData.websiteURL}
-                  github={selectedProjectData.githubLink}
-                  twitter={selectedProjectData.twitter ?? ""}
+                  {selectedProjectId}
                 />
               </div>
             </div>
@@ -232,4 +230,3 @@
     {/if}
     <IconsRow {projects} {selectedProjectId} />
   {/if}
-</Layout>

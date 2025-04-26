@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Layout from "../Layout.svelte";
     import type { FormSubmission } from "../../../../declarations/backend/backend.did";
     import { formatUnixDateTimeToReadable } from "$lib/utils/helpers";
     import { onMount } from "svelte";
@@ -20,7 +19,6 @@
     });
 </script>
 
-<Layout>
     <div class="mx-auto">
         {#if isLoading}
             <LocalSpinner />
@@ -72,5 +70,3 @@
 
         {/if}
     </div>
-</Layout>
-
