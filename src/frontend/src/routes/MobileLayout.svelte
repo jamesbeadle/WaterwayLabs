@@ -12,7 +12,11 @@
 
   let { children } : Props = $props();
 
-  $: isHomePage = $page.url.pathname === '/';  
+  let isHomePage = $state(false);
+
+  $effect(() => {
+    isHomePage = $page.url.pathname === '/';  
+  });
   
 </script>
 <div class="full-screen-flex-col">

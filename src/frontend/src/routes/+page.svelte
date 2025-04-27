@@ -88,7 +88,6 @@
         const project = {
           ...dto,
           websiteURL: dto.websiteURL.startsWith('http') ? dto.websiteURL : `https://${dto.websiteURL}`,
-          component: getComponentByName(dto.name),
           buttonText: "Visit Site",
           backgroundImage: `/project-images/${dto.id}-background.png`,
           screenshot: `/project-images/${dto.id}-screenshot.jpg`,
@@ -126,26 +125,6 @@
     loadingProject = false;
   }
 
-  function getComponentByName(name: string): Component {
-    const componentMap: Record<string, Component> = {
-      'Waterway Labs': WaterwayLabsIcon,
-      'ICFC' : ICFCIcon,
-      'FootballGod': FootballGodIcon,
-      'OpenFPL': OpenFPLIcon,
-      'OpenWSL': OpenWSLIcon,
-      'Jeff Bets': JeffBetsIcon,
-      'ICPFA': ICPFAIcon,
-      'ICGC': GolfPadIcon,
-      'Transfer Kings': TransferKingsIcon,
-      'OpenBook': OpenBookIcon,
-      'OpenBeats': OpenBeatsIcon,
-      'OpenChef': OpenChefIcon,
-      'OpenCare': OpenCareIcon
-    };
-
-    return componentMap[name as string] || WaterwayLabsIcon;
-  }
-
   function transformProjectData(project: Project) {
     return {
       id: project.id,
@@ -177,7 +156,7 @@
           <div class="full-screen-flex-row">
             <div class="flex flex-col w-1/2 min-h-screen bg-BrandGray">
               <div class="mx-4 mt-2">
-                <Header halfWidth={true} bind:isMenuOpen />
+                <Header halfWidth={true} {isMenuOpen} />
               </div>
               <div class="px-4 mt-8">
                 <ProjectDetail 
@@ -213,16 +192,7 @@
             </div>
       
             <div class="relative z-20 bg-BrandGray -mt-8 w-[101%] px-[1%] -mb-[1px]"> 
-              <ProjectDetail 
-                  title={selectedProjectData.title} 
-                  status={selectedProjectData.status} 
-                  summary={selectedProjectData.summary} 
-                  description={selectedProjectData.description} 
-                  backgroundColor={selectedProjectData.backgroundColor} 
-                  websiteURL={selectedProjectData.websiteURL}
-                  github={selectedProjectData.githubLink}
-                  twitter={selectedProjectData.twitter ?? ""}
-                />
+              <ProjectDetail {selectedProjectId} />
             </div>
           </main>
         </div>

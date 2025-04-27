@@ -15,8 +15,6 @@ export interface Project {
   mainColour: string;
   secondaryColour: string;
   thirdColour: string;
-
-  component: Component;
   buttonText: string;
   backgroundImage: string;
   screenshot: string;
