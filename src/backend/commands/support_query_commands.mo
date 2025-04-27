@@ -1,9 +1,10 @@
 import Enums "../enums/enums";
-import MopsIds "mo:waterway-mops/Ids";
+import Ids "mo:waterway-mops/Ids";
+import WWWLIds "mo:waterway-mops/WWLIds";
 module AppCommands {
 
     public type CreateSupportQuery = {
-        createdBy: MopsIds.PrincipalId;
+        createdBy : Ids.PrincipalId;
         contact : Text;
         message : Text;
         name : Text;
@@ -14,22 +15,22 @@ module AppCommands {
     };
 
     public type AssignSupportQueryToTeamMember = {
-        supportQueryId: MopsIds.SupportQueryId;
-        teamMemberId: MopsIds.TeamMemberId;
-        assignedOn: Int;
+        supportQueryId : WWWLIds.SupportQueryId;
+        teamMemberId : WWWLIds.TeamMemberId;
+        assignedOn : Int;
     };
 
     public type UpdateSupportQueryStatus = {
-        supportQueryId: MopsIds.SupportQueryId;
-        updatedStatus: Enums.SupportQueryStatus;
+        supportQueryId : WWWLIds.SupportQueryId;
+        updatedStatus : Enums.SupportQueryStatus;
     };
 
     public type AddSupportQueryComment = {
-        supportQueryId: MopsIds.SupportQueryId;
-        comment: Text;
+        supportQueryId : WWWLIds.SupportQueryId;
+        comment : Text;
     };
 
     public type RemoveSupportQueryComment = {
-        supportQueryId: MopsIds.SupportQueryId;
+        supportQueryId : WWWLIds.SupportQueryId;
     };
-}
+};

@@ -1,14 +1,15 @@
 import MopsEnums "mo:waterway-mops/Enums";
-import MopsIds "mo:waterway-mops/Ids";
+import Ids "mo:waterway-mops/Ids";
+import WWLIds "mo:waterway-mops/WWLIds";
 import Enums "../enums/enums";
 
 module ProjectCommands {
 
     public type CreateProject = {
-        id : MopsIds.ProjectId;
+        id : WWLIds.ProjectId;
         name : Text;
-        backendCanisterId : MopsIds.CanisterId;
-        frontendCanisterId : MopsIds.CanisterId;
+        backendCanisterId : Ids.CanisterId;
+        frontendCanisterId : Ids.CanisterId;
         websiteURL : Text;
         githubLink : Text;
         socialLinks : [(Text, Text)];
@@ -24,8 +25,8 @@ module ProjectCommands {
     public type UpdateProject = {
         app : MopsEnums.WaterwayLabsApp;
         name : ?Text;
-        backendCanisterId : ?MopsIds.CanisterId;
-        frontendCanisterId : ?MopsIds.CanisterId;
+        backendCanisterId : ?Ids.CanisterId;
+        frontendCanisterId : ?Ids.CanisterId;
         websiteURL : ?Text;
         githubLink : ?Text;
         socialLinks : ?[(Text, Text)];

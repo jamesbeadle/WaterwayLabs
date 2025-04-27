@@ -1,28 +1,29 @@
-import MopsIds "mo:waterway-mops/Ids";
+import Ids "mo:waterway-mops/Ids";
+import WWLIds "mo:waterway-mops/WWLIds";
 module TeamMemberCommands = {
 
     public type AddTeamMember = {
-        firstName: Text;
-        lastName: Text;
-        principalId: MopsIds.PrincipalId;
-        jobTitle: Text;
-        bio: [Text];
-        image: Blob;
-        video: ?Blob;
+        firstName : Text;
+        lastName : Text;
+        principalId : Ids.PrincipalId;
+        jobTitle : Text;
+        bio : [Text];
+        image : Blob;
+        video : ?Blob;
     };
 
     public type UpdateTeamMember = {
-        id: MopsIds.TeamMemberId;
-        firstName: Text;
-        lastName: Text;
-        principalId: MopsIds.PrincipalId;
-        jobTitle: Text;
-        bio: [Text];
-        image: Blob;
-        video: ?Blob;
+        id : WWLIds.TeamMemberId;
+        firstName : Text;
+        lastName : Text;
+        principalId : Ids.PrincipalId;
+        jobTitle : Text;
+        bio : [Text];
+        image : Blob;
+        video : ?Blob;
     };
 
     public type RemoveTeamMember = {
-        id: MopsIds.TeamMemberId;
+        id : WWLIds.TeamMemberId;
     };
 };
