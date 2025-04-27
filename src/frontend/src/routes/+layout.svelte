@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { browser } from "$app/environment";
-  import { page } from "$app/stores";
 
   import { initAuthWorker } from "$lib/services/worker-auth-service";
   import { authStore, type AuthStoreData } from "$lib/stores/auth-store";
