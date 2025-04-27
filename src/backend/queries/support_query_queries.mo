@@ -1,5 +1,7 @@
 import MopsEnums "mo:waterway-mops/Enums";
+import Ids "mo:waterway-mops/Ids";
 import AppTypes "../types/app_types";
+import Enums "../enums/app_enums";
 
 module SupportQueries{
     public type GetSupportQueries = {
@@ -17,8 +19,8 @@ module SupportQueries{
         message : Text;
         contact : Text;
         status : Enums.QueryStatus;
-        submittedBy : MopsIds.PrincipalId;
+        submittedBy : Ids.PrincipalId;
         submittedOn : Int;
-        assignedTo : TeamMember;
+        assignedTo : Ids.PrincipalId;
     };  
 }

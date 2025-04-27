@@ -1,4 +1,5 @@
-import Enums "../enums/enums";
+
+import Enums "../enums/app_enums";
 import MopsIds "mo:waterway-mops/Ids";
 module AppCommands {
 

@@ -1,5 +1,4 @@
-import Enums "../enums/enums";
-import MopsEnums "mo:waterway-mops/Enums";
+import Enums "mo:waterway-mops/Enums";
 import MopsIds "mo:waterway-mops/Ids";
 
 module AppQueries {
@@ -19,7 +18,7 @@ module AppQueries {
     public type SystemEvent = {
         eventId : Nat;
         eventTime : Int;
-        eventType : MopsEnums.LogEntryType;
+        eventType : Enums.LogEntryType;
         eventTitle : Text;
         eventDetail : Text;
     };

@@ -1,5 +1,5 @@
 import MopsIds "mo:waterway-mops/Ids";
-import Enums "../enums/enums";
+import Enums "../enums/app_enums";
 import MopsEnums "mo:waterway-mops/Enums";
 
 module ProjectQueries {
