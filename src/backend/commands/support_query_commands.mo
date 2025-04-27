@@ -4,7 +4,6 @@ import MopsIds "mo:waterway-mops/Ids";
 module AppCommands {
 
     public type CreateSupportQuery = {
-        createdBy: MopsIds.PrincipalId;
         contact : Text;
         message : Text;
         name : Text;

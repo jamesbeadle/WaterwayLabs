@@ -1,6 +1,8 @@
 import { writable } from "svelte/store";
 import type {
+  ApplicationLogs,
   CanisterInfo,
+  GetApplicationLogs,
   GetCanisterInfo,
   GetProjectCanisters,
   Project,
@@ -23,6 +25,12 @@ function createProjectStore() {
     return new ProjectService().getCanisterInfo(dto);
   }
 
+  async function getApplicationLogs(
+    dto: GetApplicationLogs,
+  ): Promise<ApplicationLogs | undefined> {
+    return new ProjectService().getApplicationLogs(dto);
+  }
+
   async function topupCanister(
     canisterId: string,
     cycles: bigint,
@@ -36,6 +44,7 @@ function createProjectStore() {
     getProjectCanisters,
     getCanisterInfo,
     topupCanister,
+    getApplicationLogs,
   };
 }
 

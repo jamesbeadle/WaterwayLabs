@@ -2,7 +2,9 @@ import { authStore } from "$lib/stores/auth-store";
 import { isError } from "$lib/utils/helpers";
 import { idlFactory } from "../../../../declarations/backend";
 import type {
+  ApplicationLogs,
   CanisterInfo,
+  GetApplicationLogs,
   GetCanisterInfo,
   GetProjectCanisters,
   ProjectCanisters,
@@ -43,6 +45,15 @@ export class ProjectService {
     console.log(result);
     if (isError(result))
       throw new Error("Failed to fetch project canister info");
+    return result.ok;
+  }
+
+  async getApplicationLogs(
+    dto: GetApplicationLogs,
+  ): Promise<ApplicationLogs | undefined> {
+    const result = await this.actor.getApplicationLogs(dto);
+    console.log(result);
+    if (isError(result)) throw new Error("Failed to fetch application logs");
     return result.ok;
   }
 

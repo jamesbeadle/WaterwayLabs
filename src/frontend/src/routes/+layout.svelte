@@ -1,62 +1,64 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, type Snippet } from "svelte";
   import { fade } from "svelte/transition";
   import { browser } from "$app/environment";
 
   import { initAuthWorker } from "$lib/services/worker-auth-service";
   import { authStore, type AuthStoreData } from "$lib/stores/auth-store";
-  import { storeManager } from "$lib/manager/store-manager.js";
   import DesktopLayout from "./DesktopLayout.svelte";
   import MobileLayout from "./MobileLayout.svelte";
   import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
 
   import "../app.css";
-    import { appStore } from "$lib/stores/app-store";
-    import Toasts from "$lib/components/toasts/toasts.svelte";
+  import Toasts from "$lib/components/toasts/toasts.svelte";
+    import { get } from "svelte/store";
+    import { initUserProfile } from "$lib/services/user-profile-service";
+    import { displayAndCleanLogoutMsg } from "$lib/services/auth-services";
+
+  interface Props {
+    children: Snippet
+  }
+
+  let { children } : Props = $props();
   
   let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined;
-
-  const syncAuthStore = async () => {
-    if (!browser) return;
-    try {
-      await authStore.sync();
-      console.log($authStore.identity?.getPrincipal().toString() ?? "Not found")
-    } catch (err) {
-      console.error("Error syncing auth store:", err);
-    }
-  };
-
-  const init = async () => {
-    await syncAuthStore();
-    await storeManager.syncStores();
-    await appStore.checkServerVersion();
-  };
+  let isLoading = $state(true);
 
   onMount(async () => {
     if (browser) {
-      worker = await initAuthWorker();
+      document.querySelector('#app-spinner')?.remove();
     }
+    await init();
+    const identity = get(authStore).identity;
+    if (identity) {
+      try {
+        await initUserProfile({ identity });
+      } catch (err) {
+        console.error('Error mounting Football God:', err);
+      }
+    }
+    worker = await initAuthWorker();
+    isLoading = false;
   });
 
-  $: worker, $authStore, worker?.syncAuthIdle($authStore);
-  $: (() => {
-    if (browser && $authStore) {
-      const spinner = document.querySelector("body > #app-spinner");
-      spinner?.remove();
-    }
-  })();
+  const init = async () => {
+    if (!browser) return;
+    await authStore.sync();
+    displayAndCleanLogoutMsg();
+  };
 
 </script>
 
-<svelte:window on:storage={syncAuthStore} />
+
+<svelte:window on:storage={authStore.sync} />
+
 
 {#await init()}
   <div in:fade>
     <LocalSpinner />
   </div>
 {:then _}
-  <div>
-    <Toasts />
+  <Toasts />
     <div class="block lg:hidden">
       <MobileLayout>
         {@render children()}
@@ -68,5 +70,4 @@
         {@render children()}
       </DesktopLayout>
     </div>
-  </div>
 {/await}

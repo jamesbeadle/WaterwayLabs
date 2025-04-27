@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import type { Project, ProjectId } from "../../../../../declarations/backend/backend.did";
+    import type { ApplicationLogs, Project, ProjectId } from "../../../../../declarations/backend/backend.did";
     import { projectStore } from "$lib/stores/project-store";
     import LocalSpinner from "../shared/local-spinner.svelte";
 
@@ -11,14 +11,19 @@
     let { selectedProjectId } : Props = $props();
 
     let project: Project | undefined = $state(undefined);
-    let logs: Logs | Undefined = $state(undefined);
+    let logs: ApplicationLogs | undefined = $state(undefined);
 
-    onMount(() => {
+    onMount(async () => {
       project = $projectStore.find(x => x.id == selectedProjectId)!;
-      logs = await projectStore.getLogs({
-
-      });
+      await getLogs();
     });
+
+    async function getLogs(){
+      logs = await projectStore.getApplicationLogs({
+        app: { ICFC: null},
+        page: 1n
+      });
+    }
 </script>
 
 
@@ -26,14 +31,18 @@
   <div class="flex flex-col space-y-2 xs:space-y-4 mx-4 mt-6 xs:mt-8 sm:mt-6 lg:mt-24">
 
     <h1 class="text-2xl xs:text-3xl lg:text-5xl uppercase semi-bold tracking-wide">{project.name}</h1>
-
-    {#each logs as log}
-      <div class="flex items-center justify-between w-full">
-        <p>{log.time}</p>
-        <p>{log.canisterId}</p>
-        <p>{log.detail}</p>
-      </div>
-    {/each}
+    {#if logs}
+      {#each logs.logs as log}
+        <div class="flex items-center justify-between w-full">
+          <p>{log.id}</p>
+          <p>{log.eventTime}</p>
+          <p>{log.eventTitle}</p>
+          <p>{log.eventType}</p>
+          <p>{log.eventId}</p>
+          <p>{log.eventDetail}</p>
+        </div>
+      {/each}
+    {/if}
   </div>
 {:else}
   <LocalSpinner />

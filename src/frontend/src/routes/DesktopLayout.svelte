@@ -2,8 +2,13 @@
   import { page } from "$app/stores";
   import Footer from "$lib/shared/Footer.svelte";
   import Header from "$lib/shared/Header.svelte";
+    import type { Snippet } from "svelte";
 
-  $: isHomePage = $page.url.pathname === '/';  
+  interface Props {
+    children: Snippet
+  }
+
+  let { children } : Props = $props();
 
 </script>
 
@@ -14,7 +19,7 @@
     </div>
   {/if}
     {@render children()}
-  {#if !isHomePage}
+  {#if $page.url.pathname != '/'}
     <Footer />
   {/if}
 </div>
