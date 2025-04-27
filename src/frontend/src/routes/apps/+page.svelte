@@ -2,28 +2,28 @@
     import { onMount } from "svelte";
 
     import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
-    import type { Canister, Project } from "../../../../declarations/backend/backend.did";
+    import type { Canister, Project, ProjectId } from "../../../../declarations/backend/backend.did";
     import { projectStore } from "$lib/stores/project-store";
     import { formatCycles } from "$lib/utils/helpers";
     import { storeManager } from "$lib/manager/store-manager";
     import CanisterTopupModal from "$lib/components/app/canister-topup-modal.svelte";
     import WidgetSpinner from "$lib/components/shared/widget-spinner.svelte";
 
-    let loadingProject = false;
+    let isLoading = $state(false);
 
-    let waterwayLabsCanisterSummary: Canister[] = [];
+    let waterwayLabsCanisterSummary: Canister[] = $state([]);
+    let selectedProjectId: ProjectId = $state(0);
     let selectedProject: Project | undefined;
     let selectedProjectCanisterSummary: Canister[] = [];
-    let selectedCanisterId = "";
-    let showCanisterTopupModal = false;
-    let trillionCycles = 0;
+    let selectedCanisterId = $state("");
+    let showCanisterTopupModal = $state(false);
+    let trillionCycles = $state(0);
 
     onMount(async () => {
         try{
-            //await storeManager.syncStores();
-            loadingProject = true;
-            //waterwayLabsCanisterSummary = await projectStore.getProjectCanisterInfo(1);
-            loadingProject = false;
+            isLoading = true;
+            await storeManager.syncStores();
+            waterwayLabsCanisterSummary = await projectStore.getProjectCanisterInfo(1);
         } catch(error){
             console.error("Error :", error);
         } finally {
@@ -31,15 +31,17 @@
         }
     });
 
-    $: if(selectedProjectId == 0){
-        selectedProjectCanisterSummary = [];
-    }
-
-    $: if(selectedProjectId > 0 && 
-            (!selectedProject || (selectedProjectId != selectedProject.id))){
-        selectedProject = $projectStore.find(x => x.id == selectedProjectId);
-        loadCanisterInfo();
-    }
+    $effect(() => {
+        if(selectedProjectId == 0){
+            selectedProjectCanisterSummary = [];
+            return;
+        }
+        if(selectedProjectId > 0 && 
+                (!selectedProject || (selectedProjectId != selectedProject.id))){
+            selectedProject = $projectStore.find(x => x.id == selectedProjectId);
+            loadCanisterInfo();
+        }
+    })
 
     async function loadCanisterTopupModal(canisterId: string){
         if(canisterId == ""){
@@ -50,9 +52,9 @@
     }
 
     async function loadCanisterInfo(){
-        loadingProject = true;
+        isLoading = true;
         selectedProjectCanisterSummary = await projectStore.getProjectCanisterInfo(selectedProjectId);
-        loadingProject = false;
+        isLoading = false;
     }
 
     async function closeCanisterTopup(){
@@ -134,8 +136,8 @@
                     />
                 </div>
                 <div class="flex flex-row">
-                    <button on:click={closeCanisterTopup} class="btn w-1/2 mx-1">Cancel</button>
-                    <button on:click={topupCanister} class="btn w-1/2 mx-1">Topup</button>
+                    <button onclick={closeCanisterTopup} class="btn w-1/2 mx-1">Cancel</button>
+                    <button onclick={topupCanister} class="btn w-1/2 mx-1">Topup</button>
                 </div>
             </div>
         </CanisterTopupModal>

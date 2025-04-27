@@ -81,15 +81,15 @@
                 <div class="text-left">
                     <span class="status">AI Data Download</span>
                     <br />
-                    <button on:click={() => handleDownload(fetchSnapshots)}>
+                    <button onclick={() => handleDownload(fetchSnapshots)}>
                         Download Historical Manager Snapshot Data
                     </button>
                     <br />
-                    <button on:click={() => handleDownload(fetchLivePlayersData)}>
+                    <button onclick={() => handleDownload(fetchLivePlayersData)}>
                         Download Live Football Players 
                     </button>
                     <br />
-                    <button on:click={() => handleDownload(getSeasonFixtures)}>
+                    <button onclick={() => handleDownload(getSeasonFixtures)}>
                         Download Historical Football Fixtures
                     </button>
                 </div>

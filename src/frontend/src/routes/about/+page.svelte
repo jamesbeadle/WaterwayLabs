@@ -1,10 +1,4 @@
-<script lang="ts">
-    
-   export let isMenuOpen: boolean;
-</script>
-
-  
-  <div>
+<div>
 
     <div class="responsive-row-col">
       <div class="text-left lg:w-1/2">

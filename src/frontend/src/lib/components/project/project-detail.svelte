@@ -27,7 +27,7 @@
       <div class="flex flex-row space-x-4 lg:hidden">
         {#if project.githubLink.length && project.githubLink.length > 0}
           <a href={project.githubLink} target="_blank" rel="noopener noreferrer">
-            <GithubIcon className="h-5 w-5" color={project.mainColour}/>
+            <GithubIcon className="h-5 w-5" fill={project.mainColour}/>
           </a>
         {/if}
         {#if project?.socialLinks}
