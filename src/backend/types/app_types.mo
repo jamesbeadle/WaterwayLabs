@@ -1,6 +1,6 @@
 
 import Enums "../enums/app_enums";
-import MopsIds "mo:waterway-mops/Ids";
+import WWLIds "mo:waterway-mops/WWLIds";
 import WaterWayEnums "mo:waterway-mops/Enums";
 import Ids "mo:waterway-mops/Ids";
 module AppTypes {
@@ -8,10 +8,10 @@ module AppTypes {
     public type SupportQueryId = Nat32;
 
     public type Project = {
-        id : MopsIds.ProjectId;
+        id : WWLIds.ProjectId;
         name : Text;
-        backendCanisterId : MopsIds.CanisterId;
-        frontendCanisterId : MopsIds.CanisterId;
+        backendCanisterId : Ids.CanisterId;
+        frontendCanisterId : Ids.CanisterId;
         websiteURL : Text;
         githubLink : Text;
         socialLinks : [(Text, Text)];
@@ -25,12 +25,12 @@ module AppTypes {
     };
 
     public type SupportQuery = {
-        id : MopsIds.SupportQueryId;
+        id : WWLIds.SupportQueryId;
         name : Text;
         message : Text;
         contact : Text;
         status : Enums.QueryStatus;
-        submittedBy : MopsIds.PrincipalId;
+        submittedBy : Ids.PrincipalId;
         submittedOn : Int;
         assignedTo : Ids.PrincipalId;
     };
@@ -49,7 +49,7 @@ module AppTypes {
 
     public type CanisterCyclesTopup = {
         app : WaterWayEnums.WaterwayLabsApp;
-        canisterId : MopsIds.CanisterId;
+        canisterId : Ids.CanisterId;
         amount : Nat;
         time : Int;
     };

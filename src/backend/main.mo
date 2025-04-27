@@ -2,6 +2,7 @@ import MopsEnums "mo:waterway-mops/Enums";
 import MopsIds "mo:waterway-mops/Ids";
 import MopsTypes "mo:waterway-mops/BaseTypes";
 import BaseTypes "mo:waterway-mops/BaseTypes";
+import WWLIds "mo:waterway-mops/WWLIds";
 
 /* ----- Mops Packages ----- */
 
@@ -16,20 +17,19 @@ import Timer "mo:base/Timer";
 
 import WWLCanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
 import WWLCanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
-import Ids "mo:waterway-mops/Ids";
 import LogsQueries "mo:waterway-mops/logs-management/LogsQueries";
-import LogsCommands "mo:waterway-mops/logs-management/LogsCommands";
 import DataHashQueries "queries/data_hash_queries";
 import ProjectQueries "queries/project_queries";
 import SupportQueryQueries "queries/support_query_queries";
 import TeamMemberQueries "queries/team_member_queries";
-import CanisterCommands "./commands/canister_management_commands";
 
 /* ----- Commands ----- */
 
 import SupportQueryCommands "commands/support_query_commands";
 import ProjectCommands "commands/project_commands";
 import TeamMemberCommands "commands/team_member_commands";
+import LogsCommands "mo:waterway-mops/logs-management/LogsCommands";
+import CanisterCommands "./commands/canister_management_commands";
 
 /* ----- Managers ----- */
 
@@ -58,7 +58,7 @@ actor Self {
     private stable var stable_application_logs : [MopsTypes.ApplicationLog] = [];
     private stable var stable_support_queries : [AppTypes.SupportQuery] = [];
     private stable var stable_canisters_cycles_topups : [AppTypes.CanisterCyclesTopup] = [];
-    private stable var stable_project_id : Ids.ProjectId = 1;
+    private stable var stable_project_id : WWLIds.ProjectId = 1;
     private stable var stable_app_status : MopsTypes.AppStatus = {
         onHold = true;
         version = "";
@@ -88,7 +88,7 @@ actor Self {
 
     /* ----- Projects Queries ----- */
 
-    public shared ({ caller }) func getProjects(dto : ProjectQueries.GetProjects) : async Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
+    public query func getProjects(dto : ProjectQueries.GetProjects) : async Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
         return projectsManager.getProjects(dto);
     };
 
@@ -259,7 +259,7 @@ actor Self {
 
     /* ----- Support Query Queries ----- */
 
-    public shared ({ caller }) func getSupportQueries(dto : SupportQueryQueries.GetSupportQueries) : async Result.Result<SupportQueryQueries.GetSupportQueries, MopsEnums.Error> {
+    public shared ({ caller }) func getSupportQueries(dto : SupportQueryQueries.GetSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
         assert isCallerAdmin(Principal.toText(caller));
         return await supportQueriesManager.getSupportQueries(dto);
     };
@@ -268,8 +268,7 @@ actor Self {
 
     public shared ({ caller }) func createSupportQuery(dto : SupportQueryCommands.CreateSupportQuery) : async Result.Result<(), MopsEnums.Error> {
         assert not Principal.isAnonymous(caller);
-        let principalId = Principal.toText(caller);
-        let _ = await supportQueriesManager.createSupportQuery(principalId, dto);
+        let _ = await supportQueriesManager.createSupportQuery(dto);
         return #ok();
     };
 

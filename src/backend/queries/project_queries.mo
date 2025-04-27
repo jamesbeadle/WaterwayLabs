@@ -1,4 +1,5 @@
-import MopsIds "mo:waterway-mops/Ids";
+import Ids "mo:waterway-mops/Ids";
+import WWLIds "mo:waterway-mops/WWLIds";
 import Enums "../enums/app_enums";
 import MopsEnums "mo:waterway-mops/Enums";
 
@@ -13,10 +14,10 @@ module ProjectQueries {
     };
 
     public type Project = {
-        id : MopsIds.ProjectId;
+        id : WWLIds.ProjectId;
         name : Text;
-        backendCanisterId : MopsIds.CanisterId;
-        frontendCanisterId : MopsIds.CanisterId;
+        backendCanisterId : Ids.CanisterId;
+        frontendCanisterId : Ids.CanisterId;
         websiteURL : Text;
         githubLink : Text;
         socialLinks : [(Text, Text)];
