@@ -23,19 +23,13 @@ module {
             });
         };
 
-        public func createSupportQuery(raisedBy: Ids.PrincipalId, dto : SupportQueryCommands.CreateSupportQuery) : async Result.Result<(), MopsEnums.Error> {
-            let valid = validate(dto);
-            switch (valid) {
-                case (#ok valid) {
-                    //todo create
-
-
-                    return #ok();
-                };
-                case (#err error) {
-                    return #err(error);
-                };
+        public func createSupportQuery(dto : SupportQueryCommands.CreateSupportQuery) : async Result.Result<(), MopsEnums.Error> {
+            let validateResult = validate(dto);
+            let #ok(_) = validateResult else {
+                return validateResult;
             };
+            //todo create
+
         };
 
         private func validate(_ : SupportQueryCommands.CreateSupportQuery) : Result.Result<(), MopsEnums.Error> {

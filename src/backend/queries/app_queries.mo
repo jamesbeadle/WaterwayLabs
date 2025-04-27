@@ -5,13 +5,11 @@ module AppQueries {
 
     public type GetApplicationLogs = {
         app : Enums.WaterwayLabsApp;
-        page : Nat;
     };
 
     public type ApplicationLogs = {
         app : Enums.WaterwayLabsApp;
         logs : [SystemEvent];
-        page : Nat;
         totalEntries : Nat;
     };
 
@@ -26,7 +24,6 @@ module AppQueries {
     public type GetCanisterSnapshots = {
         app : Enums.WaterwayLabsApp;
         canisterId : MopsIds.CanisterId;
-        page : Nat;
     };
 
 };

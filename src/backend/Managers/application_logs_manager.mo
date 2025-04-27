@@ -1,8 +1,12 @@
 import Result "mo:base/Result";
-import ApplicationLogQueries "../queries/application_log_queries";
-import ApplicationLogCommands "../commands/application_log_commands";
+import Iter "mo:base/Iter";
+import Array "mo:base/Array";
+import Time "mo:base/Time";
 import MopsTypes "mo:waterway-mops/BaseTypes";
 import MopsEnums "mo:waterway-mops/Enums";
+import LogsQueries "mo:waterway-mops/logs-management/LogsQueries";
+import LogsCommands "mo:waterway-mops/logs-management/LogsCommands";
+import BaseTypes "mo:waterway-mops/BaseTypes";
 
 module {
     public class ApplicationLogsManager() {
@@ -15,42 +19,39 @@ module {
             applicationLogs := stable_application_logs;
         };
 
-        public func getApplicationLogs(dto : ApplicationLogQueries.GetApplicationLogs) : Result.Result<ApplicationLogQueries.ApplicationLogs, MopsEnums.Error> {
-            return #ok({
-                app = dto.app;
-                logs = []; //todo add logs
-                page = dto.page;
-                totalEntries = 0; //TODO get
-            });
-        };
+        public func getApplicationLogs(dto : LogsQueries.GetApplicationLogs) : async Result.Result<LogsQueries.ApplicationLogs, MopsEnums.Error> {
+            let app = dto.app;
+            var appLogs : [MopsTypes.ApplicationLog] = [];
+            for (log in Iter.fromArray(applicationLogs)) {
+                if (log.app == app) {
+                    appLogs := Array.append(appLogs, [log]);
+                };
 
-        public func addApplicationLog(dto : ApplicationLogCommands.AddApplicationLog) : async Result.Result<(), MopsEnums.Error> {
-            let valid = validate(dto);
-            switch (valid) {
-                case (#ok valid) {
-                    //todo create
-                    /*
-                    let logsBuffer = Buffer.fromArray<BaseTypes.SystemLog>(logs);
-                    logsBuffer.add({
-                        eventDetail = dto.eventDetail;
-                        eventId = dto.eventId;
-                        eventTime = dto.eventTime;
-                        eventTitle = dto.eventTitle;
-                        eventType = dto.eventType;
-                    });
-                    logs := Buffer.toArray(logsBuffer);
-                    */
-                    return #ok();
-                };
-                case (#err error) {
-                    return #err(error);
-                };
             };
+
+            let res : LogsQueries.ApplicationLogs = {
+                app = app;
+                logs = appLogs;
+                totalEntries = Array.size(appLogs);
+            };
+            return #ok(res);
+
         };
 
-        private func validate(_ : ApplicationLogCommands.AddApplicationLog) : Result.Result<(), MopsEnums.Error> {
-            return #err(#NotFound)
-            //TODO Validate
+        public func addApplicationLog(dto : LogsCommands.AddApplicationLog) : async Result.Result<(), MopsEnums.Error> {
+            let logEntry : BaseTypes.ApplicationLog = {
+                id = Array.size(applicationLogs) + 1;
+                app = dto.app;
+                createdOn = Time.now();
+                logType = dto.logType;
+                title = dto.title;
+                detail = dto.detail;
+                error = dto.error;
+            };
+
+            applicationLogs := Array.append(applicationLogs, [logEntry]);
+            return #ok(());
         };
+
     };
 };
