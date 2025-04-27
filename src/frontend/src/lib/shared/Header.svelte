@@ -6,14 +6,17 @@
   import { authStore } from '$lib/stores/auth-store';
   import { onMount } from 'svelte';
   
-  export let isMenuOpen = false;
-  export let halfWidth = false;
+	interface Props {
+		isMenuOpen: boolean;
+		halfWidth: boolean;
+  };
+    
+  let { isMenuOpen, halfWidth } : Props = $props();
 
-  let isLoggedIn = false;
-  $: currentPath = $page.url.pathname;
+  let isLoggedIn = $state(false);
 
   function isActivePage(path: string): boolean {
-    return currentPath === '/' + path;
+    return $page.url.pathname === '/' + path;
   }
 
   onMount(async () => {
@@ -53,7 +56,7 @@
     <button
       class="flex-shrink-0 sm:hidden"
       aria-label="Menu"
-      on:click={toggleMenu}
+      onclick={toggleMenu}
     >
       <DotsIcon className="w-5" />
     </button>
@@ -68,7 +71,7 @@
         <span class="header-text">WATERWAY <span class="exLight">LABS</span></span> 
       </a>
       <button 
-        on:click={toggleMenu}
+        onclick={toggleMenu}
         aria-label="Close menu">
         <CloseIcon className="w-5 text-white" />
       </button>
@@ -76,24 +79,24 @@
     <div class="mobile-menu-links">
       <div class="horizontal-divider"></div>
       <div class="mobile-menu-item">
-        <a href="/about" class="mobile-nav-link" on:click={toggleMenu}>ABOUT</a>
-        <a href="/about" on:click={toggleMenu}>
+        <a href="/about" class="mobile-nav-link" onclick={toggleMenu}>ABOUT</a>
+        <a href="/about" onclick={toggleMenu}>
           <ArrowIcon className="w-7 h-7" />
         </a>
       </div>
       <div class="horizontal-divider"></div>
       
       <div class="mobile-menu-item">
-        <a href="/team" class="mobile-nav-link" on:click={toggleMenu}>TEAM</a>
-        <a href="/team" on:click={toggleMenu}>
+        <a href="/team" class="mobile-nav-link" onclick={toggleMenu}>TEAM</a>
+        <a href="/team" onclick={toggleMenu}>
           <ArrowIcon className="w-7 h-7" />
         </a>
       </div>
       <div class="horizontal-divider"></div>
       
       <div class="mobile-menu-item">
-        <a href="/contact" class="mobile-nav-link" on:click={toggleMenu}>CONTACT</a>
-        <a href="/contact" on:click={toggleMenu}>
+        <a href="/contact" class="mobile-nav-link" onclick={toggleMenu}>CONTACT</a>
+        <a href="/contact" onclick={toggleMenu}>
           <ArrowIcon className="w-7 h-7" />
         </a>
       </div>
@@ -102,8 +105,8 @@
 
       {#if isLoggedIn}
         <div class="mobile-menu-item">
-          <a href="/account" class="mobile-nav-link" on:click={toggleMenu}>ACCOUNT</a>
-          <a href="/account" on:click={toggleMenu}>
+          <a href="/account" class="mobile-nav-link" onclick={toggleMenu}>ACCOUNT</a>
+          <a href="/account" onclick={toggleMenu}>
             <ArrowIcon className="w-7 h-7" />
           </a>
         </div>

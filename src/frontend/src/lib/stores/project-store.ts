@@ -1,17 +1,34 @@
 import { writable } from "svelte/store";
 import type {
-  CanisterDTO,
-  ProjectDTO,
+  ApplicationLogs,
+  CanisterInfo,
+  GetApplicationLogs,
+  GetCanisterInfo,
+  GetProjectCanisters,
+  Project,
+  ProjectCanisters,
 } from "../../../../declarations/backend/backend.did";
 import { ProjectService } from "$lib/services/project-service";
 
 function createProjectStore() {
-  const { subscribe, set } = writable<ProjectDTO[]>([]);
+  const { subscribe, set } = writable<Project[]>([]);
 
-  async function getProjectCanisterInfo(
-    projectId: number,
-  ): Promise<CanisterDTO[]> {
-    return new ProjectService().getProjectCanisterInfo(projectId);
+  async function getProjectCanisters(
+    dto: GetProjectCanisters,
+  ): Promise<ProjectCanisters | undefined> {
+    return new ProjectService().getProjectCanisters(dto);
+  }
+
+  async function getCanisterInfo(
+    dto: GetCanisterInfo,
+  ): Promise<CanisterInfo | undefined> {
+    return new ProjectService().getCanisterInfo(dto);
+  }
+
+  async function getApplicationLogs(
+    dto: GetApplicationLogs,
+  ): Promise<ApplicationLogs | undefined> {
+    return new ProjectService().getApplicationLogs(dto);
   }
 
   async function topupCanister(
@@ -23,9 +40,11 @@ function createProjectStore() {
 
   return {
     subscribe,
-    setProjects: (projects: ProjectDTO[]) => set(projects),
-    getProjectCanisterInfo,
+    setProjects: (projects: Project[]) => set(projects),
+    getProjectCanisters,
+    getCanisterInfo,
     topupCanister,
+    getApplicationLogs,
   };
 }
 

@@ -1,8 +1,10 @@
-import Enums "../enums/enums";
-import Ids "mo:waterway-mops/Ids";
-import WaterWayEnums "mo:waterway-mops/Enums";
+import Enums "../enums/app_enums";
 import WWLIds "mo:waterway-mops/WWLIds";
+import WaterWayEnums "mo:waterway-mops/Enums";
+import Ids "mo:waterway-mops/Ids";
 module AppTypes {
+
+    public type SupportQueryId = Nat32;
 
     public type Project = {
         id : WWLIds.ProjectId;
@@ -29,11 +31,11 @@ module AppTypes {
         status : Enums.QueryStatus;
         submittedBy : Ids.PrincipalId;
         submittedOn : Int;
-        assignedTo : TeamMember;
+        assignedTo : Ids.PrincipalId;
     };
 
     public type TeamMember = {
-        id : WWLIds.TeamMemberId;
+        id : Ids.PrincipalId;
         name : Text;
         title : Text;
         image : Text;

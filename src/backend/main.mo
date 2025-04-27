@@ -17,20 +17,19 @@ import Timer "mo:base/Timer";
 
 import WWLCanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
 import WWLCanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
-import Ids "mo:waterway-mops/Ids";
 import LogsQueries "mo:waterway-mops/logs-management/LogsQueries";
-import LogsCommands "mo:waterway-mops/logs-management/LogsCommands";
 import DataHashQueries "queries/data_hash_queries";
 import ProjectQueries "queries/project_queries";
 import SupportQueryQueries "queries/support_query_queries";
 import TeamMemberQueries "queries/team_member_queries";
-import CanisterCommands "./commands/canister_management_commands";
 
 /* ----- Commands ----- */
 
 import SupportQueryCommands "commands/support_query_commands";
 import ProjectCommands "commands/project_commands";
 import TeamMemberCommands "commands/team_member_commands";
+import LogsCommands "mo:waterway-mops/logs-management/LogsCommands";
+import CanisterCommands "./commands/canister_management_commands";
 
 /* ----- Managers ----- */
 
@@ -89,7 +88,7 @@ actor Self {
 
     /* ----- Projects Queries ----- */
 
-    public shared ({ caller }) func getProjects(dto : ProjectQueries.GetProjects) : async Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
+    public query func getProjects(dto : ProjectQueries.GetProjects) : async Result.Result<ProjectQueries.Projects, MopsEnums.Error> {
         return projectsManager.getProjects(dto);
     };
 
@@ -260,7 +259,7 @@ actor Self {
 
     /* ----- Support Query Queries ----- */
 
-    public shared ({ caller }) func getSupportQueries(dto : SupportQueryQueries.GetSupportQueries) : async Result.Result<SupportQueryQueries.GetSupportQueries, MopsEnums.Error> {
+    public shared ({ caller }) func getSupportQueries(dto : SupportQueryQueries.GetSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
         assert isCallerAdmin(Principal.toText(caller));
         return await supportQueriesManager.getSupportQueries(dto);
     };
@@ -268,7 +267,7 @@ actor Self {
     /* ----- Support Query Commands ----- */
 
     public shared ({ caller }) func createSupportQuery(dto : SupportQueryCommands.CreateSupportQuery) : async Result.Result<(), MopsEnums.Error> {
-        let _ = Principal.toText(caller);
+        assert not Principal.isAnonymous(caller);
         let _ = await supportQueriesManager.createSupportQuery(dto);
         return #ok();
     };

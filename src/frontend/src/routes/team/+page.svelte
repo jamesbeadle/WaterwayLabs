@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { storeManager } from "$lib/manager/store-manager";
   import { teamStore } from "$lib/stores/team-store";
-  import Layout from "../Layout.svelte";
   import GridDisplay from "$lib/components/team/grid-display.svelte";
 
 
@@ -19,7 +18,6 @@
   }
 </script>
 
-<Layout>
   <div class="mx-auto">
     <div class="responsive-row-col">
       <div class="text-left lg:w-1/2">
@@ -42,4 +40,3 @@
     
     <GridDisplay teamMembers={$teamStore} />
   </div>
-</Layout>

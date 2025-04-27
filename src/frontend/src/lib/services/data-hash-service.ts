@@ -4,18 +4,16 @@ import { isError } from "$lib/utils/helpers";
 import type { DataHashes } from "../../../../declarations/backend/backend.did";
 
 export class DataHashService {
-  private readonly actor: any;
+  private actor: any;
 
   constructor() {
-    const canisterId = process.env.BACKEND_CANISTER_ID;
-    if (!canisterId) {
-      throw new Error("Backend canister ID not found in environment variables");
-    }
-
-    this.actor = ActorFactory.createActor(idlFactory, canisterId);
+    this.actor = ActorFactory.createActor(
+      idlFactory,
+      process.env.BACKEND_CANISTER_ID,
+    );
   }
 
-  async getDataHashes(): Promise<DataHashes> {
+  async getDataHashes(): Promise<DataHashes | undefined> {
     const result = await this.actor.getDataHashes({});
     if (isError(result)) throw new Error("Failed to fetch data hashes");
     return result.ok;

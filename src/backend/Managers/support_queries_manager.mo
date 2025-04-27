@@ -2,7 +2,8 @@ import Result "mo:base/Result";
 import AppTypes "../types/app_types";
 import SupportQueryQueries "../queries/support_query_queries";
 import SupportQueryCommands "../commands/support_query_commands";
-import MopsEnums "mo:waterway-mops/Enums"
+import MopsEnums "mo:waterway-mops/Enums";
+import Ids "mo:waterway-mops/Ids";
 
 module {
     public class SupportQueriesManager() {
@@ -15,9 +16,9 @@ module {
             supportQueries := stable_support_queries;
         };
 
-        public func getSupportQueries(dto : SupportQueryQueries.GetSupportQueries) : async Result.Result<SupportQueryQueries.GetSupportQueries, MopsEnums.Error> {
+        public func getSupportQueries(_ : SupportQueryQueries.GetSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
             return #ok({
-                app = dto.app;
+                supportQueries = []
                 //TODO add all details
             });
         };

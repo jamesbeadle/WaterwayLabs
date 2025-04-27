@@ -1,12 +1,4 @@
-<script lang="ts">
-  import Layout from "../Layout.svelte";
-    
-   export let isMenuOpen: boolean;
-</script>
-
-<Layout bind:isMenuOpen>
-  
-  <div>
+<div>
 
     <div class="responsive-row-col">
       <div class="text-left lg:w-1/2">
@@ -86,4 +78,3 @@
       <div class="horizontal-divider"></div>
     </div>
   </div>
-</Layout>

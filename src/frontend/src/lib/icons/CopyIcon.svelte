@@ -1,15 +1,20 @@
 <script lang="ts">
-  export let className = "";
-  export let principalId = "";
-  export let onClick: (text: string) => void;
-  export let hoverColor: string = "red";
+	interface Props {
+		className: string;
+    principalId: string;
+    onClick: (text: string) => void;
+    hoverColor: string
+  };
+    
+    let { className, principalId, onClick, hoverColor } : Props = $props();
 </script>
+
 
 <svg
   xmlns="http://www.w3.org/2000/svg"
   aria-hidden="true"
   class={className}
-  on:click={() => onClick(principalId)}
+  onclick={() => onClick(principalId)}
   fill="currentColor"
   viewBox="0 0 16 16"
   style="--hover-color: {hoverColor}; cursor: 'pointer'"

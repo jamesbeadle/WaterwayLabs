@@ -1,14 +1,14 @@
-import MopsEnums "mo:waterway-mops/Enums";
+import Enums "mo:waterway-mops/Enums";
 import MopsIds "mo:waterway-mops/Ids";
 
 module AppQueries {
 
     public type GetApplicationLogs = {
-        app : MopsEnums.WaterwayLabsApp;
+        app : Enums.WaterwayLabsApp;
     };
 
     public type ApplicationLogs = {
-        app : MopsEnums.WaterwayLabsApp;
+        app : Enums.WaterwayLabsApp;
         logs : [SystemEvent];
         totalEntries : Nat;
     };
@@ -16,13 +16,13 @@ module AppQueries {
     public type SystemEvent = {
         eventId : Nat;
         eventTime : Int;
-        eventType : MopsEnums.LogEntryType;
+        eventType : Enums.LogEntryType;
         eventTitle : Text;
         eventDetail : Text;
     };
 
     public type GetCanisterSnapshots = {
-        app : MopsEnums.WaterwayLabsApp;
+        app : Enums.WaterwayLabsApp;
         canisterId : MopsIds.CanisterId;
     };
 

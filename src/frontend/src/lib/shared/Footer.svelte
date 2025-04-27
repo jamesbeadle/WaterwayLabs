@@ -55,9 +55,9 @@
     <div class="flex flex-col px-6 lg:px-12 lg:flex-row lg:items-center lg:justify-between">
       <div class="mb-4 lg:mb-0">
         {#if isLoggedIn}
-          <button on:click={handleLogout}>LET'S CONNECT</button>
+          <button onclick={handleLogout}>LET'S CONNECT</button>
         {:else}
-          <button on:click={handleLogin}>LET'S CONNECT</button>
+          <button onclick={handleLogin}>LET'S CONNECT</button>
         {/if}
       </div>
       <div class="flex flex-col text-sm uppercase exLight lg:flex-row ">

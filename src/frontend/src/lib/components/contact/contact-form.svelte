@@ -1,24 +1,25 @@
 <script lang="ts">
-  import { contactStore } from "$lib/stores/contact-store";
   import { isError } from "$lib/utils/helpers";
-  import type { SubmitContactFormDTO } from "../../../../../declarations/backend/backend.did";
   import LocalSpinner from "../shared/local-spinner.svelte";
   import { toasts } from '$lib/stores/toasts-store';
+    import type { CreateSupportQuery } from "../../../../../declarations/backend/backend.did";
+    import { supportStore } from "$lib/stores/support-store";
 
-  let isLoading = false;
-  let name = "";
-  let email = "";
-  let message = "";
 
-  async function handleSubmit() {
+  let isLoading = $state(false);
+  let name = $state("");
+  let email = $state("");
+  let message = $state("");
+
+  async function createSupportQuery() {
     isLoading = true;
-    const dto: SubmitContactFormDTO = {
+    const dto: CreateSupportQuery = {
       contact: email,
       name,
-      message
+      message,
     };
 
-    const result = await contactStore.submitContactForm(dto);
+    const result = await supportStore.createSupportQuery(dto);
     const submitError = isError(result);
 
     if (submitError) {
@@ -54,7 +55,6 @@
 
 <div class="px-4 lg:px-32">
   <h2 class="mb-6 text-2xl">Send us a message</h2>
-  <form method="POST" on:submit|preventDefault={handleSubmit} class="space-y-6">
     <div class="mb-4">
       <label for="name" class="form-label">Name</label>
       <input type="text" id="name" name="name" bind:value={name} required class="form-input">
@@ -83,5 +83,4 @@
         Send Message
       </button>
     {/if}
-  </form>
 </div>

@@ -11,6 +11,10 @@
   --dialog-border-radius: 1px !important;
 }
 
+.tab-container {
+  @apply flex  px-4 py-2;
+}
+
 .exLight {
   font-family: "Mono Sans Expanded Extra Light" !important;
 }

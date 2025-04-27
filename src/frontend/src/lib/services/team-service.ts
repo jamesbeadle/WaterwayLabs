@@ -1,6 +1,6 @@
 import { isError } from "$lib/utils/helpers";
 import { idlFactory } from "../../../../declarations/backend";
-import type { TeamMemberDTO } from "../../../../declarations/backend/backend.did";
+import type { TeamMember } from "../../../../declarations/backend/backend.did";
 import { ActorFactory } from "../../utils/ActorFactory";
 
 export class TeamService {
@@ -13,7 +13,7 @@ export class TeamService {
     );
   }
 
-  async getTeamMembers(): Promise<TeamMemberDTO[]> {
+  async getTeamMembers(): Promise<TeamMember[]> {
     const result = await this.actor.getTeamMembers();
     if (isError(result)) throw new Error("Failed to fetch team members");
     return result.ok;

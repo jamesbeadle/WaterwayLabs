@@ -1,20 +1,36 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import type { Writable } from "svelte/store";
   import type { Project } from "$lib/types/projects";
+  import type { ProjectId } from '../../../../../declarations/backend/backend.did';
+  import OpenfplIcon from '$lib/icons/svgs/openfpl-icon.svelte';
+  import OpencareIcon from '$lib/icons/svgs/opencare-icon.svelte';
+  import OpenchefIcon from '$lib/icons/svgs/openchef-icon.svelte';
+  import OpenbeatsIcon from '$lib/icons/svgs/openbeats-icon.svelte';
+  import OpenbookIcon from '$lib/icons/svgs/openbook-icon.svelte';
+  import GolfpadIcon from '$lib/icons/svgs/golfpad-icon.svelte';
+  import IcpfaIcon from '$lib/icons/svgs/icpfa-icon.svelte';
+  import TransferKingsIcon from '$lib/icons/svgs/transfer-kings-icon.svelte';
+  import OpenwslIcon from '$lib/icons/svgs/openwsl-icon.svelte';
+  import JeffBetsIcon from '$lib/icons/svgs/jeff-bets-icon.svelte';
+  import IcfcIcon from '$lib/icons/svgs/icfc-icon.svelte';
+  import Icf1Icon from '$lib/icons/svgs/icf1-icon.svelte';
 
-  export let projects: Project[] = [];
-  export let selectedProjectId: Writable<number>;
-
+  interface Props {
+    selectedProjectId: ProjectId;
+    projects: Project[];
+  };
+  
+  let { selectedProjectId, projects } : Props = $props();
+  
   onMount(() => {
     if (projects.length > 0) {
-      $selectedProjectId = projects[0].id;
+      selectedProjectId = projects[0].id;
     }
   });
 
   function handleProjectSelect(project: Project) {
     if (!project) return;
-    $selectedProjectId = project.id;
+    selectedProjectId = project.id;
   }
 
   function getTailwindSize(projectName: string) : string{
@@ -36,12 +52,12 @@
   }
 
   function getProjectClasses(project: Project) {
-    const isSelected = $selectedProjectId === project.id;
+    const isSelected = selectedProjectId === project.id;
     return `w-full transition-transform duration-200 hover:scale-110 ${isSelected ? 'scale-110' : ''}`;
   }
 
   function getIconClasses(project: Project) {
-    const isSelected = $selectedProjectId === project.id;
+    const isSelected = selectedProjectId === project.id;
     return `flex items-center justify-center my-1 rounded-lg w-14 xs:w-20 h-14 xs:h-20 xs:rounded-2xl translate-z-0 ${isSelected ? 'animate-ring-pulse' : ''}`;
   }
 </script>
@@ -52,16 +68,51 @@
     {#each projects as project}
       <button 
         class={getProjectClasses(project)}
-        on:click={() => handleProjectSelect(project)}
+        onclick={() => handleProjectSelect(project)}
       >
         <div 
           class={getIconClasses(project)}
           style={`background-color: ${project.backgroundColor}`}
         >
-          <svelte:component 
-            this={project.component} 
-            className={getTailwindSize(project.name)} 
-          />
+          {#if project.name == 'ICFC'}
+            <IcfcIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'OpenFPL'}
+            <OpenfplIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'Jeff Bets'}
+            <JeffBetsIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'OpenWSL'}
+            <OpenwslIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'Transfer Kings'}
+            <TransferKingsIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'ICPFA'}
+            <IcpfaIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'ICGC'}
+            <IcfcIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'GolfPad'}
+            <GolfpadIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'ICF1'}
+            <Icf1Icon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'OpenBook'}
+            <OpenbookIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'OpenBeats'}
+            <OpenbeatsIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'OpenChef'}
+            <OpenchefIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'OpenCare'}
+            <OpencareIcon className={getTailwindSize(project.name)} />
+          {/if}
         </div>
       </button>
     {/each}

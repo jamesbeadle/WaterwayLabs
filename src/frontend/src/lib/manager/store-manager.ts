@@ -20,14 +20,21 @@ class StoreManager {
   }
 
   async syncStores(): Promise<void> {
-    /*
-    const newHashes = await this.dataHashService.getDataHashes();
+    const newHashesResult = await this.dataHashService.getDataHashes();
+
+    if (!newHashesResult) {
+      return;
+    }
+
+    let newHashes = newHashesResult.dataHashes;
 
     let error = isError(newHashes);
     if (error) {
       console.error("Error fetching data hashes.");
       return;
     }
+
+    let dataHashes = newHashesResult.dataHashes;
 
     for (const category of this.categories) {
       const categoryHash = newHashes.find((hash) => hash.category === category);
@@ -39,7 +46,6 @@ class StoreManager {
         this.loadFromCache(category);
       }
     }
-      */
   }
 
   private async syncCategory(category: string): Promise<void> {
