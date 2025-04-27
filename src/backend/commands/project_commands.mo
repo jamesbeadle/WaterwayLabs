@@ -1,7 +1,7 @@
 import MopsEnums "mo:waterway-mops/Enums";
 import Ids "mo:waterway-mops/Ids";
-import Enums "../enums/app_enums";
 import WWLIds "mo:waterway-mops/WWLIds";
+import Enums "../enums/app_enums";
 
 module ProjectCommands {
 

@@ -1,8 +1,8 @@
 import MopsEnums "mo:waterway-mops/Enums";
 import MopsIds "mo:waterway-mops/Ids";
+import WWLIds "mo:waterway-mops/WWLIds";
 import MopsTypes "mo:waterway-mops/BaseTypes";
 import BaseTypes "mo:waterway-mops/BaseTypes";
-import WWLIds "mo:waterway-mops/WWLIds";
 
 /* ----- Mops Packages ----- */
 
