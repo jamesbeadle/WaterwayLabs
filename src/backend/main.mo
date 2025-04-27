@@ -1,5 +1,6 @@
 import MopsEnums "mo:waterway-mops/Enums";
 import MopsIds "mo:waterway-mops/Ids";
+import WWLIds "mo:waterway-mops/WWLIds";
 import MopsTypes "mo:waterway-mops/BaseTypes";
 import BaseTypes "mo:waterway-mops/BaseTypes";
 
@@ -58,7 +59,7 @@ actor Self {
     private stable var stable_application_logs : [MopsTypes.ApplicationLog] = [];
     private stable var stable_support_queries : [AppTypes.SupportQuery] = [];
     private stable var stable_canisters_cycles_topups : [AppTypes.CanisterCyclesTopup] = [];
-    private stable var stable_project_id : Ids.ProjectId = 1;
+    private stable var stable_project_id : WWLIds.ProjectId = 1;
     private stable var stable_app_status : MopsTypes.AppStatus = {
         onHold = true;
         version = "";
