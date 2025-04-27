@@ -1,5 +1,6 @@
 <script lang="ts">
     import ProjectDetail from "$lib/components/project/project-detail.svelte";
+    import ProjectLogs from "$lib/components/project/project-logs.svelte";
     import { projectStore } from "$lib/stores/project-store";
 
     let activeTab: string = $state("details");
@@ -8,11 +9,11 @@
     function setActiveTab(tabName: string) {
         activeTab = tabName;
     };
-    let tabs: {id: string, label: string}[] = [
+
+    const tabs: {id: string, label: string}[] = [
         {id: 'details', label: 'Details'},
         {id: 'logs', label: 'Logs'}
     ];
-
     
 </script>
 

@@ -1,5 +1,7 @@
 import { writable } from "svelte/store";
 import type {
+  CanisterInfo,
+  GetCanisterInfo,
   GetProjectCanisters,
   Project,
   ProjectCanisters,
@@ -15,6 +17,12 @@ function createProjectStore() {
     return new ProjectService().getProjectCanisters(dto);
   }
 
+  async function getCanisterInfo(
+    dto: GetCanisterInfo,
+  ): Promise<CanisterInfo | undefined> {
+    return new ProjectService().getCanisterInfo(dto);
+  }
+
   async function topupCanister(
     canisterId: string,
     cycles: bigint,
@@ -26,6 +34,7 @@ function createProjectStore() {
     subscribe,
     setProjects: (projects: Project[]) => set(projects),
     getProjectCanisters,
+    getCanisterInfo,
     topupCanister,
   };
 }

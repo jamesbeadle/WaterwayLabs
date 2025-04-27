@@ -22,7 +22,9 @@ class StoreManager {
   async syncStores(): Promise<void> {
     const newHashesResult = await this.dataHashService.getDataHashes();
 
-    if(!newHashesResult){ return }
+    if (!newHashesResult) {
+      return;
+    }
 
     let newHashes = newHashesResult.dataHashes;
 

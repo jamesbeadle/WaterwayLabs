@@ -1,16 +1,18 @@
 <script lang="ts">
-    import type { FormSubmission } from "../../../../declarations/backend/backend.did";
     import { formatUnixDateTimeToReadable } from "$lib/utils/helpers";
     import { onMount } from "svelte";
-    import { contactStore } from "$lib/stores/contact-store";
     import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
+    import { supportStore } from "$lib/stores/support-store";
+    import type { SupportQueries } from "../../../../declarations/backend/backend.did";
 
-    let formSubmissions: FormSubmission[] = [];
-    let isLoading = true;
+    let supportQueries: SupportQueries | undefined = $state(undefined);
+    let isLoading = $state(true);
 
     onMount(async () => {
         try{
-            formSubmissions = await contactStore.getFormSubmissions();
+            supportQueries = await supportStore.getSupportQueries({
+                app: [{ ICFC: null }]
+            });
         } catch(error){
             console.error("Error fetching form submissions:", error);
         } finally {
@@ -33,8 +35,8 @@
             </div>
             <div class="horizontal-divider"></div>
             
-            {#each formSubmissions as submission}
-                {@const statusString = Object.keys(submission.status)[0]}
+            {#each supportQueries as supportQuery}
+                {@const statusString = Object.keys(supportQuery.status)[0]}
                 <div class="flex flex-col gap-4 mx-4">
                 <div class={`bg-white shadow-md rounded-lg p-4 border-l-4 
                     ${statusString == "Unread" ? 'border-blue-500' : ''} 
@@ -45,7 +47,7 @@
                 `
                 }>
                 <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm text-gray-500">{ formatUnixDateTimeToReadable(submission.submittedOn) }</span>
+                    <span class="text-sm text-gray-500">{ formatUnixDateTimeToReadable(supportQuery.submittedOn) }</span>
                     <span class={`text-xs font-semibold uppercase 
                         ${statusString == "Unread" ? 'border-blue-500' : ''} 
                         ${statusString == "Read" ? 'border-green-500' : ''} 
@@ -56,13 +58,13 @@
                 </div>
             
                 <div class="mb-2">
-                    <h3 class="text-lg font-semibold text-gray-800">{ submission.name }</h3>
-                    <p class="text-gray-700 text-sm">{ submission.message }</p>
+                    <h3 class="text-lg font-semibold text-gray-800">{ supportQuery.name }</h3>
+                    <p class="text-gray-700 text-sm">{ supportQuery.message }</p>
                 </div>
             
                 <div class="flex items-center mt-4">
                     <span class="text-sm font-medium text-gray-500">Contact:</span>
-                    <span class="ml-2 text-gray-600 text-sm">{ submission.contact }</span>
+                    <span class="ml-2 text-gray-600 text-sm">{ supportQuery.contact }</span>
                 </div>
                 </div>
                 </div>

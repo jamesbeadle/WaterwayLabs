@@ -1,10 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import type { Project, ProjectId } from "../../../../../declarations/backend/backend.did";
-    import ArrowIcon from "$lib/icons/ArrowIcon.svelte";
-    import GithubIcon from "$lib/icons/GithubIcon.svelte";
     import { projectStore } from "$lib/stores/project-store";
-    import WidgetSpinner from "../shared/widget-spinner.svelte";
+    import LocalSpinner from "../shared/local-spinner.svelte";
 
     interface Props {
       selectedProjectId: ProjectId;
@@ -38,7 +36,7 @@
     {/each}
   </div>
 {:else}
-  <WidgetSpinner />
+  <LocalSpinner />
 {/if}
 
 

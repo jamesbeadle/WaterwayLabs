@@ -16,9 +16,9 @@ module {
             supportQueries := stable_support_queries;
         };
 
-        public func getSupportQueries(dto : SupportQueryQueries.GetSupportQueries) : async Result.Result<SupportQueryQueries.GetSupportQueries, MopsEnums.Error> {
+        public func getSupportQueries(dto : SupportQueryQueries.GetSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
             return #ok({
-                app = dto.app;
+                supportQueries = []
                 //TODO add all details
             });
         };

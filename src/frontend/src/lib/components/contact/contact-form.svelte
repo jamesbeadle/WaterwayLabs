@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { contactStore } from "$lib/stores/contact-store";
+  import { contactStore } from "$lib/stores/support-store";
   import { isError } from "$lib/utils/helpers";
   import type { SubmitContactFormDTO } from "../../../../../declarations/backend/backend.did";
   import LocalSpinner from "../shared/local-spinner.svelte";

@@ -4,7 +4,7 @@
     import { onMount } from "svelte";
     import type { Project, ProjectId } from "../../../../../declarations/backend/backend.did";
     import { projectStore } from "$lib/stores/project-store";
-    import WidgetSpinner from "../shared/widget-spinner.svelte";
+    import LocalSpinner from "../shared/local-spinner.svelte";
 
     interface Props {
       selectedProjectId: ProjectId;
@@ -58,7 +58,7 @@
     </div>
   </div>
 {:else}
-  <WidgetSpinner />
+  <LocalSpinner />
 {/if}
 
 

@@ -2,6 +2,18 @@
   import { onMount } from 'svelte';
   import type { Project } from "$lib/types/projects";
   import type { ProjectId } from '../../../../../declarations/backend/backend.did';
+  import OpenfplIcon from '$lib/icons/svgs/openfpl-icon.svelte';
+  import OpencareIcon from '$lib/icons/svgs/opencare-icon.svelte';
+  import OpenchefIcon from '$lib/icons/svgs/openchef-icon.svelte';
+  import OpenbeatsIcon from '$lib/icons/svgs/openbeats-icon.svelte';
+  import OpenbookIcon from '$lib/icons/svgs/openbook-icon.svelte';
+  import GolfpadIcon from '$lib/icons/svgs/golfpad-icon.svelte';
+  import IcpfaIcon from '$lib/icons/svgs/icpfa-icon.svelte';
+  import TransferKingsIcon from '$lib/icons/svgs/transfer-kings-icon.svelte';
+  import OpenwslIcon from '$lib/icons/svgs/openwsl-icon.svelte';
+  import JeffBetsIcon from '$lib/icons/svgs/jeff-bets-icon.svelte';
+  import IcfcIcon from '$lib/icons/svgs/icfc-icon.svelte';
+  import Icf1Icon from '$lib/icons/svgs/icf1-icon.svelte';
 
   interface Props {
     selectedProjectId: ProjectId;
@@ -62,10 +74,45 @@
           class={getIconClasses(project)}
           style={`background-color: ${project.backgroundColor}`}
         >
-          <project.component 
-            this={project.component} 
-            className={getTailwindSize(project.name)} 
-          ></project.component>
+          {#if project.name == 'ICFC'}
+            <IcfcIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'OpenFPL'}
+            <OpenfplIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'Jeff Bets'}
+            <JeffBetsIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'OpenWSL'}
+            <OpenwslIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'Transfer Kings'}
+            <TransferKingsIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'ICPFA'}
+            <IcpfaIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'ICGC'}
+            <IcfcIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'GolfPad'}
+            <GolfpadIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'ICF1'}
+            <Icf1Icon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'OpenBook'}
+            <OpenbookIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'OpenBeats'}
+            <OpenbeatsIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'OpenChef'}
+            <OpenchefIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'OpenCare'}
+            <OpencareIcon className={getTailwindSize(project.name)} />
+          {/if}
         </div>
       </button>
     {/each}

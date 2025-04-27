@@ -1,1 +1,2 @@
-import{b as m}from"../chunks/index.a7zYSb_L.js";export{m as component};
+import { b as m } from "../chunks/index.a7zYSb_L.js";
+export { m as component };
