@@ -10,9 +10,11 @@
 
     onMount(async () => {
         try{
-            supportQueries = await supportStore.getSupportQueries({
+            let supportQueriesResult = await supportStore.getSupportQueries({
                 app: [{ ICFC: null }]
             });
+            if(!supportQueriesResult){ return }
+            supportQueries = supportQueriesResult;
         } catch(error){
             console.error("Error fetching form submissions:", error);
         } finally {
@@ -34,41 +36,45 @@
                 </div>
             </div>
             <div class="horizontal-divider"></div>
-            
-            {#each supportQueries as supportQuery}
-                {@const statusString = Object.keys(supportQuery.status)[0]}
-                <div class="flex flex-col gap-4 mx-4">
-                <div class={`bg-white shadow-md rounded-lg p-4 border-l-4 
-                    ${statusString == "Unread" ? 'border-blue-500' : ''} 
-                    ${statusString == "Read" ? 'border-green-500' : ''} 
-                    ${statusString == "Resolved" ? 'border-yellow-500' : ''} 
-                    ${statusString == "Ignored" ? 'border-red-500' : ''} 
-                    ${statusString == "Flagged" ? 'border-purple-500' : ''} 
-                `
-                }>
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm text-gray-500">{ formatUnixDateTimeToReadable(supportQuery.submittedOn) }</span>
-                    <span class={`text-xs font-semibold uppercase 
+
+            {#if supportQueries}
+                {#each supportQueries.supportQueries as supportQuery}
+                    {@const statusString = Object.keys(supportQuery.status)[0]}
+                    <div class="flex flex-col gap-4 mx-4">
+                    <div class={`bg-white shadow-md rounded-lg p-4 border-l-4 
                         ${statusString == "Unread" ? 'border-blue-500' : ''} 
                         ${statusString == "Read" ? 'border-green-500' : ''} 
                         ${statusString == "Resolved" ? 'border-yellow-500' : ''} 
                         ${statusString == "Ignored" ? 'border-red-500' : ''} 
-                        ${statusString == "Flagged" ? 'border-purple-500' : ''}
-                        `}>{ statusString }</span>
-                </div>
-            
-                <div class="mb-2">
-                    <h3 class="text-lg font-semibold text-gray-800">{ supportQuery.name }</h3>
-                    <p class="text-gray-700 text-sm">{ supportQuery.message }</p>
-                </div>
-            
-                <div class="flex items-center mt-4">
-                    <span class="text-sm font-medium text-gray-500">Contact:</span>
-                    <span class="ml-2 text-gray-600 text-sm">{ supportQuery.contact }</span>
-                </div>
-                </div>
-                </div>
-            {/each}
+                        ${statusString == "Flagged" ? 'border-purple-500' : ''} 
+                    `
+                    }>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-500">{ formatUnixDateTimeToReadable(supportQuery.submittedOn) }</span>
+                        <span class={`text-xs font-semibold uppercase 
+                            ${statusString == "Unread" ? 'border-blue-500' : ''} 
+                            ${statusString == "Read" ? 'border-green-500' : ''} 
+                            ${statusString == "Resolved" ? 'border-yellow-500' : ''} 
+                            ${statusString == "Ignored" ? 'border-red-500' : ''} 
+                            ${statusString == "Flagged" ? 'border-purple-500' : ''}
+                            `}>{ statusString }</span>
+                    </div>
+                
+                    <div class="mb-2">
+                        <h3 class="text-lg font-semibold text-gray-800">{ supportQuery.name }</h3>
+                        <p class="text-gray-700 text-sm">{ supportQuery.message }</p>
+                    </div>
+                
+                    <div class="flex items-center mt-4">
+                        <span class="text-sm font-medium text-gray-500">Contact:</span>
+                        <span class="ml-2 text-gray-600 text-sm">{ supportQuery.contact }</span>
+                    </div>
+                    </div>
+                    </div>
+                {/each}
+            {:else}
+                <p>No Support Queries Found</p>
+            {/if}
 
         {/if}
     </div>

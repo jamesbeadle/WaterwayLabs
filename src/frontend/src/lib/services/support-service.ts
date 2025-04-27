@@ -31,7 +31,9 @@ export class SupportService {
     return result.ok;
   }
 
-  async getSupportQueries(dto: GetSupportQueries): Promise<SupportQueries | undefined> {
+  async getSupportQueries(
+    dto: GetSupportQueries,
+  ): Promise<SupportQueries | undefined> {
     await authStore.sync();
     const identityActor: any = await ActorFactory.createIdentityActor(
       authStore,
