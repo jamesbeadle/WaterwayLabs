@@ -24,7 +24,6 @@
   let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined;
   let isLoading = $state(true);
   let isMenuOpen = $state(false);
-  let isHomepage = $state(true);
 
   function toggleMenu() {
       isMenuOpen = !isMenuOpen;
@@ -35,7 +34,6 @@
       document.querySelector('#app-spinner')?.remove();
     }
     worker = await initAuthWorker();
-    isHomepage = page.url.pathname == "/";
     isLoading = false;
   });
 
@@ -55,11 +53,11 @@
   </div>
 {:then _}
   <Toasts />
-  {#if isHomepage}
+  {#if page.url.pathname != "/"}
     <Header></Header>
   {/if}
   {@render children()}
-  {#if isHomepage}
+  {#if page.url.pathname != "/"}
     <Footer></Footer>
   {/if}
   <Sidebar {isMenuOpen} {toggleMenu} />

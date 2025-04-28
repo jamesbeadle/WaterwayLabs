@@ -1,0 +1,1 @@
+import{w as i}from"./BCWoSAAz.js";function c(){const{subscribe:a,update:s}=i([]);let e=0;function r(t){s(o=>[...o,{...t,id:++e}])}function n(t){s(o=>o.filter(d=>d.id!==t))}return{subscribe:a,addToast:r,removeToast:n}}const u=c(),{addToast:T}=u;export{u as t};
