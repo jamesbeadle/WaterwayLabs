@@ -18,9 +18,10 @@
   interface Props {
     selectedProjectId: ProjectId;
     projects: Project[];
+    selectProject: (selectedProjectId: ProjectId) => void;
   };
   
-  let { selectedProjectId, projects } : Props = $props();
+  let { selectedProjectId, projects, selectProject } : Props = $props();
   
   onMount(() => {
     if (projects.length > 0) {
@@ -30,7 +31,7 @@
 
   function handleProjectSelect(project: Project) {
     if (!project) return;
-    selectedProjectId = project.id;
+    selectProject(project.id);
   }
 
   function getTailwindSize(projectName: string) : string{
