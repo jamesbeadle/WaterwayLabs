@@ -11,8 +11,7 @@
 
   import "../app.css";
   import Toasts from "$lib/components/toasts/toasts.svelte";
-    import { get } from "svelte/store";
-    import { displayAndCleanLogoutMsg } from "$lib/services/auth-services";
+  import { displayAndCleanLogoutMsg } from "$lib/services/auth-services";
 
   interface Props {
     children: Snippet

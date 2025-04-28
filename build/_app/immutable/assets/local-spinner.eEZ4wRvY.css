@@ -1,0 +1,1 @@
+.local-spinner.svelte-pvdm52{border:5px solid rgba(255,255,255,.3);border-top:5px solid white;border-radius:50%;width:50px;height:50px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);animation:svelte-pvdm52-spin 1s linear infinite}@keyframes svelte-pvdm52-spin{0%{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
