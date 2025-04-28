@@ -2,17 +2,18 @@
   import { onMount, type Snippet } from "svelte";
   import { fade } from "svelte/transition";
   import { browser } from "$app/environment";
+  import { page } from '$app/state';
 
   import { initAuthWorker } from "$lib/services/worker-auth-service";
   import { authStore, type AuthStoreData } from "$lib/stores/auth-store";
-  import DesktopLayout from "./DesktopLayout.svelte";
-  import MobileLayout from "./MobileLayout.svelte";
-  import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
-
-  import "../app.css";
-  import Toasts from "$lib/components/toasts/toasts.svelte";
   import { displayAndCleanLogoutMsg } from "$lib/services/auth-services";
-    import Sidebar from "$lib/components/shared/sidebar.svelte";
+
+  import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
+  import Toasts from "$lib/components/toasts/toasts.svelte";
+  import Sidebar from "$lib/components/shared/sidebar.svelte";
+  import Header from "$lib/shared/Header.svelte";
+  import Footer from "$lib/shared/Footer.svelte";
+  import "../app.css";
 
   interface Props {
     children: Snippet
@@ -23,6 +24,7 @@
   let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined;
   let isLoading = $state(true);
   let isMenuOpen = $state(false);
+  let isHomepage = $state(true);
 
   function toggleMenu() {
       isMenuOpen = !isMenuOpen;
@@ -33,6 +35,7 @@
       document.querySelector('#app-spinner')?.remove();
     }
     worker = await initAuthWorker();
+    isHomepage = page.url.pathname == "/";
     isLoading = false;
   });
 
@@ -44,9 +47,7 @@
 
 </script>
 
-
 <svelte:window on:storage={authStore.sync} />
-
 
 {#await init()}
   <div in:fade>
@@ -54,26 +55,12 @@
   </div>
 {:then _}
   <Toasts />
-    <div class="block lg:hidden">
-      <MobileLayout>
-        {@render children()}
-      </MobileLayout>
-    </div>
-
-    <div class="hidden lg:block">
-      <DesktopLayout>
-        {@render children()}
-      </DesktopLayout>
-    </div>
-    
-    <Sidebar {isMenuOpen} {toggleMenu} />
-    {#if isMenuOpen}
-        <button 
-        class="fixed inset-0 z-30 pointer-events-none bg-black/40 sm:bg-black/20 sm:pointer-events-auto"
-        onclick={toggleMenu}
-        onkeydown={(e) => e.key === 'Enter' && toggleMenu()}
-        aria-label="Close menu overlay"
-        ></button>
-    {/if}
-               
+  {#if isHomepage}
+    <Header></Header>
+  {/if}
+  {@render children()}
+  {#if isHomepage}
+    <Footer></Footer>
+  {/if}
+  <Sidebar {isMenuOpen} {toggleMenu} />
 {/await}

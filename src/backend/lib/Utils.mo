@@ -23,6 +23,7 @@ module {
             case (#TransferKings) 13;
             case (#WaterwayLabs) 14;
             case (#OpenBeats) 15;
+            case (#GolfPad) 16;
         };
 
         Nat32.fromNat(val % (2 ** 32 - 1));

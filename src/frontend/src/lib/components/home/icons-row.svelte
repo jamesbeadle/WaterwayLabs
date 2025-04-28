@@ -14,6 +14,7 @@
   import JeffBetsIcon from '$lib/icons/svgs/jeff-bets-icon.svelte';
   import IcfcIcon from '$lib/icons/svgs/icfc-icon.svelte';
   import Icf1Icon from '$lib/icons/svgs/icf1-icon.svelte';
+    import FootballGodIcon from '$lib/icons/svgs/football-god-icon.svelte';
 
   interface Props {
     selectedProjectId: ProjectId;
@@ -78,20 +79,23 @@
           {#if project.name == 'ICFC'}
             <IcfcIcon className={getTailwindSize(project.name)} />
           {/if}
+          {#if project.name == 'FootballGod'}
+            <FootballGodIcon className={getTailwindSize(project.name)} />
+          {/if}
           {#if project.name == 'OpenFPL'}
             <OpenfplIcon className={getTailwindSize(project.name)} />
-          {/if}
-          {#if project.name == 'Jeff Bets'}
-            <JeffBetsIcon className={getTailwindSize(project.name)} />
           {/if}
           {#if project.name == 'OpenWSL'}
             <OpenwslIcon className={getTailwindSize(project.name)} />
           {/if}
-          {#if project.name == 'Transfer Kings'}
-            <TransferKingsIcon className={getTailwindSize(project.name)} />
+          {#if project.name == 'Jeff Bets'}
+            <JeffBetsIcon className={getTailwindSize(project.name)} />
           {/if}
           {#if project.name == 'ICPFA'}
             <IcpfaIcon className={getTailwindSize(project.name)} />
+          {/if}
+          {#if project.name == 'Transfer Kings'}
+            <TransferKingsIcon className={getTailwindSize(project.name)} />
           {/if}
           {#if project.name == 'ICGC'}
             <IcfcIcon className={getTailwindSize(project.name)} />

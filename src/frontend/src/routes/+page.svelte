@@ -12,13 +12,18 @@
   import IconsRow from "$lib/components/home/icons-row.svelte";
   import ProjectDetail from "$lib/components/project/project-detail.svelte";
   import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
+
+  interface Props {
+    selectedProjectId: ProjectId
+  }
+  
+  let { selectedProjectId = $bindable(2) } : Props = $props();
   
   type ProjectData = ReturnType<typeof transformProjectData>;
   
   const projectService = new ProjectService();
   
   let projects = $state<Project[]>([]);
-  let selectedProjectId = $state(2);
   let selectedProject = $state<Project | null>(null);
   let selectedProjectData = $state<ProjectData | null>(null);
   let isLoading = $state(true);
@@ -51,6 +56,7 @@
   async function loadProjects() {
     try {
       const projectDTOs = await projectService.getProjects();
+      console.log(projectDTOs)
       if (!projectDTOs) return;
       
       projects = projectDTOs.projects
@@ -109,48 +115,53 @@
   }
 </script>
 
+
 {#if isLoading || loadingProject}
   <LocalSpinner />
 {:else if selectedProjectData}
-  <div class="hidden w-full lg:flex">
-    <div class="full-screen-flex-row">
-      <div class="flex flex-col w-1/2 min-h-screen bg-BrandGray">
-        <div class="mx-4 mt-2">
-          <Header />
-        </div>
-        <div class="px-4 mt-8">
-          <ProjectDetail {selectedProjectId} />
-        </div>
-      </div>
 
-      <div class="relative flex items-center justify-center w-1/2" style={`background-color: ${selectedProjectData.backgroundColor}`}>
-        <div
-          class="absolute inset-0 z-0 bg-center bg-no-repeat"
-          style={`background-image: url('${selectedProjectData.backgroundImage}'); background-size: cover;`}
-        ></div>
-        
-        <div class="relative z-10 flex items-center justify-center w-full h-full overflow-hidden">
-          <div class="w-[95%] rounded-2xl border-8 border-BranchGray shadow-lg transform translate-x-[20%]">
-            <img src={selectedProjectData.screenshot} alt="Main feature" class="object-contain max-w-full max-h-full rounded" />
+  <div class="full-screen-flex">
+    <div class="hidden w-full lg:flex">
+      <div class="full-screen-flex-row">
+        <div class="flex flex-col w-1/2 min-h-screen bg-BrandGray">
+          <div class="mx-4 mt-2">
+            <Header />
+          </div>
+          <div class="px-4 mt-8">
+            <ProjectDetail {selectedProjectId} />
+          </div>
+        </div>
+
+        <div class="relative flex items-center justify-center w-1/2" style={`background-color: ${selectedProjectData.backgroundColor}`}>
+          <div
+            class="absolute inset-0 z-0 bg-center bg-no-repeat"
+            style={`background-image: url('${selectedProjectData.backgroundImage}'); background-size: cover;`}
+          ></div>
+          
+          <div class="relative z-10 flex items-center justify-center w-full h-full overflow-hidden">
+            <div class="w-[95%] rounded-2xl border-8 border-BranchGray shadow-lg transform translate-x-[20%]">
+              <img src={selectedProjectData.screenshot} alt="Main feature" class="object-contain max-w-full max-h-full rounded" />
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="lg:hidden">
-    <main class="flex flex-col items-center">
-      <div class="relative z-0" style = {`background-color: ${selectedProjectData.backgroundColor}`}>
-        <div class="mx-auto w-[50%] xs:w-[40%] lg:w-[60%] rounded-2xl border-4 border-BrandGray overflow-hidden translate-y-[10%] shadow-lg transform mt-2">
-          <img src={selectedProjectData.screenshot} alt="Main feature" class="object-top rounded" />
+    <div class="lg:hidden">
+      <main class="flex flex-col items-center">
+        <div class="relative z-0" style = {`background-color: ${selectedProjectData.backgroundColor}`}>
+          <div class="mx-auto w-[50%] xs:w-[40%] lg:w-[60%] rounded-2xl border-4 border-BrandGray overflow-hidden translate-y-[10%] shadow-lg transform mt-2">
+            <img src={selectedProjectData.screenshot} alt="Main feature" class="object-top rounded" />
+          </div>
         </div>
-      </div>
 
-      <div class="relative z-20 bg-BrandGray -mt-8 w-[101%] px-[1%] -mb-[1px]">
-        <ProjectDetail {selectedProjectId} />
-      </div>
-    </main>
+        <div class="relative z-20 bg-BrandGray -mt-8 w-[101%] px-[1%] -mb-[1px]">
+          <ProjectDetail {selectedProjectId} />
+        </div>
+      </main>
+    </div>
   </div>
+  
 {/if}
 
 <IconsRow {projects} {selectedProjectId} {selectProject} />
