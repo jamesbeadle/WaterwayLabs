@@ -130,7 +130,7 @@
         <div class="full-screen-flex-row">
           <div class="flex flex-col w-1/2 min-h-screen bg-BrandGray">
             <div class="mx-4 mt-2">
-              <Header halfWidth={true} {isMenuOpen} />
+              <Header />
             </div>
             <div class="px-4 mt-8">
               <ProjectDetail 

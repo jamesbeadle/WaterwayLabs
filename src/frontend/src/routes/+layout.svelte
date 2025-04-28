@@ -12,6 +12,7 @@
   import "../app.css";
   import Toasts from "$lib/components/toasts/toasts.svelte";
   import { displayAndCleanLogoutMsg } from "$lib/services/auth-services";
+    import Sidebar from "$lib/components/shared/sidebar.svelte";
 
   interface Props {
     children: Snippet
@@ -21,6 +22,11 @@
   
   let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined;
   let isLoading = $state(true);
+  let isMenuOpen = $state(false);
+
+  function toggleMenu() {
+      isMenuOpen = !isMenuOpen;
+  }
 
   onMount(async () => {
     if (browser) {
@@ -59,4 +65,15 @@
         {@render children()}
       </DesktopLayout>
     </div>
+    
+    <Sidebar {isMenuOpen} {toggleMenu} />
+    {#if isMenuOpen}
+        <button 
+        class="fixed inset-0 z-30 pointer-events-none bg-black/40 sm:bg-black/20 sm:pointer-events-auto"
+        onclick={toggleMenu}
+        onkeydown={(e) => e.key === 'Enter' && toggleMenu()}
+        aria-label="Close menu overlay"
+        ></button>
+    {/if}
+               
 {/await}

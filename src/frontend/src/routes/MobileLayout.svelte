@@ -25,7 +25,7 @@
 </script>
 <div class="full-screen-flex-col">
   <div class="w-full px-4">
-    <Header  isMenuOpen={false} halfWidth={false} />
+    <Header />
   </div>
   <div class="w-full">
     {@render children()}

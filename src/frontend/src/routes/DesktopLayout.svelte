@@ -13,7 +13,7 @@
 </script>
 
 <div class="full-screen-flex">
-  {#if !isHomePage}
+  {#if $page.url.pathname != '/'}
     <div class="mx-4 mt-2">
       <Header />
     </div>
