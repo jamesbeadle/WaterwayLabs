@@ -12,7 +12,6 @@
   import "../app.css";
   import Toasts from "$lib/components/toasts/toasts.svelte";
     import { get } from "svelte/store";
-    import { initUserProfile } from "$lib/services/user-profile-service";
     import { displayAndCleanLogoutMsg } from "$lib/services/auth-services";
 
   interface Props {
@@ -27,15 +26,6 @@
   onMount(async () => {
     if (browser) {
       document.querySelector('#app-spinner')?.remove();
-    }
-    await init();
-    const identity = get(authStore).identity;
-    if (identity) {
-      try {
-        await initUserProfile({ identity });
-      } catch (err) {
-        console.error('Error mounting Football God:', err);
-      }
     }
     worker = await initAuthWorker();
     isLoading = false;
