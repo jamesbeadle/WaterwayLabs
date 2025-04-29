@@ -8,16 +8,17 @@
   import { ProjectService } from "$lib/services/project-service";
   import { getStatusString } from "$lib/utils/helpers";
   
-  import Header from "$lib/shared/Header.svelte";
+  import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
+  import HomepageHeader from "$lib/shared/HomepageHeader.svelte";
   import IconsRow from "$lib/components/home/icons-row.svelte";
   import ProjectDetail from "$lib/components/project/project-detail.svelte";
-  import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
 
   interface Props {
-    selectedProjectId: ProjectId
+    selectedProjectId: ProjectId;
+    isMenuOpen: boolean;
   }
   
-  let { selectedProjectId = $bindable(2) } : Props = $props();
+  let { selectedProjectId = $bindable(2), isMenuOpen = $bindable(false) } : Props = $props();
   
   type ProjectData = ReturnType<typeof transformProjectData>;
   
@@ -113,6 +114,10 @@
   function selectProject(projectId: ProjectId) {
     selectedProjectId = projectId;
   }
+
+  function toggleMenu() {
+      isMenuOpen = !isMenuOpen;
+  }
 </script>
 
 
@@ -125,7 +130,7 @@
       <div class="full-screen-flex-row">
         <div class="flex flex-col w-1/2 min-h-screen bg-BrandGray">
           <div class="mx-4 mt-2">
-            <Header />
+            <HomepageHeader {toggleMenu}></HomepageHeader>
           </div>
           <div class="px-4 mt-8">
             <ProjectDetail {selectedProjectId} />
@@ -149,6 +154,9 @@
 
     <div class="lg:hidden">
       <main class="flex flex-col items-center">
+        <div class="w-full mx-4 mt-2">
+          <HomepageHeader {toggleMenu}></HomepageHeader>
+        </div>
         <div class="relative z-0" style = {`background-color: ${selectedProjectData.backgroundColor}`}>
           <div class="mx-auto w-[50%] xs:w-[40%] lg:w-[60%] rounded-2xl border-4 border-BrandGray overflow-hidden translate-y-[10%] shadow-lg transform mt-2">
             <img src={selectedProjectData.screenshot} alt="Main feature" class="object-top rounded" />

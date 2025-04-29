@@ -54,11 +54,11 @@
 {:then _}
   <Toasts />
   {#if page.url.pathname != "/"}
-    <Header></Header>
+    <Header {toggleMenu}></Header>
+    <Sidebar {isMenuOpen} {toggleMenu} />
   {/if}
   {@render children()}
   {#if page.url.pathname != "/"}
     <Footer></Footer>
   {/if}
-  <Sidebar {isMenuOpen} {toggleMenu} />
 {/await}
