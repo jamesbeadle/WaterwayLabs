@@ -2,16 +2,18 @@
   import { onMount, type Snippet } from "svelte";
   import { fade } from "svelte/transition";
   import { browser } from "$app/environment";
+  import { page } from '$app/state';
 
   import { initAuthWorker } from "$lib/services/worker-auth-service";
   import { authStore, type AuthStoreData } from "$lib/stores/auth-store";
-  import DesktopLayout from "./DesktopLayout.svelte";
-  import MobileLayout from "./MobileLayout.svelte";
-  import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
-
-  import "../app.css";
-  import Toasts from "$lib/components/toasts/toasts.svelte";
   import { displayAndCleanLogoutMsg } from "$lib/services/auth-services";
+
+  import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
+  import Toasts from "$lib/components/toasts/toasts.svelte";
+  import Sidebar from "$lib/components/shared/sidebar.svelte";
+  import Header from "$lib/shared/Header.svelte";
+  import Footer from "$lib/shared/Footer.svelte";
+  import "../app.css";
 
   interface Props {
     children: Snippet
@@ -21,6 +23,11 @@
   
   let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined;
   let isLoading = $state(true);
+  let isMenuOpen = $state(false);
+
+  function toggleMenu() {
+      isMenuOpen = !isMenuOpen;
+  }
 
   onMount(async () => {
     if (browser) {
@@ -38,9 +45,7 @@
 
 </script>
 
-
 <svelte:window on:storage={authStore.sync} />
-
 
 {#await init()}
   <div in:fade>
@@ -48,15 +53,12 @@
   </div>
 {:then _}
   <Toasts />
-    <div class="block lg:hidden">
-      <MobileLayout>
-        {@render children()}
-      </MobileLayout>
-    </div>
-
-    <div class="hidden lg:block">
-      <DesktopLayout>
-        {@render children()}
-      </DesktopLayout>
-    </div>
+  {#if page.url.pathname != "/"}
+    <Header></Header>
+  {/if}
+  {@render children()}
+  {#if page.url.pathname != "/"}
+    <Footer></Footer>
+  {/if}
+  <Sidebar {isMenuOpen} {toggleMenu} />
 {/await}

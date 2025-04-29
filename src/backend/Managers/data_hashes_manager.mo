@@ -1,7 +1,10 @@
 import Result "mo:base/Result";
+import Buffer "mo:base/Buffer";
+import Iter "mo:base/Iter";
 import BaseTypes "mo:waterway-mops/BaseTypes";
 import DataHashQueries "../queries/data_hash_queries";
 import MopsEnums "mo:waterway-mops/Enums";
+import SHA224 "mo:waterway-mops/SHA224";
 
 module {
   public class DataHashesManager() {
@@ -14,20 +17,12 @@ module {
 
     public func getDataHashes(_ : DataHashQueries.GetDataHashes) : Result.Result<DataHashQueries.DataHashes, MopsEnums.Error> {
       return #ok({
-        //TODO
-      });
+        dataHashes = dataHashes;
+      })
     };
 
-    /*
-        public func updateAppStatus() : async Result.Result<(), MopsEnums.Error> {
-
-        };
-
-
-
-
-    private func updateDataHash(category : Text) : async () {
-      let hashBuffer = Buffer.fromArray<MopsIds.DataHash>([]);
+    public func updateDataHash(category : Text) : async () {
+      let hashBuffer = Buffer.fromArray<BaseTypes.DataHash>([]);
       var updated = false;
 
       for (hashObj in Iter.fromArray(dataHashes)) {
@@ -45,14 +40,6 @@ module {
 
       dataHashes := Buffer.toArray<BaseTypes.DataHash>(hashBuffer);
     };
-
-
-
-    private stable var  :  = [
-      { category = "projects"; hash = "DEFAULT" },
-      { category = "team_members"; hash = "DEFAULT" }
-    ];
-    */
 
   };
 };

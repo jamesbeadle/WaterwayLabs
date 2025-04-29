@@ -17,6 +17,12 @@
     onMount(() => {
       project = $projectStore.find(x => x.id == selectedProjectId)!;
     });
+
+    $effect(() => {
+      if(selectedProjectId > 0){
+        project = $projectStore.find(x => x.id == selectedProjectId)!;
+      }
+    });
 </script>
 
 

@@ -1,18 +1,9 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import DotsIcon from '$lib/icons/DotsIcon.svelte';
-  import CloseIcon from '$lib/icons/CloseIcon.svelte';
-  import ArrowIcon from '$lib/icons/ArrowIcon.svelte';
   import { authStore } from '$lib/stores/auth-store';
   import { onMount } from 'svelte';
   
-	interface Props {
-		isMenuOpen: boolean;
-		halfWidth: boolean;
-  };
-    
-  let { isMenuOpen, halfWidth } : Props = $props();
-
   let isLoggedIn = $state(false);
 
   function isActivePage(path: string): boolean {
@@ -29,13 +20,9 @@
     } finally {
     }
   });
-
-  function toggleMenu() {
-    isMenuOpen = !isMenuOpen;
-  }
 </script>
 
-<header class="py-4 px-4 bg-BrandGray lg:py-4 {halfWidth ? '' : 'w-full'} {!halfWidth && 'sm:mx-auto lg:container lg:mx-auto'}">
+<header class="py-4 px-4 bg-BrandGray lg:py-4 w-full sm:mx-auto lg:container lg:mx-auto'}">
   <div class="flex items-center justify-between w-full mx-auto max-w-screen-2xl">
     <a href="/" class="flex-shrink-0">
       <div class="flex items-center space-x-2">
@@ -56,62 +43,9 @@
     <button
       class="flex-shrink-0 sm:hidden"
       aria-label="Menu"
-      onclick={toggleMenu}
+      onclick={() => {}}
     >
       <DotsIcon className="w-5" />
     </button>
   </div>
 </header>
-
-{#if isMenuOpen}
-  <div class="mobile-menu">
-    <div class="mobile-menu-header">
-      <a href="/" class="flex items-center space-x-2">
-        <img src="logo.png" class="h-5" alt="Waterway Labs Logo" />
-        <span class="header-text">WATERWAY <span class="exLight">LABS</span></span> 
-      </a>
-      <button 
-        onclick={toggleMenu}
-        aria-label="Close menu">
-        <CloseIcon className="w-5 text-white" />
-      </button>
-    </div>
-    <div class="mobile-menu-links">
-      <div class="horizontal-divider"></div>
-      <div class="mobile-menu-item">
-        <a href="/about" class="mobile-nav-link" onclick={toggleMenu}>ABOUT</a>
-        <a href="/about" onclick={toggleMenu}>
-          <ArrowIcon className="w-7 h-7" />
-        </a>
-      </div>
-      <div class="horizontal-divider"></div>
-      
-      <div class="mobile-menu-item">
-        <a href="/team" class="mobile-nav-link" onclick={toggleMenu}>TEAM</a>
-        <a href="/team" onclick={toggleMenu}>
-          <ArrowIcon className="w-7 h-7" />
-        </a>
-      </div>
-      <div class="horizontal-divider"></div>
-      
-      <div class="mobile-menu-item">
-        <a href="/contact" class="mobile-nav-link" onclick={toggleMenu}>CONTACT</a>
-        <a href="/contact" onclick={toggleMenu}>
-          <ArrowIcon className="w-7 h-7" />
-        </a>
-      </div>
-
-      <div class="horizontal-divider"></div>
-
-      {#if isLoggedIn}
-        <div class="mobile-menu-item">
-          <a href="/account" class="mobile-nav-link" onclick={toggleMenu}>ACCOUNT</a>
-          <a href="/account" onclick={toggleMenu}>
-            <ArrowIcon className="w-7 h-7" />
-          </a>
-        </div>
-        <div class="horizontal-divider"></div>
-      {/if}
-    </div>
-  </div>
-{/if}

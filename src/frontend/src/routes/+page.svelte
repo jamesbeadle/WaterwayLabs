@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { Project } from "$lib/types/projects";
+  import type { ProjectId } from "../../../declarations/backend/backend.did";
 
   import { storeManager } from "$lib/manager/store-manager";
   import { projectStore } from "$lib/stores/project-store";
@@ -8,33 +9,32 @@
   import { getStatusString } from "$lib/utils/helpers";
   
   import Header from "$lib/shared/Header.svelte";
-  import IconsRow from '$lib/components/home/icons-row.svelte';
+  import IconsRow from "$lib/components/home/icons-row.svelte";
   import ProjectDetail from "$lib/components/project/project-detail.svelte";
   import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
+
+  interface Props {
+    selectedProjectId: ProjectId
+  }
   
-	interface Props {
-    isMenuOpen: boolean;
-  };
-  
-  let { isMenuOpen } : Props = $props();
+  let { selectedProjectId = $bindable(2) } : Props = $props();
   
   type ProjectData = ReturnType<typeof transformProjectData>;
   
   const projectService = new ProjectService();
   
-  let projects: Project[] = $state([]);
-  let selectedProjectId = $state(0);
-  let selectedProject: Project | null = $state(null);  
-  let selectedProjectData: ProjectData | null = $state(null);
+  let projects = $state<Project[]>([]);
+  let selectedProject = $state<Project | null>(null);
+  let selectedProjectData = $state<ProjectData | null>(null);
   let isLoading = $state(true);
   let loadingProject = $state(true);
   
   onMount(async () => {
-    try{
+    try {
       await storeManager.syncStores();
       await loadProjects();
-    } catch(error){
-      console.error("Error loading homepage projects");
+    } catch (error) {
+      console.error("Error loading homepage projects", error);
     } finally {
       isLoading = false;
       loadingProject = false;
@@ -42,64 +42,53 @@
   });
 
   $effect(() => {
-    if(selectedProjectId > 0) {
-      selectedProject = projects.find(x => x.id == selectedProjectId) ?? selectedProject;
-      if(selectedProject){
-        selectProject(selectedProject)
+    if (selectedProjectId > 0) {
+      const project = projects.find(x => x.id === selectedProjectId) ?? null;
+      if (project !== selectedProject) {
+        loadingProject = true;
+        selectedProject = project;
+        selectedProjectData = project ? transformProjectData(project) : null;
+        loadingProject = false;
       }
     }
   });
 
   async function loadProjects() {
-  try {
-    const projectDTOs = await projectService.getProjects();
-    if (!projectDTOs) { return }
-    
-    projects = projectDTOs?.projects
-      .sort((a, b) => a.id - b.id)
-      .filter(dto => dto.id !== 1)
-      .map(dto => {
-        const socialLinks = dto.socialLinks || [];
-        const twitterLink = socialLinks.find(([platform]) => platform === 'X');
-        
-        const project = {
-          ...dto,
-          websiteURL: dto.websiteURL.startsWith('http') ? dto.websiteURL : `https://${dto.websiteURL}`,
-          buttonText: "Visit Site",
-          backgroundImage: `/project-images/${dto.id}-background.png`,
-          screenshot: `/project-images/${dto.id}-screenshot.jpg`,
-          twitter: twitterLink && twitterLink[1] ? twitterLink[1] : undefined,
-          github: dto.githubLink || undefined,
-          backgroundColor: dto.mainColour,
-          status: getStatusString(dto.status),
-          selected: false,
-          socialLinks: socialLinks
-        };
-        return project;
-      });
-    
-    projectStore.setProjects(projectDTOs.projects.sort((a, b) => a.id - b.id));
-    
-    const initialProject = projects.find(p => p.id === 2) || projects[0];
-    if (initialProject) {
-      selectProject(initialProject);
+    try {
+      const projectDTOs = await projectService.getProjects();
+      console.log(projectDTOs)
+      if (!projectDTOs) return;
+      
+      projects = projectDTOs.projects
+        .sort((a, b) => a.id - b.id)
+        .filter(dto => dto.id !== 1)
+        .map(dto => {
+          const socialLinks = dto.socialLinks || [];
+          const twitterLink = socialLinks.find(([platform]) => platform === 'X');
+          
+          return {
+            ...dto,
+            websiteURL: dto.websiteURL.startsWith('http') ? dto.websiteURL : `https://${dto.websiteURL}`,
+            buttonText: "Visit Site",
+            backgroundImage: `/project-images/${dto.id}-background.png`,
+            screenshot: `/project-images/${dto.id}-screenshot.jpg`,
+            twitter: twitterLink && twitterLink[1] ? twitterLink[1] : undefined,
+            github: dto.githubLink || undefined,
+            backgroundColor: dto.mainColour,
+            status: getStatusString(dto.status),
+            socialLinks
+          };
+        });
+      
+      projectStore.setProjects(projectDTOs.projects.sort((a, b) => a.id - b.id));
+      
+      const initialProject = projects.find(p => p.id === 2) || projects[0];
+      if (initialProject) {
+        selectedProjectId = initialProject.id;
+      }
+    } catch (error) {
+      console.error('Failed to load projects:', error);
     }
-  } catch (error) {
-    console.error('Failed to load projects:', error);
-  }
-}
-
-  function selectProject(project: Project) {   
-    
-    loadingProject = true; 
-    if (!project) return;
-    selectedProject = project;
-    selectedProjectData = transformProjectData(project);
-    projects = projects.map(p => ({
-      ...p,
-      selected: p.id === project.id
-    }));
-    loadingProject = false;
   }
 
   function transformProjectData(project: Project) {
@@ -120,56 +109,59 @@
       screenshot: `/project-images/${project.id}-screenshot.jpg`
     };
   }
-  
+
+  function selectProject(projectId: ProjectId) {
+    selectedProjectId = projectId;
+  }
 </script>
-  {#if isLoading || loadingProject}
-    <LocalSpinner />
-  {:else}
-    {#if selectedProjectData}
-      <div class="hidden w-full lg:flex">
-        <div class="full-screen-flex-row">
-          <div class="flex flex-col w-1/2 min-h-screen bg-BrandGray">
-            <div class="mx-4 mt-2">
-              <Header halfWidth={true} {isMenuOpen} />
-            </div>
-            <div class="px-4 mt-8">
-              <ProjectDetail 
-                {selectedProjectId}
-              />
-            </div>
-          </div>
 
-          <div class="relative flex items-center justify-center w-1/2" style={`background-color: ${selectedProjectData.backgroundColor}`}>
-            <div
-              class="absolute inset-0 z-0 bg-center bg-no-repeat"
-              style={`background-image: url('${selectedProjectData.backgroundImage}'); background-size: cover;`}
-            ></div>
-        
-            <div class="relative z-10 flex items-center justify-center w-full h-full overflow-hidden">
-              <div class="w-[95%] rounded-2xl border-8 border-BrandGray shadow-lg transform translate-x-[20%]">
-                <img src={selectedProjectData.screenshot} alt="Main feature" class="object-contain max-w-full max-h-full rounded" />
-              </div>
-            </div>
-            
-          </div>
-        </div>  
 
-      </div>
-      <div class="lg:hidden lg:mb-0">
-        <main class="flex flex-col items-center">
-          
-          <div class="relative z-0" style={`background-color: ${selectedProjectData.backgroundColor}`}>
-            
-            <div class="mx-auto w-[50%] xs:w-[40%] lg:w-[60%] rounded-2xl border-4 border-BrandGray overflow-hidden translate-y-[10%] shadow-lg transform mt-2">
-              <img src={selectedProjectData.screenshot} alt="Main feature" class="object-top rounded" />
-            </div>
+{#if isLoading || loadingProject}
+  <LocalSpinner />
+{:else if selectedProjectData}
+
+  <div class="full-screen-flex">
+    <div class="hidden w-full lg:flex">
+      <div class="full-screen-flex-row">
+        <div class="flex flex-col w-1/2 min-h-screen bg-BrandGray">
+          <div class="mx-4 mt-2">
+            <Header />
           </div>
-    
-          <div class="relative z-20 bg-BrandGray -mt-8 w-[101%] px-[1%] -mb-[1px]"> 
+          <div class="px-4 mt-8">
             <ProjectDetail {selectedProjectId} />
           </div>
-        </main>
+        </div>
+
+        <div class="relative flex items-center justify-center w-1/2" style={`background-color: ${selectedProjectData.backgroundColor}`}>
+          <div
+            class="absolute inset-0 z-0 bg-center bg-no-repeat"
+            style={`background-image: url('${selectedProjectData.backgroundImage}'); background-size: cover;`}
+          ></div>
+          
+          <div class="relative z-10 flex items-center justify-center w-full h-full overflow-hidden">
+            <div class="w-[95%] rounded-2xl border-8 border-BranchGray shadow-lg transform translate-x-[20%]">
+              <img src={selectedProjectData.screenshot} alt="Main feature" class="object-contain max-w-full max-h-full rounded" />
+            </div>
+          </div>
+        </div>
       </div>
-    {/if}
-    <IconsRow {projects} {selectedProjectId} />
-  {/if}
+    </div>
+
+    <div class="lg:hidden">
+      <main class="flex flex-col items-center">
+        <div class="relative z-0" style = {`background-color: ${selectedProjectData.backgroundColor}`}>
+          <div class="mx-auto w-[50%] xs:w-[40%] lg:w-[60%] rounded-2xl border-4 border-BrandGray overflow-hidden translate-y-[10%] shadow-lg transform mt-2">
+            <img src={selectedProjectData.screenshot} alt="Main feature" class="object-top rounded" />
+          </div>
+        </div>
+
+        <div class="relative z-20 bg-BrandGray -mt-8 w-[101%] px-[1%] -mb-[1px]">
+          <ProjectDetail {selectedProjectId} />
+        </div>
+      </main>
+    </div>
+  </div>
+  
+{/if}
+
+<IconsRow {projects} {selectedProjectId} {selectProject} />
