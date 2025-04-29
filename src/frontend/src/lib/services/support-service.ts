@@ -12,7 +12,6 @@ import type {
 } from "../../../../declarations/backend/backend.did";
 
 export class SupportService {
-
   async getSupportQueries(
     dto: GetSupportQueries,
   ): Promise<SupportQueries | undefined> {
@@ -35,7 +34,8 @@ export class SupportService {
       process.env.BACKEND_CANISTER_ID ?? "",
     );
     const result = await identityActor.getArchivedSupportQueries(dto);
-    if (isError(result)) throw new Error("Failed to fetch archived support queries");
+    if (isError(result))
+      throw new Error("Failed to fetch archived support queries");
     return result.ok;
   }
 
@@ -48,7 +48,8 @@ export class SupportService {
       process.env.BACKEND_CANISTER_ID ?? "",
     );
     const result = await identityActor.getArchivedSupportQueries(dto);
-    if (isError(result)) throw new Error("Failed to fetch user support queries");
+    if (isError(result))
+      throw new Error("Failed to fetch user support queries");
     return result.ok;
   }
 
@@ -61,7 +62,8 @@ export class SupportService {
       process.env.BACKEND_CANISTER_ID ?? "",
     );
     const result = await identityActor.getArchivedUserSupportQueries(dto);
-    if (isError(result)) throw new Error("Failed to fetch archived user support queries");
+    if (isError(result))
+      throw new Error("Failed to fetch archived user support queries");
     return result.ok;
   }
 
@@ -100,7 +102,8 @@ export class SupportService {
     );
 
     const result = (await identityActor.removeSupportQueryComment(dto)) as any;
-    if (isError(result)) throw new Error("Failed to remove support query comment");
+    if (isError(result))
+      throw new Error("Failed to remove support query comment");
     return result.ok;
   }
 }
