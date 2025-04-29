@@ -267,7 +267,7 @@ actor Self {
         return await supportQueriesManager.getSupportQueries(dto);
     };
 
-    public shared ({ caller }) func getArchivedSupportQueries(dto: SupportQueryQueries.GetUserSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+    public shared ({ caller }) func getArchivedSupportQueries(dto: SupportQueryQueries.GetArchivedSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
         assert isCallerAdmin(Principal.toText(caller));
         return await supportQueriesManager.getArchivedSupportQueries(dto);
     };
