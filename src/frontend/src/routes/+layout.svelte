@@ -34,6 +34,7 @@
       document.querySelector('#app-spinner')?.remove();
     }
     worker = await initAuthWorker();
+    
     isLoading = false;
   });
 
@@ -52,13 +53,17 @@
     <LocalSpinner />
   </div>
 {:then _}
-  <Toasts />
-  {#if page.url.pathname != "/"}
-    <Header {toggleMenu}></Header>
-    <Sidebar {isMenuOpen} {toggleMenu} />
-  {/if}
-  {@render children()}
-  {#if page.url.pathname != "/"}
-    <Footer></Footer>
+  {#if isLoading}
+    <LocalSpinner />
+  {:else}
+    <Toasts />
+    {#if page.url.pathname != "/"}
+      <Header {toggleMenu}></Header>
+      <Sidebar {isMenuOpen} {toggleMenu} />
+    {/if}
+    {@render children()}
+    {#if page.url.pathname != "/"}
+      <Footer></Footer>
+    {/if}
   {/if}
 {/await}

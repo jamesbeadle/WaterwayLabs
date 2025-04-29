@@ -12,13 +12,12 @@
   import HomepageHeader from "$lib/shared/HomepageHeader.svelte";
   import IconsRow from "$lib/components/home/icons-row.svelte";
   import ProjectDetail from "$lib/components/project/project-detail.svelte";
+  import Sidebar from "$lib/components/shared/sidebar.svelte";
+    import { authStore } from "$lib/stores/auth-store";
 
-  interface Props {
-    selectedProjectId: ProjectId;
-    isMenuOpen: boolean;
-  }
   
-  let { selectedProjectId = $bindable(2), isMenuOpen = $bindable(false) } : Props = $props();
+  let selectedProjectId = $state(2);
+  let isMenuOpen = $state(false);
   
   type ProjectData = ReturnType<typeof transformProjectData>;
   
@@ -131,6 +130,7 @@
         <div class="flex flex-col w-1/2 min-h-screen bg-BrandGray">
           <div class="mx-4 mt-2">
             <HomepageHeader {toggleMenu}></HomepageHeader>
+            <Sidebar {isMenuOpen} {toggleMenu} />
           </div>
           <div class="px-4 mt-8">
             <ProjectDetail {selectedProjectId} />
@@ -156,6 +156,7 @@
       <main class="flex flex-col items-center">
         <div class="w-full mx-4 mt-2">
           <HomepageHeader {toggleMenu}></HomepageHeader>
+          <Sidebar {isMenuOpen} {toggleMenu} />
         </div>
         <div class="relative z-0" style = {`background-color: ${selectedProjectData.backgroundColor}`}>
           <div class="mx-auto w-[50%] xs:w-[40%] lg:w-[60%] rounded-2xl border-4 border-BrandGray overflow-hidden translate-y-[10%] shadow-lg transform mt-2">
