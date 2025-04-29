@@ -17,9 +17,8 @@ module Enums {
         #Resolved;
         #Ignored;
         #Flagged;
+        #Archived;
     };
-
-
 
     public type SupportQueryStatus = {
         #New;

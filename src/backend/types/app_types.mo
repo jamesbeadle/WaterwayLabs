@@ -32,6 +32,7 @@ module AppTypes {
         submittedBy : Ids.PrincipalId;
         submittedOn : Int;
         assignedTo : Ids.PrincipalId;
+        app: WaterWayEnums.WaterwayLabsApp;
     };
 
     public type TeamMember = {

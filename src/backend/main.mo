@@ -128,11 +128,13 @@ actor Self {
 
     /* ----- Team Member Commands ----- */
 
-    public shared func addTeamMember(dto : TeamMemberCommands.AddTeamMember) : async Result.Result<(), MopsEnums.Error> {
+    public shared ({ caller }) func addTeamMember(dto : TeamMemberCommands.AddTeamMember) : async Result.Result<(), MopsEnums.Error> {
+        assert isCallerAdmin(Principal.toText(caller));
         return await teamMembersManager.addTeamMember(dto);
     };
 
-    public shared func removeTeamMember(dto : TeamMemberCommands.RemoveTeamMember) : async Result.Result<(), MopsEnums.Error> {
+    public shared ({ caller }) func removeTeamMember(dto : TeamMemberCommands.RemoveTeamMember) : async Result.Result<(), MopsEnums.Error> {
+        assert isCallerAdmin(Principal.toText(caller));
         return await teamMembersManager.removeTeamMember(dto);
     };
 
@@ -265,11 +267,38 @@ actor Self {
         return await supportQueriesManager.getSupportQueries(dto);
     };
 
+    public shared ({ caller }) func getArchivedSupportQueries(dto: SupportQueryQueries.GetUserSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+        assert isCallerAdmin(Principal.toText(caller));
+        return await supportQueriesManager.getArchivedSupportQueries(dto);
+    };
+
+    public shared ({ caller }) func getUserSupportQueries(dto: SupportQueryQueries.GetUserSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+        assert not Principal.isAnonymous(caller);
+        return await supportQueriesManager.getUserSupportQueries(dto);
+    };
+
+    public shared ({ caller }) func getArchivedUserSupportQueries(dto: SupportQueryQueries.GetArchivedUserSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+        assert not Principal.isAnonymous(caller);
+        return await supportQueriesManager.getArchivedUserSupportQueries(dto);
+    };
+
     /* ----- Support Query Commands ----- */
 
     public shared ({ caller }) func createSupportQuery(dto : SupportQueryCommands.CreateSupportQuery) : async Result.Result<(), MopsEnums.Error> {
         assert not Principal.isAnonymous(caller);
         let _ = await supportQueriesManager.createSupportQuery(dto);
+        return #ok();
+    };
+
+    public shared ({ caller }) func addSupportQueryComment(dto : SupportQueryCommands.AddSupportQueryComment) : async Result.Result<(), MopsEnums.Error> {
+        assert not Principal.isAnonymous(caller);
+        let _ = await supportQueriesManager.addSupportQueryComment(dto);
+        return #ok();
+    };
+
+    public shared ({ caller }) func removeSupportQueryComment(dto : SupportQueryCommands.RemoveSupportQueryComment) : async Result.Result<(), MopsEnums.Error> {
+        assert not Principal.isAnonymous(caller);
+        let _ = await supportQueriesManager.removeSupportQueryComment(dto);
         return #ok();
     };
 

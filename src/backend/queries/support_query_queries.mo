@@ -6,11 +6,14 @@ import Enums "../enums/app_enums";
 module SupportQueries{
     public type GetSupportQueries = {
         app: ?MopsEnums.WaterwayLabsApp;
-        
+        page: Nat;
     };
 
     public type SupportQueries = {
         supportQueries: [SupportQuery];
+        page: Nat;
+        totalEntries: Nat;
+        app: ?MopsEnums.WaterwayLabsApp;
     };
 
     public type SupportQuery = {
@@ -23,4 +26,17 @@ module SupportQueries{
         submittedOn : Int;
         assignedTo : Ids.PrincipalId;
     };  
+
+    public type GetUserSupportQueries = {
+        page: Nat;
+    };
+
+    public type GetArchivedSupportQueries = {
+        app: ?MopsEnums.WaterwayLabsApp;
+        page: Nat;
+    };
+
+    public type GetArchivedUserSupportQueries = {
+        page: Nat;
+    };
 }
