@@ -10,13 +10,39 @@
     import SupportIcon from "$lib/icons/SupportIcon.svelte";
     import ProfileIcon from "$lib/icons/ProfileIcon.svelte";
     import LogoutIcon from "$lib/icons/LogoutIcon.svelte";
-    import { authStore } from "$lib/stores/auth-store";
+    import { authStore, type AuthSignInParams } from "$lib/stores/auth-store";
+    import { onMount } from "svelte";
+    import LocalSpinner from "./local-spinner.svelte";
+    import WalletIcon from "$lib/icons/WalletIcon.svelte";
+    import AdminIcon from "$lib/icons/AdminIcon.svelte";
 
   interface Props {
     isMenuOpen: boolean;
     toggleMenu: () => void;
   }
   let { isMenuOpen, toggleMenu }: Props = $props();
+
+  let isLoading = $state(false);
+  let isLoggedIn = $state(false); 
+  let isAdmin = $state(false);
+
+  onMount(async () => {
+      authStore.subscribe(async (store) => {
+        isLoggedIn = store.identity !== null && store.identity !== undefined;
+        if(!isLoggedIn) { 
+          isLoading = false;
+          return;
+        }
+
+        try {
+          isAdmin = await authStore.isAdmin();
+        } catch {
+
+        } finally {
+          isLoading = false;
+        }
+      });
+  });
 
   const menuItems = [
     { icon: MenuIcon, label: "Home", path: "/" },
@@ -26,6 +52,7 @@
     { icon: ProfileIcon, label: "Profile", path: "/profile" },
   ];
 
+  const signInItem = { icon: WalletIcon, label: "Sign In", path: "/" };
   const signOutItem = { icon: LogoutIcon, label: "Sign Out", path: "/" };
 
   async function handleMenuItemClick(item: (typeof menuItems)[number]) {
@@ -35,7 +62,23 @@
       toggleMenu();
       return;
     }
+
+    if (item.label === "Sign In") {
+      let params: AuthSignInParams = {
+        domain: import.meta.env.VITE_AUTH_PROVIDER_URL,
+      };
+      authStore.signIn(params);
+      await goto("/", { replaceState: true });
+      toggleMenu();
+      return;
+    }
+
     await goto(item.path);
+    toggleMenu();
+  }
+
+  async function loadAdmin(){
+    await goto('/admin');
     toggleMenu();
   }
 
@@ -100,18 +143,53 @@
           </button>
         </li>
       {/each}
+      {#if isAdmin}
+        <li>
+          <button
+            onclick={() => loadAdmin()}
+            class="flex items-center w-full p-3 space-x-4 rounded-lg hover:bg-gray-100 hover:text-BrandGray transition-colors"
+            class:active={$page.url.pathname === '/admin'}
+          >
+            <AdminIcon className="w-6 h-6" fill={$page.url.pathname === '/admin' ? '#1F2937' : 'white'} />
+            <span
+              class={$page.url.pathname === '/admin'
+                ? 'text-gray-800 font-medium'
+                : 'text-white'}
+            >
+              Admin
+            </span>
+          </button>
+        </li>
+      {/if}
     </ul>
   </nav>
 
-  <div class="px-6 pb-6">
-    <button
-      onclick={() => handleMenuItemClick(signOutItem)}
-      class="brand-button w-full flex items-center justify-center space-x-4 p-3 rounded-lg"
-    >
-      <signOutItem.icon fill='white' className="w-6 h-6" />
-      <span>{signOutItem.label}</span>
-    </button>
-  </div>
+
+
+  {#if isLoading}
+    <LocalSpinner />
+  {:else if !isLoggedIn}
+    <div class="px-6 pb-6">
+      <button
+        onclick={() => handleMenuItemClick(signInItem)}
+        class="brand-button w-full flex items-center justify-center space-x-4 p-3 rounded-lg"
+      >
+        <signInItem.icon fill='white' className="w-6 h-6" />
+        <span>{signInItem.label}</span>
+      </button>
+    </div>
+  {:else}
+    <div class="px-6 pb-6">
+      <button
+        onclick={() => handleMenuItemClick(signOutItem)}
+        class="brand-button w-full flex items-center justify-center space-x-4 p-3 rounded-lg"
+      >
+        <signOutItem.icon fill='white' className="w-6 h-6" />
+        <span>{signOutItem.label}</span>
+      </button>
+    </div>
+  {/if}
+
 </div>
 
 <style>

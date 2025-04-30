@@ -8,6 +8,8 @@ import { createAuthClient } from "$lib/utils/auth.utils";
 import { popupCenter } from "$lib/utils/window.utils";
 import type { AuthClient } from "@dfinity/auth-client";
 import { writable, type Readable } from "svelte/store";
+import { ActorFactory } from "../../utils/ActorFactory";
+import { isError } from "$lib/utils/helpers";
 
 export interface AuthStoreData {
   identity: OptionIdentity;
@@ -32,6 +34,7 @@ export interface AuthStore extends Readable<AuthStoreData> {
   sync: () => Promise<void>;
   signIn: (params: AuthSignInParams) => Promise<void>;
   signOut: () => Promise<void>;
+  isAdmin: () => Promise<boolean>
 }
 
 const initAuthStore = (): AuthStore => {
@@ -91,6 +94,17 @@ const initAuthStore = (): AuthStore => {
       }));
       localStorage.removeItem("user_profile_data");
     },
+
+    isAdmin: async (): Promise<boolean> => {
+      const identityActor = await ActorFactory.createIdentityActor(
+        authStore,
+        process.env.BACKEND_CANISTER_ID ?? "",
+      );
+
+      const result = await identityActor.isAdmin() as boolean;
+      if (isError(result)) return false;
+      return result;
+    }
   };
 };
 
