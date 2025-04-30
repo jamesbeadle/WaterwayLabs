@@ -383,16 +383,10 @@ actor Self {
     };
 
     private func postUpgradeCallback() : async () {
-        dataHashesManager.setStableDataHashes([
-            {
-                category = "projects";
-                hash = await SHA224.getRandomHash();
-            },
-            {
-                category = "team_members";
-                hash = await SHA224.getRandomHash();
-            },
-        ]);
+        stable_app_status := {
+            version = "0.0.1";
+            onHold = false;
+        };
     };
 
     private func checkCanisters() : async () {

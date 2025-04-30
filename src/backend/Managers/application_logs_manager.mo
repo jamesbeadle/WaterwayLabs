@@ -2,11 +2,13 @@ import Result "mo:base/Result";
 import Iter "mo:base/Iter";
 import Array "mo:base/Array";
 import Time "mo:base/Time";
+import Nat "mo:base/Nat";
 import MopsTypes "mo:waterway-mops/BaseTypes";
 import MopsEnums "mo:waterway-mops/Enums";
 import LogsQueries "mo:waterway-mops/logs-management/LogsQueries";
 import LogsCommands "mo:waterway-mops/logs-management/LogsCommands";
 import BaseTypes "mo:waterway-mops/BaseTypes";
+import Environment "../environment";
 
 module {
     public class ApplicationLogsManager() {
@@ -29,9 +31,14 @@ module {
 
             };
 
+            let rowsPerPage = Environment.ROWS_PER_PAGE;
+            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(applicationLogs));
+            let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(applicationLogs));
+            let paginatedRes = Array.slice(appLogs, startIndex, endIndex);
+
             let res : LogsQueries.ApplicationLogs = {
                 app = app;
-                logs = appLogs;
+                logs = Iter.toArray(paginatedRes);
                 totalEntries = Array.size(appLogs);
             };
             return #ok(res);

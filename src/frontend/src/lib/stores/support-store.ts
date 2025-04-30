@@ -52,7 +52,7 @@ function createSupportStore() {
     getUserSupportQueries,
     getArchivedUserSupportQueries,
     createSupportQuery,
-    addSupportQueryComment
+    addSupportQueryComment,
   };
 }
 
