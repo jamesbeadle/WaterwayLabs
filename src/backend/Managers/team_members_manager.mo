@@ -1,13 +1,14 @@
 import Result "mo:base/Result";
 import Array "mo:base/Array";
-import Nat "mo:base/Nat";
-import Iter "mo:base/Iter";
 import Nat16 "mo:base/Nat16";
 import Option "mo:base/Option";
+import List "mo:base/List";
+import Order "mo:base/Order";
 import AppTypes "../types/app_types";
 import TeamMemberQueries "../queries/team_member_queries";
 import TeamMemberCommands "../commands/team_member_commands";
 import MopsEnums "mo:waterway-mops/Enums";
+import Environment "../environment";
 
 module {
     public class TeamMembersManager() {
@@ -29,10 +30,9 @@ module {
         };
 
         public func getTeamMembers(dto : TeamMemberQueries.GetTeamMembers) : async Result.Result<TeamMemberQueries.TeamMembers, MopsEnums.Error> {
-            let page = dto.page;
-            let totalEntries = teamMembers.size();
-            let startIndex = page * 10;
-            let endIndex = Nat.min(startIndex + 10, totalEntries);
+            if (dto.page < 1) {
+                return #err(#InvalidData);
+            };
 
             var res : [TeamMemberQueries.TeamMember] = Array.map(
                 teamMembers,
@@ -47,11 +47,24 @@ module {
                     };
                 },
             );
-            let teamMemberSlice = Array.slice(res, startIndex, endIndex);
+            res := Array.sort<TeamMemberQueries.TeamMember>(
+                res,
+                func(a : TeamMemberQueries.TeamMember, b : TeamMemberQueries.TeamMember) : Order.Order {
+                    if (a.firstName > b.firstName) {
+                        return #greater;
+                    } else if (a.firstName < b.firstName) {
+                        return #less;
+                    } else {
+                        return #equal;
+                    };
+                },
+            );
+            let droppedEntries = List.drop<TeamMemberQueries.TeamMember>(List.fromArray(res), ((dto.page - 1) * Environment.ROWS_PER_PAGE));
+            let paginatedEntries = List.take<TeamMemberQueries.TeamMember>(droppedEntries, Environment.ROWS_PER_PAGE);
             return #ok({
-                teamMember = Iter.toArray(teamMemberSlice);
-                page = page;
-                totalEntries = totalEntries;
+                teamMember = List.toArray(paginatedEntries);
+                page = dto.page;
+                totalEntries = Array.size(res);
             });
         };
 

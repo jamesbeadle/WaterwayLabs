@@ -1,10 +1,11 @@
 import Result "mo:base/Result";
 import Array "mo:base/Array";
 import Nat "mo:base/Nat";
-import Iter "mo:base/Iter";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 import Option "mo:base/Option";
+import List "mo:base/List";
+import Order "mo:base/Order";
 import AppTypes "../types/app_types";
 import SupportQueryQueries "../queries/support_query_queries";
 import SupportQueryCommands "../commands/support_query_commands";
@@ -42,6 +43,9 @@ module {
         };
 
         public func getSupportQueries(dto : SupportQueryQueries.GetSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+            if (dto.page < 1) {
+                return #err(#InvalidData);
+            };
             var res : [SupportQueryQueries.SupportQuery] = Array.map(
                 supportQueries,
                 func(supportQuery : AppTypes.SupportQuery) : SupportQueryQueries.SupportQuery {
@@ -109,20 +113,34 @@ module {
                 case (_) {};
             };
 
-            let rowsPerPage = Environment.ROWS_PER_PAGE;
-            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res) - 1);
-            let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res) - 1);
-            let paginatedRes = Array.slice(res, startIndex, endIndex);
+            res := Array.sort<SupportQueryQueries.SupportQuery>(
+                res,
+                func(a : SupportQueryQueries.SupportQuery, b : SupportQueryQueries.SupportQuery) : Order.Order {
+                    if (a.submittedOn > b.submittedOn) {
+                        return #greater;
+                    } else if (a.submittedOn < b.submittedOn) {
+                        return #less;
+                    } else {
+                        return #equal;
+                    };
+                },
+            );
+
+            let droppedEntries = List.drop<SupportQueryQueries.SupportQuery>(List.fromArray(res), ((dto.page - 1) * Environment.ROWS_PER_PAGE));
+            let paginatedEntries = List.take<SupportQueryQueries.SupportQuery>(droppedEntries, Environment.ROWS_PER_PAGE);
 
             return #ok({
                 totalEntries = Array.size(res);
                 page = dto.page;
                 app = dto.app;
-                supportQueries = Iter.toArray(paginatedRes);
+                supportQueries = List.toArray(paginatedEntries);
             });
         };
 
         public func getArchivedSupportQueries(dto : SupportQueryQueries.GetArchivedSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+            if (dto.page < 1) {
+                return #err(#InvalidData);
+            };
             var res : [SupportQueryQueries.SupportQuery] = Array.map(
                 archivedSupportQueries,
                 func(supportQuery : AppTypes.SupportQuery) : SupportQueryQueries.SupportQuery {
@@ -155,21 +173,34 @@ module {
                 case (_) {};
             };
 
-            let rowsPerPage = Environment.ROWS_PER_PAGE;
-            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res) - 1);
-            let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res) - 1);
-            let paginatedRes = Array.slice(res, startIndex, endIndex);
+            res := Array.sort<SupportQueryQueries.SupportQuery>(
+                res,
+                func(a : SupportQueryQueries.SupportQuery, b : SupportQueryQueries.SupportQuery) : Order.Order {
+                    if (a.submittedOn > b.submittedOn) {
+                        return #greater;
+                    } else if (a.submittedOn < b.submittedOn) {
+                        return #less;
+                    } else {
+                        return #equal;
+                    };
+                },
+            );
+            let droppedEntries = List.drop<SupportQueryQueries.SupportQuery>(List.fromArray(res), ((dto.page - 1) * Environment.ROWS_PER_PAGE));
+            let paginatedRes = List.take<SupportQueryQueries.SupportQuery>(droppedEntries, Environment.ROWS_PER_PAGE);
 
             return #ok({
                 totalEntries = Array.size(res);
                 page = dto.page;
                 app = dto.app;
-                supportQueries = Iter.toArray(paginatedRes);
+                supportQueries = List.toArray(paginatedRes);
             });
 
         };
 
         public func getUserSupportQueries(dto : SupportQueryQueries.GetUserSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+            if (dto.page < 1) {
+                return #err(#InvalidData);
+            };
             var res : [SupportQueryQueries.SupportQuery] = Array.map(
                 supportQueries,
                 func(supportQuery : AppTypes.SupportQuery) : SupportQueryQueries.SupportQuery {
@@ -219,20 +250,34 @@ module {
                 };
                 case (_) {};
             };
-            let rowsPerPage = Environment.ROWS_PER_PAGE;
-            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res) - 1);
-            let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res) - 1);
-            let paginatedRes = Array.slice(res, startIndex, endIndex);
+            res := Array.sort<SupportQueryQueries.SupportQuery>(
+                res,
+                func(a : SupportQueryQueries.SupportQuery, b : SupportQueryQueries.SupportQuery) : Order.Order {
+                    if (a.submittedOn > b.submittedOn) {
+                        return #greater;
+                    } else if (a.submittedOn < b.submittedOn) {
+                        return #less;
+                    } else {
+                        return #equal;
+                    };
+                },
+            );
+            let droppedEntries = List.drop<SupportQueryQueries.SupportQuery>(List.fromArray(res), ((dto.page - 1) * Environment.ROWS_PER_PAGE));
+            let paginatedEntries = List.take<SupportQueryQueries.SupportQuery>(droppedEntries, Environment.ROWS_PER_PAGE);
+
             return #ok({
                 totalEntries = Array.size(res);
                 page = dto.page;
                 app = ?#OpenFPL;
-                supportQueries = Iter.toArray(paginatedRes);
+                supportQueries = List.toArray(paginatedEntries);
             });
 
         };
 
         public func getArchivedUserSupportQueries(dto : SupportQueryQueries.GetArchivedUserSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+            if (dto.page < 1) {
+                return #err(#InvalidData);
+            };
             var res : [SupportQueryQueries.SupportQuery] = Array.map(
                 archivedSupportQueries,
                 func(supportQuery : AppTypes.SupportQuery) : SupportQueryQueries.SupportQuery {
@@ -282,15 +327,26 @@ module {
                 };
                 case (_) {};
             };
-            let rowsPerPage = Environment.ROWS_PER_PAGE;
-            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res) - 1);
-            let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res) - 1);
-            let paginatedRes = Array.slice(res, startIndex, endIndex);
+            res := Array.sort<SupportQueryQueries.SupportQuery>(
+                res,
+                func(a : SupportQueryQueries.SupportQuery, b : SupportQueryQueries.SupportQuery) : Order.Order {
+                    if (a.submittedOn > b.submittedOn) {
+                        return #greater;
+                    } else if (a.submittedOn < b.submittedOn) {
+                        return #less;
+                    } else {
+                        return #equal;
+                    };
+                },
+            );
+            let droppedEntries = List.drop<SupportQueryQueries.SupportQuery>(List.fromArray(res), ((dto.page - 1) * Environment.ROWS_PER_PAGE));
+            let paginatedEntries = List.take<SupportQueryQueries.SupportQuery>(droppedEntries, Environment.ROWS_PER_PAGE);
+
             return #ok({
                 totalEntries = Array.size(res);
                 page = dto.page;
                 app = ?#OpenFPL;
-                supportQueries = Iter.toArray(paginatedRes);
+                supportQueries = List.toArray(paginatedEntries);
             });
         };
 
