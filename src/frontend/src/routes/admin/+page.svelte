@@ -5,6 +5,8 @@
     import { ProjectService } from "$lib/services/project-service";
     import type { Project } from "../../../../declarations/backend/backend.did";
     import ProjectSupportQueries from "$lib/components/project/project-support-queries.svelte";
+    import CreateProjectModal from "$lib/components/project/create-project-modal.svelte";
+    import UpdateProjectModal from "$lib/components/project/update-project-modal.svelte";
 
     const projectService = new ProjectService();
 
@@ -12,6 +14,9 @@
     let selectedProjectId = $state(0);
 
     let projects: Project[] = $state([]);
+
+    let showCreateProject = $state(false);
+    let showUpdateProject = $state(false);
 
     onMount(async () => {
         const projectsResult = await projectService.getProjects();
@@ -39,7 +44,10 @@
     <option value={project.id}>{project.name}</option>
     {/each}
 </select>
+
+<!-- Add Update Project -->
   
+<button onclick={() => {showCreateProject = true}} class="brand-button">Create Project</button>
 <ul class="tab-container">
     {#each tabs as tab}
         <li class={`mr-2`}>
@@ -53,6 +61,12 @@
     {/each}
 </ul>
 
+<p>
+    To manage Waterway Labs team members, please click here:
+</p>
+
+<!-- Add Button redirect to add WWL Team members -->
+
 {#if activeTab == 'details'}
     <ProjectDetail {selectedProjectId} />
 {/if}
@@ -65,3 +79,10 @@
     <ProjectSupportQueries {selectedProjectId} />
 {/if}
 
+{#if showCreateProject}
+    <CreateProjectModal onClose={() => showCreateProject = false} visible={showCreateProject} title="Create Project" />
+{/if}
+
+{#if showUpdateProject}
+    <UpdateProjectModal onClose={() => showUpdateProject = false} visible={showUpdateProject} title="Update Project" />
+{/if}

@@ -4,7 +4,6 @@
   import { teamStore } from "$lib/stores/team-store";
   import GridDisplay from "$lib/components/team/grid-display.svelte";
 
-
   onMount(async () => {
     loadTeamMembers();  
   });
