@@ -47,7 +47,6 @@
 </script>
 
 <svelte:window on:storage={authStore.sync} />
-
 {#await init()}
   <div in:fade>
     <LocalSpinner />
@@ -56,14 +55,18 @@
   {#if isLoading}
     <LocalSpinner />
   {:else}
-    <Toasts />
-    {#if page.url.pathname != "/"}
-      <Header {toggleMenu}></Header>
-      <Sidebar {isMenuOpen} {toggleMenu} />
-    {/if}
-    {@render children()}
-    {#if page.url.pathname != "/"}
-      <Footer></Footer>
-    {/if}
+    <div class="flex flex-col min-h-screen">
+      <Toasts />
+      {#if page.url.pathname !== "/"}
+        <Header {toggleMenu}></Header>
+        <Sidebar {isMenuOpen} {toggleMenu} />
+      {/if}
+      <main class="flex-grow px-4 lg:px-8">
+        {@render children()}
+      </main>
+      {#if page.url.pathname !== "/"}
+        <Footer></Footer>
+      {/if}
+    </div>
   {/if}
 {/await}
