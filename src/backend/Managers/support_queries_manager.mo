@@ -42,6 +42,9 @@ module {
         };
 
         public func getSupportQueries(dto : SupportQueryQueries.GetSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+            if (dto.page < 1) {
+                return #err(#InvalidData);
+            };
             var res : [SupportQueryQueries.SupportQuery] = Array.map(
                 supportQueries,
                 func(supportQuery : AppTypes.SupportQuery) : SupportQueryQueries.SupportQuery {
@@ -110,7 +113,7 @@ module {
             };
 
             let rowsPerPage = Environment.ROWS_PER_PAGE;
-            let startIndex = Nat.min(dto.page - 1 * rowsPerPage, Array.size(res));
+            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res));
             let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res));
             let paginatedRes = Array.slice(res, startIndex, endIndex);
 
@@ -123,6 +126,9 @@ module {
         };
 
         public func getArchivedSupportQueries(dto : SupportQueryQueries.GetArchivedSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+            if (dto.page < 1) {
+                return #err(#InvalidData);
+            };
             var res : [SupportQueryQueries.SupportQuery] = Array.map(
                 archivedSupportQueries,
                 func(supportQuery : AppTypes.SupportQuery) : SupportQueryQueries.SupportQuery {
@@ -156,7 +162,7 @@ module {
             };
 
             let rowsPerPage = Environment.ROWS_PER_PAGE;
-            let startIndex = Nat.min(dto.page - 1 * rowsPerPage, Array.size(res));
+            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res));
             let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res));
             let paginatedRes = Array.slice(res, startIndex, endIndex);
 
@@ -170,6 +176,9 @@ module {
         };
 
         public func getUserSupportQueries(dto : SupportQueryQueries.GetUserSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+            if (dto.page < 1) {
+                return #err(#InvalidData);
+            };
             var res : [SupportQueryQueries.SupportQuery] = Array.map(
                 supportQueries,
                 func(supportQuery : AppTypes.SupportQuery) : SupportQueryQueries.SupportQuery {
@@ -220,7 +229,7 @@ module {
                 case (_) {};
             };
             let rowsPerPage = Environment.ROWS_PER_PAGE;
-            let startIndex = Nat.min(dto.page - 1 * rowsPerPage, Array.size(res));
+            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res));
             let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res));
             let paginatedRes = Array.slice(res, startIndex, endIndex);
             return #ok({
@@ -233,6 +242,9 @@ module {
         };
 
         public func getArchivedUserSupportQueries(dto : SupportQueryQueries.GetArchivedUserSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+            if (dto.page < 1) {
+                return #err(#InvalidData);
+            };
             var res : [SupportQueryQueries.SupportQuery] = Array.map(
                 archivedSupportQueries,
                 func(supportQuery : AppTypes.SupportQuery) : SupportQueryQueries.SupportQuery {
@@ -283,7 +295,7 @@ module {
                 case (_) {};
             };
             let rowsPerPage = Environment.ROWS_PER_PAGE;
-            let startIndex = Nat.min(dto.page - 1 * rowsPerPage, Array.size(res));
+            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res));
             let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res));
             let paginatedRes = Array.slice(res, startIndex, endIndex);
             return #ok({
