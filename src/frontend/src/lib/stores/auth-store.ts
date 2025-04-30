@@ -34,7 +34,7 @@ export interface AuthStore extends Readable<AuthStoreData> {
   sync: () => Promise<void>;
   signIn: (params: AuthSignInParams) => Promise<void>;
   signOut: () => Promise<void>;
-  isAdmin: () => Promise<boolean>
+  isAdmin: () => Promise<boolean>;
 }
 
 const initAuthStore = (): AuthStore => {
@@ -101,10 +101,10 @@ const initAuthStore = (): AuthStore => {
         process.env.BACKEND_CANISTER_ID ?? "",
       );
 
-      const result = await identityActor.isAdmin() as boolean;
+      const result = (await identityActor.isAdmin()) as boolean;
       if (isError(result)) return false;
       return result;
-    }
+    },
   };
 };
 
