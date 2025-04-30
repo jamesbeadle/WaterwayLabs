@@ -16,6 +16,7 @@ src/declarations/
 # frontend code
 node_modules/
 dist/
+build/
 
 .svelte-kit/
 
