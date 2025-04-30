@@ -37,7 +37,7 @@
 		
 		<span class="flex-1 text-xs semi-bold tracking-wide text-center lg:px-4">UPDATE SITE</span>
 		<span class="w-8 h-8 flex items-center justify-center">
-		  <ArrowIcon className="w-8 h-8" />
+		  <ArrowIcon fill='#272727' className="w-8 h-8" />
 		</span>
 	</button>
   {/if}

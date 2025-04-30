@@ -2,7 +2,7 @@
 	interface Props {
 		className: string;
     fill: string;
-    };
+  };
     
     let { className, fill } : Props = $props();
 </script>

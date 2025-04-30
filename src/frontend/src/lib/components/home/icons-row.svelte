@@ -64,7 +64,7 @@
   }
 </script>
 
-<div class="z-50 fixed bottom-4 left-1/2 transform -translate-x-1/2 max-w-[95%] sm:max-w-[90%] md:max-w-[85%] px-4 py-1">
+<div class="z-40 fixed bottom-4 left-1/2 transform -translate-x-1/2 max-w-[95%] sm:max-w-[90%] md:max-w-[85%] px-4 py-1">
   <div class="absolute inset-0 backdrop-blur bg-opacity-70 rounded-2xl thin-border"></div>
   <div class="relative flex px-4 py-4 space-x-2 overflow-x-auto md:space-x-5 scrollbar-hide">
     {#each projects as project}

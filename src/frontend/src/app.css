@@ -114,18 +114,6 @@
 .ellipse-2 {
   @apply absolute w-[240px] h-[240px] bg-[rgba(244,223,253,0.2)] blur-[320px] bottom-[20%] right-[30%];
 }
-.mobile-menu {
-  @apply fixed inset-0 z-50 flex flex-col transition-opacity duration-300 bg-BrandGray;
-}
-.mobile-menu-header {
-  @apply flex items-center justify-between h-16 px-4;
-}
-.mobile-menu-links {
-  @apply flex flex-col items-start px-4 pt-6;
-}
-.mobile-menu-item {
-  @apply flex items-center justify-between w-full py-8 text-2xl;
-}
 
 .brand-dropdown {
   background-color: transparent !important;
@@ -140,4 +128,12 @@
 
 .bg-frontend-update {
   @apply bg-BrandLightBlue;
+}
+
+.active {
+  @apply bg-BrandLightBlue;
+}
+
+.brand-button {
+  @apply px-4 py-2 text-white rounded bg-BrandBlue hover:bg-BrandTurquoise disabled:opacity-50 disabled:bg-gray-300;
 }

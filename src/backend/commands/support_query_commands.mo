@@ -9,7 +9,7 @@ module AppCommands {
     };
 
     public type ArchiveSupportQuery = {
-        //TODO
+        supportQueryId : WWLIds.SupportQueryId;
     };
 
     public type AssignSupportQueryToTeamMember = {

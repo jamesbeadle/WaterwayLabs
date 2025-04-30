@@ -1,13 +1,19 @@
 <script lang="ts">
-  import { page } from '$app/stores';
-  import DotsIcon from '$lib/icons/DotsIcon.svelte';
   import { authStore } from '$lib/stores/auth-store';
   import { onMount } from 'svelte';
+  import MenuIcon from '$lib/icons/MenuIcon.svelte';
   
   let isLoggedIn = $state(false);
 
-  function isActivePage(path: string): boolean {
-    return $page.url.pathname === '/' + path;
+  interface Props {
+    toggleMenu: () => void;
+  }
+
+  let { toggleMenu }: Props = $props();
+
+  function handleMenuClick(event: MouseEvent) {
+    event.stopPropagation();
+    toggleMenu();
   }
 
   onMount(async () => {
@@ -22,30 +28,22 @@
   });
 </script>
 
-<header class="py-4 px-4 bg-BrandGray lg:py-4 w-full sm:mx-auto lg:container lg:mx-auto'}">
-  <div class="flex items-center justify-between w-full mx-auto max-w-screen-2xl">
-    <a href="/" class="flex-shrink-0">
-      <div class="flex items-center space-x-2">
-        <img src="logo.png" class="h-5" alt="Waterway Labs Logo" />
-        <span class="lg:text-sm xl:text-base">WATERWAY <span class="exLight">LABS</span></span>      
-      </div>
-    </a>
+<header class="z-30 flex items-center justify-between h-16 px-4 text-white shadow-md bg-BrandGray/90">
+  <a 
+    href="/" 
+    class="flex items-center space-x-2 transition-transform hover:scale-105"
+  >
+    <img src="logo.png" class="h-5" alt="Waterway Labs Logo" />
+    <span class="lg:text-sm xl:text-base">WATERWAY <span class="exLight">LABS</span></span>      
+  </a>
 
-    <nav class="hidden space-x-4 lg:space-x-3 xl:space-x-6 sm:flex">
-      <a href="about" class="hover:underline lg:text-sm xl:text-base {isActivePage('about') ? 'text-BrandTurquoise' : ''}">ABOUT</a>
-      <a href="team" class="hover:underline lg:text-sm xl:text-base {isActivePage('team') ? 'text-BrandTurquoise' : ''}">TEAM</a>
-      <a href="contact" class="hover:underline lg:text-sm xl:text-base {isActivePage('contact') ? 'text-BrandTurquoise' : ''}">CONTACT</a>
-      {#if isLoggedIn}
-        <a href="account" class="hover:underline lg:text-sm xl:text-base {isActivePage('account') ? 'text-BrandTurquoise' : ''}">ACCOUNT</a>
-      {/if}
-    </nav>
-
+  <div class="flex items-center gap-4">
     <button
-      class="flex-shrink-0 sm:hidden"
-      aria-label="Menu"
-      onclick={() => {}}
+      onclick={handleMenuClick}
+      class="p-2 text-white transition-colors rounded-md bg-BrandBlueComp hover:bg-BrandBlue"
+      aria-label="Toggle menu"
     >
-      <DotsIcon className="w-5" />
+      <MenuIcon className="w-6 h-6" fill="white" />
     </button>
   </div>
 </header>

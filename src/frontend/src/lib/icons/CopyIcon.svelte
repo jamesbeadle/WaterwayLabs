@@ -1,12 +1,13 @@
 <script lang="ts">
 	interface Props {
 		className: string;
+    fill:string;
     principalId: string;
     onClick: (text: string) => void;
     hoverColor: string
   };
     
-    let { className, principalId, onClick, hoverColor } : Props = $props();
+  let { className, principalId, onClick, hoverColor } : Props = $props();
 </script>
 
 
@@ -15,7 +16,7 @@
   aria-hidden="true"
   class={className}
   onclick={() => onClick(principalId)}
-  fill="currentColor"
+  fill="none"
   viewBox="0 0 16 16"
   style="--hover-color: {hoverColor}; cursor: 'pointer'"
 >
