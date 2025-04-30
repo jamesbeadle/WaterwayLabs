@@ -4,7 +4,7 @@ import WWLIds "mo:waterway-mops/WWLIds";
 import MopsTypes "mo:waterway-mops/BaseTypes";
 import BaseTypes "mo:waterway-mops/BaseTypes";
 import SHA224 "mo:waterway-mops/SHA224";
-
+import BaseUtilities "mo:waterway-mops/BaseUtilities";
 /* ----- Mops Packages ----- */
 
 import Array "mo:base/Array";
@@ -13,6 +13,7 @@ import Option "mo:base/Option";
 import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Timer "mo:base/Timer";
+import Text "mo:base/Text";
 
 /* ----- Queries ----- */
 
@@ -65,6 +66,8 @@ actor Self {
         version = "";
     };
     private stable var stable_canisters_check_timer_id : Nat = 0;
+    private stable var stable_support_query_id : WWLIds.SupportQueryId = 1;
+    private stable var stable_active_team_member_id : WWLIds.TeamMemberId = 1;
 
     /* ----- Domain Object Managers ----- */
 
@@ -267,17 +270,17 @@ actor Self {
         return await supportQueriesManager.getSupportQueries(dto);
     };
 
-    public shared ({ caller }) func getArchivedSupportQueries(dto: SupportQueryQueries.GetArchivedSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+    public shared ({ caller }) func getArchivedSupportQueries(dto : SupportQueryQueries.GetArchivedSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
         assert isCallerAdmin(Principal.toText(caller));
         return await supportQueriesManager.getArchivedSupportQueries(dto);
     };
 
-    public shared ({ caller }) func getUserSupportQueries(dto: SupportQueryQueries.GetUserSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+    public shared ({ caller }) func getUserSupportQueries(dto : SupportQueryQueries.GetUserSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
         assert not Principal.isAnonymous(caller);
         return await supportQueriesManager.getUserSupportQueries(dto);
     };
 
-    public shared ({ caller }) func getArchivedUserSupportQueries(dto: SupportQueryQueries.GetArchivedUserSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
+    public shared ({ caller }) func getArchivedUserSupportQueries(dto : SupportQueryQueries.GetArchivedUserSupportQueries) : async Result.Result<SupportQueryQueries.SupportQueries, MopsEnums.Error> {
         assert not Principal.isAnonymous(caller);
         return await supportQueriesManager.getArchivedUserSupportQueries(dto);
     };
@@ -286,20 +289,30 @@ actor Self {
 
     public shared ({ caller }) func createSupportQuery(dto : SupportQueryCommands.CreateSupportQuery) : async Result.Result<(), MopsEnums.Error> {
         assert not Principal.isAnonymous(caller);
-        let _ = await supportQueriesManager.createSupportQuery(dto);
+        let _ = await supportQueriesManager.createSupportQuery(Principal.toText(caller), dto);
         return #ok();
     };
 
     public shared ({ caller }) func addSupportQueryComment(dto : SupportQueryCommands.AddSupportQueryComment) : async Result.Result<(), MopsEnums.Error> {
         assert not Principal.isAnonymous(caller);
-        let _ = await supportQueriesManager.addSupportQueryComment(dto);
+        let _ = await supportQueriesManager.addSupportQueryComment(Principal.toText(caller), dto);
         return #ok();
     };
 
-    public shared ({ caller }) func removeSupportQueryComment(dto : SupportQueryCommands.RemoveSupportQueryComment) : async Result.Result<(), MopsEnums.Error> {
+    public shared ({ caller }) func removeSupportQuery(dto : SupportQueryCommands.RemoveSupportQuery) : async Result.Result<(), MopsEnums.Error> {
         assert not Principal.isAnonymous(caller);
-        let _ = await supportQueriesManager.removeSupportQueryComment(dto);
+        let _ = await supportQueriesManager.removeSupportQuery(Principal.toText(caller), dto);
         return #ok();
+    };
+
+    public shared ({ caller }) func updateSupportQueryStatus(dto : SupportQueryCommands.UpdateSupportQueryStatus) : async Result.Result<(), MopsEnums.Error> {
+        assert isCallerAdmin(Principal.toText(caller));
+        let _ = await supportQueriesManager.updateSupportQueryStatus(dto);
+        return #ok();
+    };
+
+    public shared ({ caller }) func isAdmin() : async Bool {
+        return isCallerAdmin(Principal.toText(caller));
     };
 
     /* ----- Private Motoko Actor Functions ----- */
@@ -308,7 +321,7 @@ actor Self {
         let approvedCaller = Array.find<MopsIds.CanisterId>(
             Environment.APPROVED_CANISTERS,
             func(canisterId : MopsIds.CanisterId) : Bool {
-                canisterId == callerPrincipalId;
+                Text.equal(canisterId, callerPrincipalId);
             },
         );
 
@@ -322,7 +335,7 @@ actor Self {
         let approvedCaller = Array.find<MopsIds.PrincipalId>(
             Environment.ADMIN_PRINCIPAL_IDS,
             func(principalId : MopsIds.PrincipalId) : Bool {
-                principalId == callerPrincipalId;
+                Text.equal(principalId, callerPrincipalId);
             },
         );
 
@@ -353,6 +366,8 @@ actor Self {
         stable_support_queries := supportQueriesManager.getStableSupportQueries();
         stable_canisters_cycles_topups := canistersManager.getStableCanisterCyclesTopups();
         stable_project_id := projectsManager.getStableProjectId();
+        stable_support_query_id := supportQueriesManager.getStableSupportQueryId();
+        stable_active_team_member_id := teamMembersManager.getStableActiveTeamMemberId();
     };
 
     private func setManagerStableVariables() {
@@ -363,13 +378,21 @@ actor Self {
         supportQueriesManager.setStableSupportQueries(stable_support_queries);
         canistersManager.setStableCanisterCyclesTopups(stable_canisters_cycles_topups);
         projectsManager.setStableProjectId(stable_project_id);
+        supportQueriesManager.setStableSupportQueryId(stable_support_query_id);
+        teamMembersManager.setStableActiveTeamMemberId(stable_active_team_member_id);
     };
 
     private func postUpgradeCallback() : async () {
-       dataHashesManager.setStableDataHashes([
-        {category = "projects"; hash = await SHA224.getRandomHash();},
-        {category = "team_members"; hash = await SHA224.getRandomHash();}
-       ]);
+        dataHashesManager.setStableDataHashes([
+            {
+                category = "projects";
+                hash = await SHA224.getRandomHash();
+            },
+            {
+                category = "team_members";
+                hash = await SHA224.getRandomHash();
+            },
+        ]);
     };
 
     private func checkCanisters() : async () {

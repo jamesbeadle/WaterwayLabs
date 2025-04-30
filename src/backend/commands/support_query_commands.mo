@@ -1,11 +1,13 @@
 import Enums "../enums/app_enums";
 import WWLIds "mo:waterway-mops/WWLIds";
+import MopsEnums "mo:waterway-mops/Enums";
 module AppCommands {
 
     public type CreateSupportQuery = {
         contact : Text;
         message : Text;
         name : Text;
+        app : MopsEnums.WaterwayLabsApp;
     };
 
     public type ArchiveSupportQuery = {
@@ -28,7 +30,7 @@ module AppCommands {
         comment : Text;
     };
 
-    public type RemoveSupportQueryComment = {
+    public type RemoveSupportQuery = {
         supportQueryId : WWLIds.SupportQueryId;
     };
 };

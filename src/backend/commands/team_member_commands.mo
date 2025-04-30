@@ -14,12 +14,12 @@ module TeamMemberCommands = {
 
     public type UpdateTeamMember = {
         id : WWLIds.TeamMemberId;
-        firstName : Text;
-        lastName : Text;
-        principalId : Ids.PrincipalId;
-        jobTitle : Text;
-        bio : [Text];
-        image : Blob;
+        firstName : ?Text;
+        lastName : ?Text;
+        principalId : ?Ids.PrincipalId;
+        jobTitle : ?Text;
+        bio : ?[Text];
+        image : ?Blob;
         video : ?Blob;
     };
 
