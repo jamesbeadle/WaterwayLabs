@@ -1,28 +1,15 @@
 <script lang="ts">
     import ArrowIcon from "$lib/icons/ArrowIcon.svelte";
     import GithubIcon from "$lib/icons/GithubIcon.svelte";
-    import { onMount } from "svelte";
-    import type { Project, ProjectId } from "../../../../../declarations/backend/backend.did";
-    import { projectStore } from "$lib/stores/project-store";
+    import type { Project } from "../../../../../declarations/backend/backend.did";
     import LocalSpinner from "../shared/local-spinner.svelte";
 
     interface Props {
-      selectedProjectId: ProjectId;
+      project: Project;
     };
     
-    let { selectedProjectId } : Props = $props();
+    let { project } : Props = $props();
 
-    let project: Project | undefined = $state(undefined);
-
-    onMount(() => {
-      project = $projectStore.find(x => x.id == selectedProjectId)!;
-    });
-
-    $effect(() => {
-      if(selectedProjectId > 0){
-        project = $projectStore.find(x => x.id == selectedProjectId)!;
-      }
-    });
 </script>
 
 

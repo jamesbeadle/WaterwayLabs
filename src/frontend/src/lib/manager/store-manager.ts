@@ -1,10 +1,10 @@
-//import { DataHashService } from "$lib/services/data-hash-service";
 import { DataHashService } from "$lib/services/data-hash-service";
 import { ProjectService } from "$lib/services/project-service";
 import { TeamService } from "$lib/services/team-service";
 import { projectStore } from "$lib/stores/project-store";
 import { teamStore } from "$lib/stores/team-store";
-import { isError, replacer } from "$lib/utils/helpers";
+import { replacer } from "$lib/utils/helpers";
+import type { DataHash } from "../../../../declarations/backend/backend.did";
 
 class StoreManager {
   private dataHashService: DataHashService;
@@ -13,6 +13,8 @@ class StoreManager {
 
   private categories: string[] = ["projects", "team_members"];
 
+  private isSyncing = false;
+
   constructor() {
     this.dataHashService = new DataHashService();
     this.projectService = new ProjectService();
@@ -20,30 +22,36 @@ class StoreManager {
   }
 
   async syncStores(): Promise<void> {
-    const newHashesResult = await this.dataHashService.getDataHashes();
-
-    if (!newHashesResult) {
+    if (this.isSyncing) {
       return;
     }
+    console.log("syncing stores");
+    this.isSyncing = true;
+    try {
+      await this.syncAppDataHashes();
+    } catch (error) {
+      console.error("Error syncing stores:", error);
+      throw error;
+    } finally {
+      this.isSyncing = false;
+    }
+  }
 
-    let newHashes = newHashesResult.dataHashes;
-
-    let error = isError(newHashes);
-    if (error) {
-      console.error("Error fetching data hashes.");
+  private async syncAppDataHashes(): Promise<void> {
+    const appDataHashes = await this.dataHashService.getDataHashes();
+    if (appDataHashes == undefined) {
       return;
     }
-
-    let dataHashes = newHashesResult.dataHashes;
-
+    console.log(appDataHashes);
     for (const category of this.categories) {
-      const categoryHash = newHashes.find((hash) => hash.category === category);
-
+      const categoryHash = appDataHashes.dataHashes.find(
+        (hash: DataHash) => hash.category === category,
+      );
       if (categoryHash?.hash !== localStorage.getItem(`${category}_hash`)) {
         await this.syncCategory(category);
         localStorage.setItem(`${category}_hash`, categoryHash?.hash || "");
       } else {
-        this.loadFromCache(category);
+        await this.loadFromCache(category);
       }
     }
   }
@@ -51,9 +59,12 @@ class StoreManager {
   private async syncCategory(category: string): Promise<void> {
     switch (category) {
       case "projects":
-        const updatedProjects = await this.projectService.getProjects();
-        if (updatedProjects) {
-          projectStore.setProjects(updatedProjects.projects);
+        const projectsResult = await this.projectService.getProjects();
+        if (projectsResult) {
+          let updatedProjects = projectsResult.projects.sort(
+            (a, b) => a.id - b.id,
+          );
+          projectStore.setProjects(updatedProjects);
           localStorage.setItem(
             "projects",
             JSON.stringify(updatedProjects, replacer),
@@ -61,23 +72,29 @@ class StoreManager {
         }
         break;
       case "team_members":
-        const updatedTeamMembers = await this.teamService.getTeamMembers();
-        teamStore.setTeamMembers(updatedTeamMembers);
-        localStorage.setItem(
-          "team_members",
-          JSON.stringify(updatedTeamMembers, replacer),
-        );
+        const teamMembersResult = await this.teamService.getTeamMembers();
+        if (teamMembersResult) {
+          let updateTeamMembers = teamMembersResult;
+          teamStore.setTeamMembers(updateTeamMembers);
+          localStorage.setItem(
+            "team_members",
+            JSON.stringify(updateTeamMembers, replacer),
+          );
+        }
         break;
     }
   }
 
   private loadFromCache(category: string): void {
+    console.log("loading from cached");
+    console.log(category);
     const cachedData = localStorage.getItem(category);
 
     switch (category) {
       case "projects":
         const cachedProjects = JSON.parse(cachedData || "[]");
         projectStore.setProjects(cachedProjects);
+        console.log(cachedProjects);
         break;
       case "team_members":
         const cachedTeamMembers = JSON.parse(cachedData || "[]");

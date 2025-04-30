@@ -55,12 +55,11 @@
 
   async function loadProjects() {
     try {
-      const projectDTOs = await projectService.getProjects();
-      console.log(projectDTOs)
-      if (!projectDTOs) return;
+
+      console.log("loading projects")
+      console.log($projectStore)
       
-      projects = projectDTOs.projects
-        .sort((a, b) => a.id - b.id)
+      projects = $projectStore
         .filter(dto => dto.id !== 1)
         .map(dto => {
           const socialLinks = dto.socialLinks || [];
@@ -79,8 +78,6 @@
             socialLinks
           };
         });
-      
-      projectStore.setProjects(projectDTOs.projects.sort((a, b) => a.id - b.id));
       
       const initialProject = projects.find(p => p.id === 2) || projects[0];
       if (initialProject) {
@@ -133,7 +130,7 @@
             <Sidebar {isMenuOpen} {toggleMenu} />
           </div>
           <div class="px-4 mt-8">
-            <ProjectDetail {selectedProjectId} />
+            <ProjectDetail project={$projectStore.find(x=> x.id == selectedProjectId)!} />
           </div>
         </div>
 
@@ -165,7 +162,7 @@
         </div>
 
         <div class="relative z-20 bg-BrandGray mt-8 w-[101%] px-[1%] -mb-[1px]">
-          <ProjectDetail {selectedProjectId} />
+          <ProjectDetail project={$projectStore.find(x=> x.id == selectedProjectId)!} />
         </div>
       </main>
     </div>

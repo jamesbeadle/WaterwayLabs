@@ -35,11 +35,12 @@
       {#each logs.logs as log}
         <div class="flex items-center justify-between w-full">
           <p>{log.id}</p>
-          <p>{log.eventTime}</p>
-          <p>{log.eventTitle}</p>
-          <p>{log.eventType}</p>
-          <p>{log.eventId}</p>
-          <p>{log.eventDetail}</p>
+          <p>{log.app}</p>
+          <p>{log.createdOn}</p>
+          <p>{log.detail}</p>
+          <p>{log.error}</p>
+          <p>{log.logType}</p>
+          <p>{log.title}</p>
         </div>
       {/each}
     {/if}
