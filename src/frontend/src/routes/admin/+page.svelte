@@ -4,6 +4,7 @@
     import ProjectLogs from "$lib/components/project/project-logs.svelte";
     import { ProjectService } from "$lib/services/project-service";
     import type { Project } from "../../../../declarations/backend/backend.did";
+    import ProjectSupportQueries from "$lib/components/project/project-support-queries.svelte";
 
     const projectService = new ProjectService();
 
@@ -24,7 +25,8 @@
 
     const tabs: {id: string, label: string}[] = [
         {id: 'details', label: 'Details'},
-        {id: 'logs', label: 'Logs'}
+        {id: 'logs', label: 'Logs'},
+        {id: 'support-queries', label: 'Support Queries'}
     ];
     
 </script>
@@ -57,5 +59,9 @@
 
 {#if activeTab == 'logs'}
     <ProjectLogs {selectedProjectId} />
+{/if}
+
+{#if activeTab == 'support-queries'}
+    <ProjectSupportQueries {selectedProjectId} />
 {/if}
 
