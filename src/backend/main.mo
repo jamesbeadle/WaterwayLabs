@@ -3,8 +3,6 @@ import MopsIds "mo:waterway-mops/Ids";
 import WWLIds "mo:waterway-mops/WWLIds";
 import MopsTypes "mo:waterway-mops/BaseTypes";
 import BaseTypes "mo:waterway-mops/BaseTypes";
-import SHA224 "mo:waterway-mops/SHA224";
-import BaseUtilities "mo:waterway-mops/BaseUtilities";
 /* ----- Mops Packages ----- */
 
 import Array "mo:base/Array";
