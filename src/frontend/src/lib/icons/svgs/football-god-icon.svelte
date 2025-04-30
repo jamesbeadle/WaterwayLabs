@@ -1,10 +1,11 @@
 <script lang="ts">
 	interface Props {
 		className: string;
-    };
+  };
     
-    let { className } : Props = $props();
+  let { className } : Props = $props();
 </script>
+
 <svg xmlns="http://www.w3.org/2000/svg"
     class={className}
     fill="none"

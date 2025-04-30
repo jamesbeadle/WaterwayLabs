@@ -164,7 +164,7 @@
           </div>
         </div>
 
-        <div class="relative z-20 bg-BrandGray -mt-8 w-[101%] px-[1%] -mb-[1px]">
+        <div class="relative z-20 bg-BrandGray mt-8 w-[101%] px-[1%] -mb-[1px]">
           <ProjectDetail {selectedProjectId} />
         </div>
       </main>

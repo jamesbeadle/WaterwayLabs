@@ -1,125 +1,130 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-    import { signIn, signOut } from "$lib/services/auth-services";
-    import { goto } from "$app/navigation";
-    import { authStore, type AuthSignInParams } from "$lib/stores/auth-store";
-    
-    interface MenuItem {
-        path: string,
-        label: string
-    }
-  
-    interface Props {
-      isMenuOpen: boolean;
-      toggleMenu: () => void;
-    }
-    let { isMenuOpen, toggleMenu }: Props = $props();
-    
-    let menuRef: HTMLDivElement;
-    let isLoggedIn = $state(false);
-  
-    async function handleDisconnect(){
-      await signOut();
-      goto('/', { replaceState: true });
-    }
+  import { fade } from "svelte/transition";
+  import { page } from "$app/stores";
+  import { goto } from "$app/navigation";
+    import MenuIcon from "$lib/icons/MenuIcon.svelte";
+    import WaterwayLabsIcon from "$lib/icons/svgs/waterway-labs-icon.svelte";
+    import CloseIcon from "$lib/icons/CloseIcon.svelte";
+    import AboutIcon from "$lib/icons/AboutIcon.svelte";
+    import TeamIcon from "$lib/icons/TeamIcon.svelte";
+    import SupportIcon from "$lib/icons/SupportIcon.svelte";
+    import ProfileIcon from "$lib/icons/ProfileIcon.svelte";
+    import LogoutIcon from "$lib/icons/LogoutIcon.svelte";
+    import { authStore } from "$lib/stores/auth-store";
 
-    onMount(async () => {
-      try {
-        authStore.subscribe((store) => {
-          isLoggedIn = store.identity !== null && store.identity !== undefined;
-        });
-      } catch (error) {
-        console.error("Error fetching homepage data:", error);
-      } finally {
-      }
-    });
-  
-    async function handleConnect(){
-      let params: AuthSignInParams = {
-        domain: import.meta.env.VITE_AUTH_PROVIDER_URL,
-      };
-      authStore.signIn(params);
+  interface Props {
+    isMenuOpen: boolean;
+    toggleMenu: () => void;
+  }
+  let { isMenuOpen, toggleMenu }: Props = $props();
+
+  const menuItems = [
+    { icon: MenuIcon, label: "Home", path: "/" },
+    { icon: AboutIcon, label: "About", path: "/about" },
+    { icon: TeamIcon, label: "Team", path: "/team" },
+    { icon: SupportIcon, label: "Support", path: "/support" },
+    { icon: ProfileIcon, label: "Profile", path: "/profile" },
+  ];
+
+  const signOutItem = { icon: LogoutIcon, label: "Sign Out", path: "/" };
+
+  async function handleMenuItemClick(item: (typeof menuItems)[number]) {
+    if (item.label === "Sign Out") {
+      await authStore.signOut();
+      await goto("/", { replaceState: true });
+      toggleMenu();
+      return;
     }
-  
-    const menuItems: MenuItem[] = [
-      { path: '/', label: 'Home' },
-      { path: '/about', label: 'About' },
-      { path: '/team', label: 'Team' },
-      { path: '/support', label: 'Support' },
-      { path: '/', label: 'Sign Out' }
-    ]
-  </script>
-  <div 
-    class="{isMenuOpen ? 'translate-x-0' : 'translate-x-full'} fixed inset-y-0 right-0 z-40 w-full sm:w-80 bg-BrandLightBlue shadow-xl transform transition-transform duration-300 ease-in-out"
-    bind:this={menuRef}
-  >
-  
+    await goto(item.path);
+    toggleMenu();
+  }
+
+  function handleOutsideClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (
+      !target.closest(".sidebar-content") &&
+      !target.closest("[aria-label='Toggle menu']") &&
+      isMenuOpen
+    ) {
+      toggleMenu();
+    }
+  }
+</script>
+
+<svelte:body onclick={handleOutsideClick} />
+
+{#if isMenuOpen}
+  <div
+    class="fixed inset-0 z-30 bg-black/50"
+    transition:fade={{ duration: 300 }}
+  ></div>
+{/if}
+
+<div
+  class="{isMenuOpen ? 'translate-x-0' : 'translate-x-[calc(100%+0.5rem)] sm:translate-x-[calc(100%+0.5rem)]'} fixed top-0 bottom-0 right-0 z-50 w-[calc(100%-1rem)] sm:w-80 m-2 sm:m-2 bg-BrandGray rounded-3xl shadow-lg transform transition-transform duration-300 ease-in-out sidebar-content flex flex-col"
+>
+  <div class="flex justify-between items-center px-6 pt-6">
+    <div class="flex items-center">
+      <WaterwayLabsIcon className="w-6 mr-2"/>
+      <p class="text-lg">Waterway Labs</p>
+    </div>
     <button
       onclick={toggleMenu}
-      class="absolute p-2 transition-all duration-200 text-BrandGrayShade4 top-4 right-4 hover:text-BrandBlue hover:scale-110"
+      class="p-2 text-gray-500 hover:text-gray-700 hover:scale-110 transition-all duration-200"
       aria-label="Close sidebar"
     >
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-      </svg>
+      <CloseIcon fill='white' className="w-4 h-4" />
     </button>
-  
-    <nav class="h-full px-6 pt-16 text-lg text-black bg-BrandBlueComp cta-text">
-      <ul class="space-y-4">
-        {#each menuItems as item}
-          {#if item.label === 'Connect'}
-            {#if !isLoggedIn}
-              <li>
-                <a 
-                  href={item.path}
-                  onclick={(e) => {
-                    e.preventDefault();
-                    toggleMenu();
-                    handleConnect();
-                  }}
-                  class="hover:text-BrandBlue"
-                >
-                  {item.label}
-                </a>
-              </li>
-            {/if}
-          {:else if item.label === 'Disconnect'}
-            {#if isLoggedIn}
-              <li>
-                <a 
-                  href={item.path}
-                  onclick={(e) => {
-                    e.preventDefault();
-                    toggleMenu();
-                    handleDisconnect();
-                  }}
-                  class="hover:text-BrandBlue"
-                >
-                  {item.label}
-                </a>
-              </li>
-            {/if}
-          {:else}
-
-            <li>
-              <a 
-                href={item.path}
-                onclick={(e) => {
-                  e.preventDefault();
-                  toggleMenu();
-                  handleDisconnect();
-                  if (item.label === 'Sign Out') {
-                  } else {
-                    goto(item.path);
-                  }
-                }}
-                class="hover:text-BrandBlue"
-              >
-                {item.label}
-              </a>
-            </li>
-          {/if}
-        {/each}
-      </ul>
-    </nav>
   </div>
+
+  <nav class="flex-1 text-gray-800 text-lg px-6 pt-6">
+    <ul class="space-y-2">
+      {#each menuItems as item}
+        <li>
+          <button
+            onclick={() => handleMenuItemClick(item)}
+            class="flex items-center w-full p-3 space-x-4 rounded-lg hover:bg-gray-100 hover:text-BrandGray transition-colors"
+            class:active={$page.url.pathname === item.path}
+          >
+            <item.icon
+              className="w-6 h-6"
+              fill={$page.url.pathname === item.path ? '#1F2937' : 'white'}
+            />
+            <span
+              class={$page.url.pathname === item.path
+                ? 'text-gray-800 font-medium'
+                : 'text-white'}
+            >
+              {item.label}
+            </span>
+          </button>
+        </li>
+      {/each}
+    </ul>
+  </nav>
+
+  <div class="px-6 pb-6">
+    <button
+      onclick={() => handleMenuItemClick(signOutItem)}
+      class="brand-button w-full flex items-center justify-center space-x-4 p-3 rounded-lg"
+    >
+      <signOutItem.icon fill='white' className="w-6 h-6" />
+      <span>{signOutItem.label}</span>
+    </button>
+  </div>
+</div>
+
+<style>
+  .active {
+    @apply bg-BrandLightBlue text-black;
+  }
+
+  .translate-x-0 {
+    transform: translateX(0) !important;
+  }
+
+  .translate-x-\[calc\(100\%\+0\.5rem\)\] {
+    transform: translateX(calc(100% + 0.5rem)) !important;
+  }
+
+</style>

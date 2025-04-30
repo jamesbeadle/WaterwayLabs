@@ -1,11 +1,12 @@
-
 <script lang="ts">
-  import { loadingText } from "$lib/stores/global-stores";
+    import { loadingText } from "$lib/stores/global-stores";
+
 	interface Props {
 		className: string;
-    };
+    fill:string;
+  };
     
-    let { className } : Props = $props();
+    let { className, fill } : Props = $props();
 </script>
 
 <div class="flex justify-center items-center h-screen">
