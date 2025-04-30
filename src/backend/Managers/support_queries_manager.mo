@@ -113,8 +113,8 @@ module {
             };
 
             let rowsPerPage = Environment.ROWS_PER_PAGE;
-            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res));
-            let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res));
+            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res) - 1);
+            let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res) - 1);
             let paginatedRes = Array.slice(res, startIndex, endIndex);
 
             return #ok({
@@ -162,8 +162,8 @@ module {
             };
 
             let rowsPerPage = Environment.ROWS_PER_PAGE;
-            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res));
-            let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res));
+            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res) - 1);
+            let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res) - 1);
             let paginatedRes = Array.slice(res, startIndex, endIndex);
 
             return #ok({
@@ -229,8 +229,8 @@ module {
                 case (_) {};
             };
             let rowsPerPage = Environment.ROWS_PER_PAGE;
-            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res));
-            let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res));
+            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res) - 1);
+            let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res) - 1);
             let paginatedRes = Array.slice(res, startIndex, endIndex);
             return #ok({
                 totalEntries = Array.size(res);
@@ -295,8 +295,8 @@ module {
                 case (_) {};
             };
             let rowsPerPage = Environment.ROWS_PER_PAGE;
-            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res));
-            let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res));
+            let startIndex = Nat.min((dto.page - 1) * rowsPerPage, Array.size(res) - 1);
+            let endIndex = Nat.min((dto.page) * rowsPerPage, Array.size(res) - 1);
             let paginatedRes = Array.slice(res, startIndex, endIndex);
             return #ok({
                 totalEntries = Array.size(res);

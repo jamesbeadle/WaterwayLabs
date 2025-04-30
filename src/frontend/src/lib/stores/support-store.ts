@@ -6,7 +6,6 @@ import type {
   GetArchivedSupportQueries,
   GetSupportQueries,
   GetUserSupportQueries,
-  RemoveSupportQueryComment,
   SupportQueries,
 } from "../../../../declarations/backend/backend.did";
 
@@ -32,7 +31,7 @@ function createSupportStore() {
   async function getArchivedUserSupportQueries(
     dto: GetArchivedSupportQueries,
   ): Promise<SupportQueries | undefined> {
-    return new SupportService().getUserSupportQueries(dto);
+    return new SupportService().getArchivedUserSupportQueries(dto);
   }
 
   async function createSupportQuery(
@@ -47,12 +46,6 @@ function createSupportStore() {
     return new SupportService().addSupportQueryComment(dto);
   }
 
-  async function removeSupportQueryComment(
-    dto: RemoveSupportQueryComment,
-  ): Promise<any | ErrorResponse> {
-    return new SupportService().removeSupportQueryComment(dto);
-  }
-
   return {
     getSupportQueries,
     getArchivedSupportQueries,
@@ -60,7 +53,6 @@ function createSupportStore() {
     getArchivedUserSupportQueries,
     createSupportQuery,
     addSupportQueryComment,
-    removeSupportQueryComment,
   };
 }
 

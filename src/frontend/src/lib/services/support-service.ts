@@ -7,7 +7,6 @@ import type {
   GetArchivedSupportQueries,
   GetSupportQueries,
   GetUserSupportQueries,
-  RemoveSupportQueryComment,
   SupportQueries,
 } from "../../../../declarations/backend/backend.did";
 
@@ -90,20 +89,6 @@ export class SupportService {
 
     const result = (await identityActor.addSupportQueryComment(dto)) as any;
     if (isError(result)) throw new Error("Failed to add support query comment");
-    return result.ok;
-  }
-
-  async removeSupportQueryComment(
-    dto: RemoveSupportQueryComment,
-  ): Promise<any | ErrorResponse> {
-    const identityActor = await ActorFactory.createIdentityActor(
-      authStore,
-      process.env.BACKEND_CANISTER_ID ?? "",
-    );
-
-    const result = (await identityActor.removeSupportQueryComment(dto)) as any;
-    if (isError(result))
-      throw new Error("Failed to remove support query comment");
     return result.ok;
   }
 }
