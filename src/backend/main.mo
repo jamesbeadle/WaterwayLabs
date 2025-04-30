@@ -67,6 +67,7 @@ actor Self {
     };
     private stable var stable_canisters_check_timer_id : Nat = 0;
     private stable var stable_support_query_id : WWLIds.SupportQueryId = 1;
+    private stable var stable_active_team_member_id : WWLIds.TeamMemberId = 1;
 
     /* ----- Domain Object Managers ----- */
 
@@ -366,6 +367,7 @@ actor Self {
         stable_canisters_cycles_topups := canistersManager.getStableCanisterCyclesTopups();
         stable_project_id := projectsManager.getStableProjectId();
         stable_support_query_id := supportQueriesManager.getStableSupportQueryId();
+        stable_active_team_member_id := teamMembersManager.getStableActiveTeamMemberId();
     };
 
     private func setManagerStableVariables() {
@@ -377,6 +379,7 @@ actor Self {
         canistersManager.setStableCanisterCyclesTopups(stable_canisters_cycles_topups);
         projectsManager.setStableProjectId(stable_project_id);
         supportQueriesManager.setStableSupportQueryId(stable_support_query_id);
+        teamMembersManager.setStableActiveTeamMemberId(stable_active_team_member_id);
     };
 
     private func postUpgradeCallback() : async () {

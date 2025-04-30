@@ -21,6 +21,13 @@ module {
             teamMembers := stable_team_members;
         };
 
+        public func getStableActiveTeamMemberId() : Nat16 {
+            activeTeamMemberId;
+        };
+        public func setStableActiveTeamMemberId(stable_active_team_member_id : Nat16) {
+            activeTeamMemberId := stable_active_team_member_id;
+        };
+
         public func getTeamMembers(dto : TeamMemberQueries.GetTeamMembers) : async Result.Result<TeamMemberQueries.TeamMembers, MopsEnums.Error> {
             let page = dto.page;
             let totalEntries = teamMembers.size();
