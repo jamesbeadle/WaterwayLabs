@@ -14,7 +14,10 @@
 
     async function getSupportQueries(){
       supportQueries = await supportStore.getUserSupportQueries({
-        page: 1n
+        page: 1n,
+        status: [],
+        dateTo: [],
+        dateFrom: []
       });
     }
 </script>

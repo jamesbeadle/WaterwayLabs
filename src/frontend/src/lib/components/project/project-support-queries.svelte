@@ -22,7 +22,10 @@
     async function getSupportQueries(){
       supportQueries = await supportStore.getSupportQueries({
         app: [{ ICFC: null}],
-        page: 1n
+        page: 1n,
+        status: [],
+        dateTo: [],
+        dateFrom: []
       });
     }
 </script>

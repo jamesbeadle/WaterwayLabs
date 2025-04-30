@@ -11,7 +11,11 @@
     onMount(async () => {
         try{
             let supportQueriesResult = await supportStore.getSupportQueries({
-                app: [{ ICFC: null }]
+                app: [{ ICFC: null }],
+                page: 1n,
+                status: [],
+                dateTo: [],
+                dateFrom: []
             });
             if(!supportQueriesResult){ return }
             supportQueries = supportQueriesResult;
