@@ -4,7 +4,7 @@ import WaterWayEnums "mo:waterway-mops/Enums";
 import Ids "mo:waterway-mops/Ids";
 module AppTypes {
 
-    public type SupportQueryId = Nat32;
+    public type SupportQueryId = Nat;
 
     public type Project = {
         id : WWLIds.ProjectId;
@@ -32,19 +32,27 @@ module AppTypes {
         submittedBy : Ids.PrincipalId;
         submittedOn : Int;
         assignedTo : Ids.PrincipalId;
-        app: WaterWayEnums.WaterwayLabsApp;
+        app : Text;
+        comments : [SupportQueryComment];
     };
 
     public type TeamMember = {
-        id : Ids.PrincipalId;
-        name : Text;
-        title : Text;
-        image : Text;
-        bio : Text;
+        id : WWLIds.TeamMemberId;
+        firstName : Text;
+        lastName : Text;
+        principalId : Ids.PrincipalId;
+        jobTitle : Text;
+        bio : [Text];
+        image : Blob;
+        video : ?Blob;
     };
 
     public type SupportQueryComment = {
+        commentId : WWLIds.SupportQueryCommentId;
         comment : Text;
+        date : Int;
+        author : Ids.PrincipalId;
+        isAdmin : Bool;
     };
 
     public type CanisterCyclesTopup = {

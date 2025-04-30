@@ -12,12 +12,12 @@ module Enums {
     };
 
     public type QueryStatus = {
-        #Unread;
-        #Read;
+        #Active;
+        #Assigned;
+        #Closed;
+        #New;
+        #OnHold;
         #Resolved;
-        #Ignored;
-        #Flagged;
-        #Archived;
     };
 
     public type SupportQueryStatus = {
@@ -28,4 +28,4 @@ module Enums {
         #Resolved;
         #Closed;
     };
-}
+};

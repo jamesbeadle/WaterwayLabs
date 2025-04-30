@@ -1,19 +1,20 @@
-
 module TeamMemberQueries = {
     public type GetTeamMembers = {
-        page: Nat;
+        page : Nat;
     };
 
     public type TeamMembers = {
-        teamMember: [TeamMember];
-        page: Nat;
-        totalEntries: Nat;
+        teamMember : [TeamMember];
+        page : Nat;
+        totalEntries : Nat;
     };
 
     public type TeamMember = {
-        name: Text;
-        title: Text;
-        image: Text;
-        bio: Text;
+        firstName : Text;
+        lastName : Text;
+        image : Blob;
+        bio : [Text];
+        video : ?Blob;
+        jobTitle : Text;
     };
-}
+};
