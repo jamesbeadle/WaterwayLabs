@@ -1,4 +1,3 @@
-<!-- https://fonts.google.com/icons?selected=Material%20Icons%20Sharp%3Aclose%3A -->
 <script lang="ts">
 	interface Props {
 		size?: string;

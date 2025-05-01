@@ -2,6 +2,7 @@ import MopsEnums "mo:waterway-mops/Enums";
 import Ids "mo:waterway-mops/Ids";
 import WWLIds "mo:waterway-mops/WWLIds";
 import Enums "../enums/app_enums";
+import AppTypes "../types/app_types";
 
 module ProjectCommands {
 
@@ -23,6 +24,7 @@ module ProjectCommands {
     };
 
     public type UpdateProject = {
+        id : WWLIds.ProjectId;
         app : MopsEnums.WaterwayLabsApp;
         name : ?Text;
         backendCanisterId : ?Ids.CanisterId;

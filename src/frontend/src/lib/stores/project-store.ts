@@ -2,11 +2,13 @@ import { writable } from "svelte/store";
 import type {
   ApplicationLogs,
   CanisterInfo,
+  CreateProject,
   GetApplicationLogs,
   GetCanisterInfo,
   GetProjectCanisters,
   Project,
   ProjectCanisters,
+  UpdateProject,
 } from "../../../../declarations/backend/backend.did";
 import { ProjectService } from "$lib/services/project-service";
 
@@ -38,6 +40,14 @@ function createProjectStore() {
     return new ProjectService().topupCanister(canisterId, cycles);
   }
 
+  async function createProject(dto: CreateProject): Promise<any> {
+    return new ProjectService().createProject(dto);
+  }
+
+  async function updateProject(dto: UpdateProject): Promise<any> {
+    return new ProjectService().updateProject(dto);
+  }
+
   return {
     subscribe,
     setProjects: (projects: Project[]) => set(projects),
@@ -45,6 +55,8 @@ function createProjectStore() {
     getCanisterInfo,
     topupCanister,
     getApplicationLogs,
+    createProject,
+    updateProject,
   };
 }
 

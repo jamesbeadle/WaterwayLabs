@@ -4,11 +4,13 @@ import { idlFactory } from "../../../../declarations/backend";
 import type {
   ApplicationLogs,
   CanisterInfo,
+  CreateProject,
   GetApplicationLogs,
   GetCanisterInfo,
   GetProjectCanisters,
   ProjectCanisters,
   Projects,
+  UpdateProject,
 } from "../../../../declarations/backend/backend.did";
 import { ActorFactory } from "../../utils/ActorFactory";
 
@@ -64,6 +66,28 @@ export class ProjectService {
       cycles,
     )) as any;
     if (isError(result)) throw new Error("Failed to topup canister");
+    return result.ok;
+  }
+
+  async createProject(dto: CreateProject): Promise<any> {
+    const identityActor = await ActorFactory.createIdentityActor(
+      authStore,
+      process.env.BACKEND_CANISTER_ID ?? "",
+    );
+
+    const result = (await identityActor.createProject(dto)) as any;
+    if (isError(result)) throw new Error("Failed to create project");
+    return result.ok;
+  }
+
+  async updateProject(dto: UpdateProject): Promise<any> {
+    const identityActor = await ActorFactory.createIdentityActor(
+      authStore,
+      process.env.BACKEND_CANISTER_ID ?? "",
+    );
+
+    const result = (await identityActor.updateProject(dto)) as any;
+    if (isError(result)) throw new Error("Failed to update project");
     return result.ok;
   }
 }

@@ -15,3 +15,31 @@ export const SECONDS_IN_MINUTE = 60;
 export const MINUTES_IN_HOUR = 60;
 export const HOURS_IN_DAY = 24;
 export const DAYS_IN_NON_LEAP_YEAR = 365;
+
+export const projectStatuses = [
+  { Beta: null },
+  { Live: null },
+  { Complete: null },
+  { Decentralised: null },
+  { Development: null },
+  { Design: null },
+  { Cancelled: null },
+];
+
+export const waterwayLabsApps = [
+  { OpenWSL: null },
+  { ICPCasino: null },
+  { FootballGod: null },
+  { ICF1: null },
+  { ICFC: null },
+  { ICGC: null },
+  { ICPFA: null },
+  { GolfPad: null },
+  { TransferKings: null },
+  { JeffBets: null },
+  { OpenBook: null },
+  { OpenCare: null },
+  { OpenChef: null },
+  { OpenBeats: null },
+  { WaterwayLabs: null },
+];

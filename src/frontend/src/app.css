@@ -20,6 +20,22 @@ body {
   --dialog-border-radius: 1px !important;
 }
 
+input,
+textarea,
+select {
+  @apply focus:outline-none focus:ring-2 focus:ring-BrandBlue;
+}
+
+.brand-button {
+  @apply bg-BrandBlue text-white rounded-lg hover:bg-BrandBlue/90 transition-colors;
+}
+.brand-dropdown {
+  @apply bg-gray-800 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-BrandBlue;
+}
+.tab-container {
+  @apply flex flex-wrap;
+}
+
 .tab-container {
   @apply flex  px-4 py-2;
 }
