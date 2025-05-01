@@ -76,6 +76,10 @@ select {
   @apply inline-block px-3 py-1 text-xs bg-white rounded-full shadow-md semi-bold text-BrandGray;
 }
 
+.badge {
+  @apply inline-block px-3 py-1 text-xs rounded-full shadow-md semi-bold;
+}
+
 .left-side {
   width: 50%;
   background-color: #272727;

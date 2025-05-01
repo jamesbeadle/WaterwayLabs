@@ -49,7 +49,7 @@ module {
                 },
             );
 
-            let droppedEntries = List.drop<MopsTypes.ApplicationLog>(List.fromArray(applicationLogs), ((dto.page - 1) * Environment.ROWS_PER_PAGE));
+            let droppedEntries = List.drop<MopsTypes.ApplicationLog>(List.fromArray(appLogs), ((dto.page - 1) * Environment.ROWS_PER_PAGE));
             let paginatedEntries = List.take<MopsTypes.ApplicationLog>(droppedEntries, Environment.ROWS_PER_PAGE);
 
             let res : LogsQueries.ApplicationLogs = {

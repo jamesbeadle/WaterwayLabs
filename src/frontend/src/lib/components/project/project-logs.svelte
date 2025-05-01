@@ -1,52 +1,78 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import type { ApplicationLogs, Project, ProjectId } from "../../../../../declarations/backend/backend.did";
-    import { projectStore } from "$lib/stores/project-store";
-    import LocalSpinner from "../shared/local-spinner.svelte";
+  import { onMount } from "svelte";
+  import type { ApplicationLogs, Project, ProjectId } from "../../../../../declarations/backend/backend.did";
+  import { projectStore } from "$lib/stores/project-store";
+  import LocalSpinner from "../shared/local-spinner.svelte";
+  import AppBadge from "../shared/app-badge.svelte";
+  import ErrorTypeBadge from "../shared/error-type-badge.svelte";
 
-    interface Props {
-      selectedProjectId: ProjectId;
-    };
-    
-    let { selectedProjectId } : Props = $props();
+  interface Props {
+    selectedProjectId: ProjectId;
+  }
 
-    let project: Project | undefined = $state(undefined);
-    let logs: ApplicationLogs | undefined = $state(undefined);
+  let { selectedProjectId }: Props = $props();
+  let project: Project | undefined = $state(undefined);
+  let logs: ApplicationLogs | undefined = $state(undefined);
 
-    onMount(async () => {
-      project = $projectStore.find(x => x.id == selectedProjectId)!;
-      await getLogs();
+  onMount(async () => {
+    project = $projectStore.find((x) => x.id == selectedProjectId)!;
+    await getLogs();
+  });
+
+  async function getLogs() {
+    logs = await projectStore.getApplicationLogs({
+      app: { ICFC: null },
+      page: 1n,
     });
-
-    async function getLogs(){
-      logs = await projectStore.getApplicationLogs({
-        app: { ICFC: null},
-        page: 1n
-      });
-    }
+  }
 </script>
 
-
 {#if project}
-  <div class="flex flex-col space-y-2 xs:space-y-4 mx-4 mt-6 xs:mt-8 sm:mt-6 lg:mt-24">
+  <div class="mx-4 mt-6 sm:mt-8 lg:mt-12 max-w-7xl xl:mx-auto">
+    <!-- Project Title -->
+    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-semibold uppercase tracking-wide mb-6 sm:mb-8">
+      {project.name}
+    </h1>
 
-    <h1 class="text-2xl xs:text-3xl lg:text-5xl uppercase semi-bold tracking-wide">{project.name}</h1>
     {#if logs}
-      {#each logs.logs as log}
-        <div class="flex items-center justify-between w-full">
-          <p>{log.id}</p>
-          <p>{log.app}</p>
-          <p>{log.createdOn}</p>
-          <p>{log.detail}</p>
-          <p>{log.error}</p>
-          <p>{log.logType}</p>
-          <p>{log.title}</p>
-        </div>
-      {/each}
+      <div class="space-y-4 sm:space-y-6">
+        {#each logs.logs as log}
+          <div
+            class="flex flex-col sm:flex-row sm:items-start sm:justify-between bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
+          >
+            <!-- Log Details -->
+            <div class="sm:w-2/3 mb-4 sm:mb-0">
+              <p class="text-sm text-gray-500 dark:text-gray-400">{log.id}</p>
+              <p class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-1">{log.title}</p>
+              <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">{log.detail}</p>
+            </div>
+
+            <!-- Meta Info -->
+            <div class="sm:w-1/3 flex flex-col space-y-2 sm:items-end">
+              <div class="flex space-x-2 sm:space-x-0 sm:flex-col sm:items-end">
+                <AppBadge appName={Object.keys(log.app)[0]} />
+                <ErrorTypeBadge errorType={Object.keys(log.error)[0]} />
+              </div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">{log.logType}</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">{log.createdOn}</p>
+            </div>
+          </div>
+        {/each}
+      </div>
+    {:else}
+      <LocalSpinner />
     {/if}
   </div>
 {:else}
   <LocalSpinner />
 {/if}
 
-
+<style>
+  .log-title {
+    @apply font-medium text-lg;
+  }
+  .log-type,
+  .log-date {
+    @apply text-sm text-gray-500;
+  }
+</style>
