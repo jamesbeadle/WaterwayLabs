@@ -35,11 +35,14 @@
                 <div class="text-left w-full">
                     <span class="status">SUPPORT</span>
                     <h1 class="mt-6 mb-4 text-4xl leading-tight lg:mt-2 lg:mb-0 lg:text-5xl xl:text-6xl">
-                        PLEASE SEE NEW SUPPORT QUERIES BELOW
+                        COMING SOON
                     </h1>
                 </div>
             </div>
             <div class="horizontal-divider"></div>
+
+            <p>You will be able to raise Waterway Labs app support tickets here.</p>
+            <!--
 
             {#if supportQueries}
                 {#each supportQueries.supportQueries as supportQuery}
@@ -79,6 +82,7 @@
             {:else}
                 <p>No Support Queries Found</p>
             {/if}
+            -->
 
         {/if}
     </div>
