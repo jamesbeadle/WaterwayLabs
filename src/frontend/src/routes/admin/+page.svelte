@@ -12,9 +12,7 @@
     let isLoading = $state(true);
     let activeTab: string = $state("details");
     let selectedProjectId = $state(0);
-
     let showCreateProject = $state(false);
-    let showUpdateProject = $state(false);
 
     onMount(async () => {
         try {
@@ -91,10 +89,6 @@
     </div>
 
     {#if showCreateProject}
-        <CreateProjectModal onClose={() => showCreateProject = false} visible={showCreateProject} title="Create Project" />
-    {/if}
-
-    {#if showUpdateProject}
-        <UpdateProjectModal onClose={() => showUpdateProject = false} visible={showUpdateProject} title="Update Project" />
+        <CreateProjectModal onClose={() => (showCreateProject = false)} title="Create Project" />
     {/if}
 {/if}
