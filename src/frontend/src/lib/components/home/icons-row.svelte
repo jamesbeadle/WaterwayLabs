@@ -15,6 +15,7 @@
   import IcfcIcon from '$lib/icons/svgs/icfc-icon.svelte';
   import Icf1Icon from '$lib/icons/svgs/icf1-icon.svelte';
     import FootballGodIcon from '$lib/icons/svgs/football-god-icon.svelte';
+    import IcgcIcon from '$lib/icons/svgs/icgc-icon.svelte';
 
   interface Props {
     selectedProjectId: ProjectId;
@@ -98,7 +99,7 @@
             <TransferKingsIcon className={getTailwindSize(project.name)} />
           {/if}
           {#if project.name == 'ICGC'}
-            <IcfcIcon className={getTailwindSize(project.name)} />
+            <IcgcIcon className={getTailwindSize(project.name)} />
           {/if}
           {#if project.name == 'GolfPad'}
             <GolfpadIcon className={getTailwindSize(project.name)} />
