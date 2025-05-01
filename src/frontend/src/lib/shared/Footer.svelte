@@ -46,7 +46,6 @@
       <div class="flex flex-col text-sm uppercase exLight lg:mb-0 lg:flex-row">
         <a href="/" class="mb-4 lg:mb-0 lg:mx-4 hover:text-blue-400">Products</a>
         <a href="/about" class="mb-4 lg:mb-0 lg:mx-4 hover:text-blue-400">About Us</a>
-        <a href="/team" class="mb-4 lg:mb-0 lg:mx-4 hover:text-blue-400">The Team</a>
       </div>
     </div>
 

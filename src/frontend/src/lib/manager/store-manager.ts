@@ -1,24 +1,20 @@
 import { DataHashService } from "$lib/services/data-hash-service";
 import { ProjectService } from "$lib/services/project-service";
-import { TeamService } from "$lib/services/team-service";
 import { projectStore } from "$lib/stores/project-store";
-import { teamStore } from "$lib/stores/team-store";
 import { replacer } from "$lib/utils/helpers";
 import type { DataHash } from "../../../../declarations/backend/backend.did";
 
 class StoreManager {
   private dataHashService: DataHashService;
   private projectService: ProjectService;
-  private teamService: TeamService;
 
-  private categories: string[] = ["projects", "team_members"];
+  private categories: string[] = ["projects"];
 
   private isSyncing = false;
 
   constructor() {
     this.dataHashService = new DataHashService();
     this.projectService = new ProjectService();
-    this.teamService = new TeamService();
   }
 
   async syncStores(): Promise<void> {
@@ -71,17 +67,6 @@ class StoreManager {
           );
         }
         break;
-      case "team_members":
-        const teamMembersResult = await this.teamService.getTeamMembers();
-        if (teamMembersResult) {
-          let updateTeamMembers = teamMembersResult;
-          teamStore.setTeamMembers(updateTeamMembers);
-          localStorage.setItem(
-            "team_members",
-            JSON.stringify(updateTeamMembers, replacer),
-          );
-        }
-        break;
     }
   }
 
@@ -95,10 +80,6 @@ class StoreManager {
         const cachedProjects = JSON.parse(cachedData || "[]");
         projectStore.setProjects(cachedProjects);
         console.log(cachedProjects);
-        break;
-      case "team_members":
-        const cachedTeamMembers = JSON.parse(cachedData || "[]");
-        teamStore.setTeamMembers(cachedTeamMembers);
         break;
     }
   }

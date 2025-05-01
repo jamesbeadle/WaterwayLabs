@@ -21,13 +21,11 @@ import LogsQueries "mo:waterway-mops/logs-management/LogsQueries";
 import DataHashQueries "queries/data_hash_queries";
 import ProjectQueries "queries/project_queries";
 import SupportQueryQueries "queries/support_query_queries";
-import TeamMemberQueries "queries/team_member_queries";
 
 /* ----- Commands ----- */
 
 import SupportQueryCommands "commands/support_query_commands";
 import ProjectCommands "commands/project_commands";
-import TeamMemberCommands "commands/team_member_commands";
 import LogsCommands "mo:waterway-mops/logs-management/LogsCommands";
 import CanisterCommands "./commands/canister_management_commands";
 
@@ -38,7 +36,6 @@ import CanistersManager "Managers/canisters_manager";
 import DataHashesManager "Managers/data_hashes_manager";
 import ProjectsManager "Managers/projects_manager";
 import SupportQueriesManager "Managers/support_queries_manager";
-import TeamMembersManager "Managers/team_members_manager";
 
 /* ----- Only Stable Variables Should Use Types ----- */
 
@@ -54,7 +51,6 @@ actor Self {
 
     private stable var stable_data_hashes : [MopsTypes.DataHash] = [];
     private stable var stable_projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)] = [];
-    private stable var stable_team_members : [AppTypes.TeamMember] = [];
     private stable var stable_application_logs : [MopsTypes.ApplicationLog] = [];
     private stable var stable_support_queries : [AppTypes.SupportQuery] = [];
     private stable var stable_canisters_cycles_topups : [AppTypes.CanisterCyclesTopup] = [];
@@ -65,13 +61,11 @@ actor Self {
     };
     private stable var stable_canisters_check_timer_id : Nat = 0;
     private stable var stable_support_query_id : WWLIds.SupportQueryId = 1;
-    private stable var stable_active_team_member_id : WWLIds.TeamMemberId = 1;
-
+    
     /* ----- Domain Object Managers ----- */
 
     let dataHashesManager = DataHashesManager.DataHashesManager();
     let projectsManager = ProjectsManager.ProjectsManager();
-    let teamMembersManager = TeamMembersManager.TeamMembersManager();
     let applicationLogsManager = ApplicationLogsManager.ApplicationLogsManager();
     let supportQueriesManager = SupportQueriesManager.SupportQueriesManager();
     let canistersManager = CanistersManager.CanistersManager();
@@ -119,24 +113,6 @@ actor Self {
     public shared ({ caller }) func deleteProject(dto : ProjectCommands.DeleteProject) : async Result.Result<(), MopsEnums.Error> {
         assert isCallerAdmin(Principal.toText(caller));
         return await projectsManager.deleteProject(dto);
-    };
-
-    /* ----- Team Member Queries ----- */
-
-    public shared query func getTeamMembers() : async Result.Result<[TeamMemberQueries.TeamMember], MopsEnums.Error> {
-        return #ok(stable_team_members);
-    };
-
-    /* ----- Team Member Commands ----- */
-
-    public shared ({ caller }) func addTeamMember(dto : TeamMemberCommands.AddTeamMember) : async Result.Result<(), MopsEnums.Error> {
-        assert isCallerAdmin(Principal.toText(caller));
-        return await teamMembersManager.addTeamMember(dto);
-    };
-
-    public shared ({ caller }) func removeTeamMember(dto : TeamMemberCommands.RemoveTeamMember) : async Result.Result<(), MopsEnums.Error> {
-        assert isCallerAdmin(Principal.toText(caller));
-        return await teamMembersManager.removeTeamMember(dto);
     };
 
     /* ----- Canisters Queries ----- */
@@ -359,25 +335,21 @@ actor Self {
     private func getManagerStableVariables() {
         stable_data_hashes := dataHashesManager.getStableDataHashes();
         stable_projects := projectsManager.getStableProjects();
-        stable_team_members := teamMembersManager.getStableTeamMembers();
         stable_application_logs := applicationLogsManager.getStableApplicationLogs();
         stable_support_queries := supportQueriesManager.getStableSupportQueries();
         stable_canisters_cycles_topups := canistersManager.getStableCanisterCyclesTopups();
         stable_project_id := projectsManager.getStableProjectId();
         stable_support_query_id := supportQueriesManager.getStableSupportQueryId();
-        stable_active_team_member_id := teamMembersManager.getStableActiveTeamMemberId();
     };
 
     private func setManagerStableVariables() {
         dataHashesManager.setStableDataHashes(stable_data_hashes);
         projectsManager.setStableProjects(stable_projects);
-        teamMembersManager.setStableTeamMembers(stable_team_members);
         applicationLogsManager.setStableApplicationLogs(stable_application_logs);
         supportQueriesManager.setStableSupportQueries(stable_support_queries);
         canistersManager.setStableCanisterCyclesTopups(stable_canisters_cycles_topups);
         projectsManager.setStableProjectId(stable_project_id);
         supportQueriesManager.setStableSupportQueryId(stable_support_query_id);
-        teamMembersManager.setStableActiveTeamMemberId(stable_active_team_member_id);
     };
 
     private func postUpgradeCallback() : async () {

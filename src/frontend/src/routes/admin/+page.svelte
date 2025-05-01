@@ -44,11 +44,6 @@
     <LocalSpinner />
 {:else}
     <div class="flex w-full flex-col space-y-4">
-
-        <a href="/admin/team-members">
-            <button class="brand-button">Manage Waterway Labs Team Members</button>
-        </a>
-
         <div class="flex flex-col space-y-2 w-full">
 
             <select class="p-2 brand-dropdown my-4 min-w-[100px]"

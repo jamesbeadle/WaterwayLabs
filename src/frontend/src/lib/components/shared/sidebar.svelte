@@ -6,7 +6,6 @@
     import WaterwayLabsIcon from "$lib/icons/svgs/waterway-labs-icon.svelte";
     import CloseIcon from "$lib/icons/CloseIcon.svelte";
     import AboutIcon from "$lib/icons/AboutIcon.svelte";
-    import TeamIcon from "$lib/icons/TeamIcon.svelte";
     import SupportIcon from "$lib/icons/SupportIcon.svelte";
     import ProfileIcon from "$lib/icons/ProfileIcon.svelte";
     import LogoutIcon from "$lib/icons/LogoutIcon.svelte";
@@ -47,7 +46,6 @@
   const menuItems = [
     { icon: MenuIcon, label: "Home", path: "/" },
     { icon: AboutIcon, label: "About", path: "/about" },
-    { icon: TeamIcon, label: "Team", path: "/team" },
     { icon: SupportIcon, label: "Support", path: "/support" },
     { icon: ProfileIcon, label: "Profile", path: "/profile" },
   ];
