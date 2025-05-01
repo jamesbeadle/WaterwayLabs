@@ -44,14 +44,14 @@
   });
 
   const menuItems = [
-    { icon: MenuIcon, label: "Home", path: "/" },
-    { icon: AboutIcon, label: "About", path: "/about" },
-    { icon: SupportIcon, label: "Support", path: "/support" },
-    { icon: ProfileIcon, label: "Profile", path: "/profile" },
+    { icon: MenuIcon, label: "Home", path: "/", authOnly: false },
+    { icon: AboutIcon, label: "About", path: "/about", authOnly: false },
+    { icon: SupportIcon, label: "Support", path: "/support", authOnly: true },
+    { icon: ProfileIcon, label: "Profile", path: "/profile", authOnly: true },
   ];
 
-  const signInItem = { icon: WalletIcon, label: "Sign In", path: "/" };
-  const signOutItem = { icon: LogoutIcon, label: "Sign Out", path: "/" };
+  const signInItem = { icon: WalletIcon, label: "Sign In", path: "/", authOnly: false };
+  const signOutItem = { icon: LogoutIcon, label: "Sign Out", path: "/", authOnly: true };
 
   async function handleMenuItemClick(item: (typeof menuItems)[number]) {
     if (item.label === "Sign Out") {
@@ -111,49 +111,64 @@
     </div>
     <button
       onclick={toggleMenu}
-      class="p-2 text-gray-500 hover:text-gray-700 hover:scale-110 transition-all duration-200"
+      class="p-2 hover:scale-110 transition-all duration-200"
       aria-label="Close sidebar"
     >
       <CloseIcon fill='white' className="w-4 h-4" />
     </button>
   </div>
 
-  <nav class="flex-1 text-gray-800 text-lg px-6 pt-6">
+  <nav class="flex-1 text-lg px-6 pt-6">
     <ul class="space-y-2">
       {#each menuItems as item}
-        <li>
-          <button
-            onclick={() => handleMenuItemClick(item)}
-            class="flex items-center w-full p-3 space-x-4 rounded-lg hover:bg-gray-100 hover:text-BrandGray transition-colors"
-            class:active={$page.url.pathname === item.path}
-          >
-            <item.icon
-              className="w-6 h-6"
-              fill={$page.url.pathname === item.path ? '#1F2937' : 'white'}
-            />
-            <span
-              class={$page.url.pathname === item.path
-                ? 'text-gray-800 font-medium'
-                : 'text-white'}
+        {#if !item.authOnly}
+          <li>
+            <button
+              onclick={() => handleMenuItemClick(item)}
+              class="flex items-center w-full p-3 space-x-4 rounded-lg transition-colors
+                {$page.url.pathname === item.path ? 'bg-BrandBlue text-white' : 'text-white hover:bg-BrandTurquoise'}"
+              aria-current={$page.url.pathname === item.path ? 'page' : undefined}
             >
-              {item.label}
-            </span>
-          </button>
-        </li>
+              <item.icon
+                className="w-6 h-6"
+                fill='white'
+              />
+              <span class='text-white'>
+                {item.label}
+              </span>
+            </button>
+          </li>
+        {/if}
+        {#if item.authOnly && isLoggedIn}
+          <li>
+            <button
+              onclick={() => handleMenuItemClick(item)}
+              class="flex items-center w-full p-3 space-x-4 rounded-lg transition-colors
+                {$page.url.pathname === item.path ? 'bg-BrandBlue text-white' : 'text-white hover:bg-BrandTurquoise'}"
+              aria-current={$page.url.pathname === item.path ? 'page' : undefined}
+            >
+              <item.icon
+                className="w-6 h-6"
+                fill='white'
+              />
+              <span class='text-white'>
+                {item.label}
+              </span>
+            </button>
+          </li>
+        {/if}
       {/each}
       {#if isAdmin}
         <li>
           <button
             onclick={() => loadAdmin()}
-            class="flex items-center w-full p-3 space-x-4 rounded-lg hover:bg-gray-100 hover:text-BrandGray transition-colors"
-            class:active={$page.url.pathname === '/admin'}
+            class="flex items-center w-full p-3 space-x-4 rounded-lg transition-colors
+              {$page.url.pathname === '/admin' ? 'bg-BrandBlue text-white' : 'text-white hover:bg-BrandTurquoise'}"
+            aria-current={$page.url.pathname === '/admin' ? 'page' : undefined}
           >
             <AdminIcon className="w-6 h-6" fill={$page.url.pathname === '/admin' ? '#1F2937' : 'white'} />
-            <span
-              class={$page.url.pathname === '/admin'
-                ? 'text-gray-800 font-medium'
-                : 'text-white'}
-            >
+            
+            <span class='text-white'>
               Admin
             </span>
           </button>
@@ -191,9 +206,6 @@
 </div>
 
 <style>
-  .active {
-    @apply bg-BrandLightBlue text-black;
-  }
 
   .translate-x-0 {
     transform: translateX(0) !important;
