@@ -7,6 +7,7 @@
 
     let { errorType } : Props = $props();
 
+    let isLoading = $state(true);
     let backgroundColour = $state("");
     let borderColor = $state("");
     let textColour = $state("");
@@ -34,12 +35,16 @@
             case 'InsufficientPacketsRemaining':
             case 'InsufficientFunds':
             case 'InEligible':
-                backgroundColour = "BrandDeclineRed";
+            default:
+                backgroundColour = "[#FF403C]";
                 textColour = "white";
                 borderColor = "black";
             break;
         }
+        isLoading = false;
     });
 
 </script>
-<span class={`badge bg-${backgroundColour} text-${textColour} border border-${borderColor}`}>{errorType}</span>
+{#if !isLoading}
+    <div class={`badge bg-${backgroundColour} text-${textColour} border border-${borderColor}`}>{errorType}</div>
+{/if}

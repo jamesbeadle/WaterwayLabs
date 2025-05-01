@@ -5,7 +5,6 @@
 
   import { storeManager } from "$lib/manager/store-manager";
   import { projectStore } from "$lib/stores/project-store";
-  import { ProjectService } from "$lib/services/project-service";
   import { getStatusString } from "$lib/utils/helpers";
   
   import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
@@ -13,15 +12,11 @@
   import IconsRow from "$lib/components/home/icons-row.svelte";
   import ProjectDetail from "$lib/components/project/project-detail.svelte";
   import Sidebar from "$lib/components/shared/sidebar.svelte";
-    import { authStore } from "$lib/stores/auth-store";
-
   
   let selectedProjectId = $state(2);
   let isMenuOpen = $state(false);
   
   type ProjectData = ReturnType<typeof transformProjectData>;
-  
-  const projectService = new ProjectService();
   
   let projects = $state<Project[]>([]);
   let selectedProject = $state<Project | null>(null);

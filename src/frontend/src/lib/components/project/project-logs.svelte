@@ -5,6 +5,7 @@
   import LocalSpinner from "../shared/local-spinner.svelte";
   import AppBadge from "../shared/app-badge.svelte";
   import ErrorTypeBadge from "../shared/error-type-badge.svelte";
+    import { convertDateToReadable } from "$lib/utils/helpers";
 
   interface Props {
     selectedProjectId: ProjectId;
@@ -50,12 +51,12 @@
             </div>
 
             <div class="sm:w-1/3 flex flex-col space-y-2 sm:items-end">
-              <div class="flex space-x-2 sm:space-x-0 sm:flex-col sm:items-end">
-                <AppBadge appName={Object.keys(log.app)[0]} />
+              <AppBadge appName={Object.keys(log.app)[0]} />
+              <p class="text-sm text-gray-500 dark:text-gray-400">{Object.keys(log.logType)[0]}</p>
+              {#if log.error}
                 <ErrorTypeBadge errorType={Object.keys(log.error)[0]} />
-              </div>
-              <p class="text-sm text-gray-500 dark:text-gray-400">{log.logType}</p>
-              <p class="text-sm text-gray-500 dark:text-gray-400">{log.createdOn}</p>
+              {/if}
+              <p class="text-sm text-gray-500 dark:text-gray-400">{convertDateToReadable(Number(log.createdOn))}</p>
             </div>
           </div>
         {/each}

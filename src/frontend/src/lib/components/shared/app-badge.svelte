@@ -11,14 +11,19 @@
     let backgroundColour = $state("");
     let borderColor = $state("");
     let textColour = $state("");
+    let isLoading = $state(true);
 
     onMount(() => {
+
         let project = $projectStore.find(x => Object.keys(x.app)[0] == appName);
         if(!project) return;
         backgroundColour = project.mainColour;
         borderColor = project.thirdColour;
         textColour = project.secondaryColour;
+        isLoading = false;
     });
 
 </script>
-<span class={`badge bg-${backgroundColour} text-${textColour} border border-${borderColor}`}>{appName}</span>
+{#if !isLoading}
+    <div class={`badge bg-${backgroundColour} text-${textColour} border border-${borderColor}`}>{appName}</div>
+{/if}
