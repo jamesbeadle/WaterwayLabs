@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { projectStore } from "$lib/stores/project-store";
     import { onMount } from "svelte";
 
     interface Props {

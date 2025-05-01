@@ -20,8 +20,12 @@
   });
 
   async function getLogs() {
+
+    let project = $projectStore.find(x => x.id == selectedProjectId);
+    if(!project) return;
+
     logs = await projectStore.getApplicationLogs({
-      app: { ICFC: null },
+      app: project.app,
       page: 1n,
     });
   }
@@ -29,7 +33,6 @@
 
 {#if project}
   <div class="mx-4 mt-6 sm:mt-8 lg:mt-12 max-w-7xl xl:mx-auto">
-    <!-- Project Title -->
     <h1 class="text-2xl sm:text-3xl lg:text-4xl font-semibold uppercase tracking-wide mb-6 sm:mb-8">
       {project.name}
     </h1>
@@ -40,14 +43,12 @@
           <div
             class="flex flex-col sm:flex-row sm:items-start sm:justify-between bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
           >
-            <!-- Log Details -->
             <div class="sm:w-2/3 mb-4 sm:mb-0">
               <p class="text-sm text-gray-500 dark:text-gray-400">{log.id}</p>
               <p class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-1">{log.title}</p>
               <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">{log.detail}</p>
             </div>
 
-            <!-- Meta Info -->
             <div class="sm:w-1/3 flex flex-col space-y-2 sm:items-end">
               <div class="flex space-x-2 sm:space-x-0 sm:flex-col sm:items-end">
                 <AppBadge appName={Object.keys(log.app)[0]} />
