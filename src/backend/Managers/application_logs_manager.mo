@@ -39,9 +39,9 @@ module {
             appLogs := Array.sort<MopsTypes.ApplicationLog>(
                 appLogs,
                 func(a : MopsTypes.ApplicationLog, b : MopsTypes.ApplicationLog) : Order.Order {
-                    if (a.createdOn > b.createdOn) {
+                    if (a.createdOn < b.createdOn) {
                         return #greater;
-                    } else if (a.createdOn < b.createdOn) {
+                    } else if (a.createdOn > b.createdOn) {
                         return #less;
                     } else {
                         return #equal;
