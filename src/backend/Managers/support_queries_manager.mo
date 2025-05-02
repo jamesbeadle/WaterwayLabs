@@ -116,9 +116,9 @@ module {
             res := Array.sort<SupportQueryQueries.SupportQuery>(
                 res,
                 func(a : SupportQueryQueries.SupportQuery, b : SupportQueryQueries.SupportQuery) : Order.Order {
-                    if (a.submittedOn > b.submittedOn) {
+                    if (a.submittedOn < b.submittedOn) {
                         return #greater;
-                    } else if (a.submittedOn < b.submittedOn) {
+                    } else if (a.submittedOn > b.submittedOn) {
                         return #less;
                     } else {
                         return #equal;
@@ -176,9 +176,9 @@ module {
             res := Array.sort<SupportQueryQueries.SupportQuery>(
                 res,
                 func(a : SupportQueryQueries.SupportQuery, b : SupportQueryQueries.SupportQuery) : Order.Order {
-                    if (a.submittedOn > b.submittedOn) {
+                    if (a.submittedOn < b.submittedOn) {
                         return #greater;
-                    } else if (a.submittedOn < b.submittedOn) {
+                    } else if (a.submittedOn > b.submittedOn) {
                         return #less;
                     } else {
                         return #equal;
@@ -253,9 +253,9 @@ module {
             res := Array.sort<SupportQueryQueries.SupportQuery>(
                 res,
                 func(a : SupportQueryQueries.SupportQuery, b : SupportQueryQueries.SupportQuery) : Order.Order {
-                    if (a.submittedOn > b.submittedOn) {
+                    if (a.submittedOn < b.submittedOn) {
                         return #greater;
-                    } else if (a.submittedOn < b.submittedOn) {
+                    } else if (a.submittedOn > b.submittedOn) {
                         return #less;
                     } else {
                         return #equal;
@@ -330,9 +330,9 @@ module {
             res := Array.sort<SupportQueryQueries.SupportQuery>(
                 res,
                 func(a : SupportQueryQueries.SupportQuery, b : SupportQueryQueries.SupportQuery) : Order.Order {
-                    if (a.submittedOn > b.submittedOn) {
+                    if (a.submittedOn < b.submittedOn) {
                         return #greater;
-                    } else if (a.submittedOn < b.submittedOn) {
+                    } else if (a.submittedOn > b.submittedOn) {
                         return #less;
                     } else {
                         return #equal;
