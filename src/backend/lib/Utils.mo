@@ -29,8 +29,4 @@ module {
         Nat32.fromNat(val % (2 ** 32 - 1));
 
     };
-
-    public func secondsToDays(seconds : Nat) : Nat {
-        seconds / (60 * 60 * 24);
-    };
 };

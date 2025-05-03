@@ -33,7 +33,6 @@ module {
                 if (log.app == app) {
                     appLogs := Array.append(appLogs, [log]);
                 };
-
             };
 
             appLogs := Array.sort<MopsTypes.ApplicationLog>(

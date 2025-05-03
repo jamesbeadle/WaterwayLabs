@@ -1,6 +1,6 @@
 [dependencies]
 base = "0.14.9"
-waterway-mops = "2.9.0"
+waterway-mops = "2.9.1"
 array = "https://github.com/aviate-labs/array.mo#master@8e4282825d3b401407954917cd94d1548ee21256"
 StableTrieMap = "https://github.com/NatLabs/StableTrieMap#master@4781cb03efd34b124c22396c69710b374366c797"
 StableBuffer = "https://github.com/canscale/StableBuffer#master@acdde6bb5b939227997cebdbb8919d2e6da8691c"

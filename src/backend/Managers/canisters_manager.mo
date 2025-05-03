@@ -5,10 +5,12 @@ import CanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
 import MopsEnums "mo:waterway-mops/Enums";
 import WWLCanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
 import WWLCanisterManager "mo:waterway-mops/canister-management/CanisterManager";
+import BaseUtilities "mo:waterway-mops/BaseUtilities";
 import CanisterCommands "../commands/canister_management_commands";
 import Iter "mo:base/Iter";
 import Debug "mo:base/Debug";
 import Utils "../lib/Utils";
+
 
 module {
     public class CanistersManager() {
@@ -200,7 +202,7 @@ module {
                         let freezeThreshold = canister.freezeThreshold;
                         let computeAllocation = canister.computeAllocation;
 
-                        let min_cycles_required = Utils.secondsToDays(freezeThreshold) * idleCyclesBurnedPerDay;
+                        let min_cycles_required = BaseUtilities.secondsToDays(freezeThreshold) * idleCyclesBurnedPerDay;
 
                     };
                     case (_) {};
