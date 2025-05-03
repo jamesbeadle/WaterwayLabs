@@ -8,7 +8,7 @@
   import { authStore, type AuthStoreData } from "$lib/stores/auth-store";
   import { displayAndCleanLogoutMsg } from "$lib/services/auth-services";
 
-  import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
+  import LocalSpinner from "$lib/components/shared/global/local-spinner.svelte";
   import Toasts from "$lib/components/toasts/toasts.svelte";
   import Sidebar from "$lib/components/shared/sidebar.svelte";
   import Header from "$lib/shared/Header.svelte";

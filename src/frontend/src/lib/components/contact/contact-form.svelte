@@ -1,6 +1,6 @@
 <script lang="ts">
   import { isError } from "$lib/utils/helpers";
-  import LocalSpinner from "../shared/local-spinner.svelte";
+  import LocalSpinner from "../shared/global/local-spinner.svelte";
   import { toasts } from '$lib/stores/toasts-store';
     import type { CreateSupportQuery } from "../../../../../declarations/backend/backend.did";
     import { supportStore } from "$lib/stores/support-store";

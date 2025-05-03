@@ -1,6 +1,6 @@
 <script lang="ts">
-    import LocalSpinner from "../shared/local-spinner.svelte";
-    import Modal from "../shared/modal.svelte";
+    import LocalSpinner from "../shared/global/local-spinner.svelte";
+    import Modal from "../shared/global/modal.svelte";
     import type { ProjectStatus, WaterwayLabsApp } from "../../../../../declarations/backend/backend.did";
     import { projectStatuses, waterwayLabsApps } from "$lib/constants/app.constants";
    

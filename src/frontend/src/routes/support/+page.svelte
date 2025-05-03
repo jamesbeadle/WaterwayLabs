@@ -1,7 +1,7 @@
 <script lang="ts">
     import { formatUnixDateTimeToReadable } from "$lib/utils/helpers";
     import { onMount } from "svelte";
-    import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
+    import LocalSpinner from "$lib/components/shared/global/local-spinner.svelte";
     import { supportStore } from "$lib/stores/support-store";
     import type { SupportQueries } from "../../../../declarations/backend/backend.did";
 

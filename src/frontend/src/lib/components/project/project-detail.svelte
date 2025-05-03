@@ -2,7 +2,7 @@
     import ArrowIcon from "$lib/icons/ArrowIcon.svelte";
     import GithubIcon from "$lib/icons/GithubIcon.svelte";
     import type { Project } from "../../../../../declarations/backend/backend.did";
-    import LocalSpinner from "../shared/local-spinner.svelte";
+    import LocalSpinner from "../shared/global/local-spinner.svelte";
 
     interface Props {
       project: Project;
@@ -41,7 +41,7 @@
       {project.summary}
     </p>
     <div class="flex items-center justify-between w-full">
-      <a href={project.websiteURL} target="_blank" rel="noopener noreferrer" 
+      <a href={`https://${project.websiteURL}`} target="_blank" rel="noopener noreferrer" 
         class="flex items-center w-full lg:w-auto xs:w-[99%] mt-4 p-1 transition-colors border border-white rounded-full group hover:bg-white hover:text-black">
         <span class="flex-1 text-xs semi-bold tracking-wide text-center lg:px-4">VISIT SITE</span>
         <span class="w-8 h-8 flex items-center justify-center">

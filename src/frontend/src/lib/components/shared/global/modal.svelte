@@ -1,7 +1,7 @@
 <script lang="ts">
   import { quintOut } from 'svelte/easing';
   import { fade, scale } from 'svelte/transition';
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount } from 'svelte';
   import type { Snippet } from 'svelte';
   import CloseIcon from '$lib/icons/CloseIcon.svelte';
  

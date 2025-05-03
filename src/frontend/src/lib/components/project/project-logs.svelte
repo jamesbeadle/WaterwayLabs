@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import type { ApplicationLogs, Project, ProjectId } from "../../../../../declarations/backend/backend.did";
   import { projectStore } from "$lib/stores/project-store";
-  import LocalSpinner from "../shared/local-spinner.svelte";
+  import LocalSpinner from "../shared/global/local-spinner.svelte";
   import AppBadge from "../shared/app-badge.svelte";
   import ErrorTypeBadge from "../shared/error-type-badge.svelte";
     import { convertDateToReadable } from "$lib/utils/helpers";

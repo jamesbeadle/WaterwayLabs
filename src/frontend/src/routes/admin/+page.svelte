@@ -7,7 +7,7 @@
     import UpdateProjectModal from "$lib/components/project/update-project-modal.svelte";
     import { storeManager } from "$lib/manager/store-manager";
     import { projectStore } from "$lib/stores/project-store";
-    import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
+    import LocalSpinner from "$lib/components/shared/global/local-spinner.svelte";
 
     let isLoading = $state(true);
     let activeTab: string = $state("details");

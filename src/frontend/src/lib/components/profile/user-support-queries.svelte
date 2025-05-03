@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import type { Project, SupportQueries } from "../../../../../declarations/backend/backend.did";
-    import LocalSpinner from "../shared/local-spinner.svelte";
+    import LocalSpinner from "../shared/global/local-spinner.svelte";
     import { supportStore } from "$lib/stores/support-store";
 
     let isLoading = $state(true);

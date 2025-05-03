@@ -7,7 +7,7 @@
   import { projectStore } from "$lib/stores/project-store";
   import { getStatusString } from "$lib/utils/helpers";
   
-  import LocalSpinner from "$lib/components/shared/local-spinner.svelte";
+  import LocalSpinner from "$lib/components/shared/global/local-spinner.svelte";
   import HomepageHeader from "$lib/shared/HomepageHeader.svelte";
   import IconsRow from "$lib/components/home/icons-row.svelte";
   import ProjectDetail from "$lib/components/project/project-detail.svelte";

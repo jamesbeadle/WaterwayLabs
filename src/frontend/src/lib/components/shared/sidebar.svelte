@@ -11,7 +11,7 @@
     import LogoutIcon from "$lib/icons/LogoutIcon.svelte";
     import { authStore, type AuthSignInParams } from "$lib/stores/auth-store";
     import { onMount } from "svelte";
-    import LocalSpinner from "./local-spinner.svelte";
+    import LocalSpinner from "./global/local-spinner.svelte";
     import WalletIcon from "$lib/icons/WalletIcon.svelte";
     import AdminIcon from "$lib/icons/AdminIcon.svelte";
 
