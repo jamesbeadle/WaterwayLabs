@@ -61,7 +61,7 @@ actor Self {
     };
     private stable var stable_canisters_check_timer_id : Nat = 0;
     private stable var stable_support_query_id : WWLIds.SupportQueryId = 1;
-    
+
     /* ----- Domain Object Managers ----- */
 
     let dataHashesManager = DataHashesManager.DataHashesManager();
@@ -328,7 +328,7 @@ actor Self {
 
     system func postupgrade() {
         setManagerStableVariables();
-        stable_canisters_check_timer_id := Timer.recurringTimer<system>(#seconds(86_400), checkCanisters);
+        // stable_canisters_check_timer_id := Timer.recurringTimer<system>(#seconds(86_400), checkCanisters);
         ignore Timer.setTimer<system>(#nanoseconds(Int.abs(1)), postUpgradeCallback);
     };
 
