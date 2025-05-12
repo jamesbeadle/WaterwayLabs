@@ -5,16 +5,20 @@ import CanisterQueries "mo:waterway-mops/canister-management/CanisterQueries";
 import MopsEnums "mo:waterway-mops/Enums";
 import WWLCanisterCommands "mo:waterway-mops/canister-management/CanisterCommands";
 import WWLCanisterManager "mo:waterway-mops/canister-management/CanisterManager";
-import BaseUtilities "mo:waterway-mops/BaseUtilities";
+import { message } "mo:base/Error";
+import LogsManager "mo:waterway-mops/logs-management/LogsManager";
+import CanisterIds "mo:waterway-mops/CanisterIds";
 import CanisterCommands "../commands/canister_management_commands";
 import Iter "mo:base/Iter";
 import Debug "mo:base/Debug";
+import Array "mo:base/Array";
+import Time "mo:base/Time";
 import Utils "../lib/Utils";
-
 
 module {
     public class CanistersManager() {
         let wwlCanisterManager = WWLCanisterManager.CanisterManager();
+        let logsManager = LogsManager.LogsManager();
         private var canistersCyclesTopups : [AppTypes.CanisterCyclesTopup] = [];
 
         public func getCanisterInfo(dto_query : CanisterQueries.GetCanisterInfo) : async Result.Result<CanisterQueries.CanisterInfo, MopsEnums.Error> {
@@ -176,37 +180,116 @@ module {
         };
 
         public func checkCanisters(projects : [(MopsEnums.WaterwayLabsApp, AppTypes.Project)]) : async () {
-            // TODO: In-Progress
-            var canisters : [CanisterQueries.CanisterInfo] = [];
-            Debug.print("Checking canisters");
-            for (project in Iter.fromArray(projects)) {
-                let res = await getProjectCanisters({ app = project.0 }, projects);
-                switch (res) {
-                    case (#ok(canistersResult)) {
-                        let projectCanisters = canistersResult.entries;
-                        // canisters := Array.append(canisters, projectCanisters);
-                    };
-                    case (#err(_)) {
-                        Debug.print("Error getting canisters");
+            try {
+                var canisters : [CanisterQueries.Canister] = [];
+                Debug.print("Checking canisters");
+
+                let _ = await logsManager.addApplicationLog({
+                    app = #WaterwayLabs;
+                    logType = #Information;
+                    title = "CanistersManager";
+                    detail = "Checking canisters";
+                    error = null;
+                });
+                for (project in Iter.fromArray(projects)) {
+                    let res = await getProjectCanisters({ app = project.0 }, projects);
+                    switch (res) {
+                        case (#ok(canistersResult)) {
+                            let projectCanisters = canistersResult.entries;
+                            canisters := Array.append(canisters, projectCanisters);
+                        };
+                        case (#err(_)) {
+                            Debug.print("Error getting canisters");
+                        };
                     };
                 };
-            };
 
-            for (canister in Iter.fromArray(canisters)) {
-                // check the canister status
-                let canisterStatus = canister.canisterStatus;
-                switch (canisterStatus) {
-                    case (#running) {
-                        let idleCyclesBurnedPerDay = canister.idleCyclesBurnedPerDay;
-                        let cycles = canister.cycles;
-                        let freezeThreshold = canister.freezeThreshold;
-                        let computeAllocation = canister.computeAllocation;
+                label canisterLoop for (canister in Iter.fromArray(canisters)) {
+                    let canisterId = canister.canisterId;
+                    let app = canister.app;
+                    let canisterResult = await getCanisterInfo({
+                        canisterId = canisterId;
+                        app = app;
+                    });
 
-                        let min_cycles_required = BaseUtilities.secondsToDays(freezeThreshold) * idleCyclesBurnedPerDay;
+                    switch (canisterResult) {
+                        case (#ok(canisterInfo)) {
+                            let cycles = canisterInfo.cycles;
+                            let idleCyclesBurnedPerDay = canisterInfo.idleCyclesBurnedPerDay;
 
+                            var requiredCycles = idleCyclesBurnedPerDay * 31;
+                            if (cycles > requiredCycles) {
+                                continue canisterLoop;
+                            };
+
+                            let wwlbackendCanisterResult = await getCanisterInfo({
+                                canisterId = CanisterIds.WATERWAY_LABS_BACKEND_CANISTER_ID;
+                                app = app;
+                            });
+
+                            switch (wwlbackendCanisterResult) {
+                                case (#ok(wwlCanisterInfo)) {
+                                    let wwlCycles = wwlCanisterInfo.cycles;
+                                    if (wwlCycles < requiredCycles) {
+                                        Debug.print("Not enough cycles in WWL canister");
+                                        let _ = await logsManager.addApplicationLog({
+                                            app = #WaterwayLabs;
+                                            logType = #Error;
+                                            title = "CanistersManager";
+                                            detail = "Not enough cycles in WWL canister";
+                                            error = null;
+                                        });
+                                        break canisterLoop;
+                                    };
+                                };
+
+                                case (#err(_)) {
+                                    Debug.print("Error getting WWL canister info");
+                                    let _ = await logsManager.addApplicationLog({
+                                        app = #WaterwayLabs;
+                                        logType = #Error;
+                                        title = "CanistersManager";
+                                        detail = "Error getting WWL canister info";
+                                        error = null;
+                                    });
+                                    break canisterLoop;
+                                };
+                            };
+
+                            let topup = {
+                                app = app;
+                                canisterId = canisterId;
+                                cycles = requiredCycles;
+                            };
+                            let _ = await topupCanister(topup, projects);
+                            canistersCyclesTopups := Array.append(canistersCyclesTopups, [{ app = app; canisterId = canisterId; amount = requiredCycles; time = Time.now() }]);
+
+                        };
+
+                        case (#err(err)) {
+                            Debug.print("Error getting canister info");
+                            let _ = await logsManager.addApplicationLog({
+                                app = #WaterwayLabs;
+                                logType = #Error;
+                                title = "CanistersManager";
+                                detail = "Error getting canister info";
+                                error = ?err;
+                            });
+
+                            continue canisterLoop;
+                        };
                     };
-                    case (_) {};
                 };
+
+            } catch (err) {
+                Debug.print("Error checking canisters");
+                let _ = await logsManager.addApplicationLog({
+                    app = #WaterwayLabs;
+                    logType = #Error;
+                    title = "CanistersManager";
+                    detail = message(err);
+                    error = ?#IncorrectSetup;
+                });
             };
 
         };
