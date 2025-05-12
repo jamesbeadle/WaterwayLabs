@@ -328,7 +328,7 @@ actor Self {
 
     system func postupgrade() {
         setManagerStableVariables();
-        // stable_canisters_check_timer_id := Timer.recurringTimer<system>(#seconds(86_400), checkCanisters);
+        stable_canisters_check_timer_id := Timer.recurringTimer<system>(#seconds(86_400), checkCanisters);
         ignore Timer.setTimer<system>(#nanoseconds(Int.abs(1)), postUpgradeCallback);
     };
 
