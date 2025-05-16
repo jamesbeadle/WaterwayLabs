@@ -1,37 +1,38 @@
-import MopsEnums "mo:waterway-mops/Enums";
-import Ids "mo:waterway-mops/Ids";
-import WWLIds "mo:waterway-mops/WWLIds";
-import Enums "../enums/app_enums";
+import AppIds "mo:waterway-mops/product/wwl/ids";
+import BaseIds "mo:waterway-mops/base/ids";
+import Enums "mo:waterway-mops/product/wwl/enums";
+
+import AppEnums "../enums";
 
 module ProjectCommands {
 
     public type CreateProject = {
-        id : WWLIds.ProjectId;
+        id : AppIds.ProjectId;
         name : Text;
-        backendCanisterId : Ids.CanisterId;
-        frontendCanisterId : Ids.CanisterId;
+        backendCanisterId : BaseIds.CanisterId;
+        frontendCanisterId : BaseIds.CanisterId;
         websiteURL : Text;
         githubLink : Text;
         socialLinks : [(Text, Text)];
-        status : Enums.ProjectStatus;
+        status : AppEnums.ProjectStatus;
         description : Text;
         summary : Text;
         mainColour : Text;
         secondaryColour : Text;
         thirdColour : Text;
-        app : MopsEnums.WaterwayLabsApp;
+        app : Enums.WaterwayLabsApp;
     };
 
     public type UpdateProject = {
-        id : WWLIds.ProjectId;
-        app : MopsEnums.WaterwayLabsApp;
+        id : AppIds.ProjectId;
+        app : Enums.WaterwayLabsApp;
         name : ?Text;
-        backendCanisterId : ?Ids.CanisterId;
-        frontendCanisterId : ?Ids.CanisterId;
+        backendCanisterId : ?BaseIds.CanisterId;
+        frontendCanisterId : ?BaseIds.CanisterId;
         websiteURL : ?Text;
         githubLink : ?Text;
         socialLinks : ?[(Text, Text)];
-        status : ?Enums.ProjectStatus;
+        status : ?AppEnums.ProjectStatus;
         description : ?Text;
         summary : ?Text;
         mainColour : ?Text;
@@ -40,19 +41,19 @@ module ProjectCommands {
     };
 
     public type SetProjectOnHold = {
-        app : MopsEnums.WaterwayLabsApp;
+        app : Enums.WaterwayLabsApp;
     };
 
     public type RemoveProjectOnHold = {
-        app : MopsEnums.WaterwayLabsApp;
+        app : Enums.WaterwayLabsApp;
     };
 
     public type UpdateProjectVersion = {
-        app : MopsEnums.WaterwayLabsApp;
+        app : Enums.WaterwayLabsApp;
         version : Text;
     };
 
     public type DeleteProject = {
-        app : MopsEnums.WaterwayLabsApp;
+        app : Enums.WaterwayLabsApp;
     };
 };

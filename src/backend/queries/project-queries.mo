@@ -1,7 +1,7 @@
-import Ids "mo:waterway-mops/Ids";
-import WWLIds "mo:waterway-mops/WWLIds";
-import Enums "../enums/app_enums";
-import MopsEnums "mo:waterway-mops/Enums";
+import Ids "mo:waterway-mops/base/ids";
+import AppIds "mo:waterway-mops/product/wwl/ids";
+import Enums "../enums";
+import AppEnums "mo:waterway-mops/product/wwl/enums";
 
 module ProjectQueries {
 
@@ -14,7 +14,7 @@ module ProjectQueries {
     };
 
     public type Project = {
-        id : WWLIds.ProjectId;
+        id : AppIds.ProjectId;
         name : Text;
         backendCanisterId : Ids.CanisterId;
         frontendCanisterId : Ids.CanisterId;
@@ -27,6 +27,6 @@ module ProjectQueries {
         mainColour : Text;
         secondaryColour : Text;
         thirdColour : Text;
-        app : MopsEnums.WaterwayLabsApp;
+        app : AppEnums.WaterwayLabsApp;
     };
 };

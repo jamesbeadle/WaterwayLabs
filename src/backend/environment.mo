@@ -1,15 +1,16 @@
-import MopsCanisterIds "mo:waterway-mops/CanisterIds";
+import CanisterIds "mo:waterway-mops/product/wwl/canister-ids";
+
 module Environment {
 
     public let APPROVED_CANISTERS = [
-        MopsCanisterIds.ICFC_BACKEND_CANISTER_ID,
-        MopsCanisterIds.FOOTBALL_GOD_BACKEND_CANISTER_ID,
-        MopsCanisterIds.OPENFPL_BACKEND_CANISTER_ID,
-        MopsCanisterIds.OPENWSL_BACKEND_CANISTER_ID,
-        MopsCanisterIds.JEFF_BETS_BACKEND_CANISTER_ID,
-        MopsCanisterIds.OPENBOOK_BACKEND_CANISTER_ID,
-        MopsCanisterIds.TRANSFER_KINGS_BACKEND_CANISTER_ID,
-        MopsCanisterIds.ICFC_DATA_CANISTER_ID,
+        CanisterIds.ICFC_BACKEND_CANISTER_ID,
+        CanisterIds.FOOTBALL_GOD_BACKEND_CANISTER_ID,
+        CanisterIds.OPENFPL_BACKEND_CANISTER_ID,
+        CanisterIds.OPENWSL_BACKEND_CANISTER_ID,
+        CanisterIds.JEFF_BETS_BACKEND_CANISTER_ID,
+        CanisterIds.OPENBOOK_BACKEND_CANISTER_ID,
+        CanisterIds.TRANSFER_KINGS_BACKEND_CANISTER_ID,
+        CanisterIds.ICFC_DATA_CANISTER_ID,
     ];
 
     private let JB_PRINCIPAL_ID = "nc2sn-3ecqa-a4kts-jdbsy-pewiy-uavg4-kaxkf-qftut-sb7hv-6nlyb-2qe";

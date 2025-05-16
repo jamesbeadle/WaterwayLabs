@@ -4,40 +4,39 @@ import Array "mo:base/Array";
 import Time "mo:base/Time";
 import List "mo:base/List";
 import Order "mo:base/Order";
-import MopsTypes "mo:waterway-mops/BaseTypes";
-import MopsEnums "mo:waterway-mops/Enums";
-import LogsQueries "mo:waterway-mops/logs-management/LogsQueries";
-import LogsCommands "mo:waterway-mops/logs-management/LogsCommands";
-import BaseTypes "mo:waterway-mops/BaseTypes";
+import Types "../types";
+import Enums "mo:waterway-mops/base/enums";
+import LogQueries "mo:waterway-mops/product/wwl/log-management/queries";
+import LogCommands "mo:waterway-mops/product/wwl/log-management/commands";
 import Environment "../environment";
 
 module {
     public class ApplicationLogsManager() {
 
-        private var applicationLogs : [MopsTypes.ApplicationLog] = [];
-        public func getStableApplicationLogs() : [MopsTypes.ApplicationLog] {
+        private var applicationLogs : [Types.ApplicationLog] = [];
+        public func getStableApplicationLogs() : [Types.ApplicationLog] {
             applicationLogs;
         };
-        public func setStableApplicationLogs(stable_application_logs : [MopsTypes.ApplicationLog]) {
+        public func setStableApplicationLogs(stable_application_logs : [Types.ApplicationLog]) {
             applicationLogs := stable_application_logs;
         };
 
-        public func getApplicationLogs(dto : LogsQueries.GetApplicationLogs) : async Result.Result<LogsQueries.ApplicationLogs, MopsEnums.Error> {
+        public func getApplicationLogs(dto : LogQueries.GetApplicationLogs) : async Result.Result<LogQueries.ApplicationLogs, Enums.Error> {
             if (dto.page < 1) {
                 return #err(#InvalidData);
             };
 
             let app = dto.app;
-            var appLogs : [MopsTypes.ApplicationLog] = [];
+            var appLogs : [Types.ApplicationLog] = [];
             for (log in Iter.fromArray(applicationLogs)) {
                 if (log.app == app) {
                     appLogs := Array.append(appLogs, [log]);
                 };
             };
 
-            appLogs := Array.sort<MopsTypes.ApplicationLog>(
+            appLogs := Array.sort<Types.ApplicationLog>(
                 appLogs,
-                func(a : MopsTypes.ApplicationLog, b : MopsTypes.ApplicationLog) : Order.Order {
+                func(a : Types.ApplicationLog, b : Types.ApplicationLog) : Order.Order {
                     if (a.createdOn < b.createdOn) {
                         return #greater;
                     } else if (a.createdOn > b.createdOn) {
@@ -48,10 +47,10 @@ module {
                 },
             );
 
-            let droppedEntries = List.drop<MopsTypes.ApplicationLog>(List.fromArray(appLogs), ((dto.page - 1) * Environment.ROWS_PER_PAGE));
-            let paginatedEntries = List.take<MopsTypes.ApplicationLog>(droppedEntries, Environment.ROWS_PER_PAGE);
+            let droppedEntries = List.drop<Types.ApplicationLog>(List.fromArray(appLogs), ((dto.page - 1) * Environment.ROWS_PER_PAGE));
+            let paginatedEntries = List.take<Types.ApplicationLog>(droppedEntries, Environment.ROWS_PER_PAGE);
 
-            let res : LogsQueries.ApplicationLogs = {
+            let res : LogQueries.ApplicationLogs = {
                 app = app;
                 logs = List.toArray(paginatedEntries);
                 totalEntries = Array.size(appLogs);
@@ -60,8 +59,8 @@ module {
 
         };
 
-        public func addApplicationLog(dto : LogsCommands.AddApplicationLog) : async Result.Result<(), MopsEnums.Error> {
-            let logEntry : BaseTypes.ApplicationLog = {
+        public func addApplicationLog(dto : LogCommands.AddApplicationLog) : async Result.Result<(), Enums.Error> {
+            let logEntry : Types.ApplicationLog = {
                 id = Array.size(applicationLogs) + 1;
                 app = dto.app;
                 createdOn = Time.now();

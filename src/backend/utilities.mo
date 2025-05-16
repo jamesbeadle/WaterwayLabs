@@ -1,4 +1,4 @@
-import Enums "mo:waterway-mops/Enums";
+import Enums "mo:waterway-mops/product/wwl/enums";
 import Hash "mo:base/Hash";
 import Nat32 "mo:base/Nat32";
 module {

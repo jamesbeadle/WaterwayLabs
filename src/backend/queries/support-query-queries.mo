@@ -1,11 +1,11 @@
-import MopsEnums "mo:waterway-mops/Enums";
-import Ids "mo:waterway-mops/Ids";
-import AppTypes "../types/app_types";
-import Enums "../enums/app_enums";
+import AppEnums "mo:waterway-mops/product/wwl/enums";
+import Ids "mo:waterway-mops/base/ids";
+import AppTypes "../types";
+import Enums "../enums";
 
 module SupportQueries {
     public type GetSupportQueries = {
-        app : ?MopsEnums.WaterwayLabsApp;
+        app : ?AppEnums.WaterwayLabsApp;
         page : Nat;
         status : ?Enums.QueryStatus;
         dateFrom : ?Int;
@@ -16,7 +16,7 @@ module SupportQueries {
         supportQueries : [SupportQuery];
         page : Nat;
         totalEntries : Nat;
-        app : ?MopsEnums.WaterwayLabsApp;
+        app : ?AppEnums.WaterwayLabsApp;
     };
 
     public type SupportQuery = {
@@ -39,7 +39,7 @@ module SupportQueries {
     };
 
     public type GetArchivedSupportQueries = {
-        app : ?MopsEnums.WaterwayLabsApp;
+        app : ?AppEnums.WaterwayLabsApp;
         page : Nat;
     };
 

@@ -6,12 +6,11 @@ import Time "mo:base/Time";
 import Option "mo:base/Option";
 import List "mo:base/List";
 import Order "mo:base/Order";
-import AppTypes "../types/app_types";
-import SupportQueryQueries "../queries/support_query_queries";
-import SupportQueryCommands "../commands/support_query_commands";
-import MopsEnums "mo:waterway-mops/Enums";
-import Ids "mo:waterway-mops/Ids";
-import BaseUtilities "mo:waterway-mops/BaseUtilities";
+import AppTypes "../types";
+import SupportQueryQueries "../queries/support-query-queries";
+import SupportQueryCommands "../commands/support-query-commands";
+import MopsEnums "mo:waterway-mops/base/enums";
+import Ids "mo:waterway-mops/base/ids";
 import Environment "../environment";
 
 module {
@@ -65,6 +64,8 @@ module {
 
             switch (dto.app) {
                 case (?app) {
+                    /*
+                    // TODO: I don't have this util fn anymore
                     let ?appText = BaseUtilities.appToText(app) else {
                         return #err(#InvalidData);
                     };
@@ -74,6 +75,7 @@ module {
                             return Text.equal(supportQuery.app, appText);
                         },
                     );
+                    */
                 };
                 case (_) {};
             };
@@ -160,6 +162,9 @@ module {
 
             switch (dto.app) {
                 case (?app) {
+                    /*
+                    // TODO I don't have this utility fn anymore
+                    
                     let ?appText = BaseUtilities.appToText(app) else {
                         return #err(#InvalidData);
                     };
@@ -169,6 +174,7 @@ module {
                             return Text.equal(supportQuery.app, appText);
                         },
                     );
+                    */
                 };
                 case (_) {};
             };
@@ -354,6 +360,8 @@ module {
             let validateResult = validate(dto);
             switch (validateResult) {
                 case (#ok(_)) {
+                    /*
+                    // TODO I don't have this utility fn anymore
                     let ?appText = BaseUtilities.appToText(dto.app) else {
                         return #err(#InvalidData);
                     };
@@ -371,7 +379,9 @@ module {
                     };
                     supportQueries := Array.append(supportQueries, [newSupportQuery]);
                     supportQueryId := supportQueryId + 1;
+                    */
                     return #ok(());
+                    
                 };
                 case (#err(err)) {
                     return #err(err);
@@ -509,9 +519,12 @@ module {
                 return #err(#TooLong);
             };
 
+            /*
+            // TODO I don't have this utility fn anymore
             let ?_ = BaseUtilities.appToText(dto.app) else {
                 return #err(#NotFound);
             };
+            */
             return #ok(());
         };
 

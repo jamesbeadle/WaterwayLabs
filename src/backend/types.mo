@@ -1,34 +1,36 @@
-import Enums "../enums/app_enums";
-import WWLIds "mo:waterway-mops/WWLIds";
-import WaterWayEnums "mo:waterway-mops/Enums";
-import Ids "mo:waterway-mops/Ids";
+import AppEnums "./enums";
+import AppIds "mo:waterway-mops/product/wwl/ids";
+import WaterwayEnums "mo:waterway-mops/product/wwl/enums";
+import BaseEnums "mo:waterway-mops/base/enums";
+import WaterwayIds "mo:waterway-mops/product/wwl/ids";
+import Ids "mo:waterway-mops/base/ids";
 module AppTypes {
 
     public type SupportQueryId = Nat;
 
     public type Project = {
-        id : WWLIds.ProjectId;
+        id : AppIds.ProjectId;
         name : Text;
         backendCanisterId : Ids.CanisterId;
         frontendCanisterId : Ids.CanisterId;
         websiteURL : Text;
         githubLink : Text;
         socialLinks : [(Text, Text)];
-        status : Enums.ProjectStatus;
+        status : AppEnums.ProjectStatus;
         description : Text;
         summary : Text;
         mainColour : Text;
         secondaryColour : Text;
         thirdColour : Text;
-        app : WaterWayEnums.WaterwayLabsApp;
+        app : WaterwayEnums.WaterwayLabsApp;
     };
 
     public type SupportQuery = {
-        id : WWLIds.SupportQueryId;
+        id : AppIds.SupportQueryId;
         name : Text;
         message : Text;
         contact : Text;
-        status : Enums.QueryStatus;
+        status : AppEnums.QueryStatus;
         submittedBy : Ids.PrincipalId;
         submittedOn : Int;
         assignedTo : Ids.PrincipalId;
@@ -37,7 +39,7 @@ module AppTypes {
     };
 
     public type TeamMember = {
-        id : WWLIds.TeamMemberId;
+        id : AppIds.TeamMemberId;
         firstName : Text;
         lastName : Text;
         principalId : Ids.PrincipalId;
@@ -48,7 +50,7 @@ module AppTypes {
     };
 
     public type SupportQueryComment = {
-        commentId : WWLIds.SupportQueryCommentId;
+        commentId : AppIds.SupportQueryCommentId;
         comment : Text;
         date : Int;
         author : Ids.PrincipalId;
@@ -56,27 +58,25 @@ module AppTypes {
     };
 
     public type CanisterCyclesTopup = {
-        app : WaterWayEnums.WaterwayLabsApp;
+        app : WaterwayEnums.WaterwayLabsApp;
         canisterId : Ids.CanisterId;
         amount : Nat;
         time : Int;
     };
 
-
     public type SystemLog = {
         eventId : Nat;
         eventTime : Int;
-        eventType : Enums.LogEntryType;
+        eventType : WaterwayEnums.LogType;
         eventTitle : Text;
         eventDetail : Text;
     };
 
-
     public type ApplicationLog = {
-        app : Enums.WaterwayLabsApp;
-        id : Ids.ApplicationLogId;
+        app : WaterwayEnums.WaterwayLabsApp;
+        id : WaterwayIds.ApplicationLogId;
         createdOn : Int;
-        logType : Enums.LogEntryType;
+        logType : WaterwayEnums.LogType;
         title : Text;
         detail : Text;
         error : ?BaseEnums.Error;

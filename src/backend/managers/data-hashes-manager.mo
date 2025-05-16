@@ -1,10 +1,10 @@
 import Result "mo:base/Result";
 import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
-import BaseTypes "mo:waterway-mops/BaseTypes";
-import DataHashQueries "../queries/data_hash_queries";
-import MopsEnums "mo:waterway-mops/Enums";
-import SHA224 "mo:waterway-mops/SHA224";
+import BaseTypes "mo:waterway-mops/base/types";
+import DataHashQueries "../queries/data-hash-queries";
+import MopsEnums "mo:waterway-mops/base/enums";
+import SHA224 "mo:waterway-mops/base/def/sha224";
 
 module {
   public class DataHashesManager() {
