@@ -61,4 +61,24 @@ module AppTypes {
         amount : Nat;
         time : Int;
     };
+
+
+    public type SystemLog = {
+        eventId : Nat;
+        eventTime : Int;
+        eventType : Enums.LogEntryType;
+        eventTitle : Text;
+        eventDetail : Text;
+    };
+
+
+    public type ApplicationLog = {
+        app : Enums.WaterwayLabsApp;
+        id : Ids.ApplicationLogId;
+        createdOn : Int;
+        logType : Enums.LogEntryType;
+        title : Text;
+        detail : Text;
+        error : ?BaseEnums.Error;
+    };
 };
